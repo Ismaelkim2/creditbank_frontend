@@ -1,0 +1,219 @@
+<div class="main-container">
+  <app-sidebar></app-sidebar>
+
+  <div class="container mt-5">
+
+    <!-- Approval Messages -->
+    <div *ngIf="approvalMessage" class="alert alert-info alert-dismissible fade show" role="alert">
+      {{ approvalMessage }}
+      <button type="button" class="btn-close" (click)="approvalMessage=''"></button>
+    </div>
+
+    <!-- Search Bar -->
+    <div class="mb-3 sticky-top bg-white py-2 shadow-sm rounded">
+      <input #searchInput type="text" class="form-control" placeholder="Search users..." (input)="onSearch(searchInput.value)">
+    </div>
+
+    <!-- Pending Users -->
+    <div class="card mb-5 shadow-sm">
+      <div class="card-header bg-primary text-white">Pending User Approvals</div>
+
+      <div class="card-body p-0">
+
+        <div *ngIf="isLoading" class="text-center py-5">
+          <i class="fa fa-spinner fa-spin fa-3x text-primary"></i>
+        </div>
+
+        <table class="table table-hover mb-0" *ngIf="filteredPendingUsers().length > 0 && !isLoading; else noUsers">
+         <thead>
+
+            <tr>
+              <th>Name</th>
+              <th>Email</th>
+              <th>Role</th>
+              <th>Status</th>
+              <th>Action</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let user of filteredPendingUsers()">
+              <td>{{ user.name }}</td>
+              <td>{{ user.email }}</td>
+              <td>{{ user.role }}</td>
+              <td><span class="badge bg-warning text-dark">{{ user.status }}</span></td>
+             <td>
+<button class="btn-icon btn-success me-2"
+        (click)="approveUser(user.id)"
+        title="Approve">
+  <i class="fa fa-check"></i>
+</button>
+
+
+  <!-- DELETE -->
+  <button class="btn btn-danger btn-sm"
+          [disabled]="processingUserId===user.id"
+          (click)="deleteUser(user.id)"
+          title="Delete">
+    <i class="fa fa-trash"></i>
+  </button>
+</td>
+
+            </tr>
+          </tbody>
+        </table>
+
+        <ng-template #noUsers>
+          <div class="text-center text-muted py-4">
+            <i class="fa fa-exclamation-triangle text-warning fa-2x"></i>
+            <p class="mt-2">No users awaiting approval.</p>
+          </div>
+        </ng-template>
+
+      </div>
+    </div>
+
+    <!-- Current Users -->
+    <div class="card shadow-sm">
+      <div class="card-header bg-primary text-white">Current Users</div>
+
+      <div class="card-body p-0">
+
+        <table class="table table-hover mb-0" *ngIf="filteredAllUsers().length > 0; else noAllUsers">
+          <thead>
+
+            <tr>
+              <th>Name</th>
+              <th>Email</th>
+              <th>Role</th>
+              <th>Status</th>
+              <th>Action</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let user of filteredAllUsers()">
+              <td>{{ user.name }}</td>
+              <td>{{ user.email }}</td>
+              <td>{{ user.role }}</td>
+              <td>
+                <span [ngClass]="{
+                  'badge bg-success': user.status === 'ACTIVE',
+                  'badge bg-warning text-dark': user.status === 'PENDING',
+                  'badge bg-danger': user.status === 'DISABLED'
+                }">{{ user.status }}</span>
+              </td>
+             <td>
+<!-- 
+<button class="btn-icon btn-success me-2"
+        (click)="approveUser(user.id)"
+        title="Approve">
+  <i class="fa fa-check"></i>
+</button> -->
+
+
+  <!-- EDIT -->
+  <button class="btn btn-primary btn-sm me-2"
+          (click)="openEditModal(user, editUserModal)"
+          title="Edit">
+    <i class="fa fa-pencil"></i>
+  </button>
+
+  <!-- REVERT -->
+  <button class="btn btn-warning btn-sm me-2"
+          [disabled]="processingUserId===user.id"
+          (click)="revertUser(user.id)"
+          title="Revert">
+    <i class="fa fa-undo"></i>
+  </button>
+
+  
+  <!-- DELETE -->
+  <button class="btn btn-danger btn-sm "
+          [disabled]="processingUserId===user.id"
+          (click)="deleteUser(user.id)"
+          title="Delete">
+    <i class="fa fa-trash"></i>
+  </button>
+
+
+</td>
+
+            </tr>
+          </tbody>
+        </table>
+
+        <ng-template #noAllUsers>
+          <div class="text-center text-muted py-4">
+            <i class="fa fa-info-circle fa-2x"></i>
+            <p class="mt-2">No users found.</p>
+          </div>
+        </ng-template>
+
+      </div>
+    </div>
+
+  </div>
+  
+</div>
+
+<!-- ============================================= -->
+<!--        EDIT USER MODAL (CORRECT TEMPLATE)     -->
+<!-- ============================================= -->
+<ng-template #editUserModal let-modal>
+  <div class="modal-header bg-primary text-white">
+    <h5 class="modal-title fw-bold">Edit User</h5>
+    <button type="button" class="btn-close btn-close-white" (click)="modal.dismiss()"></button>
+  </div>
+
+  <div class="modal-body">
+
+    <form [formGroup]="editUserForm" (ngSubmit)="saveUser(modal)">
+      <div class="row g-3">
+
+        <div class="col-md-6">
+          <label class="form-label fw-semibold">Name</label>
+          <input type="text" class="form-control" formControlName="name">
+        </div>
+
+        <div class="col-md-6">
+          <label class="form-label fw-semibold">Email</label>
+          <input type="email" class="form-control" formControlName="email">
+        </div>
+
+        <div class="col-md-6">
+          <label class="form-label fw-semibold">Role</label>
+          <select class="form-select" formControlName="role">
+            <option value="ADMIN">Admin</option>
+            <option value="USER">User</option>
+          </select>
+        </div>
+
+        <div class="col-md-6">
+          <label class="form-label fw-semibold">Status</label>
+          <select class="form-select" formControlName="status">
+            <option value="ACTIVE">Active</option>
+            <option value="PENDING">Pending</option>
+            <option value="DISABLED">Disabled</option>
+          </select>
+        </div>
+
+      </div>
+
+      <div class="mt-4 d-flex gap-2">
+        <button type="submit" class="btn btn-primary px-4">
+          <i class="fa fa-save me-1"></i> Save
+        </button>
+        <button type="button" class="btn btn-outline-secondary px-4" (click)="modal.dismiss()">
+          <i class="fa fa-times me-1"></i> Cancel
+        </button>
+      </div>
+
+      <div class="mt-3">
+        <div *ngIf="successMessage" class="alert alert-success">{{ successMessage }}</div>
+        <div *ngIf="errorMessage" class="alert alert-danger">{{ errorMessage }}</div>
+      </div>
+
+    </form>
+
+  </div>
+</ng-template>
+

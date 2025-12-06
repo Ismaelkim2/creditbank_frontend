@@ -1,0 +1,128 @@
+<link
+  rel="stylesheet"
+  href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css"
+/>
+
+<app-applicant-sidebar *ngIf="isApplicant"></app-applicant-sidebar>
+<app-sidebar *ngIf="isAdmin"></app-sidebar>
+
+<div class="statement-container container-fluid px-4 ">
+
+  <!-- 🔹 User Info + Filter Card -->
+  <div class="card user-filter-card border-0 shadow-lg mb-4 overflow-hidden">
+    <div class="card-body p-4">
+
+      <!-- Header: User Info + Export -->
+      <div class="d-flex flex-wrap justify-content-between align-items-center mb-4">
+        <div class="d-flex align-items-center">
+          <img
+            [src]="user.profileImage || 'assets/default-user.jpg'"
+            alt="Profile"
+            class="rounded-circle border border-3 border-light me-3"
+            width="90"
+            height="90"
+          />
+          <div>
+            <h3 class="fw-bold text-white mb-1">{{ user.name || 'John Doe' }}</h3>
+            <p class="mb-1 text-light"><i class="bi bi-envelope me-1"></i>{{ user.email || 'user@email.com' }}</p>
+            <p class="mb-0 text-light"><i class="bi bi-credit-card me-1"></i>Account No: {{ user.accountNumber || 'XXXX-XXXX-XXXX' }}</p>
+          </div>
+        </div>
+
+    <div *ngIf="isAdmin" class="query-box mt-3">
+  <label for="searchId" class="form-label text-light">Override:</label>
+  <input
+    type="text"
+    id="searchId"
+    [(ngModel)]="searchNationalId"
+    placeholder="Search user by ID..."
+    class="form-control w-50 d-inline"
+  />
+  <button class="btn btn-primary ms-2" (click)="loadAdminUserStatement()">Go</button>
+</div>
+
+
+
+        <button class="btn btn-light text-danger fw-semibold shadow-sm export-btn" (click)="exportPDF()">
+          <i class="bi bi-file-earmark-pdf-fill me-2"></i> Export PDF
+        </button>
+      </div>
+
+      <!-- Divider Line -->
+      <hr class="bg-light opacity-50 mb-4" />
+
+      <!-- Customize Statement Section -->
+      <h5 class="fw-semibold text-white mb-3">
+        <i class="bi bi-funnel-fill me-2"></i> Customize Statement
+      </h5>
+
+      <form (ngSubmit)="onFilter()" class="row g-3 align-items-end">
+        <div class="col-md-4">
+          <label for="startDate" class="form-label text-light">From</label>
+          <input type="date" id="startDate" class="form-control" [(ngModel)]="startDate" name="startDate" required />
+        </div>
+
+        <div class="col-md-4">
+          <label for="endDate" class="form-label text-light">To</label>
+          <input type="date" id="endDate" class="form-control" [(ngModel)]="endDate" name="endDate" required />
+        </div>
+
+        <div class="col-md-3">
+          <label for="type" class="form-label text-light">Transaction Type</label>
+          <select id="type" class="form-select" [(ngModel)]="filterType" name="filterType">
+            <option value="all">All</option>
+            <option value="credit">Credits</option>
+            <option value="debit">Debits</option>
+          </select>
+        </div>
+
+        <div class="col-md-1 text-center">
+          <button type="submit" class="btn btn-light text-danger w-100 shadow-sm">
+            <i class="bi bi-search"></i>
+          </button>
+        </div>
+      </form>
+
+    </div>
+  </div>
+
+  <!-- 🔹 Loading State -->
+  <div *ngIf="isLoading" class="text-center py-5">
+    <div class="spinner-border text-danger" style="width: 3rem; height: 3rem;"></div>
+    <p class="mt-3 fw-semibold text-muted">Fetching your latest transactions...</p>
+  </div>
+
+  <!-- 🔹 Transactions Table -->
+  <div *ngIf="!isLoading" class="card border-0 shadow-sm">
+    <div class="card-body p-0">
+      <div class="table-responsive">
+        <table class="table table-hover align-middle mb-0">
+          <thead class="table-danger text-center">
+  <tr>
+    <th>Date</th>
+    <th>Description</th>
+    <th *ngIf="showDebitColumn">Debit (KES)</th>
+    <th *ngIf="showCreditColumn">Credit (KES)</th>
+    <th>Balance (KES)</th>
+  </tr>
+</thead>
+
+         <tbody>
+  <tr *ngFor="let txn of filteredTransactions" class="text-center">
+    <td>{{ txn.date | date: 'mediumDate' }}</td>
+    <td class="text-start ps-4 fw-medium">{{ txn.description }}</td>
+    <td *ngIf="showDebitColumn" [class.text-danger]="txn.debit">{{ txn.debit || '-' }}</td>
+    <td *ngIf="showCreditColumn" [class.text-success]="txn.credit">{{ txn.credit || '-' }}</td>
+    <td class="fw-semibold">{{ txn.balanceAfter | number: '1.2-2' }}</td>
+  </tr>
+</tbody>
+
+        </table>
+      </div>
+
+      <div *ngIf="!filteredTransactions.length" class="text-center py-5 text-muted">
+        <i class="bi bi-info-circle me-2"></i> No transactions found for the selected period.
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,199 @@
+<link
+  rel="stylesheet"
+  href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css"
+/>
+<link
+  rel="stylesheet"
+  href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"
+/>
+
+<div class="login-wrapper d-flex align-items-center justify-content-center vh-100">
+  <!-- Overlay Spinner -->
+  <div *ngIf="loading" class="overlay">
+    <div class="spinner"></div>
+    <p>Authenticating, please wait...</p>
+  </div>
+
+  <div
+    class="login-card card shadow-lg rounded-4 animate__animated animate__fadeIn"
+    [ngClass]="{ 'otp-step': otpStep }"
+  >
+    <div class="card-body p-4">
+      <!-- Logo + Title -->
+      <div class="text-center mb-4">
+        <img src="assets/creditbank.png" alt="Logo" class="login-image" />
+        <h4 class="text-primary fw-bold">CreditBank</h4>
+        <p class="text-muted">
+          {{ otpStep ? 'Verify your identity' : 'Sign in to your account' }}
+        </p>
+      </div>
+
+      <!-- STEP 1: LOGIN FORM -->
+      <form
+        *ngIf="!otpStep"
+        (ngSubmit)="onSubmit()"
+        [formGroup]="loginForm"
+        novalidate
+      >
+        <!-- Email -->
+        <div class="mb-3">
+          <label for="email" class="form-label">Email address</label>
+          <div class="input-group">
+            <span class="input-group-text bg-white">
+              <i class="bi bi-envelope"></i>
+            </span>
+            <input
+              type="email"
+              id="email"
+              class="form-control"
+              placeholder="Enter email"
+              formControlName="email"
+              autocomplete="email"
+              [ngClass]="{
+                'is-invalid': submitted && loginForm.controls['email'].invalid
+              }"
+              required
+            />
+          </div>
+          <div
+            class="invalid-feedback"
+            *ngIf="submitted && loginForm.controls['email'].invalid"
+          >
+            Valid email is required.
+          </div>
+        </div>
+
+        <!-- Password -->
+        <div class="mb-3 position-relative">
+          <label for="password" class="form-label">Password</label>
+          <div class="input-group">
+            <span class="input-group-text bg-white">
+              <i class="bi bi-lock"></i>
+            </span>
+            <input
+              [type]="showPassword ? 'text' : 'password'"
+              id="password"
+              class="form-control"
+              placeholder="Enter password"
+              formControlName="password"
+              autocomplete="current-password"
+              [ngClass]="{
+                'is-invalid': submitted && loginForm.controls['password'].invalid
+              }"
+              required
+            />
+            <button
+              type="button"
+              class="btn btn-outline-secondary border-start-0"
+              (click)="togglePassword()"
+              tabindex="-1"
+              aria-label="Toggle password visibility"
+            >
+              <i
+                class="bi"
+                [ngClass]="showPassword ? 'bi-eye-slash' : 'bi-eye'"
+              ></i>
+            </button>
+          </div>
+          <div
+            class="invalid-feedback"
+            *ngIf="submitted && loginForm.controls['password'].invalid"
+          >
+            Password is required.
+          </div>
+        </div>
+
+        <!-- Forgot password -->
+        <div class="d-flex justify-content-between align-items-center mb-3">
+          <a href="#" class="text-decoration-none small text-primary"
+            >Forgot password?</a
+          >
+        </div>
+
+        <!-- Error Alert -->
+        <div
+          *ngIf="loginError"
+          class="alert alert-danger alert-dismissible fade show mt-3 d-flex align-items-center"
+          role="alert"
+        >
+          <i class="bi bi-exclamation-triangle-fill me-2"></i>
+          <span>{{ loginError }}</span>
+          <button
+            type="button"
+            class="btn-close ms-auto"
+            data-bs-dismiss="alert"
+            aria-label="Close"
+          ></button>
+        </div>
+
+        <!-- Submit -->
+        <button
+          class="btn btn-primary w-100 mt-2 d-flex justify-content-center align-items-center"
+          type="submit"
+          [disabled]="loading"
+        >
+          <span *ngIf="!loading">
+            <i class="bi bi-box-arrow-in-right me-2"></i> Login
+          </span>
+          <span *ngIf="loading">
+            <span class="spinner-border spinner-border-sm me-2"></span> Signing
+            in...
+          </span>
+        </button>
+      </form>
+
+<!-- STEP 2: OTP VERIFICATION -->
+<div *ngIf="otpStep && !verificationSuccess" class="otp-container mt-3 animate__animated animate__fadeIn">
+
+  <h6 class="text-center mb-3 fw-semibold text-dark">
+    Enter the OTP sent to your registered number & Email
+  </h6>
+
+  <!-- OTP ERROR MESSAGE -->
+  <div *ngIf="otpError"
+       class="alert alert-danger text-center py-2 animate__animated animate__fadeIn">
+    <i class="bi bi-exclamation-circle me-1"></i> {{ otpError }}
+  </div>
+
+  <input type="text" maxlength="6" class="form-control text-center mb-3 otp-input"
+         placeholder="Enter 6-digit OTP" #otpInput />
+
+  <button class="btn btn-success w-100 mt-2"
+          (click)="verifyOtp(otpInput.value)"
+          [disabled]="loading">
+    <i class="bi bi-shield-lock me-2"></i> Verify OTP
+  </button>
+
+  <button class="btn btn-outline-primary w-100 mt-3"
+          (click)="resendOtp()"
+          [disabled]="resending || !canResend">
+    <i class="bi bi-arrow-clockwise me-2"></i>
+    <span *ngIf="!canResend">Resend OTP in {{ otpCountdown }}s</span>
+    <span *ngIf="canResend">{{ resending ? 'Resending...' : 'Resend OTP' }}</span>
+  </button>
+</div>
+
+
+
+<!-- ✅ SUCCESS ANIMATION -->
+<div *ngIf="verificationSuccess" class="text-center animate__animated animate__fadeIn">
+  <div class="success-circle mx-auto mb-3">
+    <i class="bi bi-check-lg"></i>
+  </div>
+  <h5 class="text-success fw-bold">Verification Successful!</h5>
+  <p class="text-muted small">Redirecting to your dashboard...</p>
+</div>
+
+
+      <!-- Footer -->
+      <div class="text-center mt-4" *ngIf="!otpStep">
+        <small class="text-muted">
+          Don’t have an account?
+          <a routerLink="/register" class="text-primary fw-semibold"
+            >Register</a
+          >
+        </small>
+      </div>
+    </div>
+  </div>
+</div>

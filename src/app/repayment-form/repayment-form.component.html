@@ -1,0 +1,158 @@
+<!-- ===== SIDEBAR ===== -->
+<app-sidebar *ngIf="!isApplicant"></app-sidebar>
+<app-applicant-sidebar *ngIf="isApplicant"></app-applicant-sidebar>
+
+<!-- ===== MAIN CONTAINER ===== -->
+<div class="main-container">
+
+  <!-- CONTENT WRAPPER -->
+  <div class="content-wrapper" [class.no-sidebar]="isApplicant">
+
+    <!-- DASHBOARD HEADER -->
+    <div class="dashboard-header mb-3">
+      <h4 class="fw-bold text-primary">
+        <i class="fas fa-wallet me-2"></i> Automated Loan Repayment
+      </h4>
+      <small class="text-muted">Manage loans, track repayments & monitor performance</small>
+    </div>
+
+    <!-- SEARCH & USER SUMMARY CARD -->
+    <div class="card shadow-sm rounded-4 mb-4">
+      <div class="card-body p-3 p-md-4">
+
+        <!-- SEARCH SECTION -->
+        <div class="search-section mb-3">
+          <div class="row g-2 align-items-end">
+            <div class="col-auto">
+              <label class="form-label fw-semibold">Search By</label>
+              <select class="form-select" [(ngModel)]="searchType">
+                <option value="idNo">ID Number</option>
+                <option value="loanId">Loan ID</option>
+                <option value="phone">Phone Number</option>
+              </select>
+            </div>
+            <div class="col">
+              <label class="form-label fw-semibold">Enter Value</label>
+              <input type="text" class="form-control"
+                     [(ngModel)]="repayment.identifier"
+                     (ngModelChange)="onLoanIdentifierChange($event)"
+                     [placeholder]="getPlaceholder()" />
+            </div>
+            <div class="col-auto d-flex align-items-center">
+              <ng-container *ngIf="loading">
+                <div class="spinner-border text-primary me-2" role="status"></div>
+                <small class="text-muted">Searching...</small>
+              </ng-container>
+            </div>
+          </div>
+        </div>
+
+        <!-- ERROR MESSAGE -->
+        <div *ngIf="errorMessage" class="alert alert-danger my-2">
+          {{ errorMessage }}
+        </div>
+
+        <!-- USER SUMMARY -->
+        <div *ngIf="latestLoan && !errorMessage" class="user-summary p-3 rounded-4 shadow-sm mb-4">
+          <div class="d-flex align-items-center flex-wrap gap-3">
+            <img *ngIf="latestLoan.userImageUrl; else defaultPic"
+                 [src]="'http://localhost:8080/' + latestLoan.userImageUrl"
+                 class="user-avatar" loading="lazy" />
+            <ng-template #defaultPic>
+              <div class="user-avatar placeholder-avatar">
+                <i class="fa fa-user fa-lg"></i>
+              </div>
+            </ng-template>
+            <div>
+              <h5 class="fw-bold mb-1">{{ latestLoan.applicantName }}</h5>
+              <small class="text-muted"><i class="fa fa-phone me-1"></i>0{{ latestLoan.phoneNumber }}</small>
+            </div>
+          </div>
+
+          <div class="row mt-3 g-2 text-muted small">
+            <div class="col-6 col-md-3"><strong>ID:</strong> {{ latestLoan.idNo }}</div>
+            <div class="col-6 col-md-3"><strong>Account:</strong> {{ displayAccount }}</div>
+            <div class="col-6 col-md-3"><strong>Phone:</strong> 0{{ latestLoan.phoneNumber }}</div>
+            <div class="col-6 col-md-3"><strong>Location:</strong> {{ latestLoan.location }}</div>
+          </div>
+        </div>
+
+        <!-- LOAN TABLE -->
+        <div class="table-responsive">
+          <table class="table table-hover table-sm align-middle mb-0">
+            <thead class="table-light">
+              <tr>
+                <th>Loan ID</th>
+                <th>Applicant</th>
+                <th>Phone</th>
+                <th>Balance Due</th>
+                <th>Status</th>
+                <th class="text-end">Action</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let loan of loanDetails">
+                <td>{{ loan.id }}</td>
+                <td>{{ loan.applicantName }}</td>
+                <td>0{{ loan.phoneNumber }}</td>
+                <td>{{ loan.dueAmount | currency:'KES' }}</td>
+                <td>
+                  <span class="badge"
+                        [class.bg-success]="loan.dueAmount === 0"
+                        [class.bg-warning]="loan.dueAmount??0 > 0"
+                        [class.text-dark]="loan.dueAmount??0 > 0">
+                    {{ loan.dueAmount === 0 ? 'Paid' : 'Ongoing' }}
+                  </span>
+                </td>
+                <td class="text-end">
+                  <button class="btn btn-sm btn-primary"
+                          [disabled]="loan.dueAmount === 0 || loading"
+                          (click)="selectLoanForRepayment(loan)">
+                    {{ loan.dueAmount === 0 ? 'Cleared' : 'Repay' }}
+                  </button>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <!-- REPAYMENT FORM -->
+        <div class="row g-3 mb-4 mt-3">
+          <div class="col-12 col-md-6">
+            <label class="form-label fw-semibold">💵 Amount to Repay</label>
+            <input type="number"
+                   class="form-control"
+                   [(ngModel)]="repayment.amountPaid"
+                   [max]="balanceDue"
+                   [placeholder]="'Max: ' + (balanceDue | currency:'KES')"
+                   [disabled]="balanceDue === 0 || loading" />
+          </div>
+          <div class="col-12 col-md-6">
+            <label class="form-label fw-semibold text-success">📊 Balance Due</label>
+            <input type="text"
+                   class="form-control text-success fw-bold"
+                   [value]="balanceDue | currency:'KES'"
+                   readonly />
+          </div>
+        </div>
+
+        <!-- ALERTS -->
+        <div *ngIf="balanceDue === 0" class="alert alert-success text-center">
+          ✅ Loan Fully Paid. No further repayments required.
+        </div>
+        <div *ngIf="repayment.amountPaid && repayment.amountPaid > balanceDue" class="alert alert-warning">
+          ⚠ Amount entered exceeds balance due!
+        </div>
+
+        <!-- SUBMIT BUTTON -->
+        <button class="btn btn-primary btn-lg w-100 shadow-sm"
+                [disabled]="!repayment.amountPaid || balanceDue === 0 || loading"
+                (click)="submitRepayment()">
+          💰 Submit Repayment
+        </button>
+
+      </div>
+    </div>
+
+  </div>
+</div>

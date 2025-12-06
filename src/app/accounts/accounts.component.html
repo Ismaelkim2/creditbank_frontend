@@ -1,0 +1,236 @@
+<link
+  rel="stylesheet"
+  href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css"
+/>
+
+<app-sidebar></app-sidebar>
+
+<div class="container-fluid accounts-container py-4 mt-4">
+  
+  <!-- HEADER SECTION -->
+  <div class="d-flex flex-wrap justify-content-between align-items-center mb-3 header">
+    <h4 class="fw-bold text-primary mb-2 mb-md-0">
+      <i class="bi bi-person-lines-fill me-2"></i>Customer Accounts
+    </h4>
+
+  <div class="d-flex gap-2 align-items-center">
+  <!-- Search Input Wrapper -->
+  <div class="position-relative w-100">
+    <input
+      type="text"
+      class="form-control form-control-sm search-input"
+      placeholder="Search by Name, Account, ID or Phone"
+      [(ngModel)]="searchTerm"
+      (input)="filterAccounts()"
+    />
+
+    <!-- Clear Icon (Bootstrap 'bi-x-circle') -->
+    <i 
+      *ngIf="searchTerm" 
+      class="bi bi-x-circle clear-search-btn"
+      (click)="clearSearch()"
+      title="Clear search">
+    </i>
+  </div>
+
+  <!-- Add Account Button -->
+  <button type="button" class="btn btn-primary btn-sm rounded-pill shadow-sm"
+          (click)="goToAccountRegistration()">
+    <i class="bi bi-plus-circle me-1"></i> Add Account
+  </button>
+</div>
+
+  </div>
+
+  <!-- LOADING STATE -->
+  <div *ngIf="loading" class="text-center py-5">
+    <div class="spinner-border text-primary"></div>
+    <p class="mt-2 text-muted">Loading accounts...</p>
+  </div>
+
+  <!-- ERROR -->
+  <div *ngIf="error" class="alert alert-danger">
+    {{ error }}
+  </div>
+
+
+  <!-- TABLE -->
+  <div *ngIf="!loading && filteredAccounts.length > 0"
+       class="table-responsive fintech-table-wrapper">
+
+    <table class="table fintech-table align-middle shadow-sm rounded">
+      <thead>
+        <tr>
+          <th>Account No.</th>
+          <th>Full Name</th>
+          <th>National ID</th>
+          <th>Phone</th>
+          <th class="text-center">Actions</th>
+        </tr>
+      </thead>
+
+      <tbody>
+        <tr *ngFor="let acc of filteredAccounts">
+          <td class="fw-semibold">{{ acc.accountNumber }}</td>
+          <td class="fw-semibold">{{ acc.fullName }}</td>
+          <td>{{ acc.nationalId }}</td>
+          <td>{{ acc.phoneNumber }}</td>
+
+          <td class="text-center">
+            <div class="d-flex justify-content-center gap-2">
+
+              <!-- VIEW -->
+              <button class="btn-action view"
+                      (click)="viewDetails(acc)">
+                <i class="bi bi-eye-fill"></i>
+              </button>
+
+              <!-- DELETE -->
+              <button class="btn-action delete"
+                      (click)="deleteAccount(acc)">
+                <i class="bi bi-trash3-fill"></i>
+              </button>
+
+            </div>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+
+  </div>
+
+
+  <!-- EMPTY STATES -->
+  <div *ngIf="!loading && filteredAccounts.length === 0"
+       class="alert alert-info text-center">
+    <i class="bi bi-info-circle me-1"></i>No accounts found.
+  </div>
+
+  <div *ngIf="!loading && accounts.length === 0"
+       class="alert alert-info text-center">
+    <i class="bi bi-info-circle me-1"></i>No accounts available.
+  </div>
+
+</div>
+
+<!-- BACKDROP -->
+<div *ngIf="showDetailsModal" class="modal-backdrop fade show"></div>
+
+<!-- MODAL -->
+<div *ngIf="showDetailsModal" class="modal d-block fade-in">
+  <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable custom-modal-width">
+    <div class="modal-content details-modal shadow-lg rounded-4 border-0 animate__animated animate__fadeInUp">
+
+      <!-- HEADER -->
+      <div class="modal-header details-header text-white rounded-top">
+        <h5 class="modal-title fw-semibold">
+          <i class="bi bi-person-vcard me-2"></i>
+          Customer Profile & Loan Summary
+        </h5>
+        <button type="button" class="btn-close btn-close-white" (click)="showDetailsModal = false"></button>
+      </div>
+
+      <!-- BODY -->
+      <div class="modal-body px-4">
+
+        <!-- CUSTOMER SECTION -->
+        <div class="row align-items-center mb-3">
+
+          <!-- Customer Image -->
+          <div class="col-md-4 text-center">
+            <img
+              *ngIf="selectedAccount?.imageUrl"
+              [src]="'http://localhost:8080/' + selectedAccount.imageUrl"
+              alt="User Photo"
+              class="customer-img shadow-sm"
+            />
+            <h6 class="fw-bold mt-3">{{ selectedAccount?.fullName }}</h6>
+            <p class="text-muted small mb-0">
+              <i class="bi bi-envelope me-1"></i>{{ selectedAccount?.email }}
+            </p>
+          </div>
+
+          <!-- Customer Details -->
+          <div class="col-md-8">
+            <div class="info-card p-3 shadow-sm rounded-3">
+              <table class="table table-borderless mb-0 small">
+                <tbody>
+                  <tr>
+                    <th class="text-muted">National ID:</th>
+                    <td>{{ selectedAccount?.nationalId }}</td>
+                  </tr>
+                  <tr>
+                    <th class="text-muted">Phone:</th>
+                    <td>{{ selectedAccount?.phoneNumber }}</td>
+                  </tr>
+                  <tr>
+                    <th class="text-muted">Account Balance:</th>
+                    <td>
+                      <span class="badge bg-success-subtle text-success fw-bold px-3 py-2">
+                        {{ selectedAccount?.balance | currency:'KES ' }}
+                      </span>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+        </div>
+
+        <hr />
+
+        <!-- LOAN SUMMARY SECTION -->
+        <h6 class="fw-bold text-primary mb-3">
+          <i class="bi bi-briefcase-fill me-2"></i>Loan Summary
+        </h6>
+
+        <!-- Loan Table -->
+        <table *ngIf="loanDetails.length > 0" class="table modern-loan-table table-striped align-middle">
+          <thead class="table-light">
+            <tr>
+              <th>#</th>
+              <th>Loan Type</th>
+              <th>Amount</th>
+              <th>Status</th>
+              <th>Issued</th>
+            </tr>
+          </thead>
+
+          <tbody>
+            <tr *ngFor="let loan of loanDetails; index as i">
+              <td>{{ i + 1 }}</td>
+              <td>{{ loan.loanType }}</td>
+              <td>{{ loan.amount | currency:'KES ' }}</td>
+<td>
+ <span class="badge fw-bold px-3 py-2"
+  [ngClass]="{
+    'badge-approved': loan.status?.toLowerCase() === 'approved',
+    'badge-pending': loan.status?.toLowerCase() === 'pending',
+    'badge-rejected': loan.status?.toLowerCase() === 'rejected',
+    'badge-partial': loan.status?.toLowerCase() === 'partial',
+    'badge-repaid': loan.status?.toLowerCase() === 'repaid'
+  }">
+  {{ loan.status?.toUpperCase() }}
+</span>
+
+
+</td>
+
+
+
+
+
+              <td>{{ loan.issueDate | date }}</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <p *ngIf="loanDetails.length === 0" class="text-muted text-center">
+          No loan records found.
+        </p>
+
+      </div>
+    </div>
+  </div>
+</div>

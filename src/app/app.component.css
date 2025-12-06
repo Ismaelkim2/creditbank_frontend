@@ -1,0 +1,51 @@
+/* Sidebar default: hidden on small screens */
+.sidebar {
+  position: fixed;
+  top: 0;
+  left: -250px; /* hide by default */
+  width: 250px;
+  height: 100%;
+  background: #1f2937;
+  color: white;
+  transition: left 0.3s ease;
+  z-index: 1050;
+  overflow-y: auto;
+}
+
+/* Show sidebar when active (mobile) */
+.sidebar.active {
+  left: 0;
+}
+
+/* Overlay for mobile */
+.sidebar-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  z-index: 1040;
+  display: block;
+}
+
+/* Hide overlay by default */
+.sidebar-overlay.ng-star-inserted {
+  display: none;
+}
+
+/* Show overlay when sidebar is active */
+.sidebar.active + .sidebar-overlay {
+  display: block;
+}
+
+/* Push main content when sidebar is open (optional) */
+.main-content.mobile-sidebar-active {
+  margin-left: 250px; /* same width as sidebar */
+  transition: margin-left 0.3s ease;
+}
+
+/* Collapse button: rotate icon */
+.collapse-btn i {
+  transition: transform 0.3s ease;
+}

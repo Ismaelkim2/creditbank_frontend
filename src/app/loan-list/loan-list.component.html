@@ -1,0 +1,508 @@
+  <!-- Sidebar -->
+  <app-sidebar></app-sidebar>
+
+<div class="main-container">
+
+  <!-- Content Area -->
+  <div class="content-container p-4 mt-2">
+
+    <!-- Header: Filters + Search -->
+    <div class="d-flex flex-wrap justify-content-between align-items-center mb-4 gap-3">
+
+      <!-- Filter & Action Buttons -->
+      <div class="d-flex flex-wrap align-items-center gap-2 mb-1">
+        <button class="btn btn-secondary" (click)="filterLoans('all')">
+          All <span class="badge bg-light text-dark ms-1">{{ counts.all }}</span>
+        </button>
+        <button class="btn btn-warning" (click)="filterLoans('pending')">
+          Pending <span class="badge bg-light text-dark ms-1">{{ counts.pending }}</span>
+        </button>
+        <button class="btn btn-success" (click)="filterLoans('approved')">
+          Approved <span class="badge bg-light text-dark ms-1">{{ counts.approved }}</span>
+        </button>
+        <button class="btn btn-danger" (click)="filterLoans('rejected')">
+          Rejected <span class="badge bg-light text-dark ms-1">{{ counts.rejected }}</span>
+        </button>
+
+        <button *ngIf="userRole === 'ADMIN' || userRole === 'DATA_MANAGER'" 
+                class="btn btn-primary" 
+                (click)="openNewLoanModal()">
+          <i class="fa fa-add me-1"></i> Apply Now
+        </button>
+        <button class="btn btn-primary" (click)="accountsApplication()">Accounts Opening</button>
+      </div>
+
+    <!-- Search -->
+<div class="search-container">
+  <select class="form-select search-type-select" [(ngModel)]="searchType">
+    <option value="name">By Name</option>
+    <option value="id">By ID No</option>
+  </select>
+  <div class="search-input-wrapper">
+    <input type="text" class="form-control search-input" placeholder="Search loan..." [(ngModel)]="searchTerm" (ngModelChange)="searchLoans()">
+    <i class="fa position-absolute top-50 end-0 translate-middle-y me-3"
+       [class.fa-times]="searchTerm" 
+       [class.fa-search]="!searchTerm"
+       [class.text-danger]="searchTerm"
+       [class.text-muted]="!searchTerm"
+       (click)="onSearchIconClick()"></i>
+  </div>
+</div>
+</div>
+
+    <!-- Loan Decision Feedback Card -->
+    <div *ngIf="showEligibilityCard && !isEditMode"
+         class="card loan-feedback-card shadow-lg position-fixed top-50 start-50 translate-middle">
+      <div class="card-body text-center">
+        <h5 class="card-title d-flex align-items-center justify-content-center gap-2"
+            [ngClass]="isEligible ? 'text-success' : 'text-danger'">
+          <i class="fas" [ngClass]="isEligible ? 'fa-check-circle' : 'fa-exclamation-circle'"></i>
+          Loan {{ isEligible ? 'Approved' : 'Rejected' }}
+        </h5>
+
+        <p class="card-text">
+          {{ isEligible ? 'Dear' : 'Sorry' }} <strong>{{ loanForm.get('fullName')?.value }}</strong>,
+          {{ isEligible ? 'you are eligible for the requested loan amount' : 'you are not eligible for this loan' }}
+          of <strong>Ksh {{ loanForm.get('amount')?.value | number:'1.2-2' }}</strong>.
+        </p>
+
+        <p class="card-text text-muted" *ngIf="loanDecision?.recommendedAmount">
+          Your maximum eligible amount is:
+          <strong>Ksh {{ loanDecision.recommendedAmount | number:'1.2-2' }}</strong>
+        </p>
+
+        <p class="card-text text-info">{{ loanDecisionMessage }}</p>
+        <button class="btn btn-outline-primary" (click)="handleEligibilityDismiss()">OK</button>
+      </div>
+    </div>
+
+
+
+
+<!-- New Loan Application Modal -->
+<div class="modal fade mt-5" id="newLoanModal" tabindex="-1" aria-labelledby="newLoanModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
+    <div class="modal-content modal-glass">
+
+      <!-- Modal Header -->
+      <div class="modal-header bg-primary text-white rounded-top">
+        <h5 class="modal-title" id="newLoanModalLabel">
+          <i class="fas fa-file-signature me-2"></i>New Loan Application
+        </h5>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+
+      <!-- Modal Body -->
+      <div class="modal-body p-4">
+
+        <!-- Notifications -->
+        <div *ngIf="hasActiveLoanCardVisible" class="alert alert-warning">
+          <strong>Active Loan:</strong> {{ activeLoanMessage }}
+        </div>
+        <div *ngIf="showEligibilityCard" class="alert alert-info">
+          <strong>Loan Assessment:</strong> {{ loanDecisionMessage }}
+        </div>
+        <div *ngIf="submitSuccess" class="alert alert-success">{{ submitSuccess }}</div>
+        <div *ngIf="submitError" class="alert alert-danger">{{ submitError }}</div>
+
+        <!-- Loan Form -->
+        <form [formGroup]="loanForm" (ngSubmit)="submitLoan()">
+          <div class="row g-3">
+
+ <div class="col-md-6">
+              <label class="form-label">National ID</label>
+              <input type="text" class="form-control" formControlName="nationalId" (blur)="onNationalIdInput()">
+            </div>
+
+            <div class="col-md-6">
+              <label class="form-label">Full Name</label>
+              <input type="text" class="form-control" formControlName="fullName">
+            </div>
+
+            <div class="col-md-6">
+              <label class="form-label">Phone Number</label>
+              <input type="text" class="form-control" formControlName="phoneNumber">
+            </div>
+
+            <div class="col-md-6">
+              <label class="form-label">Location</label>
+              <input type="text" class="form-control" formControlName="location">
+            </div>
+
+            <div class="col-md-6">
+              <label class="form-label">Monthly Income (Ksh)</label>
+              <input type="number" class="form-control" formControlName="income">
+            </div>
+
+            <div class="col-md-6">
+              <label class="form-label">Monthly Expenses (Ksh)</label>
+              <input type="number" class="form-control" formControlName="expenses">
+            </div>
+
+            <div class="col-md-6">
+              <label class="form-label">Requested Amount (Ksh)</label>
+              <input type="number" class="form-control" formControlName="amount">
+            </div>
+
+            <div class="col-md-6">
+              <label class="form-label">Repayment Duration</label>
+              <select class="form-select" formControlName="duration">
+                <option value="" disabled>Select duration</option>
+                <option>2 weeks</option>
+                <option>1 month</option>
+                <option>2 months</option>
+                <option>3 months</option>
+              </select>
+            </div>
+
+            <div class="col-md-6">
+              <label class="form-label">Application Date</label>
+              <input type="date" class="form-control" formControlName="applicationDate">
+            </div>
+
+            <div class="col-md-6">
+              <label class="form-label">Upload Photo</label>
+              <input type="file" accept="image/*" class="form-control" (change)="onImageSelected($event)">
+            </div>
+          </div>
+
+          <!-- Buttons -->
+          <div class="d-flex justify-content-end gap-2 mt-4">
+            <button type="submit" class="btn btn-success" [disabled]="loanForm.invalid || isSubmitting">
+              Submit
+            </button>
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+              Cancel
+            </button>
+          </div>
+        </form>
+
+      </div>
+    </div>
+  </div>
+</div>
+
+
+    <!-- Loading Spinner -->
+    <div *ngIf="isLoading" class="text-center my-5">
+      <div class="spinner-border text-primary" role="status" style="width: 3rem; height: 3rem;">
+        <span class="visually-hidden">Loading loans...</span>
+      </div>
+      <p class="mt-3 text-muted">Fetching loan data, please wait...</p>
+    </div>
+
+    <!-- Loan Table -->
+    <div *ngIf="!isLoading" class="table-responsive shadow-sm rounded-3 bg-white mt-4">
+      <table class="table table-hover align-middle mb-0">
+        <thead class="table-light">
+          <tr>
+            <th>Applicant</th>
+            <th>ID No.</th>
+            <th>Amount</th>
+            <th>Applied On</th>
+            <th>Balance</th>
+            <th>Due Date</th>
+            <th>Loan Status</th>
+            <th class="text-end">Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let loan of loans">
+            <td class="d-flex align-items-center gap-2">
+              <ng-container *ngIf="loan.userImageUrl; else defaultIcon">
+                <img [src]="'http://localhost:8080/' + loan.userImageUrl" alt="User Image" class="rounded-circle" width="40" height="40"/>
+              </ng-container>
+              <ng-template #defaultIcon>
+                <div class="bg-secondary text-white rounded-circle d-flex justify-content-center align-items-center" style="width: 40px; height: 40px;">
+                  <i class="fa fa-user"></i>
+                </div>
+              </ng-template>
+              {{ loan.applicantName }}
+            </td>
+            <td>{{ loan.idNo }}</td>
+            <td>{{ loan.amount | currency:'KES':'symbol':'1.2-2' }}</td>
+            <td>{{ loan.applicationDate | date:'mediumDate' }}</td>
+            <td>{{ loan.totalRepayableAmount | currency:'KES':'symbol' }}</td>
+            <td>{{ loan.dueDate | date:'mediumDate' }}</td>
+            <td>
+              <span class="badge" 
+                    [ngClass]="{
+                      'bg-success': loan.status?.toLowerCase() === 'approved',
+                      'bg-warning text-dark': loan.status?.toLowerCase() === 'pending',
+                      'bg-info text-success': loan.status?.toLowerCase() === 'repaid',
+                      'bg-danger': loan.status?.toLowerCase() === 'rejected',
+                      'badge-partial': loan.status?.toLowerCase() === 'partial'
+                    }">{{ loan.status | titlecase }}</span>
+            </td>
+            <td class="text-end d-flex justify-content-end gap-2">
+              <button class="btn btn-sm btn-outline-primary" (click)="viewCustomerDetails(loan)" title="View Details">
+                <i class="fa fa-eye"></i>
+              </button>
+              <button *ngIf="userRole==='ADMIN' && loan.status?.toLowerCase()!=='pending'" 
+                      class="btn btn-sm btn-outline-warning" 
+                      (click)="editLoan(loan)" title="Edit Details">
+                <i class="fa fa-pen"></i>
+              </button>
+              <button *ngIf="userRole==='ADMIN'" 
+                      class="btn btn-sm btn-outline-danger" 
+                      (click)="deleteLoan(loan.id!)" title="Delete Loan">
+                <i class="fa fa-trash"></i>
+              </button>
+              <button *ngIf="userRole==='ADMIN' && loan.status?.toLowerCase()==='pending'" 
+                      class="btn btn-sm btn-outline-success" 
+                      (click)="approveLoan(loan.id!)" title="Approve Loan">
+                <i class="fa fa-check-circle"></i>
+              </button>
+              <button *ngIf="userRole==='ADMIN' && loan.status?.toLowerCase()==='pending'" 
+                      class="btn btn-sm btn-outline-danger" 
+                      (click)="rejectLoan(loan.id!)" title="Reject Loan">
+                <i class="fa fa-times-circle"></i>
+              </button>
+            </td>
+          </tr>
+
+            <!-- EMPTY STATE MESSAGE -->
+  <tr *ngIf="loans.length === 0">
+    <td colspan="8" class="text-center py-5">
+      <div class="d-flex flex-column align-items-center text-muted">
+        <i class="fa fa-folder-open fa-3x mb-3" style="opacity: 0.6;"></i>
+        <h6 class="fw-semibold">No Records Found</h6>
+        <p class="mb-0">Try adjusting your filters or search criteria.</p>
+      </div>
+    </td>
+  </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<!-- Customer Details Modal -->
+<div class="modal fade mt-5" id="customerDetailsModal" tabindex="-1" aria-labelledby="customerDetailsModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
+    <div class="modal-content modal-glass">
+
+      <!-- Modal Header -->
+      <div class="modal-header bg-primary text-white rounded-top d-flex justify-content-between align-items-center">
+        <h5 class="modal-title" id="customerDetailsModalLabel">
+          <i class="fas fa-user-circle me-2"></i>Customer Details
+        </h5>
+
+        <div class="d-flex align-items-center gap-2">
+          <!-- Send Reminder Button -->
+          <button *ngIf="selectedLoan && userRole==='ADMIN' && selectedLoan.status?.toLowerCase() !== 'repaid'"
+                  class="btn btn-sm btn-outline-light"
+                  (click)="sendReminder(selectedLoan.id!)"
+                  title="Send Reminder">
+            <i class="fa fa-bell me-1"></i> Send Reminder
+          </button>
+
+          <!-- Close Button -->
+          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+      </div>
+
+      <!-- Modal Body -->
+      <div class="modal-body p-4">
+
+  <!-- Reminder Feedback -->
+  <div *ngIf="submitSuccess" class="alert alert-success py-2 text-center">
+    <i class="fas fa-check-circle me-1"></i>{{ submitSuccess }}
+  </div>
+  <div *ngIf="submitError" class="alert alert-danger py-2 text-center">
+    <i class="fas fa-exclamation-triangle me-1"></i>{{ submitError }}
+  </div>
+
+
+<button
+  *ngIf="selectedLoan && 
+         (selectedLoan.status?.toLowerCase() === 'approved' ||
+          selectedLoan.status?.toLowerCase() === 'partial') &&
+         (selectedLoan.dueAmount ?? 0) > 0"
+  class="btn btn-success"
+  (click)="clearLoan(selectedLoan.id)"
+>
+  <i class="fa fa-money-bill me-1"></i>
+  Repay Loan
+</button>
+
+
+
+
+
+        <div class="text-center mb-4">
+          <img *ngIf="selectedLoan?.userImageUrl" [src]="'http://localhost:8080/' + selectedLoan?.userImageUrl" 
+               class="rounded-circle shadow-sm" width="150" alt="User Image">
+        </div>
+
+        <div class="row g-3 mb-3">
+          <div class="col-md-6"><strong>Name:</strong> {{ selectedLoan?.applicantName }}</div>
+          <div class="col-md-6"><strong>ID Number:</strong> {{ selectedLoan?.idNo }}</div>
+          <div class="col-md-6"><strong>Loan Applied:</strong> {{ selectedLoan?.amount | currency:'KES' }}</div>
+          <div class="col-md-6"><strong>Loan Balance:</strong> {{ selectedLoan?.totalRepayableAmount | currency:'KES' }}</div>
+          <div class="col-md-6"><strong>Status:</strong> 
+            <span class="badge bg-info">{{ selectedLoan?.status | titlecase }}</span>
+          </div>
+          <div class="col-md-6"><strong>Duration:</strong> {{ selectedLoan?.duration }}</div>
+        </div>
+
+        <div class="mb-4">
+          <h6 class="fw-semibold">Repayment Progress</h6>
+          <div class="progress rounded-pill shadow-sm">
+           <div class="progress-bar bg-success" role="progressbar" 
+     [style.width.%]="calculateRepaymentPercentage(selectedLoan)"
+     [attr.aria-valuenow]="calculateRepaymentPercentage(selectedLoan)" 
+     aria-valuemin="0" aria-valuemax="100">
+  {{ calculateRepaymentPercentage(selectedLoan) }}%
+</div>
+
+          </div>
+ <small class="text-muted d-block mt-1">
+  Paid: {{ ((selectedLoan?.totalRepayableAmount ?? 0) - (selectedLoan?.dueAmount ?? 0)) | currency:'KES' }} 
+  / Total: {{ selectedLoan?.totalRepayableAmount ?? 0 | currency:'KES' }}
+</small>
+
+
+
+
+        </div>
+
+        <div *ngIf="selectedLoan">
+ <strong>Total Paid:</strong>: {{ ((selectedLoan.totalRepayableAmount ?? 0) - (selectedLoan.dueAmount ?? 0)) | currency:'KES' }} 
+          <p><strong>Remaining Balance:</strong> {{ selectedLoan.dueAmount | number:'1.2-2' }}</p>
+        </div>
+
+        <div>
+          <h6 class="fw-semibold">Repayment History</h6>
+          <table class="table table-sm table-hover shadow-sm rounded-3">
+            <thead class="table-light">
+              <tr>
+                <th>Date</th>
+                <th>Amount Paid</th>
+                <th>Method</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let repayment of selectedLoan?.['repayments']">
+                <td>{{ repayment.date | date:'mediumDate' }}</td>
+                <td>{{ repayment.amount | currency:'KES' }}</td>
+                <td>{{ repayment.method }}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Modal Footer -->
+      <div class="modal-footer">
+        <button type="button" class="btn btn-outline-primary" data-bs-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
+
+<!-- Edit Loan Modal -->
+<div class="modal fade mt-5" id="editLoanModal" tabindex="-1" aria-labelledby="editLoanModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
+    <div class="modal-content modal-glass">
+      <div class="modal-header bg-warning text-dark rounded-top">
+        <h5 class="modal-title" id="editLoanModalLabel">
+          <i class="fas fa-edit me-2"></i>{{ isEditMode ? 'Edit Loan Application' : 'New Loan Application' }}
+        </h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" (click)="cancelEdit()"></button>
+      </div>
+
+      <div class="modal-body p-4">
+
+
+<div *ngIf="submitSuccess" class="alert alert-success py-1 mt-2">
+  <i class="fas fa-check-circle me-1"></i>{{ submitSuccess }}
+</div>
+<div *ngIf="submitError" class="alert alert-danger py-1 mt-2">
+  <i class="fas fa-exclamation-triangle me-1"></i>{{ submitError }}
+</div>
+
+
+        <form [formGroup]="loanForm" (ngSubmit)="submitLoan()">
+          <div class="row g-3">
+
+  
+
+            <div class="col-12 text-center mb-3" *ngIf="imageSrc">
+              <img [src]="imageSrc" class="rounded-circle shadow-sm" width="150"/>
+            </div>
+
+            <div class="col-md-6">
+              <label class="form-label">Full Name</label>
+              <input type="text" class="form-control shadow-sm" formControlName="fullName" />
+            </div>
+
+            <div class="col-md-6">
+              <label class="form-label">National ID</label>
+              <input type="text" class="form-control shadow-sm" formControlName="nationalId" [readonly]="isEditMode"/>
+            </div>
+
+            <div class="col-md-6">
+              <label class="form-label">Phone Number</label>
+              <input type="text" class="form-control shadow-sm" formControlName="phoneNumber" />
+            </div>
+
+            <div class="col-md-6">
+              <label class="form-label">Location</label>
+              <input type="text" class="form-control shadow-sm" formControlName="location" />
+            </div>
+
+            <div class="col-md-6">
+              <label class="form-label">Monthly Income (Ksh)</label>
+              <input type="number" class="form-control shadow-sm" formControlName="income" />
+            </div>
+
+            <div class="col-md-6">
+              <label class="form-label">Monthly Expenses (Ksh)</label>
+              <input type="number" class="form-control shadow-sm" formControlName="expenses" />
+            </div>
+
+            <div class="col-md-6">
+              <label class="form-label">Requested Amount (Ksh)</label>
+              <input type="number" class="form-control shadow-sm" formControlName="amount" />
+            </div>
+
+            <div class="col-md-6">
+              <label class="form-label">Repayment Duration</label>
+              <select class="form-select shadow-sm" formControlName="duration">
+                <option value="" disabled>Select duration</option>
+                <option>2 weeks</option>
+                <option>1 month</option>
+                <option>2 months</option>
+                <option>3 months</option>
+              </select>
+            </div>
+
+            <div class="col-md-6">
+              <label class="form-label">Application Date</label>
+              <input type="date" class="form-control shadow-sm" formControlName="applicationDate" />
+            </div>
+
+            <div class="col-md-6">
+              <label class="form-label">Upload Photo</label>
+              <input type="file" accept="image/*" class="form-control shadow-sm" (change)="onImageSelected($event)" />
+            </div>
+          </div>
+
+          <div class="d-flex justify-content-end mt-4 gap-2">
+            <button type="submit" class="btn btn-success" [disabled]="loanForm.invalid || isSubmitting">
+              <i class="fas fa-check-circle me-1"></i>{{ isEditMode ? 'Update' : 'Submit' }}
+            </button>
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" (click)="cancelEdit()">
+              <i class="fas fa-times-circle me-1"></i> Cancel
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+

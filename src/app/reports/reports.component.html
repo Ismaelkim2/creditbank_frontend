@@ -1,0 +1,103 @@
+<div class="main-container">
+  <!-- Sidebar -->
+  <app-sidebar></app-sidebar>
+
+  <!-- Content Area -->
+  <div class="content-area mt-5">
+    <!-- Dashboard Header -->
+    <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap">
+      <h2 class="mb-0">
+        <i class="fas fa-chart-line text-primary me-2"></i> Financial Reports
+      </h2>
+      <div class="d-flex gap-2 flex-wrap">
+        <button routerLink="/repayment-form" class="btn btn-outline-primary shadow-sm">
+          <i class="fas fa-money-bill-wave me-1"></i> Repay
+        </button>
+        <button class="btn btn-outline-success shadow-sm" (click)="exportToExcel()">
+          <i class="fas fa-file-excel me-1"></i> Export
+        </button>
+      </div>
+    </div>
+
+    <!-- KPI Cards -->
+    <div class="row g-3 mb-4">
+      <div class="col-md-3 col-sm-6" *ngFor="let kpi of kpis">
+        <div class="card shadow-sm rounded-3 p-3 kpi-card"
+             [ngClass]="{'border-danger': kpi.label==='Overdue Loans',
+                         'border-success': kpi.label==='Repayments',
+                         'border-primary': kpi.label==='Revenue',
+                         'border-warning': kpi.label==='Total Loans'}">
+          <div class="d-flex justify-content-between align-items-center">
+            <div>
+              <h6 class="text-muted mb-1">{{ kpi.label }}</h6>
+              <h3 class="fw-bold mb-0">KSh {{ kpi.value | number:'1.0-0' }}</h3>
+            </div>
+            <i [class]="kpi.icon + ' fa-2x text-primary'"></i>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Filters -->
+    <div class="report-filters mb-4 p-3 shadow-sm rounded-3 bg-white">
+      <div class="row align-items-end g-3">
+        <div class="col-md-3 col-sm-6">
+          <label class="form-label fw-semibold">Report Type</label>
+          <select class="form-select shadow-sm" [(ngModel)]="selectedReport" (change)="fetchReport()">
+            <option value="loanApplications">Loan Applications</option>
+            <option value="overdues">Overdue Loans</option>
+            <option value="repayments">Loan Repayments</option>
+            <option value="revenue">Revenue</option>
+          </select>
+        </div>
+        <div class="col-md-3 col-sm-6">
+          <label class="form-label fw-semibold">From</label>
+          <input type="date" class="form-control shadow-sm" [(ngModel)]="startDate" />
+        </div>
+        <div class="col-md-3 col-sm-6">
+          <label class="form-label fw-semibold">To</label>
+          <input type="date" class="form-control shadow-sm" [(ngModel)]="endDate" />
+        </div>
+        <div class="col-md-3 col-sm-6 d-flex gap-2">
+          <button class="btn btn-primary w-100 shadow-sm" (click)="fetchReport()">
+            <i class="fas fa-filter me-1"></i> Filter
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Loading Spinner -->
+    <div *ngIf="isLoading" class="text-center my-5">
+      <div class="spinner-border text-primary" role="status">
+        <span class="visually-hidden">Loading...</span>
+      </div>
+    </div>
+
+    <!-- No Data -->
+    <div *ngIf="!isLoading && !reportData.length" class="text-center text-muted mt-5">
+      <i class="fas fa-info-circle me-2"></i> No data available for the selected report.
+    </div>
+
+    <!-- Table -->
+   <div *ngIf="!isLoading && reportData.length" class="table-responsive shadow-sm rounded-3">
+  <table class="table table-striped table-hover table-bordered mb-0 align-middle">
+    <thead class="table-light sticky-top">
+      <tr>
+        <th *ngFor="let entry of reportData[0] | keyvalue">{{ entry.key | titlecase }}</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let row of reportData">
+        <td *ngFor="let entry of row | keyvalue">
+          <ng-container *ngIf="['totalRepayableAmount','amount','overdueAmount','repaymentAmount','revenue'].includes(entry.key); else defaultCell">
+            {{ toNumber(entry.value) | currency:'KES':'symbol':'1.2-2' }}
+          </ng-container>
+          <ng-template #defaultCell>{{ entry.value }}</ng-template>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+  </div>
+</div>

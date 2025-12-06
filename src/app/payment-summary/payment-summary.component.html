@@ -1,0 +1,325 @@
+<app-applicant-sidebar></app-applicant-sidebar>
+
+<main class="content">
+  <div class="container-fluid mt-4">
+    <div class="row g-4 align-items-start">
+      <!-- ================== LEFT COLUMN: User Info + Quick Actions ================== -->
+      <div class="col-lg-8">
+        <!-- 🧾 User Information & Accounts -->
+        <div class="card border-0 shadow-sm rounded-4 mb-4">
+          <div class="card-body">
+            <div
+              class="d-flex justify-content-between align-items-center border-bottom pb-2 mb-3"
+            >
+              <h5 class="card-title text-primary mb-0">
+                <i class="bi bi-person-badge me-2"></i> User Information & Accounts
+              </h5>
+              <button
+                class="btn btn-outline-primary btn-sm rounded-3 d-flex align-items-center gap-1"
+                (click)="loadAccounts()"
+              >
+                <i class="bi bi-arrow-clockwise"></i>
+                <span>Refresh</span>
+              </button>
+            </div>
+
+            <div *ngIf="loadingAccounts" class="text-center py-4">
+              <div class="spinner-border text-primary mb-2"></div>
+              <p class="text-muted">Fetching your account details...</p>
+            </div>
+
+            <div *ngIf="!loadingAccounts && userAccounts.length > 0; else noAccounts">
+              <div class="d-flex flex-wrap gap-3 justify-content-start">
+                <div
+                  class="account-card p-3 rounded-4 shadow-sm bg-light flex-grow-1"
+                  style="min-width: 280px; max-width: 330px;"
+                  *ngFor="let acc of userAccounts"
+                  [class.active-account]="selectedAccount?.accountNumber === acc.accountNumber"
+                  (click)="onAccountSelect(acc)"
+                >
+                  <div
+                    class="d-flex justify-content-between align-items-center mb-3"
+                  >
+                    <div>
+                      <h6 class="fw-semibold text-dark mb-1">
+                        A/C No: {{ acc.accountNumber }}
+                      </h6>
+                      <p class="mb-0 text-muted small">Available Balance</p>
+                    </div>
+                    <h5 class="text-success fw-bold mb-0">
+                      {{ acc.balance | currency: 'KES' }}
+                    </h5>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <ng-template #noAccounts>
+              <div class="text-center text-muted fst-italic mt-3">
+                No accounts linked to your profile yet.
+              </div>
+            </ng-template>
+          </div>
+        </div>
+
+        <!-- ➕ Add Payment -->
+        <div class="d-flex justify-content-start mb-3">
+          <button class="btn btn-primary btn-sm rounded-3 d-flex align-items-center gap-1">
+            <i class="bi bi-plus-circle"></i> Add Payment
+          </button>
+        </div>
+
+        <!-- ⚡ Quick Actions -->
+        <div class="card border-0 shadow-sm rounded-4 mb-4">
+          <div class="card-body">
+            <h5 class="card-title text-primary mb-3">
+              <i class="bi bi-lightning-charge me-2"></i> Quick Actions
+            </h5>
+            <div class="d-flex flex-wrap gap-2">
+              <button class="btn btn-outline-dark" (click)="openTransfer()">
+                <i class="bi bi-arrow-left-right me-1"></i> Send
+              </button>
+              <button class="btn btn-outline-warning" (click)="openBorrow()">
+                <i class="bi bi-hand-thumbs-up me-1"></i> Borrow
+              </button>
+              <button class="btn btn-outline-primary" (click)="openPayLoan()">
+                <i class="bi bi-credit-card me-1"></i> Pay
+              </button>
+              <button class="btn btn-outline-success" (click)="openDeposit()">
+                <i class="bi bi-bank me-1"></i> Deposit
+              </button>
+              <button class="btn btn-outline-danger" (click)="openWithdraw()">
+                <i class="bi bi-arrow-down-circle me-1"></i> Withdraw
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ================== RIGHT COLUMN: Payment Options ================== -->
+      <div class="col-lg-4">
+        <div class="card border-0 shadow-sm rounded-4 h-100">
+          <div class="card-body">
+            <h5 class="card-title text-primary border-bottom pb-2 mb-3">
+              <i class="bi bi-credit-card-2-front me-2"></i> Payment Options
+            </h5>
+            <div class="list-group list-group-flush">
+              <button
+                class="list-group-item list-group-item-action d-flex align-items-center gap-3"
+                (click)="onPay('mpesa')"
+              >
+                <i class="bi bi-phone-fill text-success fs-5"></i>
+                <div>
+                  <h6 class="mb-0 fw-semibold">M-Pesa Payment</h6>
+                  <small class="text-muted">Send instantly to mobile numbers</small>
+                </div>
+              </button>
+
+              <button
+                class="list-group-item list-group-item-action d-flex align-items-center gap-3"
+                (click)="onPay('bank')"
+              >
+                <i class="bi bi-bank2 text-primary fs-5"></i>
+                <div>
+                  <h6 class="mb-0 fw-semibold">Transfer to Other Banks</h6>
+                  <small class="text-muted">Send across local banks</small>
+                </div>
+              </button>
+
+              <button
+                class="list-group-item list-group-item-action d-flex align-items-center gap-3"
+                (click)="onPay('swift')"
+              >
+                <i class="bi bi-globe text-info fs-5"></i>
+                <div>
+                  <h6 class="mb-0 fw-semibold">SWIFT Transfer</h6>
+                  <small class="text-muted">Make international transfers</small>
+                </div>
+              </button>
+
+              <button
+                class="list-group-item list-group-item-action d-flex align-items-center gap-3"
+                (click)="onPay('bill')"
+              >
+                <i class="bi bi-lightning-fill text-warning fs-5"></i>
+                <div>
+                  <h6 class="mb-0 fw-semibold">Utility / Bill Payment</h6>
+                  <small class="text-muted">Pay electricity, water, TV, etc.</small>
+                </div>
+              </button>
+
+              <button
+                class="list-group-item list-group-item-action d-flex align-items-center gap-3"
+                (click)="onPay('loan')"
+              >
+                <i class="bi bi-cash-stack text-secondary fs-5"></i>
+                <div>
+                  <h6 class="mb-0 fw-semibold">Loan Repayment</h6>
+                  <small class="text-muted">Repay your outstanding loans</small>
+                </div>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ⚡ Quick Payment -->
+    <div class="card border-0 shadow-sm rounded-4 mb-4">
+      <div class="card-body">
+        <h5 class="card-title text-primary mb-3">
+          <i class="bi bi-lightning-charge me-2"></i> Quick Payment
+        </h5>
+
+        <div class="row g-3 align-items-end">
+          <div class="col-md-4">
+            <label class="form-label">From Account</label>
+            <select
+              class="form-select form-select-lg"
+              [(ngModel)]="selectedAccount"
+              (ngModelChange)="onAccountSelect(selectedAccount!)"
+            >
+              <option [ngValue]="null" disabled selected>Select an account</option>
+              <option *ngFor="let acc of userAccounts" [ngValue]="acc">
+                {{ acc.accountNumber }} — {{ acc.balance | currency:'KES' }}
+              </option>
+            </select>
+          </div>
+
+          <div class="col-md-4">
+            <label class="form-label">Pay To</label>
+            <select class="form-select form-select-lg">
+              <option>Loan Account</option>
+              <option>M-Pesa Number</option>
+              <option>Other Bank</option>
+              <option>Utility / Bill</option>
+            </select>
+          </div>
+
+          <div class="col-md-3">
+            <label class="form-label">Amount</label>
+            <input
+              type="number"
+              class="form-control form-control-lg"
+              placeholder="Enter amount"
+            />
+          </div>
+
+          <div class="col-md-1 d-grid">
+            <button class="btn btn-primary btn-lg" (click)="onSubmitPayment()">
+              <i class="bi bi-arrow-right-circle"></i>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 🕓 Recent Payments -->
+    <div class="card border-0 shadow-sm rounded-4 mb-5">
+      <div class="card-body">
+        <div class="d-flex justify-content-between align-items-center mb-3">
+          <h5 class="text-primary m-0">
+            <i class="bi bi-clock-history me-2"></i> Recent Transactions
+          </h5>
+          <input
+            type="text"
+            class="form-control form-control-sm w-auto"
+            placeholder="Search transactions..."
+          />
+        </div>
+
+        <div class="table-responsive">
+          <table class="table align-middle table-hover">
+            <thead class="table-primary">
+              <tr>
+                <th>Date</th>
+                <th>Reference</th>
+                <th>Beneficiary</th>
+                <th class="text-end">Amount</th>
+                <th>Status</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let p of recentPayments">
+                <td>{{ p.date | date:'mediumDate' }}</td>
+                <td>{{ p.reference }}</td>
+                <td>{{ p.beneficiary }}</td>
+                <td class="text-end fw-bold">{{ p.amount | currency:'KES' }}</td>
+                <td>
+                  <span
+                    class="badge"
+                    [ngClass]="{
+                      'bg-success': p.status === 'Successful',
+                      'bg-warning text-dark': p.status === 'Pending',
+                      'bg-danger': p.status === 'Failed'
+                    }"
+                  >
+                    {{ p.status }}
+                  </span>
+                </td>
+              </tr>
+              <tr *ngIf="!recentPayments.length">
+                <td colspan="5" class="text-center text-muted py-3">No recent payments</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+
+  <!-- 💰 Loan Repayment Modal -->
+<ng-template #loanModal>
+  <div class="modal-header bg-primary text-white">
+    <h5 class="modal-title">
+      <i class="bi bi-cash-stack me-2"></i> Confirm Loan Repayment
+    </h5>
+    <button type="button" class="btn-close btn-close-white" aria-label="Close" (click)="modalService.dismissAll()"></button>
+  </div>
+
+  <div class="modal-body">
+    <div *ngIf="selectedLoan">
+      <div class="row mb-3">
+        <div class="col-md-6">
+          <h6 class="text-muted mb-1">Loan ID</h6>
+          <p class="fw-semibold text-dark">{{ selectedLoan.id }}</p>
+        </div>
+        <div class="col-md-6">
+          <h6 class="text-muted mb-1">Product Type</h6>
+          <p class="fw-semibold text-dark">{{ selectedLoan.loanType || 'Personal Loan' }}</p>
+        </div>
+      </div>
+
+      <div class="row mb-3">
+        <div class="col-md-6">
+          <h6 class="text-muted mb-1">Total Amount Due</h6>
+          <p class="fw-bold text-danger">{{ selectedLoan.dueAmount | currency:'KES' }}</p>
+        </div>
+        <div class="col-md-6">
+          <h6 class="text-muted mb-1">Outstanding Balance</h6>
+          <p class="fw-bold text-success">{{ selectedLoan.remainingDue || 0 | currency:'KES' }}</p>
+        </div>
+      </div>
+
+      <div class="alert alert-info d-flex align-items-center gap-2">
+        <i class="bi bi-info-circle"></i>
+        You are about to repay the above loan using your linked account.
+      </div>
+
+      <div *ngIf="successMessage" class="alert alert-success text-center fw-semibold mt-3">
+        {{ successMessage }}
+      </div>
+
+      <div *ngIf="errorMessage" class="alert alert-danger text-center fw-semibold mt-3">
+        {{ errorMessage }}
+      </div>
+    </div>
+  </div>
+
+  <div class="modal-footer">
+    <button class="btn btn-outline-secondary" (click)="modalService.dismissAll()">Cancel</button>
+    <button class="btn btn-primary" (click)="confirmRepayment()" [disabled]="!selectedLoan">Confirm Repayment</button>
+  </div>
+</ng-template>
+</main>

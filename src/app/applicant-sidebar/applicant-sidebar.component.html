@@ -1,0 +1,205 @@
+<link
+  rel="stylesheet"
+  href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css"
+/>
+
+<header class="topbar shadow-sm mb-4">
+  <div class="container-fluid d-flex align-items-center justify-content-between py-2 px-3">
+    <!-- Left side: brand + toggle -->
+    <div class="d-flex align-items-center gap-3">
+      <button
+        class="btn btn-link p-0 d-md-none"
+        (click)="sidebarOpen = !sidebarOpen"
+        aria-label="Toggle menu"
+      >
+        <i class="bi bi-list fs-2"></i>
+      </button>
+      <h5 class="m-0 fw-semibold brand">
+        <i class="bi bi-bank2 me-2 text-primary"></i> CreditBank
+      </h5>
+    </div>
+
+    <!-- Right side: search, notifications, settings, profile -->
+    <div class="d-none d-md-flex align-items-center top-actions">
+      <div class="input-group input-group-sm searchbox me-3">
+        <span class="input-group-text bg-white border-end-0">
+          <i class="bi bi-search"></i>
+        </span>
+        <input
+          type="text"
+          class="form-control border-start-0"
+          placeholder="Search loans, transactions…"
+          (keyup.enter)="onSearch($any($event.target).value)"
+        />
+      </div>
+
+      <button
+        class="btn btn-light position-relative me-2"
+        (click)="toggleNotifications()"
+        aria-label="Notifications"
+      >
+        <i class="bi bi-bell"></i>
+        <span *ngIf="notifications.length" class="badge bg-danger notif-badge">
+          {{ notifications.length }}
+        </span>
+      </button>
+
+      <button class="btn btn-light me-2" (click)="openSettings()" aria-label="Settings">
+        <i class="bi bi-gear"></i>
+      </button>
+
+      <!-- User dropdown -->
+      <div class="dropdown">
+        <button
+          class="btn btn-outline-primary d-flex align-items-center gap-2 dropdown-toggle"
+          data-bs-toggle="dropdown"
+          aria-expanded="false"
+        >
+         <ng-container *ngIf="user?.profileImage; else defaultIcon">
+  <img
+    [src]="user.profileImage"
+    class="avatar-sm rounded-circle border"
+    alt="user"
+    width="40"
+    height="40"
+    (error)="user.profileImage = 'assets/default-user.png'"
+  />
+</ng-container>
+
+<ng-template #defaultIcon>
+  <i class="fa fa-user avatar-sm text-secondary rounded-circle border p-2"></i>
+</ng-template>
+
+          <span class="d-none d-lg-inline">{{ user.name || 'User' }}</span>
+        </button>
+        <ul class="dropdown-menu dropdown-menu-end shadow-sm">
+          <li>
+            <a class="nav-link" routerLink="/applicant/profile">
+  <i class="bi bi-person me-2"></i> Profile
+</a>
+
+          </li>
+          <li>
+            <button class="dropdown-item" (click)="openSettings()">
+              <i class="bi bi-sliders me-2"></i> Settings
+            </button>
+          </li>
+          <li><hr class="dropdown-divider" /></li>
+          <li>
+            <button class="dropdown-item text-danger" (click)="logout()">
+              <i class="bi bi-box-arrow-right me-2"></i> Sign out
+            </button>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- Notifications Panel -->
+  <div *ngIf="showNotifications" class="notification-panel shadow">
+    <div class="d-flex justify-content-between align-items-center mb-2">
+      <h6 class="m-0">Notifications</h6>
+      <button class="btn btn-sm btn-link text-muted" (click)="toggleNotifications()">
+        <i class="bi bi-x-lg"></i>
+      </button>
+    </div>
+    <div *ngIf="notifications.length; else noNotif">
+      <div class="list-group list-group-flush">
+        <div
+          class="list-group-item d-flex justify-content-between align-items-start"
+          *ngFor="let n of notifications"
+        >
+          <div class="me-3"><i class="bi bi-dot text-primary fs-4"></i></div>
+          <div class="flex-grow-1">
+            <div>{{ n.message }}</div>
+            <small class="text-muted">{{ n.date | date: 'short' }}</small>
+          </div>
+        </div>
+      </div>
+    </div>
+    <ng-template #noNotif>
+      <p class="text-muted mb-0 small">You’re all caught up 🎉</p>
+    </ng-template>
+  </div>
+</header>
+
+<!-- Sidebar -->
+<aside class="sidebar mt-1" [class.open]="sidebarOpen">
+  <nav class="nav flex-column" style="cursor: pointer;">
+    <a class="nav-link active" routerLink="/applicant-dashboard">
+      <i class="bi bi-speedometer2 me-2"></i> Overview
+    </a>
+    <a class="nav-link" (click)="goToLoans()">
+      <i class="bi bi-cash-coin me-2"></i>  Loans
+    </a>
+    <a class="nav-link" (click)="transferFunds()">
+      <i class="bi bi-arrow-left-right me-2"></i> Payments
+    </a>
+    <a class="nav-link" routerLink="/statement">
+      <i class="bi bi-filetype-pdf me-2"></i> Statements
+    </a>
+    <a class="nav-link" routerLink="/user-profile">
+      <i class="bi bi-person me-2"></i> Profile
+    </a>
+    <a class="nav-link" (click)="openSettings()">
+      <i class="bi bi-sliders me-2"></i> Settings
+    </a>
+  </nav>
+</aside>
+
+<!-- OFFCANVAS & MODALS -->
+<!-- Settings Offcanvas -->
+<div class="offcanvas offcanvas-end" tabindex="-1" id="settingsCanvas" aria-labelledby="settingsLabel">
+  <div class="offcanvas-header">
+    <h5 id="settingsLabel" class="mb-0"><i class="bi bi-sliders me-2"></i> Preferences</h5>
+    <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+  </div>
+  <div class="offcanvas-body">
+    <div class="form-check form-switch mb-3">
+      <input class="form-check-input" type="checkbox" id="darkMode" [(ngModel)]="preferences.darkMode" (change)="applyPreferences()" />
+      <label class="form-check-label" for="darkMode">Dark mode</label>
+    </div>
+    <div class="form-check form-switch mb-3">
+      <input class="form-check-input" type="checkbox" id="compactMode" [(ngModel)]="preferences.compactMode" (change)="applyPreferences()" />
+      <label class="form-check-label" for="compactMode">Compact spacing</label>
+    </div>
+    <div class="mb-3">
+      <label class="form-label">Currency</label>
+      <select class="form-select" [(ngModel)]="preferences.currency" (change)="applyPreferences()">
+        <option value="KES">KES</option>
+        <option value="USD">USD</option>
+      </select>
+    </div>
+    <button class="btn btn-primary w-100" (click)="savePreferences()" data-bs-dismiss="offcanvas">
+      <i class="bi bi-check2 me-1"></i> Save
+    </button>
+  </div>
+</div>
+
+<!-- Profile Modal -->
+<div class="modal fade" id="profileModal" tabindex="-1" aria-labelledby="profileLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <form class="modal-content" (ngSubmit)="saveProfile()">
+      <div class="modal-header">
+        <h5 class="modal-title" id="profileLabel"><i class="bi bi-person me-2"></i> Edit Profile</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <div class="text-center mb-3">
+          <img [src]="user.profileImage" class="avatar-lg" alt="avatar" />
+        </div>
+        <div class="mb-3">
+          <label class="form-label">Full Name</label>
+          <input class="form-control" [(ngModel)]="user.name" name="name" />
+        </div>
+        <div class="mb-3">
+          <label class="form-label">Email</label>
+          <input class="form-control" [(ngModel)]="user.email" name="email" />
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-primary"><i class="bi bi-save me-1"></i> Save Changes</button>
+      </div>
+    </form>
+  </div>
+</div>

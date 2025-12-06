@@ -1,0 +1,107 @@
+<div class="main-container">
+  <!-- Sidebar -->
+  <app-sidebar></app-sidebar>
+
+  <!-- Settings Content -->
+  <div class="settings-container settings-scrollable">
+    <h2 class="mb-2 text-primary fw-bold border-bottom pb-2 mt-5">System Settings</h2>
+
+    <!-- Settings Form -->
+    <form [formGroup]="settingsForm" (ngSubmit)="saveSettings()" class="shadow p-4 bg-white rounded-4 border">
+      <div class="row g-4">
+        <div class="col-md-6">
+          <label for="loanDuration" class="form-label fw-semibold">Loan Duration</label>
+          <select id="loanDuration" class="form-select" formControlName="durationInWeeks">
+            <option [value]="2">2 Weeks</option>
+            <option [value]="4">1 Month</option>
+            <option [value]="8">2 Months</option>
+            <option [value]="12">3 Months</option>
+          </select>
+        </div>
+
+        <div class="col-md-6">
+          <label for="interestRate" class="form-label fw-semibold">Interest Rate (%)</label>
+          <input type="number" id="interestRate" class="form-control" formControlName="interestRate" />
+        </div>
+
+        <div class="col-md-6">
+          <label for="penaltyRate" class="form-label fw-semibold">Penalty Rate (%)</label>
+          <input type="number" id="penaltyRate" class="form-control" formControlName="penaltyRate" />
+        </div>
+
+        <div class="col-md-6">
+          <label for="gracePeriodDays" class="form-label fw-semibold">Grace Period (Days)</label>
+          <input type="number" id="gracePeriodDays" class="form-control" formControlName="gracePeriodDays" />
+        </div>
+
+        <div class="col-md-6">
+          <label for="maxLoanAmount" class="form-label fw-semibold">Max Loan Amount</label>
+          <input type="number" id="maxLoanAmount" class="form-control" formControlName="maxLoanAmount" />
+        </div>
+
+        <div class="col-md-6 d-flex align-items-center pt-4">
+          <div class="form-check form-switch">
+            <input type="checkbox" class="form-check-input" id="autoApproval" formControlName="autoApproval" />
+            <label class="form-check-label ms-2" for="autoApproval">Auto Approval</label>
+          </div>
+        </div>
+      </div>
+
+      <div class="mt-4">
+        <button type="submit" class="btn btn-primary px-4">
+          {{ isEditMode ? 'Update Setting' : 'Save Setting' }}
+        </button>
+        <button *ngIf="isEditMode" type="button" (click)="cancelEdit()" class="btn btn-outline-secondary ms-2">
+          Cancel
+        </button>
+      </div>
+
+      <div class="mt-3">
+        <div *ngIf="successMessage" class="alert alert-success">{{ successMessage }}</div>
+        <div *ngIf="errorMessage" class="alert alert-danger">{{ errorMessage }}</div>
+      </div>
+    </form>
+
+    <!-- Existing Settings Table -->
+    <div *ngIf="loanSettings.length > 0" class="mt-5">
+      <h5 class="mb-3 text-secondary border-bottom pb-2">Existing Loan Settings</h5>
+      <div class="table-responsive">
+        <table class="table table-bordered table-hover align-middle text-center">
+          <thead class="table-light">
+            <tr>
+              <th>Loan Duration</th>
+              <th>Interest (%)</th>
+              <th>Penalty (%)</th>
+              <th>Grace Period (Days)</th>
+              <th>Max Loan</th>
+              <th>Auto-Approval</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let s of loanSettings">
+              <td>{{ getDurationLabel(s.durationInWeeks) }}</td>
+              <td>{{ s.interestRate }}</td>
+              <td>{{ s.penaltyRate }}</td>
+              <td>{{ s.gracePeriodDays }}</td>
+              <td>{{ s.maxLoanAmount | currency:'Kes' }}</td>
+              <td>
+                <span class="badge" [ngClass]="s.autoApproval ? 'bg-success' : 'bg-secondary'">
+                  {{ s.autoApproval ? 'Yes' : 'No' }}
+                </span>
+              </td>
+              <td>
+                <button class="btn btn-sm btn-outline-primary" (click)="editSetting(s)" style="border: none;">
+                  <i class="fa fa-pen-to-square"></i>
+                </button>
+                <button class="btn btn-sm btn-outline-danger " (click)="deleteSetting(s.id)" style="border: none;">
+                  <i class="fa fa-trash"></i>
+                </button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>

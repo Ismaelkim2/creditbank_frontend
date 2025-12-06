@@ -1,0 +1,146 @@
+<!-- Sidebar --> 
+<app-applicant-sidebar></app-applicant-sidebar>
+
+<!-- ======= Main Loan Container ======= -->
+<div class="loans-dashboard">
+  <div class="dashboard-header d-flex justify-content-between align-items-center">
+    <h4 class="fw-semibold text-primary mb-0">
+      <i class="bi bi-cash-coin me-2"></i> Your Loans History
+    </h4>
+
+    <button class="btn btn-outline-primary btn-sm shadow-sm" (click)="refreshLoans()">
+      <i class="bi bi-arrow-clockwise me-1"></i> Refresh
+    </button>
+  </div>
+
+  <!-- ======= Loan Summary Cards ======= -->
+<div *ngIf="!loading && loans.length" class="loan-summary mt-4">
+  <div class="row g-3">
+    <div class="col-md-3 col-sm-6">
+      <div class="summary-card total">
+        <i class="bi bi-collection fs-4"></i>
+        <div>
+          <h6>Total Loans</h6>
+          <h5>{{ totalLoans }}</h5>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-md-3 col-sm-6">
+      <div class="summary-card cleared">
+        <i class="bi bi-check-circle-fill fs-4"></i>
+        <div>
+          <h6>Cleared Loans</h6>
+          <h5>{{ clearedLoans }}</h5>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-md-3 col-sm-6">
+      <div class="summary-card active">
+        <i class="bi bi-arrow-repeat fs-4"></i>
+        <div>
+          <h6>Active Loans</h6>
+          <h5>{{ activeLoans }}</h5>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-md-3 col-sm-6">
+      <div class="summary-card due">
+        <i class="bi bi-wallet2 fs-4"></i>
+        <div>
+          <h6>Total Due Amount</h6>
+          <h5>Ksh {{ totalDue | number:'1.2-2' }}</h5>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+  <!-- ======= Loan Table Section ======= -->
+  <div class="card mt-4 shadow-sm border-0">
+    <div class="card-body">
+      <!-- Loading State -->
+      <div *ngIf="loading" class="loading-container text-center py-5">
+        <div class="spinner-border text-primary" role="status"></div>
+        <p class="mt-3 fw-medium text-secondary">Fetching your loan details...</p>
+      </div>
+
+      <!-- Error Message -->
+      <div *ngIf="errorMessage && !loading" class="alert alert-danger d-flex align-items-center">
+        <i class="bi bi-exclamation-triangle me-2"></i>
+        <span>{{ errorMessage }}</span>
+      </div>
+
+      <!-- Loans Table -->
+      <div *ngIf="!loading && loans.length">
+        <div class="table-responsive">
+          <table class="table table-hover align-middle loan-table">
+            <thead class="table-light border-bottom border-2 border-primary-subtle">
+              <tr>
+                <th>#</th>
+                <th>Type</th>
+                <th>Due Amount (Ksh.)</th>
+                <th>Due Date</th>
+                <th>Status</th>
+                <th>Action</th>
+              </tr>
+            </thead>
+
+            <tbody>
+              <tr *ngFor="let loan of loans; let i = index" class="loan-row">
+                <td class="fw-semibold text-secondary">{{ i + 1 }}</td>
+                <td>{{ loan.duration || 'Standard Loan' }}</td>
+                <td>
+                  <span
+                    [ngClass]="{
+                      'text-danger fw-bold': (loan.dueAmount ?? 0) > 0,
+                      'text-success fw-semibold': loan.dueAmount === 0
+                    }"
+                  >
+                    {{ loan.dueAmount ?? 0 | number: '1.2-2' }}
+                  </span>
+                </td>
+                <td>{{ loan.dueDate | date: 'mediumDate' }}</td>
+                <td>
+                  <span
+                    class="loan-status"
+                    [ngClass]="{
+                      'status-cleared': loan.dueAmount === 0,
+                      'status-pending': (loan.dueAmount ?? 0) > 0
+                    }"
+                  >
+                    <i
+                      [ngClass]="{
+                        'bi bi-check-circle-fill me-1': loan.dueAmount === 0,
+                        'bi bi-arrow-repeat me-1 spinner-icon': (loan.dueAmount ?? 0) > 0
+                      }"
+                    ></i>
+                    {{ loan.dueAmount === 0 ? 'Cleared' : 'Pending' }}
+                  </span>
+                </td>
+                <td>
+                  <button
+                    class="btn btn-sm btn-outline-primary px-3"
+                    [disabled]="loan.dueAmount === 0"
+                    (click)="payLoan(loan)"
+                  >
+                    <i class="bi bi-credit-card me-1"></i> Pay
+                  </button>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- No Loans Found -->
+      <div *ngIf="!loading && !loans.length && !errorMessage" class="text-center text-muted py-4">
+        <i class="bi bi-info-circle fs-3 d-block mb-2"></i>
+        No loans found under your ID number.
+      </div>
+    </div>
+  </div>
+</div>

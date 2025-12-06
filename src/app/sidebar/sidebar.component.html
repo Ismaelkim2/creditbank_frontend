@@ -1,0 +1,127 @@
+<!-- Top Nav (with Hamburger on mobile) -->
+<div class="top-nav d-flex align-items-center justify-content-between p-2 bg-dark">
+  <!-- Hamburger for small screens -->
+  <button class="btn btn-primary d-md-none" (click)="toggleSidebarMobile()">
+    <i class="fa fa-bars"></i>
+  </button>
+
+  <app-top-nav></app-top-nav>
+</div>
+
+<!-- Sidebar -->
+<div
+  class="sidebar d-flex flex-column shadow-sm"
+  [class.collapsed]="isCollapsed"
+  [class.active]="isMobileSidebarActive"
+>
+  <!-- Overlay (mobile only) -->
+  <div
+    class="sidebar-overlay"
+    *ngIf="isMobileSidebarActive"
+    (click)="toggleSidebarMobile()"
+  ></div>
+
+  <!-- Sidebar Header -->
+  <div class="sidebar-header d-flex align-items-center gap-2 py-3 px-3 border-bottom">
+    <i class="fa fa-university fa-lg text-primary"></i>
+    <div *ngIf="!isCollapsed">
+      <h5 class="mb-0 fw-bold text-light brand-name">Credit<span>Bank</span></h5>
+      <small class="tagline">Smart Banking System</small>
+    </div>
+  </div>
+
+  <!-- Navigation -->
+  <nav class="flex-grow-1 mt-3">
+    <ul class="nav flex-column">
+      <li class="nav-item" routerLinkActive="active">
+        <a class="nav-link d-flex align-items-center" routerLink="/dashboard">
+          <i class="fa fa-house me-3"></i>
+          <span class="link-text" *ngIf="!isCollapsed">Dashboard</span>
+        </a>
+      </li>
+
+      <li class="nav-item" routerLinkActive="active">
+        <a class="nav-link d-flex align-items-center justify-content-between" routerLink="/loans">
+          <div class="d-flex align-items-center">
+            <i class="fa fa-list-check me-3"></i>
+            <span class="link-text" *ngIf="!isCollapsed">Loans</span>
+          </div>
+          <span *ngIf="!isCollapsed" class="badge bg-gradient text-dark fw-semibold">New</span>
+        </a>
+      </li>
+
+      <li class="nav-item" routerLinkActive="active">
+        <a class="nav-link d-flex align-items-center" routerLink="/accounts">
+          <i class="fa fa-wallet me-3"></i>
+          <span class="link-text" *ngIf="!isCollapsed">Accounts</span>
+        </a>
+      </li>
+
+      <li class="nav-item" routerLinkActive="active">
+        <a class="nav-link d-flex align-items-center" routerLink="/transactions">
+          <i class="fa fa-exchange-alt me-3"></i>
+          <span class="link-text" *ngIf="!isCollapsed">Transactions</span>
+        </a>
+      </li>
+
+      <li class="nav-item" routerLinkActive="active">
+        <a class="nav-link d-flex align-items-center" routerLink="/reports">
+          <i class="fa fa-chart-line me-3"></i>
+          <span class="link-text" *ngIf="!isCollapsed">Reports & Insights</span>
+        </a>
+      </li>
+
+      <li class="nav-item" routerLinkActive="active" style="cursor: pointer;">
+        <a class="nav-link d-flex align-items-center" (click)="viewStatement()" role="button">
+          <i class="fa fa-file me-3"></i>
+          <span class="link-text" *ngIf="!isCollapsed">Statements</span>
+        </a>
+      </li>
+
+      <li class="nav-item" routerLinkActive="active">
+        <a class="nav-link d-flex align-items-center" routerLink="/user-profile">
+          <i class="fa fa-user-circle me-3"></i>
+          <span class="link-text" *ngIf="!isCollapsed">Profile</span>
+        </a>
+      </li>
+
+      <li *ngIf="role !== 'DATA_MANAGER'" class="nav-item" routerLinkActive="active">
+        <a class="nav-link d-flex align-items-center" routerLink="/settings">
+          <i class="fa fa-gear me-3"></i>
+          <span class="link-text" *ngIf="!isCollapsed">Settings</span>
+        </a>
+      </li>
+
+      <li *ngIf="role !== 'DATA_MANAGER'" class="nav-item" routerLinkActive="active">
+        <a class="nav-link d-flex align-items-center" routerLink="/admin-approvals">
+          <i class="fa fa-user-check me-3"></i>
+          <span class="link-text" *ngIf="!isCollapsed">User Approvals</span>
+        </a>
+      </li>
+    </ul>
+  </nav>
+
+  <!-- Sidebar Footer -->
+  <div class="sidebar-footer text-center py-3 border-top small text-muted">
+    <ng-container *ngIf="!isCollapsed">&copy; 2025 CreditBank</ng-container>
+    <i *ngIf="isCollapsed" class="fa fa-copyright"></i>
+  </div>
+
+  <!-- Collapse Button (hidden on mobile) -->
+  <button
+    class="btn btn-primary collapse-btn position-absolute bottom-0 end-0 m-3 rounded-circle d-none d-sm-block"
+    (click)="toggleSidebar()"
+  >
+    <i
+      class="fa fa-arrow-left text-white"
+      [ngStyle]="{'transform': isCollapsed ? 'rotate(180deg)' : 'rotate(0deg)', 'transition': '0.3s ease'}"
+    ></i>
+  </button>
+</div>
+
+<!-- Main Content -->
+<div class="main-content">
+  <div class="body-content p-3">
+    <router-outlet></router-outlet>
+  </div>
+</div>

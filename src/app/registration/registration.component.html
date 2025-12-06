@@ -1,0 +1,86 @@
+<div class="register-wrapper d-flex align-items-center justify-content-center vh-100">
+  <div class="register-card shadow-lg">
+    <div class="card-body p-4">
+      <div class="text-center mb-3">
+        <img src="assets/creditbank.png" alt="Credit Bank Logo" class="login-image" />
+        <h4 class="fw-bold text-gradient mb-1">Create Account</h4>
+        <p class="text-muted small">Secure and seamless registration</p>
+      </div>
+
+      <form [formGroup]="registerForm" (ngSubmit)="onSubmit()" novalidate>
+        <!-- Role -->
+        <div class="mb-2">
+          <label class="form-label"><i class="fa fa-users me-2 text-primary"></i> Select Role</label>
+          <select
+            class="form-select"
+            formControlName="role"
+            [ngClass]="{ 'is-invalid': submitted && registerForm.controls['role'].invalid }"
+          >
+            <option value="">-- Choose a role --</option>
+            <option value="APPLICANT">Applicant</option>
+            <option value="DATA_MANAGER">Data Manager</option>
+            <option value="ADMIN">Admin</option>
+          </select>
+          <div class="invalid-feedback">Role is required</div>
+        </div>
+
+        <!-- National ID -->
+        <div class="mb-2">
+          <label class="form-label"><i class="fa fa-id-card me-2 text-primary"></i> National ID</label>
+          <input
+            type="number"
+            class="form-control"
+            placeholder="Enter your National ID"
+            formControlName="nationalId"
+            [ngClass]="{ 'is-invalid': submitted && registerForm.controls['nationalId'].invalid }"
+          />
+          <div class="invalid-feedback">National ID is required</div>
+        </div>
+
+        <!-- Password -->
+        <div class="mb-2">
+          <label class="form-label"><i class="fa fa-lock me-2 text-primary"></i> Password</label>
+          <input
+            type="password"
+            class="form-control"
+            placeholder="Enter password"
+            formControlName="password"
+            [ngClass]="{ 'is-invalid': submitted && registerForm.controls['password'].invalid }"
+          />
+          <div class="invalid-feedback">Password is required (min 6 characters)</div>
+        </div>
+
+        <!-- Confirm Password -->
+        <div class="mb-2">
+          <label class="form-label"><i class="fa fa-lock me-2 text-primary"></i> Confirm Password</label>
+          <input
+            type="password"
+            class="form-control"
+            placeholder="Repeat password"
+            formControlName="confirmPassword"
+            [ngClass]="{ 'is-invalid': submitted && registerForm.controls['confirmPassword'].invalid }"
+          />
+          <div class="invalid-feedback">Passwords must match</div>
+        </div>
+
+        <!-- Error Alert -->
+        <div *ngIf="registrationError" class="alert alert-danger text-center py-2">
+          {{ registrationError }}
+        </div>
+
+        <!-- Button -->
+        <button type="submit" class="btn btn-gradient w-100">
+          <i class="fa fa-user-plus me-2"></i> Register
+        </button>
+      </form>
+
+      <!-- Login Link -->
+      <div class="text-center mt-3">
+        <small class="text-muted">
+          Already have an account?
+          <a routerLink="/login" class="text-primary fw-semibold"> Login </a>
+        </small>
+      </div>
+    </div>
+  </div>
+</div>

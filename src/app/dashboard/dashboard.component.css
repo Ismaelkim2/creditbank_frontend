@@ -1,0 +1,226 @@
+/* Core Layout */
+.admin-dashboard {
+  display: flex;
+  height: 100vh;
+  font-family: 'Poppins', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background-color: #f4f6f9;
+  position: fixed;
+  width: 100%;
+  top: 0;
+  left: 0;
+}
+
+
+/* Dashboard Container */
+.dashboard-container {
+  flex: 1;
+  padding: 40px;
+  overflow-y: auto;
+  margin-top: 30px;
+}
+
+.dashboard-container h1 {
+  font-size: 26px;
+  font-weight: 700;
+  color: #2d2d2d;
+}
+
+.badge {
+  font-size: 0.75rem;
+  padding: 0.35rem 0.6rem;
+  border-radius: 20px;
+  font-weight: 500;
+}
+
+/* Top Buttons */
+.btn-group .btn {
+  min-width: 130px;
+  font-size: 0.88rem;
+  text-transform: capitalize;
+  border-radius: 12px;
+}
+
+/* Stats Cards */
+.stats-cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 20px;
+  margin-bottom: 20px;
+}
+
+/* Stats Cards */
+.card {
+  border-radius: 20px;
+  text-align: center;
+  color: #fff;
+  padding: 20px;
+  transition: all 0.25s ease;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+.card h6 {
+  font-size: 1rem;
+  font-weight: 600;
+  margin-bottom: 8px;
+}
+
+.card p {
+  font-size: 1.5rem;
+  font-weight: 700;
+  margin: 0;
+}
+
+/* Hover Elevation */
+.card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.15);
+}
+
+/* Gradient Backgrounds with readable text */
+.gradient-blue {
+  background: linear-gradient(135deg, #007bff, #00a6ff);
+  color: #fff;
+}
+
+.gradient-green {
+  background: linear-gradient(135deg, #28a745, #66bb6a);
+  color: #fff;
+}
+
+.gradient-yellow {
+  background: linear-gradient(135deg, #ffeb3b, #fdd835);
+  color: #333; /* darker text for contrast */
+}
+
+.gradient-red {
+  background: linear-gradient(135deg, #f44336, #e53935);
+  color: #fff;
+}
+
+
+/* Specific Card Colors */
+.total-loans {
+  background: linear-gradient(135deg, #1976d2, #2196f3);
+}
+
+.approved-loans {
+  background: linear-gradient(135deg, #388e3c, #4caf50);
+}
+
+.partial-loans {
+  background: linear-gradient(135deg, #0056b3, #007bff);
+}
+
+.pending-loans {
+  background: linear-gradient(135deg, #ffb300, #ffc107);
+  color: #212121;
+}
+
+.rejected-loans {
+  background: linear-gradient(135deg, #d32f2f, #f44336);
+}
+
+/* Graph Cards */
+.card.shadow-sm {
+  background-color: #fff;
+  color: #333;
+}
+
+.card.shadow-sm h6 {
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: #2c3e50;
+}
+
+.card.shadow-sm:hover {
+  transform: scale(1.015);
+}
+
+/* Graph Responsiveness */
+canvas {
+  width: 100% !important;
+  height: auto !important;
+  max-height: 250px;
+}
+
+/* Table Enhancements */
+.table-container {
+  border-radius: 16px;
+  background: #fff;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+  overflow-x: auto;
+}
+
+.custom-table tbody tr:hover {
+  background-color: #f1f5ff;
+  transition: background-color 0.3s ease;
+}
+
+.custom-table thead th {
+  background-color: #f8f9fc;
+  font-weight: 600;
+  color: #4a4a4a;
+  border-bottom: 2px solid #dee2e6;
+}
+
+.custom-table td {
+  vertical-align: middle;
+  padding: 8px 16px;
+  color: #333;
+}
+
+.custom-table th, .custom-table td {
+  border: none;
+}
+
+.custom-table {
+  border-collapse: separate;
+  border-spacing: 0 8px;
+}
+
+/* Status Badges */
+.status-badge, .badge {
+  display: inline-flex;
+  align-items: center;
+  font-size: 0.8rem;
+  font-weight: 600;
+  border-radius: 999px;
+  padding: 4px 10px;
+  white-space: nowrap;
+  transition: all 0.3s ease-in-out;
+}
+
+.badge.bg-info.text-white {
+  background-color: #17a2b8 !important;
+  color: #fff !important;
+}
+
+/* Rotate Icon */
+@keyframes rotate {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+.rotate-icon {
+  animation: rotate 1.5s linear infinite;
+}
+
+/* Responsive Adjustments */
+@media (max-width: 768px) {
+  .btn-group {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .dashboard-container {
+    padding: 20px;
+  }
+
+  .stats-cards {
+    grid-template-columns: 1fr;
+  }
+
+  .dashboard-container h1 {
+    font-size: 22px;
+  }
+}

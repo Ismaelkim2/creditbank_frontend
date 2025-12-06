@@ -1,0 +1,218 @@
+/* ==================== GENERAL LAYOUT ==================== */
+:root {
+  --primary: #0d6efd;
+  --primary-dark: #0049b7;
+  --accent: #198754;
+  --text-dark: #1e293b;
+  --text-muted: #6c757d;
+  --bg: #f5f7fb;
+  --card-bg: #ffffff;
+  --shadow: 0 8px 20px rgba(0, 0, 0, 0.06);
+  --radius: 1rem;
+}
+
+.content {
+  background-color: var(--bg);
+  min-height: 100vh;
+  margin-left: 250px;
+  margin-top: 80px;
+  padding: 30px 25px 80px;
+  transition: all 0.4s ease;
+  font-family: "Poppins", "Segoe UI", sans-serif;
+  color: var(--text-dark);
+}
+
+/* ==================== CARD STYLING ==================== */
+.card {
+  border: none;
+  border-radius: var(--radius);
+  background: var(--card-bg);
+  box-shadow: var(--shadow);
+  transition: all 0.3s ease-in-out;
+}
+
+.card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
+}
+
+.card-title {
+  font-weight: 600;
+  color: var(--primary);
+  letter-spacing: 0.3px;
+}
+
+/* ==================== ACCOUNT CARDS ==================== */
+.account-card {
+  cursor: pointer;
+  border: 2px solid transparent;
+  background: #f9fafc;
+  transition: all 0.3s ease;
+  padding: 1rem 1.25rem;
+  border-radius: var(--radius);
+}
+
+.account-card:hover {
+  border-color: var(--primary);
+  background: #f0f6ff;
+  transform: translateY(-3px);
+}
+
+.active-account {
+  border-color: var(--primary);
+  background-color: #eaf2ff;
+  box-shadow: 0 0 0 2px rgba(13, 110, 253, 0.1);
+}
+
+.account-card h6 {
+  font-weight: 600;
+  color: var(--text-dark);
+}
+
+.account-card p {
+  color: var(--text-muted);
+}
+
+/* ==================== QUICK ACTIONS ==================== */
+.btn {
+  border-radius: 0.75rem;
+  font-weight: 500;
+  transition: all 0.3s ease;
+}
+
+.btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 10px rgba(13, 110, 253, 0.15);
+}
+
+/* Outline Buttons with Custom Feedback */
+.btn-outline-dark:hover {
+  background-color: #1e293b;
+  color: #fff;
+}
+.btn-outline-warning:hover {
+  background-color: #ffc107;
+  color: #212529;
+}
+.btn-outline-primary:hover {
+  background-color: var(--primary);
+  color: #fff;
+}
+.btn-outline-success:hover {
+  background-color: var(--accent);
+  color: #fff;
+}
+.btn-outline-danger:hover {
+  background-color: #dc3545;
+  color: #fff;
+}
+
+/* ==================== PAYMENT OPTIONS ==================== */
+.list-group-item {
+  border: none;
+  border-radius: 0.85rem !important;
+  margin-bottom: 8px;
+  padding: 0.9rem 1.2rem;
+  transition: all 0.25s ease;
+  background: #f9fafc;
+}
+
+.list-group-item:hover {
+  background-color: #eef4ff;
+  transform: translateX(4px);
+  box-shadow: 0 4px 10px rgba(13, 110, 253, 0.1);
+}
+
+.list-group-item h6 {
+  color: var(--text-dark);
+  font-weight: 600;
+}
+
+.list-group-item small {
+  color: var(--text-muted);
+  font-size: 0.8rem;
+}
+
+/* ==================== QUICK PAYMENT SECTION ==================== */
+.form-label {
+  font-weight: 500;
+  color: var(--text-dark);
+}
+
+.form-select,
+.form-control {
+  border-radius: 0.6rem;
+  border: 1px solid #d1d5db;
+  transition: all 0.25s ease;
+}
+
+.form-select:focus,
+.form-control:focus {
+  border-color: var(--primary);
+  box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.1);
+}
+
+/* Payment Button */
+.btn-primary.btn-lg {
+  border-radius: 0.8rem;
+  box-shadow: 0 5px 15px rgba(13, 110, 253, 0.3);
+}
+
+.btn-primary.btn-lg:hover {
+  transform: translateY(-2px);
+  background: var(--primary-dark);
+}
+
+/* ==================== RECENT TRANSACTIONS TABLE ==================== */
+.table {
+  border-radius: var(--radius);
+  overflow: hidden;
+  background: white;
+}
+
+.table-primary th {
+  background-color: var(--primary) !important;
+  color: #fff !important;
+  font-weight: 500;
+}
+
+.table-hover tbody tr {
+  transition: all 0.2s ease;
+}
+.table-hover tbody tr:hover {
+  background-color: #f2f6ff;
+}
+
+.badge {
+  font-size: 0.8rem;
+  border-radius: 0.5rem;
+  padding: 0.4em 0.75em;
+}
+
+/* ==================== MODALS ==================== */
+.modal-header {
+  border-top-left-radius: var(--radius);
+  border-top-right-radius: var(--radius);
+}
+.modal-footer {
+  border-bottom-left-radius: var(--radius);
+  border-bottom-right-radius: var(--radius);
+}
+.modal-body {
+  background-color: #f9fafc;
+  border-radius: 0 0 var(--radius) var(--radius);
+}
+
+/* ==================== RESPONSIVE ==================== */
+@media (max-width: 992px) {
+  .content {
+    margin-left: 0;
+    padding: 20px;
+  }
+  .account-card {
+    min-width: 100%;
+  }
+  .list-group-item {
+    text-align: left;
+  }
+}

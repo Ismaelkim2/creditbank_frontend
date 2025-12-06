@@ -1,0 +1,110 @@
+  <!-- Sidebar -->
+  <app-sidebar></app-sidebar>
+
+
+<div class="main-container">
+
+  <!-- Main Content -->
+  <div class="content-wrapper mt-5">
+    <div class="card shadow-lg border-0 rounded-4 p-3">
+      <!-- Header -->
+      <div class="card-header bg-gradient-primary text-white d-flex align-items-center py-3 px-4 rounded-top">
+        <i class="fa fa-user-plus me-2 fs-4"></i>
+        <h5 class="mb-0 fw-bold">Open a New Account</h5>
+      </div>
+
+      <!-- Form Body -->
+      <div class="card-body p-4">
+        <form [formGroup]="accountForm" (ngSubmit)="onSubmit()" class="row g-4 needs-validation" novalidate>
+
+          <!-- Full Name -->
+          <div class="col-md-6 form-floating">
+            <input type="text" class="form-control shadow-sm" id="fullName" formControlName="fullName"
+              placeholder="Full Name"
+              [ngClass]="{'is-invalid': accountForm.get('fullName')?.invalid && accountForm.get('fullName')?.touched,
+                          'is-valid': accountForm.get('fullName')?.valid}" />
+            <label for="fullName">Full Name <span class="text-danger">*</span></label>
+            <div class="invalid-feedback">
+              Full name must include at least two words.
+            </div>
+          </div>
+
+          <!-- National ID -->
+          <div class="col-md-6 form-floating">
+            <input type="text" class="form-control shadow-sm" id="nationalId" formControlName="nationalId"
+              placeholder="National ID"
+              [ngClass]="{'is-invalid': accountForm.get('nationalId')?.invalid && accountForm.get('nationalId')?.touched,
+                          'is-valid': accountForm.get('nationalId')?.valid}" />
+            <label for="nationalId">National ID <span class="text-danger">*</span></label>
+            <div class="invalid-feedback">
+              National ID must be 6 to 8 digits long and numbers only.
+            </div>
+          </div>
+
+          <!-- Phone Number -->
+          <div class="col-md-6 form-floating">
+            <input type="text" class="form-control shadow-sm" id="phoneNumber" formControlName="phoneNumber"
+              placeholder="Phone Number"
+              [ngClass]="{'is-invalid': accountForm.get('phoneNumber')?.invalid && accountForm.get('phoneNumber')?.touched,
+                          'is-valid': accountForm.get('phoneNumber')?.valid}" />
+            <label for="phoneNumber">Phone Number <span class="text-danger">*</span></label>
+            <div class="invalid-feedback">
+              Phone number must start with 07 or 2547 and contain 12 digits in total.
+            </div>
+          </div>
+
+          <!-- Email -->
+          <div class="col-md-6 form-floating">
+            <input type="email" class="form-control shadow-sm" id="email" formControlName="email"
+              placeholder="Email"
+              [ngClass]="{'is-invalid': accountForm.get('email')?.invalid && accountForm.get('email')?.touched,
+                          'is-valid': accountForm.get('email')?.valid}" />
+            <label for="email">Email <span class="text-danger">*</span></label>
+            <div class="invalid-feedback">
+              Please enter a valid email address.
+            </div>
+          </div>
+
+          <!-- Profile Picture Upload -->
+          <div class="col-md-6">
+            <label class="form-label fw-semibold text-secondary mb-2">
+              <i class="fa fa-upload me-2 text-info"></i> Upload Profile Picture <span class="text-danger">*</span>
+            </label>
+            <div class="upload-zone shadow-sm rounded p-3 text-center"
+                 [ngClass]="{'border-danger': !selectedImage && accountForm.get('image')?.touched}">
+              <input type="file" (change)="onFileChange($event)" accept="image/*" class="file-input"/>
+              <i class="fa fa-cloud-upload-alt fa-2x text-primary mb-2"></i>
+              <p class="mb-0">Drag & drop or click to upload</p>
+            </div>
+            <div *ngIf="previewUrl" class="mt-3 text-center">
+              <img [src]="previewUrl" alt="Profile Preview" class="img-preview shadow-sm rounded-circle" />
+            </div>
+          </div>
+
+          <!-- Submit Button -->
+          <div class="col-12 text-end mt-4">
+            <button class="btn btn-gradient px-5 py-2 fw-semibold shadow-sm" type="submit"
+              [disabled]="accountForm.invalid || !selectedImage">
+              <i class="fa fa-check-circle me-2"></i> Create Account
+            </button>
+          </div>
+        </form>
+
+        <!-- Existing Account Alert -->
+        <div *ngIf="isDuplicate && existingAccount" class="mt-4 alert alert-warning shadow-sm rounded-3">
+          <h5>⚠️ Account Already Exists</h5>
+          <p><strong>Full Name:</strong> {{ existingAccount.fullName }}</p>
+          <p><strong>National ID:</strong> {{ existingAccount.nationalId }}</p>
+          <p><strong>Phone Number:</strong> {{ existingAccount.phoneNumber }}</p>
+          <p><strong>Email:</strong> {{ existingAccount.email }}</p>
+          <p><strong>Account Number:</strong> {{ existingAccount.accountNumber }}</p>
+          <div *ngIf="existingAccount.imageUrl" class="mt-2">
+            <img [src]="'http://localhost:8080/' + existingAccount.imageUrl" alt="Profile Image"
+                 width="120" class="rounded-circle shadow-sm" />
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</div>

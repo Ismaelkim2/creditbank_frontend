@@ -1,0 +1,79 @@
+import { Component, OnInit } from '@angular/core';
+import { Loan } from '../../models/loan.model';
+import { LoanService } from '../services/loan.service';
+import { HttpClient } from '@angular/common/http';
+import { MpesaService } from '../services/mpesa.service';
+
+
+@Component({
+  selector: 'app-dashboard',
+  templateUrl: './dashboard.component.html',
+  styleUrls: ['./dashboard.component.css']
+})
+export class DashboardComponent implements OnInit {
+
+  loans: Loan[] = [];
+
+  totalLoans = 0;
+  totalApproved = 0;
+  totalPending = 0;
+  totalRejected = 0;
+  totalLoansAmount: number = 0;
+
+  balance: number | null = null;
+errorMessage: string = '';
+
+
+
+  constructor(private loanService: LoanService,
+     private http:HttpClient,
+     private mpesaService:MpesaService
+
+  ) { }
+
+  ngOnInit(): void {
+    this.loanService.getLoans().subscribe(loans => {
+      this.loans = loans;
+      this.calculateStats();
+    });
+
+     this.mpesaService.getBalance().subscribe(
+    (response: any) => {
+      // Try to parse the number here from the response if needed
+      const parsed = this.parseBalance(response);
+      this.balance = parsed;
+    },
+    error => {
+      console.error(error);
+      this.balance = null;
+      this.errorMessage = 'Error fetching balance';
+    }
+  );
+  
+  }
+  
+  parseBalance(response: string): number {
+  // You need to extract the "AccountBalance" value
+  // If you're still returning raw JSON string, you need to extract it manually
+  const match = response.match(/KES\s?([\d,]+\.\d{2})/);
+  if (match) {
+    return parseFloat(match[1].replace(/,/g, ''));
+  }
+  return 0;
+}
+
+loadLoans(){
+  this.loanService.getLoans().subscribe((data)=>{
+    this.loans=data;
+  });
+}
+
+calculateStats() {
+  this.totalLoans = this.loans.length;
+  this.totalApproved = this.loans.filter(l => l.status === 'approved').length;
+  this.totalPending = this.loans.filter(l => l.status === 'pending').length;
+  this.totalRejected = this.loans.filter(l => l.status === 'rejected').length;
+  this.totalLoansAmount = this.loans.reduce((sum, loan) => sum + loan.amount, 0);
+}
+
+}

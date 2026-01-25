@@ -5,10 +5,10 @@
   "projects": {
     "credit-management": {
       "projectType": "application",
-      "schematics": {},
       "root": "",
       "sourceRoot": "src",
       "prefix": "app",
+      "schematics": {},
       "architect": {
         "build": {
           "builder": "@angular-devkit/build-angular:browser",
@@ -21,7 +21,7 @@
             "assets": [
               "src/favicon.ico",
               "src/assets",
-              "src/browser"
+              "src/_redirects"
             ],
             "styles": [
               "src/styles.css",

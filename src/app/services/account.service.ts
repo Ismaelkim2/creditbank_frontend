@@ -4,17 +4,17 @@ import { Observable } from 'rxjs';
 import { Account } from '../../models/User.model';
 import { environment } from '../../environments/environment';
 
-
 @Injectable({
   providedIn: 'root'
 })
 export class AccountService {
 
- private baseUrl = `${environment.apiUrl}/accounts`;
-
- private baseUrl = `${environment.apiUrl}/activity`;
-
-private baseUrl = `${environment.apiUrl}/auth/change-password`;
+  // ✅ Separate endpoints to avoid duplicate identifier errors
+  private accountsUrl = `${environment.apiUrl}/accounts`;
+  private activityUrl = `${environment.apiUrl}/activity`;
+  private passwordUrl = `${environment.apiUrl}/auth/change-password`;
+  private statementsUrl = `${environment.apiUrl}/statements`;
+  private loansUrl = `${environment.apiUrl}/loans`;
 
   constructor(private http: HttpClient) {}
 
@@ -33,38 +33,38 @@ private baseUrl = `${environment.apiUrl}/auth/change-password`;
    * ---------------------------------------------------------------------- */
   getAccountDetailsByNationalId(nationalId: string): Observable<any> {
     return this.http.get<any>(
-      `${this.baseUrl}/by-id/${nationalId}`,
+      `${this.accountsUrl}/by-id/${nationalId}`,
       { headers: this.getHeaders() }
     );
   }
 
   getLoanDetailsByNationalId(nationalId: string): Observable<any[]> {
     return this.http.get<any[]>(
-      `http://localhost:8080/api/loans/by-nationalId/${nationalId}`,
+      `${this.loansUrl}/by-nationalId/${nationalId}`,
       { headers: this.getHeaders() }
     );
   }
 
   createAccount(formData: FormData): Observable<any> {
-    return this.http.post(`${this.baseUrl}`, formData, {
+    return this.http.post(`${this.accountsUrl}`, formData, {
       headers: this.getHeaders(),
     });
   }
 
   getAllAccounts(): Observable<any[]> {
-    return this.http.get<any[]>(`${this.baseUrl}`, {
+    return this.http.get<any[]>(`${this.accountsUrl}`, {
       headers: this.getHeaders(),
     });
   }
 
   deleteAccount(accountNumber: string): Observable<any> {
-    return this.http.delete(`${this.baseUrl}/${accountNumber}`, {
+    return this.http.delete(`${this.accountsUrl}/${accountNumber}`, {
       headers: this.getHeaders(),
     });
   }
 
   getByNationalId(nationalId: string): Observable<Account> {
-    return this.http.get<Account>(`${this.baseUrl}/by-id/${nationalId}`, {
+    return this.http.get<Account>(`${this.accountsUrl}/by-id/${nationalId}`, {
       headers: this.getHeaders(),
     });
   }
@@ -74,7 +74,7 @@ private baseUrl = `${environment.apiUrl}/auth/change-password`;
    * ---------------------------------------------------------------------- */
   saveStatement(nationalId: string, transactions: any[]): Observable<any> {
     return this.http.post(
-      `http://localhost:8080/api/statements/${nationalId}`,
+      `${this.statementsUrl}/${nationalId}`,
       transactions,
       { headers: this.getHeaders() }
     );
@@ -82,23 +82,22 @@ private baseUrl = `${environment.apiUrl}/auth/change-password`;
 
   getStatements(nationalId: string): Observable<any[]> {
     return this.http.get<any[]>(
-      `http://localhost:8080/api/statements/${nationalId}`,
+      `${this.statementsUrl}/${nationalId}`,
       { headers: this.getHeaders() }
     );
   }
 
   /** ----------------------------------------------------------------------
-   *  UPDATE PROFILE (alias for updateUserProfile)
+   *  UPDATE PROFILE
    * ---------------------------------------------------------------------- */
   updateUserProfile(payload: any): Observable<any> {
     return this.http.put(
-      `http://localhost:8080/api/accounts/updateProfile`,
+      `${this.accountsUrl}/updateProfile`,
       payload,
       { headers: this.getHeaders() }
     );
   }
 
-  /** ✔ REQUIRED by your component */
   updateProfile(payload: any): Observable<any> {
     return this.updateUserProfile(payload);
   }

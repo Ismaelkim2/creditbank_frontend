@@ -27,7 +27,7 @@ interface AuthResponse {
   providedIn: 'root'
 })
 export class AuthService {
-  private baseUrl = 'http://localhost:8080/api/auth';
+  private baseUrl = 'https://credit-management.fly.dev/api/auth';
   private isBrowser: boolean;
   private usernameSubject = new BehaviorSubject<string>('');
 

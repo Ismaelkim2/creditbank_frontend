@@ -2,15 +2,19 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { Account } from '../../models/User.model';
+import { environment } from '../../environments/environment';
+
 
 @Injectable({
   providedIn: 'root'
 })
 export class AccountService {
 
-  private baseUrl = 'http://localhost:8080/api/accounts';
-  private activityUrl = 'http://localhost:8080/api/activity';
-  private passwordUrl = 'http://localhost:8080/api/auth/change-password';
+ private baseUrl = `${environment.apiUrl}/accounts`;
+
+ private baseUrl = `${environment.apiUrl}/activity`;
+
+private baseUrl = `${environment.apiUrl}/auth/change-password`;
 
   constructor(private http: HttpClient) {}
 

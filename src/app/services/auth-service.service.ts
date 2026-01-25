@@ -4,6 +4,8 @@ import { Injectable, Inject, PLATFORM_ID } from '@angular/core';
 import { isPlatformBrowser } from '@angular/common';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { IdleTimerService } from './idle-timer.service';
+import { environment } from '../../environments/environment';
+
 
 interface RegisterRequest {
   password: string;
@@ -27,7 +29,8 @@ interface AuthResponse {
   providedIn: 'root'
 })
 export class AuthService {
-  private baseUrl = 'https://credit-management.fly.dev/api/auth';
+  private baseUrl = `${environment.apiUrl}/auth`;
+
   private isBrowser: boolean;
   private usernameSubject = new BehaviorSubject<string>('');
 

@@ -4,7 +4,7 @@
   "scripts": {
   "ng": "ng",
   "start": "ng serve",
-  "build": "ng build && node copy-redirects.js",
+  "build": "ng build",
   "watch": "ng build --configuration production",
   "test": "ng test",
   "serve:ssr:credit-management": "node dist/credit-management/server/server.mjs"

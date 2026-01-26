@@ -58,9 +58,9 @@ export class AuthService {
   }
 
   login(credentials: { email: string; password: string }): Observable<AuthResponse> {
-    return this.http.post(`${environment.apiUrl}/auth/login`, credentials, { withCredentials: true });
+    return this.http.post<AuthResponse>(`${environment.apiUrl}/auth/login`, credentials, { withCredentials: true });
+}
 
-  }
 
   /** -------------------------
    *  🔹 Set Session After Login

@@ -58,7 +58,8 @@ export class AuthService {
   }
 
   login(credentials: { email: string; password: string }): Observable<AuthResponse> {
-    return this.http.post<AuthResponse>(`${this.baseUrl}/login`, credentials);
+    return this.http.post(`${environment.apiUrl}/auth/login`, credentials, { withCredentials: true });
+
   }
 
   /** -------------------------

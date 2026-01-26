@@ -30,7 +30,7 @@ interface AuthResponse {
   providedIn: 'root'
 })
 export class AuthService {
-  private baseUrl = `${environment.apiUrl}/auth/login`;
+  private baseUrl = `${environment.apiUrl}/auth`;
 
   private isBrowser: boolean;
   private usernameSubject = new BehaviorSubject<string>('');

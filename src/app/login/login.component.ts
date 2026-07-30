@@ -1,7 +1,9 @@
-import { Component } from '@angular/core';
+import { AccountService } from './../services/account.service';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
-import { AuthService } from '../services/auth-service.service';
+import { AuthService, AuthUser } from '../services/auth-service.service';
+
 
 @Component({
   selector: 'app-login',
@@ -9,6 +11,9 @@ import { AuthService } from '../services/auth-service.service';
   styleUrls: ['./login.component.css']
 })
 export class LoginComponent {
+currentSlide = 0;
+
+
   loginForm: FormGroup;
   showPassword = false;
   submitted = false;
@@ -26,10 +31,42 @@ otpCountdown = 60; // seconds
 otpTimer: any;
 canResend = false;
 
+/*=====================================================
+    ENTERPRISE IMAGE SLIDER
+=====================================================*/
+
+slides: string[] = [
+
+'assets/login/slide1.jpg',
+
+'assets/login/slide2.jpg',
+
+'assets/login/slide3.jpg',
+
+'assets/login/slide4.jpg',
+
+'assets/login/slide5.jpg',
+
+'assets/login/slide6.jpg'
+
+];
+
+
+private sliderInterval: any;
+
+/*=====================================================
+    LIVE CLOCK
+=====================================================*/
+
+currentTime = '';
+
+private clockInterval: any;
+
 
   constructor(
     private fb: FormBuilder,
     private authService: AuthService,
+    private accountSrtvice: AccountService,
     private router: Router
   ) {
     this.loginForm = this.fb.group({
@@ -38,6 +75,34 @@ canResend = false;
     });
   }
 
+
+// ngOnInit(): void {
+
+//     this.preloadImages();
+
+//     this.startSlider();
+
+//     this.startClock();
+
+// }
+
+
+ngOnDestroy(): void {
+
+    if (this.sliderInterval) {
+
+        clearInterval(this.sliderInterval);
+
+    }
+
+    if (this.clockInterval) {
+
+        clearInterval(this.clockInterval);
+
+    }
+
+}
+
 onSubmit(): void {
   this.submitted = true;
   this.loginError = '';
@@ -45,26 +110,50 @@ onSubmit(): void {
   if (this.loginForm.invalid) return;
 
   this.loading = true;
+
   const credentials = this.loginForm.value;
 
   this.authService.login(credentials).subscribe({
     next: (res: any) => {
+
+     const user: AuthUser = {
+  name: res.name || res.user?.fullName,
+  role: res.role || res.user?.role,
+  nationalId: res.nationalId || res.user?.nationalId,
+  email: res.email || res.user?.email,
+  phoneNumber: res.phoneNumber,
+  imageUrl: res.userImageUrl,
+  token: res.token
+};
+
+this.authService.setSession(user);
+
       this.loading = false;
 
-      // Move to OTP phase
-      this.otpStep = true;
-      this.emailForOtp = res.email ?? '';
-      this.phoneNumberForOtp = res.phoneNumber ?? '';
+      const role = (user.role || '').toUpperCase();
 
-      // Start OTP countdown
-      this.startOtpCountdown();
+      switch (role) {
+  case 'ADMIN':
+  case 'DATA_MANAGER':
+    this.router.navigate(['/app/dashboard']);
+    break;
+
+        case 'APPLICANT':
+          this.router.navigate(['/app/applicant']);
+          break;
+
+        default:
+          this.router.navigate(['/unauthorized']);
+      }
     },
-    error: (err: any) => {
+
+    error: (err) => {
       this.loading = false;
-      this.loginError = err.error?.message || 'Login failed. Please check your credentials.';
-    },
+      this.loginError = err.error?.message || 'Login failed';
+    }
   });
 }
+
 
 // 🔹 Start OTP Countdown
 startOtpCountdown() {
@@ -97,19 +186,24 @@ verifyOtp(otp: string) {
       const role = (res.role || '').toUpperCase();
 
       // Navigate to role-specific dashboards
-      switch (role) {
-        case 'ADMIN':
-          this.router.navigate(['/dashboard']);
-          break;
-        case 'APPLICANT':
-          this.router.navigate(['/applicant-dashboard']);
-          break;
-        case 'DATA_MANAGER':
-          this.router.navigate(['/data-manager-dashboard']);
-          break;
-        default:
-          this.router.navigate(['/unauthorized']);
-      }
+ switch (role) {
+
+  case 'ADMIN':
+    this.router.navigate(['/app/dashboard']);
+    break;
+
+  case 'DATA_MANAGER':
+    this.router.navigate(['/app/data-manager-dashboard']);
+    break;
+
+ case 'APPLICANT':
+    this.router.navigate(['/app/applicant']);
+    break;
+
+  default:
+    this.router.navigate(['/unauthorized']);
+}
+
        this.startOtpCountdown();
     },
    error: (err) => {
@@ -146,4 +240,7 @@ resendOtp() {
   togglePassword(): void {
     this.showPassword = !this.showPassword;
   }
+
+
+  
 }

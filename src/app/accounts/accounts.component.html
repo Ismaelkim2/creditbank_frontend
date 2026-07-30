@@ -3,44 +3,143 @@
   href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css"
 />
 
-<app-sidebar></app-sidebar>
-
-<div class="container-fluid accounts-container py-4 mt-4">
+<div class="container-fluid accounts-container py-1">
   
-  <!-- HEADER SECTION -->
-  <div class="d-flex flex-wrap justify-content-between align-items-center mb-3 header">
-    <h4 class="fw-bold text-primary mb-2 mb-md-0">
-      <i class="bi bi-person-lines-fill me-2"></i>Customer Accounts
-    </h4>
+<!-- ==========================================================
+     ENTERPRISE CUSTOMER ACCOUNTS COMMAND CENTER
+=========================================================== -->
 
-  <div class="d-flex gap-2 align-items-center">
-  <!-- Search Input Wrapper -->
-  <div class="position-relative w-100">
-    <input
-      type="text"
-      class="form-control form-control-sm search-input"
-      placeholder="Search by Name, Account, ID or Phone"
-      [(ngModel)]="searchTerm"
-      (input)="filterAccounts()"
-    />
+<div class="accounts-header shadow-sm">
 
-    <!-- Clear Icon (Bootstrap 'bi-x-circle') -->
-    <i 
-      *ngIf="searchTerm" 
-      class="bi bi-x-circle clear-search-btn"
-      (click)="clearSearch()"
-      title="Clear search">
-    </i>
-  </div>
+    <!-- Left -->
+    <div class="header-left">
 
-  <!-- Add Account Button -->
-  <button type="button" class="btn btn-primary btn-sm rounded-pill shadow-sm"
-          (click)="goToAccountRegistration()">
-    <i class="bi bi-plus-circle me-1"></i> Add Account
-  </button>
+        <div class="header-icon">
+            <i class="bi bi-bank2"></i>
+        </div>
+
+        <div>
+
+            <div class="header-title">
+                Customer Account Management
+            </div>
+
+            <div class="header-subtitle">
+                Manage customer profiles, accounts, KYC verification and banking relationships
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- Center Statistics -->
+
+    <div class="header-stats">
+
+<div class="portfolio-card all"
+     (click)="filterByPortfolio('ALL')">
+
+    <i class="bi bi-people-fill"></i>
+
+    <small>All Accounts</small>
+
+    <h3>{{ accounts.length }}</h3>
+
 </div>
 
-  </div>
+  <div class="portfolio-card active"
+     (click)="filterByPortfolio('ACTIVE')">
+
+    <i class="bi bi-check-circle-fill"></i>
+
+    <small>Active</small>
+
+    <h3>{{ activeCount }}</h3>
+
+</div>
+
+<div class="portfolio-card dormant"
+     (click)="filterByPortfolio('DORMANT')">
+
+    <i class="bi bi-moon-stars-fill"></i>
+
+    <small>Dormant</small>
+
+    <h3>{{ dormantCount }}</h3>
+
+</div>
+
+<div class="portfolio-card closed"
+     (click)="filterByPortfolio('CLOSED')">
+
+    <i class="bi bi-lock-fill"></i>
+
+    <small>Closed</small>
+
+    <h3>{{ closedAccount }}</h3>
+
+</div>
+
+    </div>
+
+    <!-- Right -->
+
+    <div class="header-actions">
+
+        <!-- Search -->
+
+        <div class="search-wrapper">
+
+            <i class="bi bi-search search-icon"></i>
+
+            <input
+                    type="text"
+                    class="form-control search-input"
+                    placeholder="Search Name, Account, National ID, Phone..."
+                    [(ngModel)]="searchTerm"
+                    (input)="filterAccounts()">
+
+            <i
+                    *ngIf="searchTerm"
+                    class="bi bi-x-circle-fill clear-search-btn"
+                    (click)="clearSearch()">
+            </i>
+
+        </div>
+
+        <!-- Refresh -->
+
+        <button class="btn btn-light btn-refresh">
+
+            <i class="bi bi-arrow-clockwise"></i>
+
+        </button>
+
+        <!-- Export -->
+
+        <button class="btn btn-outline-primary">
+
+            <i class="bi bi-download me-2"></i>
+
+            Export
+
+        </button>
+
+        <!-- Add -->
+
+        <button
+                class="btn btn-primary add-btn"
+                (click)="goToAccountRegistration()">
+
+            <i class="bi bi-person-plus-fill me-2"></i>
+
+            Open Account
+
+        </button>
+
+    </div>
+
+</div>
 
   <!-- LOADING STATE -->
   <div *ngIf="loading" class="text-center py-5">
@@ -59,15 +158,36 @@
        class="table-responsive fintech-table-wrapper">
 
     <table class="table fintech-table align-middle shadow-sm rounded">
-      <thead>
-        <tr>
-          <th>Account No.</th>
-          <th>Full Name</th>
-          <th>National ID</th>
-          <th>Phone</th>
-          <th class="text-center">Actions</th>
-        </tr>
-      </thead>
+    <thead class="table-header">
+    <tr>
+
+        <th>
+            <i class="bi bi-credit-card-2-front-fill text-primary me-2"></i>
+            Account Number
+        </th>
+
+        <th>
+            <i class="bi bi-person-circle text-primary me-2"></i>
+            Customer Name
+        </th>
+
+        <th>
+            <i class="bi bi-person-vcard-fill text-primary me-2"></i>
+            National ID
+        </th>
+
+        <th>
+            <i class="bi bi-telephone-fill text-primary me-2"></i>
+            Mobile Number
+        </th>
+
+        <th class="text-center">
+            <i class="bi bi-lightning-charge-fill text-primary me-2"></i>
+            Quick Actions
+        </th>
+
+    </tr>
+</thead>
 
       <tbody>
         <tr *ngFor="let acc of filteredAccounts">
@@ -85,11 +205,15 @@
                 <i class="bi bi-eye-fill"></i>
               </button>
 
-              <!-- DELETE -->
-              <button class="btn-action delete"
-                      (click)="deleteAccount(acc)">
-                <i class="bi bi-trash3-fill"></i>
-              </button>
+<!-- CLOSE ACCOUNT -->
+<button
+    class="btn-action close-account"
+    (click)="closeAccount(acc)"
+    title="Close Account">
+
+    <i class="bi bi-lock-fill"></i>
+
+</button>
 
             </div>
           </td>
@@ -117,8 +241,8 @@
 <div *ngIf="showDetailsModal" class="modal-backdrop fade show"></div>
 
 <!-- MODAL -->
-<div *ngIf="showDetailsModal" class="modal d-block fade-in">
-  <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable custom-modal-width">
+<div *ngIf="showDetailsModal" class="modal d-block fade-in" mt-2>
+  <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable custom-modal-width details-dialog">
     <div class="modal-content details-modal shadow-lg rounded-4 border-0 animate__animated animate__fadeInUp">
 
       <!-- HEADER -->
@@ -138,12 +262,13 @@
 
           <!-- Customer Image -->
           <div class="col-md-4 text-center">
-            <img
-              *ngIf="selectedAccount?.imageUrl"
-              [src]="'http://localhost:8080/' + selectedAccount.imageUrl"
-              alt="User Photo"
-              class="customer-img shadow-sm"
-            />
+           <img
+  *ngIf="selectedAccount?.imageUrl"
+  [src]="selectedAccount.imageUrl"
+  alt="User Photo"
+  class="customer-img shadow-sm"
+  (error)="onImageError($event)"
+/>
             <h6 class="fw-bold mt-3">{{ selectedAccount?.fullName }}</h6>
             <p class="text-muted small mb-0">
               <i class="bi bi-envelope me-1"></i>{{ selectedAccount?.email }}
@@ -155,23 +280,90 @@
             <div class="info-card p-3 shadow-sm rounded-3">
               <table class="table table-borderless mb-0 small">
                 <tbody>
-                  <tr>
-                    <th class="text-muted">National ID:</th>
-                    <td>{{ selectedAccount?.nationalId }}</td>
-                  </tr>
-                  <tr>
-                    <th class="text-muted">Phone:</th>
-                    <td>{{ selectedAccount?.phoneNumber }}</td>
-                  </tr>
-                  <tr>
-                    <th class="text-muted">Account Balance:</th>
-                    <td>
-                      <span class="badge bg-success-subtle text-success fw-bold px-3 py-2">
-                        {{ selectedAccount?.balance | currency:'KES ' }}
-                      </span>
-                    </td>
-                  </tr>
-                </tbody>
+  <tr>
+    <th class="text-muted">National ID:</th>
+    <td>{{ selectedAccount?.nationalId }}</td>
+  </tr>
+
+  <tr>
+    <th class="text-muted">Phone:</th>
+    <td>{{ selectedAccount?.phoneNumber }}</td>
+  </tr>
+
+  <tr>
+    <th class="text-muted">Account Opened:</th>
+    <td>
+      <span class="badge bg-primary-subtle text-primary">
+        {{ selectedAccount?.createdAt | date:'dd MMM yyyy, hh:mm a' }}
+      </span>
+    </td>
+  </tr>
+
+  <tr>
+    <th class="text-muted">Mode of Operation:</th>
+    <td>
+      <span class="badge bg-info-subtle text-info fw-bold">
+        {{ selectedAccount?.modeOfOperation }}
+      </span>
+    </td>
+  </tr>
+
+<tr>
+  <th class="text-muted">Account Status:</th>
+
+  <td>
+
+    <!-- Status Badge -->
+    <span
+      class="badge fw-bold px-3 py-2"
+      [ngClass]="{
+        'bg-success': selectedAccount?.accountStatus === 'ACTIVE',
+        'bg-warning text-dark': selectedAccount?.accountStatus === 'DORMANT',
+        'bg-danger': selectedAccount?.accountStatus === 'CLOSED'
+      }">
+
+      <i
+        class="bi"
+        [ngClass]="{
+          'bi-check-circle-fill': selectedAccount?.accountStatus === 'ACTIVE',
+          'bi-moon-stars-fill': selectedAccount?.accountStatus === 'DORMANT',
+          'bi-x-circle-fill': selectedAccount?.accountStatus === 'CLOSED'
+        }">
+      </i>
+
+      {{ selectedAccount?.accountStatus }}
+
+    </span>
+
+    <!-- Closure Reason -->
+    <div
+      *ngIf="selectedAccount?.accountStatus === 'CLOSED'"
+      class="mt-2">
+
+      <small
+        class="text-danger fst-italic">
+
+        <i class="bi bi-info-circle me-1"></i>
+
+        <strong>Reason:</strong>
+        {{ selectedAccount?.closureReason || 'No closure reason provided.' }}
+
+      </small>
+
+    </div>
+
+  </td>
+</tr>
+
+  <tr>
+    <th class="text-muted">Account Balance:</th>
+    <td>
+      <span class="badge bg-success-subtle text-success fw-bold px-3 py-2">
+        {{ selectedAccount?.balance | currency:'KES ' }}
+      </span>
+    </td>
+  </tr>
+</tbody>
               </table>
             </div>
           </div>
@@ -180,55 +372,101 @@
 
         <hr />
 
-        <!-- LOAN SUMMARY SECTION -->
-        <h6 class="fw-bold text-primary mb-3">
-          <i class="bi bi-briefcase-fill me-2"></i>Loan Summary
-        </h6>
+<!-- ===================================================== -->
+<!-- LOAN SUMMARY -->
+<!-- ===================================================== -->
 
-        <!-- Loan Table -->
-        <table *ngIf="loanDetails.length > 0" class="table modern-loan-table table-striped align-middle">
-          <thead class="table-light">
-            <tr>
-              <th>#</th>
-              <th>Loan Type</th>
-              <th>Amount</th>
-              <th>Status</th>
-              <th>Issued</th>
-            </tr>
-          </thead>
+<div class="d-flex justify-content-between align-items-center mb-3">
 
-          <tbody>
-            <tr *ngFor="let loan of loanDetails; index as i">
-              <td>{{ i + 1 }}</td>
-              <td>{{ loan.loanType }}</td>
-              <td>{{ loan.amount | currency:'KES ' }}</td>
-<td>
- <span class="badge fw-bold px-3 py-2"
-  [ngClass]="{
-    'badge-approved': loan.status?.toLowerCase() === 'approved',
-    'badge-pending': loan.status?.toLowerCase() === 'pending',
-    'badge-rejected': loan.status?.toLowerCase() === 'rejected',
-    'badge-partial': loan.status?.toLowerCase() === 'partial',
-    'badge-repaid': loan.status?.toLowerCase() === 'repaid'
-  }">
-  {{ loan.status?.toUpperCase() }}
-</span>
+    <h6 class="fw-bold text-primary mb-0">
+        <i class="bi bi-briefcase-fill me-2"></i>
+        Loan Summary
+    </h6>
 
+    <button
+        class="btn btn-sm btn-outline-primary rounded-pill px-3"
+        (click)="showLoanSummary = !showLoanSummary">
 
-</td>
+        <i class="bi"
+           [ngClass]="showLoanSummary
+           ? 'bi-chevron-up'
+           : 'bi-chevron-down'"></i>
 
+        {{ showLoanSummary ? 'Hide Transactions' : 'Recent Transactions' }}
 
+    </button>
 
+</div>
 
+<div *ngIf="showLoanSummary" class="loan-summary-container">
 
-              <td>{{ loan.issueDate | date }}</td>
-            </tr>
-          </tbody>
-        </table>
+    <!-- Loan Table -->
+    <table *ngIf="loanDetails.length > 0"
+           class="table modern-loan-table table-striped table-hover align-middle">
 
-        <p *ngIf="loanDetails.length === 0" class="text-muted text-center">
-          No loan records found.
+        <thead class="table-light">
+
+        <tr>
+
+            <th>#</th>
+
+            <th>Loan Type</th>
+
+            <th>Amount</th>
+
+            <th>Status</th>
+
+            <th>Issued</th>
+
+        </tr>
+
+        </thead>
+
+        <tbody>
+
+        <tr *ngFor="let loan of loanDetails; index as i">
+
+            <td>{{ i + 1 }}</td>
+
+            <td>{{ loan.loanType }}</td>
+
+            <td>{{ loan.amount | currency:'KES ' }}</td>
+
+            <td>
+
+                <span
+                    class="badge fw-bold px-3 py-2"
+                    [ngClass]="getStatusClass(loan.status)">
+
+                    {{ loan.status }}
+
+                </span>
+
+            </td>
+
+            <td>{{ loan.issueDate | date:'dd MMM yyyy' }}</td>
+
+        </tr>
+
+        </tbody>
+
+    </table>
+
+    <div
+        *ngIf="loanDetails.length === 0"
+        class="text-center py-4">
+
+        <i class="bi bi-inbox fs-1 text-secondary"></i>
+
+        <p class="text-muted mt-2 mb-0">
+
+            No loan records found.
+
         </p>
+
+    </div>
+
+</div>
 
       </div>
     </div>

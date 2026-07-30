@@ -9,6 +9,7 @@ export interface Repayment {
   repaymentDate: string;
   phoneNumber?: string;
   applicantName?: string;
+   accountNumber?: string;
 }
 
 @Injectable({
@@ -40,4 +41,12 @@ export class RepaymentService {
     loan.dueAmount = (loan.totalRepayableAmount || 0) - (loan.amountPaid || 0);
     return loan;
   }
+
+getRepaymentStatus(ref: string) {
+  return this.http.get<any>(
+    `http://localhost:8080/api/repayments/status/${ref}`
+  );
+}
+
+
 }

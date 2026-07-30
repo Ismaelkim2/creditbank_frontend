@@ -1,0 +1,2455 @@
+/*==========================================================
+  CREDIBANK ENTERPRISE CUSTOMER INTELLIGENCE
+===========================================================*/
+
+:host{
+
+--primary:#2563eb;
+--primary-dark:#1d4ed8;
+--success:#10b981;
+--warning:#f59e0b;
+--danger:#ef4444;
+--info:#06b6d4;
+
+--dark:#0f172a;
+--dark-2:#1e293b;
+--dark-3:#334155;
+
+--light:#f8fafc;
+--border:#e5e7eb;
+
+--shadow-sm:0 2px 10px rgba(15,23,42,.06);
+--shadow-md:0 10px 30px rgba(15,23,42,.10);
+--shadow-lg:0 25px 60px rgba(15,23,42,.18);
+
+--radius:18px;
+
+display:block;
+
+background:#f5f7fb;
+
+min-height:100vh;
+
+font-family:
+Inter,
+Segoe UI,
+Roboto,
+sans-serif;
+
+}
+
+
+/*==========================================================
+PAGE
+===========================================================*/
+
+.customer-intelligence-page{
+
+padding:16px;
+
+animation:fadeIn .45s ease;
+
+}
+
+.container-fluid{
+
+max-width:100%;
+
+margin:auto;
+
+}
+
+
+.customer-title{
+    display:flex;
+    flex-direction:column;
+    gap:4px;
+    margin-bottom:18px;
+}
+
+.customer-label{
+    display:inline-flex;
+    align-items:center;
+    gap:8px;
+    font-size:.76rem;
+    font-weight:700;
+    text-transform:uppercase;
+    letter-spacing:2px;
+    color:#2563eb;
+}
+
+.customer-name{
+    margin:0;
+    font-size:2rem;
+    font-weight:800;
+    color:#0f172a;
+    line-height:1.1;
+    letter-spacing:-0.5px;
+}
+
+.customer-subtitle{
+    color:#64748b;
+    font-size:.95rem;
+    font-weight:500;
+}
+
+/*==========================================================
+HERO
+===========================================================*/
+
+.hero-header{
+
+position:relative;
+
+overflow:hidden;
+
+border-radius:25px;
+
+background:
+
+linear-gradient(
+135deg,
+#0f172a,
+#172554,
+#1e40af
+);
+
+padding:20px;
+
+box-shadow:var(--shadow-lg);
+
+margin-bottom:20px;
+
+}
+
+.hero-glow{
+
+position:absolute;
+
+width:700px;
+
+height:700px;
+
+right:-180px;
+
+top:-250px;
+
+background:
+
+radial-gradient(circle,
+rgba(37,99,235,.35),
+transparent 70%);
+
+pointer-events:none;
+
+}
+
+.hero-content{
+    position:relative;
+    z-index:2;
+    display:block;
+    width: 100%;
+    grid-template-columns:minmax(0,2.2fr) 380px;
+    gap:22px;
+    align-items:start;
+}
+
+/*==========================================================
+LEFT PANEL
+===========================================================*/
+
+.left-panel{
+
+display:flex;
+
+flex-direction:column;
+
+gap:25px;
+
+}
+
+/*==========================================================
+RIGHT PANEL
+===========================================================*/
+
+.right-panel{
+
+display:flex;
+
+flex-direction:column;
+
+gap:25px;
+
+}
+
+/*==========================================================
+GLASS CARD
+===========================================================*/
+
+.card-glass{
+
+background:
+
+rgba(255,255,255,.97);
+
+backdrop-filter:
+
+blur(18px);
+
+border-radius:22px;
+
+padding:28px;
+
+box-shadow:
+
+var(--shadow-md);
+
+border:
+
+1px solid rgba(255,255,255,.55);
+
+transition:.35s;
+
+}
+
+.card-glass:hover{
+
+transform:translateY(-4px);
+
+box-shadow:
+
+0 20px 55px rgba(0,0,0,.14);
+
+}
+
+/*==========================================================
+PROFILE
+===========================================================*/
+
+.customer-profile{
+
+display:flex;
+
+align-items:center;
+
+gap:30px;
+
+margin-bottom:20px;
+
+}
+
+.profile-image-wrapper{
+
+position:relative;
+
+}
+
+.profile-image{
+
+width:145px;
+
+height:145px;
+
+border-radius:50%;
+
+object-fit:cover;
+
+border:6px solid white;
+
+box-shadow:
+
+0 18px 40px rgba(0,0,0,.18);
+
+background:#fff;
+
+}
+
+.profile-status{
+
+position:absolute;
+
+right:12px;
+
+bottom:12px;
+
+width:22px;
+
+height:22px;
+
+border-radius:50%;
+
+border:4px solid white;
+
+}
+
+.profile-status.online{
+
+background:#22c55e;
+
+box-shadow:
+
+0 0 20px #22c55e;
+
+}
+
+.profile-info{
+
+flex:1;
+
+}
+
+.profile-info h2{
+
+font-size:1.55rem;
+
+margin-bottom:10px;
+
+font-weight:800;
+
+color:#0f172a;
+
+}
+
+/*==========================================================
+PROFILE CHIPS
+===========================================================*/
+
+.profile-id-line{
+
+display:flex;
+
+flex-wrap:wrap;
+
+gap:12px;
+
+}
+
+.chip{
+
+display:inline-flex;
+
+align-items:center;
+
+gap:8px;
+
+padding:10px 18px;
+
+border-radius:40px;
+
+background:#eef4ff;
+
+color:#1e3a8a;
+
+font-weight:700;
+
+font-size:.92rem;
+
+transition:.25s;
+
+}
+
+.chip:hover{
+
+background:#dbeafe;
+
+transform:translateY(-2px);
+
+}
+
+.chip i{
+
+font-size:.9rem;
+
+}
+
+/*=========================================
+LOAN STATUS CHIP
+=========================================*/
+
+.chip.status{
+    font-weight:700;
+    border:1px solid transparent;
+    transition:.3s;
+}
+
+/* APPROVED */
+
+.status-approved{
+    background:#dcfce7 !important;
+    color:#15803d !important;
+    border-color:#86efac !important;
+}
+
+/* REJECTED */
+
+.status-rejected{
+    background:#fee2e2 !important;
+    color:#b91c1c !important;
+    border-color:#fca5a5 !important;
+}
+
+/* WAITING FOR AUTHORIZATION */
+
+.status-pending{
+    background:#fef3c7 !important;
+    color:#b45309 !important;
+    border-color:#fcd34d !important;
+}
+
+/* OVERDUE */
+
+.status-overdue{
+    background:#ffedd5 !important;
+    color:#c2410c !important;
+    border-color:#fdba74 !important;
+}
+
+/* PAID / CLEARED */
+
+.status-paid{
+    background:#dbeafe !important;
+    color:#1d4ed8 !important;
+    border-color:#93c5fd !important;
+}
+
+/*==========================================================
+SECTION TITLES
+===========================================================*/
+
+.section-title{
+
+  margin:16px 0 10px;
+
+font-size:1rem;
+
+padding-bottom:8px;
+
+display:flex;
+
+align-items:center;
+
+gap:10px;;
+
+font-weight:800;
+
+color:#0f172a;
+
+border-bottom:
+
+2px solid #edf2f7;
+
+}
+
+.section-title i{
+
+color:var(--primary);
+
+font-size:1.2rem;
+
+}
+
+/*==========================================================
+DIVIDER
+===========================================================*/
+
+hr{
+
+border:none;
+
+height:1px;
+
+background:#edf2f7;
+
+margin:25px 0;
+
+}
+
+/*==========================================================
+ANIMATION
+===========================================================*/
+
+@keyframes fadeIn{
+
+from{
+
+opacity:0;
+
+transform:
+
+translateY(15px);
+
+}
+
+to{
+
+opacity:1;
+
+transform:
+
+translateY(0);
+
+}
+
+}
+
+.intel-grid{
+
+display:grid;
+
+/* more cards on one row */
+
+grid-template-columns:
+repeat(auto-fit,minmax(170px,1fr));
+
+gap:12px;
+
+margin-top:12px;
+
+}
+
+/*==========================================================
+ENTERPRISE KPI BOX
+===========================================================*/
+
+.intel-box{
+
+position:relative;
+
+overflow:hidden;
+
+background:#ffffff;
+
+padding:14px 16px;
+
+min-height:72px;
+
+border-radius:14px;
+
+border:1px solid #edf2f7;
+
+box-shadow:0 8px 24px rgba(15,23,42,.05);
+
+transition:all .30s ease;
+
+display:flex;
+
+flex-direction:column;
+
+justify-content:center;
+
+}
+
+.intel-box:hover{
+
+transform:translateY(-6px);
+
+border-color:#bfdbfe;
+
+box-shadow:
+
+0 18px 40px rgba(37,99,235,.15);
+
+}
+
+/* Decorative Gradient */
+
+.intel-box::before{
+
+content:"";
+
+position:absolute;
+
+top:0;
+
+left:0;
+
+width:100%;
+
+height:5px;
+
+background:
+
+linear-gradient(
+90deg,
+#2563eb,
+#3b82f6,
+#60a5fa
+);
+
+}
+
+/*==========================================================
+LABELS
+===========================================================*/
+
+.intel-box small{
+
+font-size:.76rem;
+
+font-weight:700;
+
+letter-spacing:.4px;
+
+text-transform:uppercase;
+
+color:#64748b;
+
+margin-bottom:8px;
+
+display:block;
+
+}
+
+/*==========================================================
+VALUES
+===========================================================*/
+
+.intel-box strong{
+
+font-size:1.18rem;
+
+font-weight:800;
+
+color:#0f172a;
+
+word-break:break-word;
+
+}
+
+/*==========================================================
+FINANCIAL COLORS
+===========================================================*/
+
+.text-success{
+
+color:#16a34a !important;
+
+}
+
+.text-danger{
+
+color:#dc2626 !important;
+
+}
+
+.text-warning{
+
+color:#d97706 !important;
+
+}
+
+.text-primary{
+
+color:#2563eb !important;
+
+}
+
+/*==========================================================
+CUSTOM STATUS COLORS
+===========================================================*/
+
+.good{
+
+color:#16a34a;
+
+font-weight:800;
+
+}
+
+.primary{
+
+color:#2563eb;
+
+font-weight:800;
+
+}
+
+.warn{
+
+color:#d97706;
+
+font-weight:800;
+
+}
+
+.danger{
+
+color:#dc2626;
+
+font-weight:800;
+
+}
+
+
+.contact-grid{
+
+display:grid;
+
+grid-template-columns:
+
+repeat(auto-fit,minmax(240px,1fr));
+
+gap:18px;
+
+margin-top:25px;
+
+}
+
+.contact-card{
+
+display:flex;
+
+align-items:center;
+
+gap:18px;
+
+padding:18px;
+
+background:white;
+
+border-radius:18px;
+
+border:1px solid #edf2f7;
+
+transition:.3s;
+
+box-shadow:
+
+0 8px 20px rgba(0,0,0,.05);
+
+}
+
+
+.contact-card:hover{
+
+transform:translateY(-4px);
+
+border-color:#3b82f6;
+
+box-shadow:
+
+0 15px 35px rgba(37,99,235,.12);
+
+}
+
+.contact-card i{
+
+width:48px;
+
+height:48px;
+
+display:flex;
+
+align-items:center;
+
+justify-content:center;
+
+border-radius:50%;
+
+background:
+
+linear-gradient(
+135deg,
+#2563eb,
+#3b82f6
+);
+
+color:white;
+
+font-size:1.1rem;
+
+flex-shrink:0;
+
+}
+
+.contact-card span{
+
+font-weight:700;
+
+color:#0f172a;
+
+word-break:break-word;
+
+}
+
+.contact-card strong{
+
+display:block;
+
+font-size:1rem;
+
+color:#0f172a;
+
+}
+
+/*==========================================================
+AI INTELLIGENCE CARD
+===========================================================*/
+
+.ai-card{
+
+background:
+
+linear-gradient(
+135deg,
+#0f172a,
+#1e293b
+);
+
+border-radius:24px;
+
+padding:28px;
+
+color:white;
+
+box-shadow:
+
+0 22px 55px rgba(0,0,0,.25);
+
+position:relative;
+
+overflow:hidden;
+
+margin-top:28px;
+
+}
+
+.ai-card::before{
+
+content:"";
+
+position:absolute;
+
+right:-70px;
+
+top:-70px;
+
+width:220px;
+
+height:220px;
+
+border-radius:50%;
+
+background:
+
+radial-gradient(
+rgba(59,130,246,.35),
+transparent
+);
+
+}
+
+.ai-card h2{
+
+font-size:1.4rem;
+
+font-weight:800;
+
+margin-bottom:22px;
+
+display:flex;
+
+align-items:center;
+
+gap:10px;
+
+}
+
+.ai-card h2::before{
+
+content:"🧠";
+
+font-size:1.5rem;
+
+}
+
+.ai-card hr{
+
+border:none;
+
+height:1px;
+
+background:
+
+rgba(255,255,255,.12);
+
+margin:18px 0;
+
+}
+
+.ai-card p{
+
+display:flex;
+
+justify-content:space-between;
+
+align-items:center;
+
+padding:10px 0;
+
+font-size:.95rem;
+
+border-bottom:
+
+1px dashed rgba(255,255,255,.08);
+
+}
+
+.ai-card p:last-child{
+
+border-bottom:none;
+
+}
+
+.ai-card b{
+
+font-weight:700;
+
+color:#cbd5e1;
+
+}
+
+.ai-card strong{
+
+font-size:1.15rem;
+
+font-weight:800;
+
+}
+
+/*==========================================================
+AI SCORE COLORS
+===========================================================*/
+
+.safe{
+
+color:#22c55e;
+
+font-weight:800;
+
+}
+
+.warn{
+
+color:#f59e0b;
+
+font-weight:800;
+
+}
+
+.danger{
+
+color:#ef4444;
+
+font-weight:800;
+
+}
+
+/*==========================================================
+FRAUD FLAG
+===========================================================*/
+
+.bad{
+
+display:inline-block;
+
+padding:6px 12px;
+
+border-radius:20px;
+
+background:#ef4444;
+
+color:white;
+
+font-weight:700;
+
+font-size:.82rem;
+
+}
+
+.good-flag{
+
+display:inline-block;
+
+padding:6px 12px;
+
+border-radius:20px;
+
+background:#22c55e;
+
+color:white;
+
+font-weight:700;
+
+font-size:.82rem;
+
+}
+
+/*==========================================================
+HEALTH PROGRESS
+===========================================================*/
+
+.health-pill{
+
+padding:10px 18px;
+
+border-radius:50px;
+
+background:
+
+linear-gradient(
+135deg,
+#22c55e,
+#16a34a
+);
+
+color:white;
+
+display:flex;
+
+flex-direction:column;
+
+align-items:center;
+
+justify-content:center;
+
+min-width:110px;
+
+box-shadow:
+
+0 10px 25px rgba(34,197,94,.25);
+
+}
+
+.health-pill small{
+
+font-size:.72rem;
+
+opacity:.9;
+
+text-transform:uppercase;
+
+letter-spacing:.5px;
+
+}
+
+.health-pill strong{
+
+font-size:1.1rem;
+
+margin-top:2px;
+
+font-weight:800;
+
+}
+
+/*==========================================================
+LOAN STATUS BADGES
+===========================================================*/
+
+.status-approved{
+
+background:#dcfce7;
+
+color:#166534;
+
+}
+
+.status-pending{
+
+background:#fef3c7;
+
+color:#92400e;
+
+}
+
+.status-rejected{
+
+background:#fee2e2;
+
+color:#991b1b;
+
+}
+
+.status-overdue{
+
+background:#fecaca;
+
+color:#7f1d1d;
+
+}
+
+.status-paid{
+
+background:#dbeafe;
+
+color:#1d4ed8;
+
+}
+
+/*==========================================================
+RIGHT ACTION PANEL
+===========================================================*/
+
+.action-panel{
+
+display:flex;
+
+flex-direction:column;
+
+gap:14px;
+
+position:sticky;
+
+top:12px;
+
+/* Always visible while scrolling */
+
+max-height:calc(100vh - 24px);
+
+overflow-y:auto;
+
+padding-right:4px;
+
+}
+
+/*==========================================================
+ENTERPRISE BUTTONS
+===========================================================*/
+
+.action-panel .btn{
+
+height:44px;
+
+border-radius:10px;
+
+font-weight:88rem;
+
+font-size:.95rem;
+
+letter-spacing:.3px;
+
+transition:all .28s ease;
+
+border:none;
+
+box-shadow:0 8px 18px rgba(15,23,42,.08);
+
+}
+
+.action-panel .btn i{
+
+font-size:1rem;
+
+}
+
+.action-panel .btn-primary{
+
+background:linear-gradient(
+135deg,
+#2563eb,
+#1d4ed8
+);
+
+}
+
+.action-panel .btn-primary:hover{
+
+transform:translateY(-3px);
+
+box-shadow:
+
+0 16px 30px rgba(37,99,235,.28);
+
+}
+
+.action-panel .btn-success{
+
+background:linear-gradient(
+135deg,
+#10b981,
+#059669
+);
+
+}
+
+.action-panel .btn-success:hover{
+
+transform:translateY(-3px);
+
+box-shadow:
+
+0 18px 35px rgba(16,185,129,.30);
+
+}
+
+.action-panel .btn-danger{
+
+background:linear-gradient(
+135deg,
+#ef4444,
+#dc2626
+);
+
+}
+
+.action-panel .btn-dark{
+
+background:#0f172a;
+
+}
+
+.action-panel .btn-dark:hover{
+
+background:#1e293b;
+
+transform:translateY(-3px);
+
+}
+
+/*==========================================================
+ADMIN QUICK ACTIONS
+===========================================================*/
+
+.admin-tools{
+
+display:grid;
+
+grid-template-columns:1fr;
+
+gap:12px;
+
+margin-top:10px;
+
+}
+
+.quick-action{
+
+display:flex;
+
+align-items:center;
+
+gap:15px;
+
+padding:16px;
+
+border-radius:16px;
+
+background:#fff;
+
+border:1px solid #edf2f7;
+
+transition:.3s;
+
+cursor:pointer;
+
+box-shadow:0 8px 18px rgba(15,23,42,.05);
+
+}
+
+.quick-action:hover{
+
+transform:translateY(-4px);
+
+border-color:#2563eb;
+
+box-shadow:0 18px 35px rgba(37,99,235,.15);
+
+}
+
+.quick-action i{
+
+width:48px;
+
+height:48px;
+
+display:flex;
+
+align-items:center;
+
+justify-content:center;
+
+border-radius:14px;
+
+background:#eff6ff;
+
+color:#2563eb;
+
+font-size:1.2rem;
+
+}
+
+.quick-action h6{
+
+margin:0;
+
+font-weight:800;
+
+color:#0f172a;
+
+}
+
+.quick-action small{
+
+display:block;
+
+color:#64748b;
+
+margin-top:4px;
+
+}
+
+/*==========================================================
+ASSIGNED OFFICER CARD
+===========================================================*/
+
+.staff-card{
+
+    margin-top:20px;
+
+    background:#ffffff;
+
+    border:1px solid #e5e7eb;
+
+    border-radius:18px;
+
+    padding:22px;
+
+    box-shadow:0 10px 25px rgba(15,23,42,.08);
+
+}
+
+.staff-card h6{
+
+    display:flex;
+
+    align-items:center;
+
+    gap:10px;
+
+    margin-bottom:18px;
+
+    font-weight:800;
+
+    color:#0f172a;
+
+}
+
+.officer-avatar{
+
+    width:70px;
+
+    height:70px;
+
+    margin:0 auto 15px;
+
+    border-radius:50%;
+
+    background:linear-gradient(135deg,#2563eb,#3b82f6);
+
+    display:flex;
+
+    align-items:center;
+
+    justify-content:center;
+
+    color:#fff;
+
+    font-size:28px;
+
+}
+
+.staff-card strong{
+
+    display:block;
+
+    text-align:center;
+
+    font-size:18px;
+
+    margin-bottom:18px;
+
+    color:#0f172a;
+
+}
+
+.staff-card p{
+
+    display:flex;
+
+    align-items:center;
+
+    margin-bottom:10px;
+
+    color:#475569;
+
+    font-size:.95rem;
+
+}
+
+.warning-box{
+
+    background:#fff8e6;
+
+    border-left:4px solid #f59e0b;
+
+    border-radius:12px;
+
+    padding:15px;
+
+    color:#92400e;
+
+    font-weight:600;
+
+}
+
+/*==========================================================
+ADMIN COMMAND CENTER
+==========================================================*/
+
+.admin-action-bar{
+
+    margin-top:30px;
+
+    padding:24px;
+
+    border-radius:22px;
+
+    background:linear-gradient(145deg,#ffffff,#f8fbff);
+
+    border:1px solid #e5e7eb;
+
+    box-shadow:
+        0 20px 45px rgba(15,23,42,.08);
+
+}
+
+.action-header{
+
+    display:flex;
+
+    justify-content:space-between;
+
+    align-items:center;
+
+    margin-bottom:22px;
+
+    padding-bottom:18px;
+
+    border-bottom:1px solid #edf2f7;
+
+}
+
+.action-header h5{
+
+    margin:0;
+
+    font-size:18px;
+
+    font-weight:800;
+
+    color:#0f172a;
+
+    display:flex;
+
+    align-items:center;
+
+    gap:10px;
+
+}
+
+.action-header h5 i{
+
+    width:42px;
+
+    height:42px;
+
+    border-radius:12px;
+
+    display:flex;
+
+    align-items:center;
+
+    justify-content:center;
+
+    background:linear-gradient(135deg,#2563eb,#1d4ed8);
+
+    color:#fff;
+
+}
+
+.action-header small{
+
+    color:#64748b;
+
+    margin-left:54px;
+
+    font-size:.85rem;
+
+}
+
+.action-grid{
+
+    display:grid;
+
+    grid-template-columns:repeat(2,1fr);
+
+    gap:16px;
+
+}
+
+.action-btn{
+
+    border:none;
+
+    border-radius:18px;
+
+    padding:20px;
+
+    min-height:110px;
+
+    display:flex;
+
+    align-items:center;
+
+    gap:16px;
+
+    cursor:pointer;
+
+    transition:.35s;
+
+    color:white;
+
+    text-align:left;
+
+    position:relative;
+
+    overflow:hidden;
+
+}
+
+.action-btn::before{
+
+    content:"";
+
+    position:absolute;
+
+    inset:0;
+
+    background:rgba(255,255,255,.08);
+
+    opacity:0;
+
+    transition:.3s;
+
+}
+
+.action-btn:hover::before{
+
+    opacity:1;
+
+}
+
+.action-btn:hover{
+
+    transform:translateY(-6px);
+
+    box-shadow:0 18px 35px rgba(15,23,42,.18);
+
+}
+
+.action-btn i{
+
+    width:58px;
+
+    height:58px;
+
+    border-radius:16px;
+
+    display:flex;
+
+    align-items:center;
+
+    justify-content:center;
+
+    background:rgba(255,255,255,.18);
+
+    font-size:22px;
+
+    flex-shrink:0;
+
+}
+
+.action-btn span{
+
+    display:block;
+
+    font-size:16px;
+
+    font-weight:800;
+
+}
+
+.action-btn small{
+
+    display:block;
+
+    margin-top:6px;
+
+    opacity:.95;
+
+    font-size:13px;
+
+}
+
+.reminder{
+
+    background:linear-gradient(135deg,#2563eb,#1d4ed8);
+
+}
+
+.repay{
+
+    background:linear-gradient(135deg,#16a34a,#15803d);
+
+}
+
+.assign{
+
+    background:linear-gradient(135deg,#0f172a,#334155);
+
+}
+
+.statement{
+
+    background:linear-gradient(135deg,#7c3aed,#5b21b6);
+
+}
+
+@media(max-width:768px){
+
+.action-grid{
+
+    grid-template-columns:1fr;
+
+}
+
+.action-btn{
+
+    min-height:90px;
+
+}
+
+}
+
+
+.staff-card h6{
+
+font-weight:800;
+
+font-size:1.05rem;
+
+margin-bottom:18px;
+
+display:flex;
+
+align-items:center;
+
+gap:10px;
+
+color:#0f172a;
+
+}
+
+.staff-card h6 i{
+
+color:#2563eb;
+
+font-size:1.1rem;
+
+}
+
+.staff-card strong{
+
+display:block;
+
+font-size:1.1rem;
+
+margin-bottom:8px;
+
+color:#0f172a;
+
+}
+
+.staff-card p{
+
+margin-bottom:8px;
+
+color:#64748b;
+
+font-size:.93rem;
+
+display:flex;
+
+align-items:center;
+
+gap:10px;
+
+}
+
+.warning-box{
+
+padding:18px;
+
+border-radius:14px;
+
+background:#fff8e1;
+
+color:#92400e;
+
+font-weight:700;
+
+border-left:5px solid #f59e0b;
+
+}
+
+/*==========================================================
+REJECTION CARD
+===========================================================*/
+
+.alert-danger{
+
+border:none;
+
+border-radius:18px;
+
+padding:22px;
+
+box-shadow:0 12px 28px rgba(239,68,68,.12);
+
+}
+
+.alert-danger h5{
+
+font-weight:800;
+
+margin-bottom:18px;
+
+}
+
+/*==========================================================
+REPAYMENT HISTORY
+===========================================================*/
+
+.repayment-history-card{
+
+background:#fff;
+
+border-radius:22px;
+
+padding:28px;
+
+box-shadow:0 18px 45px rgba(15,23,42,.08);
+
+border:1px solid #edf2f7;
+
+}
+
+/*==========================================================
+SECTION HEADER
+===========================================================*/
+
+.section-header{
+
+display:flex;
+
+justify-content:space-between;
+
+align-items:center;
+
+margin-bottom:25px;
+
+padding-bottom:18px;
+
+border-bottom:2px solid #edf2f7;
+
+}
+
+.section-header h4{
+
+font-weight:800;
+
+margin:0;
+
+display:flex;
+
+align-items:center;
+
+gap:12px;
+
+color:#0f172a;
+
+}
+
+.section-header i{
+
+color:#2563eb;
+
+}
+
+/*==========================================================
+BADGE
+===========================================================*/
+
+.section-header .badge{
+
+padding:10px 16px;
+
+font-size:.82rem;
+
+border-radius:30px;
+
+}
+
+/*==========================================================
+TABLE
+===========================================================*/
+
+.repayment-table{
+
+margin-bottom:0;
+
+border-collapse:separate;
+
+border-spacing:0 10px;
+
+}
+
+.repayment-table thead th{
+
+border:none;
+
+background:#f8fafc;
+
+padding:16px;
+
+font-weight:800;
+
+color:#475569;
+
+text-transform:uppercase;
+
+font-size:.82rem;
+
+letter-spacing:.5px;
+
+}
+
+.repayment-table tbody tr{
+
+background:white;
+
+box-shadow:0 6px 16px rgba(15,23,42,.05);
+
+transition:.25s;
+
+}
+
+.repayment-table tbody tr:hover{
+
+transform:scale(1.01);
+
+box-shadow:0 15px 28px rgba(37,99,235,.10);
+
+}
+
+.repayment-table td{
+
+padding:18px 16px;
+
+vertical-align:middle;
+
+border-top:none;
+
+}
+
+.amount{
+
+font-weight:800;
+
+color:#059669;
+
+}
+
+/*==========================================================
+REFERENCE NUMBER
+===========================================================*/
+
+.txn-ref{
+
+display:inline-flex;
+
+padding:8px 14px;
+
+border-radius:30px;
+
+background:#eff6ff;
+
+color:#2563eb;
+
+font-weight:700;
+
+font-size:.82rem;
+
+}
+
+/*==========================================================
+SUCCESS STATUS
+===========================================================*/
+
+.status-success{
+
+display:inline-flex;
+
+align-items:center;
+
+gap:8px;
+
+padding:8px 14px;
+
+border-radius:30px;
+
+background:#dcfce7;
+
+color:#166534;
+
+font-weight:700;
+
+font-size:.82rem;
+
+}
+
+.status-success i{
+
+font-size:.8rem;
+
+}
+
+/*==========================================================
+RECEIPT BUTTON
+===========================================================*/
+
+.btn-receipt{
+
+background:#ef4444;
+
+color:#fff;
+
+border:none;
+
+padding:10px 18px;
+
+border-radius:12px;
+
+font-weight:700;
+
+transition:.3s;
+
+}
+
+.btn-receipt:hover{
+
+background:#dc2626;
+
+transform:translateY(-2px);
+
+}
+
+/*==========================================================
+EMPTY STATE
+===========================================================*/
+
+.empty-history{
+
+background:#fff;
+
+border-radius:24px;
+
+padding:70px 30px;
+
+text-align:center;
+
+box-shadow:0 20px 45px rgba(15,23,42,.08);
+
+border:1px dashed #cbd5e1;
+
+}
+
+.empty-history i{
+
+font-size:5rem;
+
+color:#2563eb;
+
+margin-bottom:25px;
+
+opacity:.9;
+
+}
+
+.empty-history h5{
+
+font-size:1.5rem;
+
+font-weight:800;
+
+margin-bottom:12px;
+
+color:#0f172a;
+
+}
+
+.empty-history p{
+
+color:#64748b;
+
+font-size:1rem;
+
+max-width:420px;
+
+margin:auto;
+
+line-height:1.7;
+
+}
+
+/* ==========================================================
+   ENTERPRISE ACTION PANEL
+========================================================== */
+
+.right-panel{
+    width:360px;
+    min-width:340px;
+    display:flex;
+    flex-direction:column;
+    gap:25px;
+}
+
+.action-panel{
+    position:sticky;
+    top:25px;
+    border-radius:22px;
+    overflow:hidden;
+}
+
+.action-panel button{
+    border-radius:14px;
+    font-weight:700;
+    transition:.3s;
+    letter-spacing:.3px;
+}
+
+.action-panel .btn-primary{
+    background:linear-gradient(135deg,#2563eb,#1d4ed8);
+    border:none;
+    box-shadow:0 10px 30px rgba(37,99,235,.25);
+}
+
+.action-panel .btn-primary:hover{
+    transform:translateY(-2px);
+    box-shadow:0 15px 35px rgba(37,99,235,.35);
+}
+
+.action-panel .btn-success{
+    background:linear-gradient(135deg,#16a34a,#15803d);
+    border:none;
+    box-shadow:0 10px 25px rgba(22,163,74,.25);
+}
+
+.action-panel .btn-success:hover{
+    transform:translateY(-2px);
+}
+
+.action-panel .btn-danger{
+    background:linear-gradient(135deg,#dc2626,#991b1b);
+    border:none;
+}
+
+.action-panel .btn-warning{
+    background:linear-gradient(135deg,#f59e0b,#d97706);
+    border:none;
+}
+
+.action-panel .btn-dark{
+    background:#111827;
+    border:none;
+}
+
+.action-panel .btn{
+    padding:14px;
+}
+
+/* ==========================================================
+   STAFF CARD
+========================================================== */
+
+.staff-card{
+    margin-top:30px;
+    padding:22px;
+    border-radius:18px;
+    background:#ffffff;
+    border:1px solid #e2e8f0;
+}
+
+.staff-card h6{
+    font-size:18px;
+    font-weight:700;
+    margin-bottom:20px;
+    color:#0f172a;
+}
+
+.staff-card strong{
+    display:block;
+    font-size:17px;
+    margin-bottom:6px;
+}
+
+.staff-card p{
+    margin-bottom:5px;
+    color:#64748b;
+}
+
+.warning-box{
+    background:#fff8e6;
+    color:#b45309;
+    border-radius:12px;
+    padding:15px;
+    font-weight:600;
+}
+
+/* ==========================================================
+   AI INTELLIGENCE CARD
+========================================================== */
+
+.ai-card{
+    margin-top:30px;
+    padding:30px;
+    border-radius:24px;
+    background:linear-gradient(145deg,#0f172a,#1e293b);
+    color:#fff;
+    box-shadow:0 25px 60px rgba(0,0,0,.3);
+}
+
+.ai-card h2{
+    font-size:24px;
+    margin-bottom:20px;
+    font-weight:800;
+}
+
+.ai-card hr{
+    border-color:rgba(255,255,255,.15);
+}
+
+.ai-card p{
+    margin-bottom:10px;
+    color:#d1d5db;
+}
+
+.ai-card strong{
+    color:#fff;
+}
+
+.safe{
+    color:#22c55e;
+}
+
+.warn{
+    color:#f59e0b;
+}
+
+.danger{
+    color:#ef4444;
+}
+
+.bad{
+    color:#ef4444;
+    font-weight:700;
+}
+
+/* ==========================================================
+   REPAYMENT HISTORY
+========================================================== */
+
+.repayment-history-card{
+    background:#fff;
+    border-radius:24px;
+    padding:30px;
+    box-shadow:0 20px 50px rgba(15,23,42,.08);
+}
+
+.section-header{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    margin-bottom:25px;
+}
+
+.section-header h4{
+    font-weight:800;
+    color:#0f172a;
+}
+
+.repayment-table{
+    margin-bottom:0;
+}
+
+.repayment-table thead{
+    background:#f8fafc;
+}
+
+.repayment-table thead th{
+    padding:16px;
+    font-weight:700;
+    color:#334155;
+    border:none;
+}
+
+.repayment-table tbody td{
+    padding:18px 16px;
+    vertical-align:middle;
+}
+
+.repayment-table tbody tr{
+    transition:.25s;
+}
+
+.repayment-table tbody tr:hover{
+    background:#f8fbff;
+}
+
+.amount{
+    color:#16a34a;
+    font-weight:700;
+}
+
+.txn-ref{
+    font-weight:700;
+    color:#2563eb;
+}
+
+.status-success{
+    display:inline-flex;
+    align-items:center;
+    gap:6px;
+    color:#16a34a;
+    font-weight:700;
+}
+
+.btn-receipt{
+    border:none;
+    background:#2563eb;
+    color:#fff;
+    border-radius:10px;
+    padding:8px 14px;
+    transition:.3s;
+}
+
+.btn-receipt:hover{
+    transform:translateY(-2px);
+    background:#1d4ed8;
+}
+
+/* ==========================================================
+   EMPTY HISTORY
+========================================================== */
+
+.empty-history{
+    background:#fff;
+    border-radius:24px;
+    padding:80px;
+    text-align:center;
+    box-shadow:0 15px 40px rgba(15,23,42,.06);
+}
+
+.empty-history i{
+    font-size:60px;
+    color:#94a3b8;
+    margin-bottom:20px;
+}
+
+.empty-history h5{
+    font-size:24px;
+    font-weight:800;
+    color:#0f172a;
+}
+
+.empty-history p{
+    color:#64748b;
+    margin-top:12px;
+}
+
+/* ==========================================================
+   CUSTOM SCROLLBAR
+========================================================== */
+
+::-webkit-scrollbar{
+    width:10px;
+    height:10px;
+}
+
+::-webkit-scrollbar-thumb{
+    background:#cbd5e1;
+    border-radius:20px;
+}
+
+::-webkit-scrollbar-thumb:hover{
+    background:#94a3b8;
+}
+
+::-webkit-scrollbar-track{
+    background:#f8fafc;
+}
+
+/* ==========================================================
+   ANIMATIONS
+========================================================== */
+
+@keyframes fadeUp{
+
+    from{
+        opacity:0;
+        transform:translateY(25px);
+    }
+
+    to{
+        opacity:1;
+        transform:translateY(0);
+    }
+
+}
+
+.customer-profile-section,
+.ai-card,
+.staff-card,
+.repayment-history-card,
+.intel-box,
+.contact-card{
+    animation:fadeUp .45s ease;
+}
+
+.customer-profile-section{
+
+padding:20px;
+
+}
+
+.customer-profile{
+
+margin-bottom:12px;
+
+gap:18px;
+
+}
+
+/* ==========================================================
+   RESPONSIVE DESIGN
+========================================================== */
+
+@media(max-width:1400px){
+
+.hero-content{
+    flex-direction:column;
+}
+
+.left-panel{
+    width:100%;
+}
+
+.right-panel{
+    width:100%;
+}
+
+.action-panel{
+    position:relative;
+    top:0;
+}
+
+}
+
+@media(max-width:992px){
+
+.customer-profile{
+    flex-direction:column;
+    text-align:center;
+}
+
+.profile-id-line{
+    justify-content:center;
+}
+
+.contact-grid{
+    grid-template-columns:repeat(2,1fr);
+}
+
+.intel-grid{
+    grid-template-columns:repeat(2,1fr);
+}
+
+}
+
+@media(max-width:768px){
+
+.hero-header{
+    padding:20px;
+}
+
+.contact-grid{
+    grid-template-columns:1fr;
+}
+
+.intel-grid{
+    grid-template-columns:1fr;
+}
+
+.profile-image{
+    width:80px;
+    height:80px;
+}
+
+.profile-info h2{
+    font-size:26px;
+}
+
+.section-title{
+    font-size:20px;
+}
+
+.repayment-history-card{
+    padding:18px;
+}
+
+.section-header{
+    flex-direction:column;
+    gap:15px;
+    align-items:flex-start;
+}
+
+}
+
+@media(max-width:576px){
+
+.profile-id-line{
+    flex-direction:column;
+    align-items:center;
+}
+
+.chip{
+    width:100%;
+    justify-content:center;
+}
+
+.action-panel .btn{
+    width:100%;
+}
+
+}

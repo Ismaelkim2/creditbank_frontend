@@ -1,112 +1,700 @@
-<div class="admin-dashboard">
-  <!-- Sidebar -->
-  <app-sidebar></app-sidebar>
+<div class="admin-dashboard ">
 
-  <!-- Main Dashboard Content -->
-  <div class="dashboard-container">
-    <!-- Header -->
-    <div class="dashboard-header d-flex justify-content-between align-items-center flex-wrap mb-4">
-      <div class="d-flex align-items-center gap-2">
-        <h1 class="fw-bold text-gradient mb-0">
-          {{ userRole === 'DATA_MANAGER' ? 'Credit Manager Console' : 'Admin Control Center' }}
-        </h1>
-        <span class="badge bg-light text-dark border shadow-sm">Fintech Intelligence Suite</span>
-      </div>
 
-      <!-- Top Action Buttons -->
-      <div class="btn-group flex-wrap gap-2 mt-2">
-        <button
-          *ngIf="userRole !== 'DATA_MANAGER'"
-          routerLink="/settings"
-          class="btn btn-dark text-warning fw-semibold shadow-sm hover-glow"
-        >
-          <i class="fa fa-gear me-1"></i> Settings
-        </button>
+<div class="executive-hero mb-1">
 
-        <button
-          *ngIf="userRole !== 'DATA_MANAGER'"
-          routerLink="/admin-approvals"
-          class="btn btn-outline-primary fw-semibold shadow-sm hover-glow"
-        >
-          <i class="fa fa-user-check me-1"></i> Review Requests
-        </button>
+    <!-- =========================
+         LEFT PANEL
+    ========================== -->
 
-        <button
-          *ngIf="userRole === 'ADMIN' || userRole === 'DATA_MANAGER'"
-          routerLink="/account-registration"
-          [queryParams]="{ action: 'apply' }"
-          class="btn btn-outline-success fw-semibold shadow-sm hover-glow"
-        >
-          <i class="fas fa-plus-circle me-1"></i> Apply Loan
-        </button>
+    <div class="hero-left">
 
-        <button routerLink="/loans" class="btn btn-outline-info fw-semibold shadow-sm hover-glow">
-          <i class="fas fa-list-alt me-1"></i> View Loans
-        </button>
+        <!-- Greeting -->
 
-        <button routerLink="/dashboard" class="btn btn-outline-warning fw-semibold shadow-sm hover-glow">
-          <i class="fas fa-bell me-1"></i> Notifications
-        </button>
-      </div>
-    </div>
+     <div class="hero-greeting">
 
-    <!-- Stats Overview -->
-    <div class="stats-cards mb-4">
-      <div class="card gradient-blue shadow">
-        <h6><i class="fas fa-wallet me-2"></i> Total Disbursed</h6>
-        <p>KES {{ totalLoansAmount | number: '1.2-2' }}</p>
-      </div>
+    <div>
 
-      <div class="card gradient-green shadow">
-        <h6><i class="fas fa-check-circle me-2"></i> Approved</h6>
-        <p>{{ totalApproved }}</p>
-      </div>
-
-      <div class="card gradient-yellow shadow">
-        <h6><i class="fas fa-clock me-2"></i> Pending</h6>
-        <p>{{ totalPending }}</p>
-      </div>
-
-      <div class="card gradient-red shadow">
-        <h6><i class="fas fa-times-circle me-2"></i> Rejected</h6>
-        <p>{{ totalRejected }}</p>
-      </div>
-    </div>
-
-    <!-- Charts -->
-    <div class="row g-4 mb-4">
-      <div class="col-md-6">
-        <div class="card shadow-lg p-4 rounded-4 border-0 chart-card">
-          <h6 class="text-primary mb-3"><i class="fas fa-chart-pie me-2"></i> Loan Status Breakdown</h6>
-          <canvas id="loanStatusChart"></canvas>
+        <div class="greeting-small">
+            EXECUTIVE DASHBOARD
         </div>
-      </div>
 
-      <div class="col-md-6">
-        <div class="card shadow-lg p-4 rounded-4 border-0 chart-card">
-          <h6 class="text-primary mb-3"><i class="fas fa-chart-line me-2"></i> Monthly Disbursement Trend</h6>
-          <canvas id="loanTrendChart"></canvas>
+        <div class="hero-main-title mb-2">
+
+            <span class="greeting-text">
+                {{ greeting }},
+            </span>
+
+            <span class="username">
+                {{ username }}
+            </span>
+
         </div>
-      </div>
+
     </div>
 
-    <!-- Top Applicants -->
-    <div class="card shadow p-4 rounded-4 border-0 bg-white">
-      <h6 class="text-dark mb-3"><i class="fas fa-users me-2 text-primary"></i> Top Performing Applicants</h6>
-      <table class="table table-hover align-middle mb-0">
-        <thead class="bg-light">
-          <tr>
-            <th>Name</th>
-            <th>Total Loaned (KES)</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr *ngFor="let applicant of topApplicants">
-            <td>{{ applicant.name }}</td>
-            <td>{{ applicant.total | number: '1.0-0' }}</td>
-          </tr>
-        </tbody>
-      </table>
+</div>
+
+        <!-- Title -->
+
+        <h2>
+
+            CreditBank Credit Intelligence Platform
+
+        </h2>
+
+        <!-- Description -->
+
+        <p>
+
+            Enterprise Lending • Credit Risk Intelligence • Portfolio Monitoring • Fraud Analytics • Executive Insightful Decision Support
+
+        </p>
+
+        <!-- Quick Actions -->
+
+        <div class="hero-buttons">
+
+            <button
+                routerLink="/app/loans"
+                class="hero-btn primary">
+
+                <i class="fas fa-money-check-alt"></i>
+
+                <span>New Loan</span>
+
+            </button>
+
+            <button
+                routerLink="/app/accountsopening"
+                class="hero-btn secondary">
+
+                <i class="fas fa-user-plus"></i>
+
+                <span>Open Account</span>
+
+            </button>
+
+            
+    <button
+  *ngIf="isAdmin"
+  routerLink="/app/accountsopening"
+  class="hero-btn secondary">
+
+  <i class="fas fa-user-plus"></i>
+
+  <span>
+    Onboard
+  </span>
+
+</button>
+
+            <button
+                routerLink="/app/reports"
+                class="hero-btn dark">
+
+                <i class="fas fa-chart-line"></i>
+
+                <span>Executive Reports</span>
+
+            </button>
+
+        </div>
+
     </div>
+
+    <!-- =========================
+         RIGHT PANEL
+    ========================== -->
+
+    <div class="hero-right">
+
+    
+
+        <!-- Executive Statistics -->
+
+        <div class="hero-stats">
+
+            <!-- Portfolio -->
+
+            <div class="hero-stat">
+
+                <div class="hero-stat-icon portfolio">
+
+                    <i class="fas fa-wallet"></i>
+
+                </div>
+
+                <div class="hero-stat-content">
+
+                    <small>Total Portfolio</small>
+
+                    <h3>
+
+                        KES {{ totalLoansAmount | number:'1.0-0' }}
+
+                    </h3>
+
+                    <span class="stat-positive">
+
+                        <i class="fas fa-arrow-trend-up"></i>
+
+                        Healthy Growth
+
+                    </span>
+
+                </div>
+
+            </div>
+
+            <!-- Customers -->
+
+            <div class="hero-stat">
+
+                <div class="hero-stat-icon customers">
+
+                    <i class="fas fa-users"></i>
+
+                </div>
+
+                <div class="hero-stat-content">
+
+                    <small>Active Customers</small>
+
+                    <h3>
+
+                        {{ loans.length }}
+
+                    </h3>
+
+                    <span>
+
+                        Managed Accounts
+
+                    </span>
+
+                </div>
+
+            </div>
+
+            <!-- Total Repaid -->
+
+            <div class="hero-stat">
+
+                <div class="hero-stat-icon repaid">
+
+                    <i class="fas fa-coins"></i>
+
+                </div>
+
+                <div class="hero-stat-content">
+
+                    <small>Total Repaid</small>
+
+                    <h3>
+
+                        <ng-container *ngIf="!loadingRepaid">
+
+                            KES {{ repaymentStats.totalRepaid | number:'1.2-2' }}
+
+                        </ng-container>
+
+                        <span
+                            *ngIf="loadingRepaid"
+                            class="hero-loader">
+
+                            <i class="fas fa-spinner fa-spin"></i>
+
+                        </span>
+
+                    </h3>
+
+                    <span class="stat-positive">
+
+                        <i class="fas fa-circle-check"></i>
+
+                        Healthy Cashflow
+
+                    </span>
+
+                </div>
+
+            </div>
+
+            <!-- Outstanding -->
+
+            <div class="hero-stat">
+
+                <div class="hero-stat-icon outstanding">
+
+                    <i class="fas fa-chart-pie"></i>
+
+                </div>
+
+                <div class="hero-stat-content">
+
+                    <small>Outstanding Exposure</small>
+
+                    <h3>
+
+                        <ng-container *ngIf="!loadingOutstanding">
+
+                            KES {{ repaymentStats.outstanding | number:'1.2-2' }}
+
+                        </ng-container>
+
+                        <span
+                            *ngIf="loadingOutstanding"
+                            class="hero-loader">
+
+                            <i class="fas fa-spinner fa-spin"></i>
+
+                        </span>
+
+                    </h3>
+
+                    <span class="stat-warning">
+
+                        <i class="fas fa-triangle-exclamation"></i>
+
+                        Monitor Exposure
+
+                    </span>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <!-- Footer -->
+
+    </div>
+
+</div>
+
+
+  <!-- =========================================================
+       AI CREDIT TABLE
+  ========================================================= -->
+
+  <div class="dashboard-card">
+
+  
+<!-- =========================================================
+     ENTERPRISE AI PROCESSING EXPERIENCE
+========================================================= -->
+
+<div *ngIf="loadingAiTable" class="enterprise-ai-loader">
+
+    <!-- Background Grid -->
+    <div class="enterprise-grid"></div>
+
+    <div class="enterprise-loader-card">
+
+        <!-- Status Badge -->
+
+        <div class="processing-status">
+
+            <span class="status-dot"></span>
+
+            AI ENGINE ACTIVE
+
+        </div>
+
+        <!-- AI Core -->
+
+        <div class="enterprise-ai-core">
+
+            <div class="pulse-ring pulse-1"></div>
+            <div class="pulse-ring pulse-2"></div>
+            <div class="pulse-ring pulse-3"></div>
+
+            <div class="ai-core-center">
+
+                <i class="fas fa-brain"></i>
+
+            </div>
+
+        </div>
+
+        <!-- Title -->
+
+        <h3 class="processing-title">
+
+            CrediCore™ Intelligence Engine
+
+        </h3>
+
+        <p class="processing-subtitle">
+
+            Securely analyzing customer financial intelligence and generating
+            enterprise-grade lending recommendations.
+
+        </p>
+
+        <!-- Live Progress -->
+
+        <div class="processing-progress">
+
+            <div class="processing-bar">
+
+                <div class="processing-bar-fill"></div>
+
+            </div>
+
+            <span>Processing Request...</span>
+
+        </div>
+
+        <!-- Processing Modules -->
+
+        <div class="processing-modules">
+
+            <div class="module">
+
+                <div class="module-icon">
+
+                    <i class="fas fa-user-check"></i>
+
+                </div>
+
+                <div>
+
+                    <div class="module-title">
+
+                        Identity Verification
+
+                    </div>
+
+                    <small>Validating customer profile</small>
+
+                </div>
+
+                <i class="fas fa-check-circle module-check"></i>
+
+            </div>
+
+            <div class="module">
+
+                <div class="module-icon">
+
+                    <i class="fas fa-chart-line"></i>
+
+                </div>
+
+                <div>
+
+                    <div class="module-title">
+
+                        Credit Risk Assessment
+
+                    </div>
+
+                    <small>Calculating intelligent score</small>
+
+                </div>
+
+                <div class="loader-spinner"></div>
+
+            </div>
+
+            <div class="module">
+
+                <div class="module-icon">
+
+                    <i class="fas fa-shield-alt"></i>
+
+                </div>
+
+                <div>
+
+                    <div class="module-title">
+
+                        Fraud Intelligence
+
+                    </div>
+
+                    <small>Scanning behavioural anomalies</small>
+
+                </div>
+
+                <div class="loader-spinner"></div>
+
+            </div>
+
+            <div class="module">
+
+                <div class="module-icon">
+
+                    <i class="fas fa-lightbulb"></i>
+
+                </div>
+
+                <div>
+
+                    <div class="module-title">
+
+                        Decision Intelligence
+
+                    </div>
+
+                    <small>Preparing lending recommendation</small>
+
+                </div>
+
+                <div class="loader-spinner"></div>
+
+            </div>
+
+        </div>
+
+        <!-- Footer -->
+
+        <div class="processing-footer">
+
+            <i class="fas fa-lock"></i>
+
+            End-to-end encrypted enterprise processing
+
+        </div>
+
+    </div>
+
+</div>
+
+    <!-- TABLE -->
+
+  <div class="table-responsive">
+
+      <table class="table align-middle premium-table">
+
+       <thead>
+
+<tr>
+
+<th>
+<i class="fas fa-user-circle me-2"></i>
+Borrower
+</th>
+
+<th>
+<i class="fas fa-wallet me-2"></i>
+Facility
+</th>
+
+<th>
+<i class="fas fa-chart-line me-2"></i>
+Risk
+</th>
+
+<th>
+<i class="fas fa-shield-alt me-2"></i>
+PAR
+</th>
+
+<th>
+<i class="fas fa-circle-check me-2"></i>
+Status
+</th>
+
+<th>
+<i class="fas fa-user-secret me-2"></i>
+Fraud
+</th>
+
+<th>
+<i class="fas fa-robot me-2"></i>
+Prediction
+</th>
+
+<th>
+<i class="fas fa-lightbulb me-2"></i>
+Recomm.
+</th>
+
+</tr>
+
+</thead>
+
+        <tbody style="cursor: pointer;">
+
+          <tr *ngFor="let loan of intelligentLoans; trackBy: trackByLoan"
+(click)="openCustomerDetails(loan.id || loan.loanId)">
+
+            <!-- CUSTOMER -->
+
+            <td >
+
+              <div class="d-flex align-items-center gap-3">
+
+                <div class="customer-avatar">
+                  {{ loan.applicantName.charAt(0) }}
+                </div>
+
+                <div>
+
+                  <div class="fw-semibold">
+                    {{ loan.applicantName }}
+                  </div>
+
+                  <small class="text-muted">
+                    AI Verified Customer
+                  </small>
+
+                </div>
+
+              </div>
+
+            </td>
+
+            <!-- LOAN -->
+
+            <td class="fw-bold text-dark">
+              KES {{ loan.amount | number:'1.2-2' }}
+            </td>
+
+            <!-- RISK -->
+
+            <td>
+
+              <span
+                class="badge rounded-pill px-3 py-2 fw-semibold"
+                [ngClass]="{
+                  'text-bg-success': loan.riskScore >= 80,
+                  'text-bg-warning': loan.riskScore >= 50 && loan.riskScore < 80,
+                  'text-bg-danger': loan.riskScore < 50
+                }">
+
+                {{ loan.riskScore }}%
+
+              </span>
+
+            </td>
+
+           
+
+            <!-- PAR -->
+
+            <td>
+
+              <span class="badge bg-primary-subtle text-primary rounded-pill px-3 py-2">
+                {{ loan.parCategory }}
+              </span>
+
+            </td>
+
+            <!-- STATUS -->
+
+            <td>
+
+              <span class="badge bg-dark-subtle text-dark rounded-pill px-3 py-2">
+                {{ loan.status }}
+              </span>
+
+            </td>
+
+            <!-- FRAUD -->
+
+            <td>
+
+              <span
+                class="badge rounded-pill px-3 py-2"
+                [ngClass]="{
+                  'text-bg-danger': loan.fraudFlag,
+                  'text-bg-success': !loan.fraudFlag
+                }">
+
+                {{ loan.fraudFlag ? 'FLAGGED' : 'CLEAR' }}
+
+              </span>
+
+            </td>
+
+            <!-- PREDICTION -->
+
+            <td>
+
+              <span
+                class="badge rounded-pill px-3 py-2"
+                [ngClass]="{
+                  'text-bg-success': loan.predictiveRisk === 'LOW',
+                  'text-bg-warning': loan.predictiveRisk === 'MEDIUM',
+                  'text-bg-danger': loan.predictiveRisk === 'HIGH'
+                }">
+
+                {{ loan.predictiveRisk }}
+
+              </span>
+
+            </td>
+
+          <!-- RECOMMENDATION -->
+
+<td class="recommendation-cell">
+
+  <div class="d-flex flex-column gap-1">
+
+    <span
+      class="badge rounded-pill px-3 py-2 recommendation-pill recommendation-badge"
+      [ngClass]="{
+
+        'approve-ai':
+          loan.recommendation === 'AUTO APPROVE' ||
+          loan.recommendation === 'VIP PRIORITY APPROVAL',
+
+        'review-ai':
+          loan.recommendation === 'FAST TRACK REVIEW' ||
+          loan.recommendation === 'MANUAL REVIEW' ||
+          loan.recommendation === 'HIGH RISK MONITORING',
+
+        'reject-ai':
+          loan.recommendation === 'DECLINE APPLICATION' ||
+          loan.recommendation === 'BLOCK & INVESTIGATE'
+
+      }">
+
+      {{ loan.recommendation || 'PENDING REVIEW' }}
+
+    </span>
+
+    <small class="recommendation-reason">
+
+      {{ loan.aiReason || 'Awaiting AI analysis' }}
+
+    </small>
+
+ <div class="confidence-wrapper">
+
+    <small>{{loan.aiConfidence}}%</small>
+
+    <div class="confidence-bar">
+
+        <div
+        class="confidence-fill"
+        [style.width.%]="loan.aiConfidence">
+
+        </div>
+
+    </div>
+
+</div>
+
   </div>
+
+</td>
+
+          </tr>
+
+        </tbody>
+
+      </table>
+
+    </div>
+
+  </div>
+
+
+  
+
 </div>

@@ -1,0 +1,139 @@
+<div class="auth-wrapper">
+
+    <!-- LEFT PANEL -->
+    <section class="left-panel">
+
+        <!-- Background Slider -->
+        <div class="slider">
+
+            <img
+                [src]="slides[currentSlide]"
+                class="slider-image">
+
+            <div class="slider-overlay"></div>
+
+        </div>
+
+        <!-- Top Bar -->
+        <div class="left-top">
+
+            <div class="brand">
+
+                <img src="assets/creditbank.png">
+
+                <div>
+
+                    <h3>CreditBank</h3>
+
+                    <span class="mt-1">Digital Banking Platform</span>
+
+                </div>
+
+            </div>
+
+            <div class="clock">
+
+                <i class="bi bi-clock"></i>
+
+                {{ currentTime }}
+
+            </div>
+
+        </div>
+
+        <!-- Hero -->
+        <div class="hero-content animate__animated animate__fadeIn mt-2">
+
+            <span class="welcome-badge">
+
+                Enterprise Banking
+
+            </span>
+<!-- 
+            <h1>
+
+                Banking that works around your life.
+
+            </h1> -->
+
+            <p>
+
+                Secure banking, intelligent lending,
+                digital payments and investment services
+                all in one ecosystem.
+
+            </p>
+
+            <div class="features">
+
+                <div class="feature-card">
+
+                    <i class="bi bi-phone"></i>
+
+                    <div>
+
+                        <h5>Mobile Banking</h5>
+
+                        <small>24/7 Digital Banking</small>
+
+                    </div>
+
+                </div>
+
+                <div class="feature-card">
+
+                    <i class="bi bi-credit-card"></i>
+
+                    <div>
+
+                        <h5>Cards</h5>
+
+                        <small>Debit & Credit Cards</small>
+
+                    </div>
+
+                </div>
+
+                <div class="feature-card">
+
+                    <i class="bi bi-bank"></i>
+
+                    <div>
+
+                        <h5>Business Banking</h5>
+
+                        <small>SME & Groups Financing</small>
+
+                    </div>
+
+                </div>
+
+                <div class="feature-card">
+
+                    <i class="bi bi-house-door"></i>
+
+                    <div>
+
+                        <h5>Rental Management</h5>
+
+                        <small>Home Ownership</small>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </section>
+
+    <!-- RIGHT SIDE -->
+
+    <section class="right-panel">
+
+        <router-outlet></router-outlet>
+
+    </section>
+
+</div>

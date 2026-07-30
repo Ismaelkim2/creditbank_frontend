@@ -1,57 +1,253 @@
-<div class="top-nav d-flex justify-content-between align-items-center px-3 py-2 shadow-sm">
+<div class="top-nav-premium">
 
-  <!-- Left: Logo + Hamburger -->
-  <div class="d-flex align-items-center">
-    <!-- Hamburger: show only on small devices -->
-    <i class="fa fa-bars me-3 d-lg-none" (click)="toggleSidebar()"></i>
-    <span class="fw-bold fs-4 text-primary">CrediCore</span>
-  </div>
+  <!-- LEFT SECTION -->
+  <div class="nav-left">
+    <!-- Hamburger (mobile only) -->
+<i class="fa fa-bars hamburger d-md-none" (click)="toggleSidebarMobile()"></i>
 
-  <!-- Right: Search + User Info -->
-  <div class="d-flex align-items-center gap-3 flex-grow-1 justify-content-end">
+    <!-- Brand -->
+   <!-- Brand -->
+<div class="brand-wrapper">
 
-    <!-- Search -->
-    <div class="position-relative d-flex align-items-center">
-      <i class="fa fa-search search-icon text-dark" (click)="toggleSearch()"></i>
-      <input
-        *ngIf="showSearch"
-        type="text"
-        class="form-control search-input"
-        placeholder="Search..."
-      />
+    <div class="brand-logo">
+        <img
+            src="assets/creditbank.png"
+            alt="CrediCore Logo">
     </div>
 
-  <!-- User Menu -->
-<div class="user-menu position-relative ms-3 ms-lg-5">
-  <div class="d-flex align-items-center user-info" (click)="toggleDropdown()">
-    <!-- User Image -->
-    <img
-  *ngIf="imageUrl"
-  [src]="imageUrl"
-  alt="User Image"
-  class="rounded-circle me-2"
-  width="35"
-  height="35"
-/>
+    <div class="brand-text">
+        <span class="brand">
+            CrediCore
+        </span>
 
+        <small class="brand-subtitle">
+            Intelligent Lending Platform
+        </small>
+    </div>
 
-    <!-- Username -->
-    <span class="fw-semibold text-dark d-none d-md-inline">{{ username }}</span>
-    <i class="fa fa-caret-down ms-2 text-dark"></i>
+</div>
+
+    <!-- MICRO STATS (desktop only) -->
+    <div class="micro-stats d-none d-xl-flex">
+      <div class="stat">
+        <span class="label">Portfolio</span>
+       <span class="value">
+  {{ portfolio ? ('KES ' + formatToMillions(portfolio)) : 'Loading...' }}
+</span>
+      </div>
+      <div class="stat">
+        <span class="label">Liquidity</span>
+        <span class="value text-success">Healthy</span>
+      </div>
+      <div class="stat">
+        <span class="label">Risk</span>
+        <span class="value text-warning">Moderate</span>
+      </div>
+    </div>
   </div>
 
-  <!-- Dropdown Menu -->
- <div
-  class="dropdown-menu-custom position-absolute end-0 mt-2 shadow rounded bg-white"
-  *ngIf="showDropdown"
->
-  <a class="dropdown-item"><i class="fa fa-sliders-h me-2"></i> Preferences</a>
-  <a class="dropdown-item"><i class="fa fa-language me-2"></i> Language</a>
-  <a class="dropdown-item text-danger" (click)="signOut()"><i class="fa fa-sign-out-alt me-2"></i> Sign Out</a>
-</div>
+  <!-- RIGHT SECTION -->
+  <div class="nav-right">
+
+    <!-- SEARCH -->
+    <div class="search-command d-none d-md-flex">
+      <i class="fa fa-search"></i>
+      <input type="text" placeholder="Search anything… (Ctrl + K)" />
+    </div>
+
+    <!-- EMAIL ICON -->
+    <div class="nav-icon" (click)="openMessages()">
+      <i class="fa fa-envelope"></i>
+      <span *ngIf="unreadMessages > 0" class="badge-danger">{{ unreadMessages }}</span>
+    </div>
+
+    <!-- NOTIFICATIONS -->
+  <!-- NOTIFICATIONS -->
+<div class="nav-icon-wrapper">
+
+  <!-- Bell -->
+  <div class="nav-icon" (click)="openNotifications()">
+    <i class="fa fa-bell"></i>
+
+    <span
+      *ngIf="notificationsCount > 0"
+      class="badge-danger">
+      {{ notificationsCount }}
+    </span>
+  </div>
+
+  <!-- Dropdown -->
+  <div
+    class="dropdown-advanced notification-dropdown"
+    *ngIf="showNotifications">
+
+    <!-- HEADER -->
+   <div class="notification-header d-flex justify-content-between align-items-center">
+
+  <div>
+    <h6 class="mb-0">Notifications</h6>
+    <small>{{ notificationsCount }} unread alerts</small>
+  </div>
+
+  <div class="d-flex align-items-center gap-2">
+
+    <button
+      class="btn btn-sm btn-outline-success"
+      *ngIf="notificationsCount > 0"
+      (click)="markAllNotificationsRead()">
+
+      <i class="fa fa-check-double"></i>
+      Mark All
+    </button>
+
+    <span class="notification-badge">
+      {{ notifications.length }}
+    </span>
+
+    <button
+  class="btn btn-sm btn-outline-secondary"
+  (click)="toggleNotificationSound()">
+
+ <i
+  [class.fa-volume-up]="soundEnabled"
+  [class.fa-volume-off]="!soundEnabled"
+  class="fa">
+</i>
+
+</button>
+
+    <button
+      class="btn btn-sm btn-light"
+      (click)="closeNotifications()">
+
+      <i class="fa fa-times"></i>
+    </button>
+
+  </div>
+
+  <div
+  class="notification-toast"
+  *ngIf="showToast">
+
+  <i class="fa fa-bell me-2"></i>
+
+  {{ toastMessage }}
 
 </div>
 
+</div>
+
+    <!-- EMPTY STATE -->
+    <div *ngIf="notifications.length === 0"
+         class="empty-notifications">
+      <i class="fa fa-bell-slash"></i>
+      <p>No notifications available</p>
+    </div>
+
+    <!-- LIST -->
+    <div class="notification-list">
+
+      <div
+        *ngFor="let notification of paginatedNotifications"
+        class="notification-card"
+        [class.unread]="!notification.read"
+        (click)="markNotificationAsRead(notification)">
+
+        <div class="notification-icon">
+          <i class="fa fa-bell text-primary"></i>
+        </div>
+
+        <div class="notification-content">
+          <div class="notification-title">
+  {{ notification.type }}
+</div>
+
+<div class="notification-message">
+  {{ notification.message }}
+</div>
+
+          <div class="notification-time">
+            <i class="fa fa-clock me-1"></i>
+            {{ notification.createdAt | date:'MMM d, y h:mm a' }}
+          </div>
+        </div>
+
+        <div
+          *ngIf="!notification.read"
+          class="unread-dot">
+        </div>
+
+      </div>
+
+    </div>
+
+
+    <div
+  class="d-flex justify-content-between align-items-center p-2"
+  *ngIf="totalPages > 1">
+
+  <button
+    class="btn btn-sm btn-outline-secondary"
+    (click)="previousPage()"
+    [disabled]="currentPage === 1">
+
+    Previous
+  </button>
+
+  <span>
+    Page {{ currentPage }}
+    of
+    {{ totalPages }}
+  </span>
+
+  <button
+    class="btn btn-sm btn-outline-secondary"
+    (click)="nextPage()"
+    [disabled]="currentPage === totalPages">
+
+    Next
+  </button>
+
+</div>
+
+    <!-- FOOTER -->
+    <div class="notification-footer">
+      <button
+        class="btn btn-sm btn-outline-primary w-100">
+        View Notification Center
+      </button>
+    </div>
+
+  </div>
+
+</div>
+
+    <!-- DARK MODE -->
+    <div class="nav-icon d-none d-md-flex" (click)="toggleDarkMode()">
+      <i class="bi" [ngClass]="darkMode ? 'bi-sun-fill' : 'bi-moon-fill'"></i>
+    </div>
+
+    <!-- USER PROFILE -->
+    <div class="user-menu profile-men" (click)="$event.stopPropagation()">
+      <div class="user-info" (click)="toggleDropdown()">
+        <img [src]="imageUrl" class="avatar shadow-lg" alt="User Image">
+        <div class="user-details d-none d-md-flex">
+          <span class="username">{{ username }}</span>
+          <span class="role">{{ userRole }}</span>
+        </div>
+        <i class="fa fa-chevron-down chevron"></i>
+      </div>
+
+      <!-- Dropdown -->
+      <div class="dropdown-advanced" *ngIf="showDropdown">
+        <div class="dropdown-item" (click)="profile()"><i class="fa fa-user-circle me-2"></i>Profile</div>
+        <div class="dropdown-item"><i class="fa fa-cog me-2"></i>Preferences</div>
+        <div class="dropdown-divider"></div>
+        <div class="dropdown-item text-danger" (click)="signOut()">
+          <i class="fa fa-sign-out-alt me-2"></i>Sign Out
+        </div>
+      </div>
+    </div>
 
   </div>
 

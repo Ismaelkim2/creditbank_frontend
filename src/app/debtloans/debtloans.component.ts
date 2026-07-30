@@ -66,7 +66,7 @@ ngOnInit(): void {
     this.loading = true;
     this.errorMessage = '';
 
-    this.http.get<Loan[]>(`http://localhost:8080/api/loans/by-idno/${nationalId}`).subscribe({
+    this.http.get<Loan[]>(`http://localhost:8080/api/loans/by-nationalId/${nationalId}`).subscribe({
       next: (data) => {
         // ✅ Sort loans by most recent
         this.loans = (data || []).sort((a, b) => {
@@ -104,7 +104,7 @@ payLoan(loan: Loan): void {
 
   const repaymentPayload = {
     loanId: loan.id,
-    idNo: loan.idNo || user?.nationalId,
+    idNo: loan.nationalId || user?.nationalId,
     phoneNumber: loan.phoneNumber || user?.phoneNumber,
     location: loan.location || 'Branch',
     accountNumber: this.accountNumber || user?.accountNumber || '' // ✅ ensure it's included

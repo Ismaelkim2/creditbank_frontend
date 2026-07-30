@@ -1,253 +1,1114 @@
-/* ================= Sidebar Container ================= */
-.sidebar {
-  width: 250px;
-  height: 100vh;
-  position: fixed;
-  top: 0;
-  left: 0;
-  display: flex;
-  flex-direction: column;
-  background: linear-gradient(180deg, #101827 0%, #0a0f1a 100%);
-  color: #e8edf1;
-  box-shadow: 3px 0 20px rgba(0, 0, 0, 0.35);
-  transition: all 0.35s ease, width 0.35s ease, transform 0.3s ease;
-  overflow: hidden;
-  z-index: 1050;
+/*=========================================================
+=            ENTERPRISE SIDEBAR - PART 1
+=            Sidebar | Branding | Navigation
+==========================================================*/
+
+/*=========================================================
+SIDEBAR CONTAINER
+==========================================================*/
+
+.sidebar{
+
+    position:fixed;
+    top:0;
+    left:0;
+
+    width:80px;
+    height:100vh;
+
+    display:flex;
+    flex-direction:column;
+
+    overflow:hidden;
+
+    background:
+        linear-gradient(
+            180deg,
+            #101827 0%,
+            #0a0f1a 100%
+        );
+
+    color:#e8edf1;
+
+    z-index:1050;
+
+    transition:
+        width .35s ease,
+        transform .35s ease,
+        background .35s ease;
+
 }
 
-/* Overlay for mobile */
-.sidebar-overlay {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: rgba(0,0,0,0.5);
-  opacity: 0;
-  visibility: hidden;
-  transition: all 0.3s ease;
-  z-index: 1040;
+/*=========================================================
+EXPANDED SIDEBAR
+==========================================================*/
+
+.sidebar:hover{
+
+    width:270px;
+
+}
+
+/*=========================================================
+SIDEBAR HEADER
+==========================================================*/
+
+.sidebar-header{
+
+    display:flex;
+    align-items:center;
+
+    gap:14px;
+
+    padding:14px 18px;
+
+    border-bottom:
+        1px solid rgba(255,255,255,.06);
+
+}
+
+/*=========================================================
+LOGO
+==========================================================*/
+
+.brand-logo{
+
+    width:40px;
+    height:auto;
+
+    flex-shrink:0;
+
+}
+
+/*=========================================================
+BRAND DETAILS
+==========================================================*/
+
+.brand-details{
+
+    opacity:0;
+    visibility:hidden;
+
+    white-space:nowrap;
+
+    transition:
+        opacity .25s ease,
+        visibility .25s ease;
+
+}
+
+.sidebar:hover .brand-details{
+
+    opacity:1;
+    visibility:visible;
+
+}
+
+.brand-name{
+
+    font-size:1.18rem;
+    font-weight:700;
+
+    color:#f8fafc;
+
+    margin:0;
+
+    line-height:1.2;
+
+}
+
+.brand-name span{
+
+    color:#3b82f6;
+
+}
+
+.tagline{
+
+    display:block;
+
+    margin-top:2px;
+
+    font-size:.72rem;
+
+    color:#94a3b8;
+
+}
+
+/*=========================================================
+NAVIGATION
+==========================================================*/
+
+.sidebar nav{
+
+    flex:1;
+
+    overflow-y:auto;
+
+    overflow-x:hidden;
+
+    padding:12px 10px;
+
+    scrollbar-width:thin;
+    scrollbar-color:#2b3648 #0a0f1a;
+
+}
+
+/* Chrome */
+
+.sidebar nav::-webkit-scrollbar{
+
+    width:6px;
+
+}
+
+.sidebar nav::-webkit-scrollbar-thumb{
+
+    background:#2b3648;
+
+    border-radius:20px;
+
+}
+
+/*=========================================================
+NAV ITEMS
+==========================================================*/
+
+.nav-item{
+
+    width:100%;
+
+    margin-bottom:4px;
+
+}
+
+/*=========================================================
+NAV LINKS
+==========================================================*/
+
+.nav-link{
+
+    width:100%;
+
+    min-height:48px;
+
+    display:flex;
+    align-items:center;
+
+    padding:12px 18px;
+
+    border-radius:10px;
+
+    text-decoration:none;
+
+    color:#b0bdd1;
+
+    box-sizing:border-box;
+
+    transition:
+
+        background .25s ease,
+        color .25s ease,
+        transform .25s ease,
+        box-shadow .25s ease;
+
+}
+
+/*=========================================================
+ICON
+==========================================================*/
+
+.nav-link i{
+
+    width:24px;
+
+    text-align:center;
+
+    font-size:1.18rem;
+
+    color:#6ba3ff;
+
+    flex-shrink:0;
+
+    transition:
+        color .25s ease,
+        transform .25s ease;
+
+}
+
+/*=========================================================
+LINK TEXT
+==========================================================*/
+
+.link-text{
+
+    margin-left:15px;
+
+    white-space:nowrap;
+
+    opacity:0;
+    visibility:hidden;
+
+    color:#2563eb;
+
+    transition:
+        opacity .25s ease,
+        visibility .25s ease;
+
+}
+
+.sidebar:hover .link-text{
+
+    opacity:1;
+    visibility:visible;
+
+}
+
+/*=========================================================
+BADGES
+==========================================================*/
+
+.badge{
+
+    margin-left:auto;
+
+    opacity:0;
+    visibility:hidden;
+
+    transition:
+        opacity .25s ease,
+        visibility .25s ease;
+
+}
+
+.sidebar:hover .badge{
+
+    opacity:1;
+    visibility:visible;
+
+}
+
+/*=========================================================
+HOVER EFFECT
+==========================================================*/
+
+.nav-link:hover{
+
+    background:
+        rgba(59,130,246,.15);
+
+    transform:
+        translateX(4px);
+
+}
+
+.nav-link:hover i{
+
+    color:#3b82f6;
+
+    transform:scale(1.08);
+
+}
+
+/*=========================================================
+ACTIVE MENU
+==========================================================*/
+
+/*
+   IMPORTANT
+
+   This replaces ALL previous
+   .nav-item.active > .nav-link rules.
+
+   Delete every old active rule
+   from your CSS.
+*/
+
+/*=========================================================
+ACTIVE MENU - WHITE ENTERPRISE STYLE
+==========================================================*/
+
+.nav-item.active > .nav-link{
+
+    width:100%;
+
+    background:#ffffff;
+
+    color:#101827;
+
+    border-left:4px solid #2563eb;
+
+    box-shadow:
+        0 8px 20px rgba(0,0,0,.08);
+
+}
+
+/* Active item stays white */
+
+.nav-item.active .nav-link:hover{
+
+    background:#ffffff;
+
+    transform:none;
+
+}
+
+.nav-item.active .nav-link:hover i{
+
+    color:#2563eb;
+
+}
+
+.nav-item.active > .nav-link i{
+
+    color:#2563eb;
+
+}
+
+.nav-item.active > .nav-link .link-text{
+
+    color:#101827;
+
+    font-weight:600;
+
+}
+
+.nav-item.active > .nav-link i{
+
+    color:#fff;
+
+}
+
+/*=========================================================
+EXPANDED ACTIVE
+==========================================================*/
+
+/* No max-width anymore */
+
+.sidebar:hover
+.nav-item.active
+> .nav-link{
+
+    width:100%;
+
+}
+
+/*=========================================================
+DEFAULT NAV LINKS
+==========================================================*/
+
+/* nav a{
+
+    color:#2563eb;
+    text-decoration:none;
+
+} */
+
+/*=========================================================
+=            ENTERPRISE SIDEBAR - PART 2
+=      Footer | Overlay | Responsive | Main Content
+==========================================================*/
+
+
+/*=========================================================
+SIDEBAR FOOTER
+==========================================================*/
+
+.sidebar-footer{
+
+    margin-top:auto;
+
+    padding:16px 12px;
+
+    text-align:center;
+
+    font-size:.82rem;
+
+    color:#94a3b8;
+
+    background:rgba(255,255,255,.03);
+
+    border-top:
+        1px solid rgba(255,255,255,.05);
+
+    transition:all .3s ease;
+
+}
+
+.sidebar-footer small{
+
+    display:block;
+
+    white-space:nowrap;
+
+    overflow:hidden;
+
+    transition:
+        opacity .25s ease,
+        visibility .25s ease;
+
+}
+
+/* Hide footer text when collapsed */
+
+.sidebar:not(:hover) .sidebar-footer small{
+
+    opacity:0;
+
+    visibility:hidden;
+
+}
+
+/* Show footer text */
+
+.sidebar:hover .sidebar-footer small{
+
+    opacity:1;
+
+    visibility:visible;
+
+}
+
+
+/*=========================================================
+COLLAPSE BUTTON
+==========================================================*/
+
+.collapse-btn{
+
+    width:42px;
+    height:42px;
+
+    display:flex;
+    align-items:center;
+    justify-content:center;
+
+    border:none;
+    border-radius:50%;
+
+    cursor:pointer;
+
+    color:#fff;
+
+    background:
+        linear-gradient(
+            135deg,
+            #2563eb,
+            #3b82f6
+        );
+
+    box-shadow:
+        0 6px 16px
+        rgba(37,99,235,.35);
+
+    transition:
+        all .3s ease;
+
+}
+
+.collapse-btn:hover{
+
+    transform:scale(1.08);
+
+    background:
+        linear-gradient(
+            135deg,
+            #3b82f6,
+            #60a5fa
+        );
+
+}
+
+
+/*=========================================================
+OPTIONAL COLLAPSED MODE
+==========================================================*/
+
+.sidebar.collapsed{
+
+    width:80px;
+
+}
+
+.sidebar.collapsed .link-text,
+.sidebar.collapsed .badge,
+.sidebar.collapsed .brand-details,
+.sidebar.collapsed .sidebar-footer small{
+
+    opacity:0;
+
+    visibility:hidden;
+
+}
+
+.sidebar.collapsed .nav-link{
+
+    justify-content:center;
+
+}
+
+.sidebar.collapsed .nav-link i{
+
+    margin:0;
+
+}
+
+
+/*=========================================================
+MAIN CONTENT
+==========================================================*/
+
+.main-content{
+
+    margin-left:80px;
+
+    min-height:100vh;
+
+    transition:
+        margin-left .35s ease;
+
+}
+
+.sidebar:hover ~ .main-content{
+
+    margin-left:270px;
+
+}
+
+
+/*=========================================================
+OVERLAY
+==========================================================*/
+
+.sidebar-overlay{
+
+    position:fixed;
+
+    inset:0;
+
+    background:
+        rgba(0,0,0,.45);
+
+    opacity:0;
+
+    visibility:hidden;
+
+    transition:
+        opacity .3s ease,
+        visibility .3s ease;
+
+    z-index:1040;
+
 }
 
 .sidebar.active + .sidebar-overlay,
-.sidebar-overlay.active {
-  opacity: 1;
-  visibility: visible;
+.sidebar-overlay.active{
+
+    opacity:1;
+
+    visibility:visible;
+
 }
 
-/* ================= Sidebar Header ================= */
-.sidebar-header {
-  padding: 22px 18px;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
-  display: flex;
-  align-items: center;
-  gap: 0.75rem;
+
+/*=========================================================
+MOBILE
+==========================================================*/
+
+@media (max-width:576px){
+
+.sidebar{
+
+    left:-270px;
+
+    width:270px;
+
+    transition:
+        left .35s ease;
+
 }
 
-.brand-name {
-  font-size: 1.25rem;
-  font-weight: 700;
-  color: #f9fafb;
-  letter-spacing: 0.5px;
-}
-.brand-name span {
-  color: #3b82f6;
-}
-.tagline {
-  font-size: 0.75rem;
-  color: #9da9bb;
-  display: block;
-  margin-top: 2px;
+.sidebar.active{
+
+    left:0;
+
 }
 
-/* ================= Navigation ================= */
-.nav-link {
-  color: #b0bdd1;
-  padding: 12px 18px;
-  border-radius: 8px;
-  display: flex;
-  align-items: center;
-  transition: all 0.25s ease-in-out;
-  font-weight: 500;
+.sidebar:hover{
+
+    width:270px;
+
 }
 
-.nav-link i {
-  font-size: 1.2rem;
-  color: #6ba3ff;
-  transition: color 0.3s ease, transform 0.2s ease;
+.main-content{
+
+    margin-left:0;
+
 }
 
-.nav-link:hover {
-  background: rgba(59, 130, 246, 0.15);
-  color: #fff;
-  transform: translateX(4px);
+.sidebar:hover ~ .main-content{
+
+    margin-left:0;
+
 }
 
-.nav-link:hover i {
-  color: #3b82f6;
-  transform: scale(1.1);
+.link-text,
+.brand-details,
+.badge,
+.sidebar-footer small{
+
+    opacity:1;
+
+    visibility:visible;
+
 }
 
-.nav-item.active > .nav-link {
-  background: linear-gradient(90deg, #2563eb 0%, #60a5fa 100%);
-  color: #fff;
-  box-shadow: 0 2px 12px rgba(37, 99, 235, 0.5);
 }
 
-.nav-item.active > .nav-link i {
-  color: #fff;
+
+/*=========================================================
+TABLETS
+==========================================================*/
+
+@media (min-width:577px) and (max-width:992px){
+
+.sidebar{
+
+    width:80px;
+
 }
 
-/* ================= Sidebar Footer ================= */
-.sidebar-footer {
-  margin-top: auto;
-  text-align: center;
-  padding: 15px 0;
-  font-size: 0.85rem;
-  background-color: rgba(255, 255, 255, 0.03);
-  border-top: 1px solid rgba(255, 255, 255, 0.05);
-  color: #94a3b8;
-  transition: all 0.3s ease;
+.sidebar:hover{
+
+    width:250px;
+
 }
 
-/* ================= Collapse Button ================= */
-.collapse-btn {
-  border: none;
-  border-radius: 50%;
-  background: linear-gradient(135deg, #2563eb 0%, #3b82f6 100%);
-  color: white;
-  width: 42px;
-  height: 42px;
-  box-shadow: 0 4px 15px rgba(59, 130, 246, 0.4);
-  cursor: pointer;
-  transition: all 0.3s ease, transform 0.3s ease;
-  display: flex;
-  justify-content: center;
-  align-items: center;
+.main-content{
+
+    margin-left:80px;
+
 }
 
-.collapse-btn:hover {
-  background: linear-gradient(135deg, #3b82f6 0%, #60a5fa 100%);
-  transform: scale(1.1);
+.sidebar:hover ~ .main-content{
+
+    margin-left:250px;
+
 }
 
-/* ================= Collapsed Sidebar ================= */
-.sidebar.collapsed {
-  width: 75px;
 }
 
-.sidebar.collapsed .nav-link span,
-.sidebar.collapsed .sidebar-footer small {
-  display: none;
+
+/*=========================================================
+DESKTOP
+==========================================================*/
+
+@media (min-width:993px){
+
+.sidebar{
+
+    width:80px;
+
 }
 
-.sidebar.collapsed .nav-link {
-  justify-content: center;
+.sidebar:hover{
+
+    width:270px;
+
 }
 
-/* ================= Scrollbars ================= */
-.sidebar nav {
-  overflow-y: auto;
-  scrollbar-width: thin;
-  scrollbar-color: #2b3648 #0a0f1a;
+.main-content{
+
+    margin-left:80px;
+
 }
 
-.sidebar nav::-webkit-scrollbar {
-  width: 6px;
+.sidebar:hover ~ .main-content{
+
+    margin-left:270px;
+
 }
 
-.sidebar nav::-webkit-scrollbar-thumb {
-  background-color: #2b3648;
-  border-radius: 4px;
 }
 
-/* ================= Responsive ================= */
-/* Small devices: phones */
-@media (max-width: 576px) {
-  .sidebar {
-    left: -100%;
-    width: 250px;
-    transition: left 0.3s ease, transform 0.3s ease;
-  }
 
-  .sidebar.active {
-    left: 0;
-  }
+/*=========================================================
+SCROLLBAR
+==========================================================*/
 
-  .collapse-btn {
-    display: none;
-  }
+.sidebar nav{
 
-  .main-content {
-    margin-left: 0 !important;
-  }
+    overflow-y:auto;
+
+    overflow-x:hidden;
+
+    scrollbar-width:thin;
+
+    scrollbar-color:#2b3648 transparent;
+
 }
 
-/* Medium devices: tablets */
-@media (min-width: 577px) and (max-width: 992px) {
-  .sidebar {
-    width: 200px;
-  }
+.sidebar nav::-webkit-scrollbar{
 
-  .sidebar.collapsed {
-    width: 60px;
-  }
+    width:6px;
 
-  .main-content {
-    margin-left: 200px;
-    transition: margin-left 0.3s ease;
-  }
-
-  .sidebar.collapsed ~ .main-content {
-    margin-left: 60px;
-  }
 }
 
-/* Large devices: desktops */
-@media (min-width: 993px) {
-  .sidebar {
-    width: 250px;
-  }
+.sidebar nav::-webkit-scrollbar-track{
 
-  .sidebar.collapsed {
-    width: 75px;
-  }
+    background:transparent;
 
-  .main-content {
-    margin-left: 250px;
-    transition: margin-left 0.3s ease;
-  }
-
-  .sidebar.collapsed ~ .main-content {
-    margin-left: 75px;
-  }
 }
 
-/* ================= Top Nav ================= */
-.top-nav {
-  position: sticky;
-  top: 0;
-  z-index: 1100;
-  padding: 0.5rem 1rem;
-  background: linear-gradient(90deg, #101827, #0a0f1a);
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
-  transition: all 0.3s ease;
+.sidebar nav::-webkit-scrollbar-thumb{
+
+    background:#2b3648;
+
+    border-radius:20px;
+
 }
 
-.top-nav .btn-primary {
-  background: #2563eb;
-  border: none;
-  transition: all 0.3s ease, transform 0.3s ease;
+.sidebar nav::-webkit-scrollbar-thumb:hover{
+
+    background:#3b4b61;
+
 }
 
-.top-nav .btn-primary:hover {
-  background: #3b82f6;
-  transform: scale(1.05);
+/*=========================================================
+=            ENTERPRISE SIDEBAR - PART 3
+=        Top Navigation | Logout | Polish | Dark Mode
+==========================================================*/
+
+
+/*=========================================================
+TOP NAVIGATION
+==========================================================*/
+
+.top-nav{
+
+    position:sticky;
+
+    top:0;
+
+    z-index:1100;
+
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+
+    padding:.6rem 1rem;
+
+    background:
+        linear-gradient(
+            90deg,
+            #101827,
+            #0a0f1a
+        );
+
+    box-shadow:
+        0 2px 10px rgba(0,0,0,.15);
+
+    transition:
+        background .35s ease,
+        box-shadow .35s ease,
+        color .35s ease;
+
 }
 
-/* Ensure clickable areas are large */
+
+/*=========================================================
+TOP NAV BUTTONS
+==========================================================*/
+
+.top-nav .btn-primary{
+
+    border:none;
+
+    background:#2563eb;
+
+    transition:
+        all .3s ease;
+
+}
+
+.top-nav .btn-primary:hover{
+
+    background:#3b82f6;
+
+    transform:translateY(-2px);
+
+    box-shadow:
+        0 10px 20px rgba(37,99,235,.25);
+
+}
+
+
+/*=========================================================
+NAV ICONS
+==========================================================*/
+
+.top-nav .nav-icon{
+
+    width:42px;
+    height:42px;
+
+    display:flex;
+    align-items:center;
+    justify-content:center;
+
+    border-radius:50%;
+
+    cursor:pointer;
+
+    transition:
+        all .25s ease;
+
+}
+
+.top-nav .nav-icon:hover{
+
+    background:
+        rgba(59,130,246,.15);
+
+    transform:translateY(-2px);
+
+}
+
+.top-nav .nav-icon i{
+
+    font-size:1.1rem;
+
+    transition:
+        transform .25s ease,
+        color .25s ease;
+
+}
+
+.top-nav .nav-icon:hover i{
+
+    transform:scale(1.08);
+
+}
+
+
+/*=========================================================
+GLOBAL CLICKABLE ITEMS
+==========================================================*/
+
 .nav-link,
 .collapse-btn,
-.top-nav .btn-primary {
-  cursor: pointer;
+.top-nav .btn-primary,
+.top-nav .nav-icon{
+
+    cursor:pointer;
+
 }
+
+
+/*=========================================================
+LOGOUT
+==========================================================*/
+
+.logout-link{
+
+    border-radius:10px;
+
+    transition:
+        all .3s ease;
+
+}
+
+.logout-link:hover{
+
+    background:
+        rgba(220,53,69,.12);
+
+}
+
+.logout-link:hover i,
+.logout-link:hover .link-text{
+
+    color:#dc3545 !important;
+
+}
+
+
+/*=========================================================
+SMOOTH ICON ANIMATION
+==========================================================*/
+
+.nav-link i,
+.top-nav i{
+
+    transition:
+        transform .25s ease,
+        color .25s ease;
+
+}
+
+.nav-link:hover i,
+.top-nav .nav-icon:hover i{
+
+    transform:scale(1.08);
+
+}
+
+
+/*=========================================================
+FOCUS STATES
+==========================================================*/
+
+.nav-link:focus,
+.collapse-btn:focus,
+.top-nav button:focus,
+.top-nav .nav-icon:focus{
+
+    outline:none;
+
+    box-shadow:
+        0 0 0 3px rgba(59,130,246,.25);
+
+}
+
+
+/*=========================================================
+ENTERPRISE TRANSITIONS
+==========================================================*/
+
+.sidebar,
+.main-content,
+.top-nav,
+.nav-link,
+.nav-link i,
+.link-text,
+.brand-details,
+.badge,
+.sidebar-footer,
+.sidebar-footer small{
+
+    transition-duration:.3s;
+
+}
+
+
+/*=========================================================
+DARK MODE SUPPORT
+==========================================================*/
+
+body.dark-mode .sidebar{
+
+    background:
+        linear-gradient(
+            180deg,
+            #0b1120,
+            #111827
+        );
+
+}
+
+body.dark-mode .top-nav{
+
+    background:
+        linear-gradient(
+            90deg,
+            #0b1120,
+            #111827
+        );
+
+}
+
+body.dark-mode .sidebar-footer{
+
+    background:
+        rgba(255,255,255,.02);
+
+    border-top:
+        1px solid rgba(255,255,255,.06);
+
+}
+
+body.dark-mode .nav-link{
+
+    color:#dbe7ff;
+
+}
+
+body.dark-mode .nav-link:hover{
+
+    background:
+        rgba(96,165,250,.15);
+
+}
+
+body.dark-mode .link-text{
+
+    color:#93c5fd;
+
+}
+
+body.dark-mode .brand-name{
+
+    color:#ffffff;
+
+}
+
+body.dark-mode .tagline{
+
+    color:#cbd5e1;
+
+}
+/* 
+body.dark-mode .nav-link i{
+
+    color:#60a5fa;
+
+} */
+/* 
+body.dark-mode .nav-item.active>.nav-link{
+
+    background:
+        linear-gradient(
+            90deg,
+            #2563eb,
+            #3b82f6
+        );
+
+} */
+
+body.dark-mode .logout-link:hover{
+
+    background:
+        rgba(239,68,68,.15);
+
+}
+
+
+/*=========================================================
+PERFORMANCE
+==========================================================*/
+
+.sidebar,
+.top-nav,
+.nav-link,
+.nav-link i{
+
+    will-change:
+        transform,
+        width,
+        background;
+
+}
+
+
+/*=========================================================
+TEXT SELECTION
+==========================================================*/
+
+::selection{
+
+    background:#3b82f6;
+
+    color:#fff;
+
+}
+

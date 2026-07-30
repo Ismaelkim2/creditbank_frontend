@@ -1,109 +1,94 @@
-<!-- Top Nav (with Hamburger on mobile) -->
-<div class="top-nav d-flex align-items-center justify-content-between p-2 bg-dark">
-  <!-- Hamburger for small screens -->
-  <button class="btn btn-primary d-md-none" (click)="toggleSidebarMobile()">
-    <i class="fa fa-bars"></i>
-  </button>
 
-  <app-top-nav></app-top-nav>
-</div>
-
-<!-- Sidebar -->
-<div
-  class="sidebar d-flex flex-column shadow-sm"
-  [class.collapsed]="isCollapsed"
-  [class.active]="isMobileSidebarActive"
->
-  <!-- Overlay (mobile only) -->
-  <div
-    class="sidebar-overlay"
-    *ngIf="isMobileSidebarActive"
-    (click)="toggleSidebarMobile()"
-  ></div>
-
-  <!-- Sidebar Header -->
-  <div class="sidebar-header d-flex align-items-center gap-2 py-3 px-3 border-bottom">
-    <i class="fa fa-university fa-lg text-primary"></i>
-    <div *ngIf="!isCollapsed">
-      <h5 class="mb-0 fw-bold text-light brand-name">Credit<span>Bank</span></h5>
-      <small class="tagline">Smart Banking System</small>
-    </div>
-  </div>
+<div class="sidebar" [class.active]="isMobileSidebarActive"  (click)="toggleSidebarMobile()">
+  <div class="sidebar-overlay" *ngIf="isMobileSidebarActive" (click)="closeSidebar()"></div>
+<!--  -->
 
   <!-- Navigation -->
-  <nav class="flex-grow-1 mt-3">
+  <nav class="flex-grow-1 mt-5">
     <ul class="nav flex-column">
-      <li class="nav-item" routerLinkActive="active">
-        <a class="nav-link d-flex align-items-center" routerLink="/dashboard">
+      <li class="nav-item mt-4" routerLinkActive="active">
+        <a class="nav-link d-flex align-items-center" routerLink="/app/dashboard">
           <i class="fa fa-house me-3"></i>
-          <span class="link-text" *ngIf="!isCollapsed">Dashboard</span>
+          <span class="link-text">Dashboard</span>
         </a>
       </li>
 
       <li class="nav-item" routerLinkActive="active">
-        <a class="nav-link d-flex align-items-center justify-content-between" routerLink="/loans">
+        <a class="nav-link d-flex align-items-center justify-content-between" routerLink="/app/loans">
           <div class="d-flex align-items-center">
             <i class="fa fa-list-check me-3"></i>
-            <span class="link-text" *ngIf="!isCollapsed">Loans</span>
+            <span class="link-text" >Loans</span>
           </div>
-          <span *ngIf="!isCollapsed" class="badge bg-gradient text-dark fw-semibold">New</span>
+          <span  class="badge bg-gradient text-dark fw-semibold">New</span>
         </a>
       </li>
 
       <li class="nav-item" routerLinkActive="active">
-        <a class="nav-link d-flex align-items-center" routerLink="/accounts">
+        <a class="nav-link d-flex align-items-center" routerLink="/app/accounts">
           <i class="fa fa-wallet me-3"></i>
-          <span class="link-text" *ngIf="!isCollapsed">Accounts</span>
+          <span class="link-text">Accounts</span>
         </a>
       </li>
 
       <li class="nav-item" routerLinkActive="active">
-        <a class="nav-link d-flex align-items-center" routerLink="/transactions">
+        <a class="nav-link d-flex align-items-center" routerLink="/app/transactions">
           <i class="fa fa-exchange-alt me-3"></i>
-          <span class="link-text" *ngIf="!isCollapsed">Transactions</span>
+          <span class="link-text">Transactions</span>
         </a>
       </li>
 
-      <li class="nav-item" routerLinkActive="active">
-        <a class="nav-link d-flex align-items-center" routerLink="/reports">
+      <!-- <li class="nav-item" routerLinkActive="active">
+        <a class="nav-link d-flex align-items-center" routerLink="/app/reports">
           <i class="fa fa-chart-line me-3"></i>
           <span class="link-text" *ngIf="!isCollapsed">Reports & Insights</span>
         </a>
-      </li>
+      </li> -->
 
       <li class="nav-item" routerLinkActive="active" style="cursor: pointer;">
-        <a class="nav-link d-flex align-items-center" (click)="viewStatement()" role="button">
+        <a class="nav-link d-flex align-items-center" routerLink="/app/statement" (click)="viewStatement()" role="button">
           <i class="fa fa-file me-3"></i>
-          <span class="link-text" *ngIf="!isCollapsed">Statements</span>
+          <span class="link-text" >Statements</span>
+        </a>
+      </li>
+
+
+       <li *ngIf="role !== 'DATA_MANAGER'" class="nav-item" routerLinkActive="active">
+        <a class="nav-link d-flex align-items-center" routerLink="/app/management" (click)="management()">
+          <i class="fa fa-user-check me-3"></i>
+          <span class="link-text" >User Management</span>
         </a>
       </li>
 
       <li class="nav-item" routerLinkActive="active">
-        <a class="nav-link d-flex align-items-center" routerLink="/user-profile">
+        <a class="nav-link d-flex align-items-center" routerLink="/app/user-profile">
           <i class="fa fa-user-circle me-3"></i>
           <span class="link-text" *ngIf="!isCollapsed">Profile</span>
         </a>
       </li>
 
-      <li *ngIf="role !== 'DATA_MANAGER'" class="nav-item" routerLinkActive="active">
-        <a class="nav-link d-flex align-items-center" routerLink="/settings">
+         <li *ngIf="role !== 'DATA_MANAGER'" class="nav-item" routerLinkActive="active">
+        <a class="nav-link d-flex align-items-center" routerLink="/app/settings">
           <i class="fa fa-gear me-3"></i>
-          <span class="link-text" *ngIf="!isCollapsed">Settings</span>
+          <span class="link-text">Settings</span>
         </a>
       </li>
 
-      <li *ngIf="role !== 'DATA_MANAGER'" class="nav-item" routerLinkActive="active">
-        <a class="nav-link d-flex align-items-center" routerLink="/admin-approvals">
-          <i class="fa fa-user-check me-3"></i>
-          <span class="link-text" *ngIf="!isCollapsed">User Approvals</span>
-        </a>
-      </li>
+<li *ngIf="role !== 'DATA_MANAGER'" class="nav-item mt-4">
+  <a class="nav-link d-flex align-items-center logout-link"
+     href="javascript:void(0)"
+     (click)="logout()">
+    <i class="bi bi-box-arrow-right me-3 text-danger"></i>
+    <span class="link-text text-danger">
+      Log Out
+    </span>
+  </a>
+</li>
     </ul>
   </nav>
 
   <!-- Sidebar Footer -->
   <div class="sidebar-footer text-center py-3 border-top small text-muted">
-    <ng-container *ngIf="!isCollapsed">&copy; 2025 CreditBank</ng-container>
+    <ng-container >&copy; 2025 CreditBank</ng-container>
     <i *ngIf="isCollapsed" class="fa fa-copyright"></i>
   </div>
 

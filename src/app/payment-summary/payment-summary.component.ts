@@ -132,7 +132,7 @@ openTransfer(): void {
 }
 
 openBorrow(): void {
-  this.showAlert('warning', '💰 Borrow feature coming soon.');
+ this.router.navigate(['/app/loan-application'])
 }
 
 openPayLoan(): void {

@@ -1,220 +1,1539 @@
-<app-sidebar *ngIf="isAdmin"></app-sidebar>
+
 <app-applicant-sidebar *ngIf="isApplicant"></app-applicant-sidebar>
 
-<div class="profile-wrapper">
-  <div class="container px-2">
+<div class="enterprise-profile-page">
 
-    <div class="card profile-card shadow-xl">
-      <div class="card-body">
+    <div class="container-fluid px-4 py-4">
 
-        <!-- TOP ACTIONS -->
-        <div class="d-flex justify-content-end mb-3 top-actions">
-          <button class="btn btn-light-action me-2" (click)="openActivityPanel = !openActivityPanel">
-            <i class="bi bi-clock-history me-2"></i> Activity
-          </button>
-          <button class="btn btn-light-action me-2" (click)="openEditModal()">
-            <i class="bi bi-pencil-square me-2"></i> Edit Profile
-          </button>
-          <button class="btn btn-warning-action" (click)="openChangePasswordModal()">
-            <i class="bi bi-key-fill me-2"></i> Change Password
-          </button>
-        </div>
+        <!--=====================================================
+        ENTERPRISE HERO BANNER
+        ======================================================-->
 
-        <!-- PROFILE HEADER -->
-        <div class="text-center mb-4">
-          <div class="avatar-upload mx-auto position-relative">
-            <img
-              [src]="imagePreview || user.imageUrl || 'assets/default-user.png'"
-              class="rounded-circle profile-img"
-            />
+        <div class="enterprise-profile-banner">
 
-            <label class="avatar-edit-btn" for="avatarInput">
-              <i class="bi bi-camera-fill"></i>
-            </label>
-            <input id="avatarInput" type="file" accept="image/*" hidden (change)="onImageSelected($event)" />
+            <!-- Decorative -->
+            <div class="banner-decoration banner-circle-1"></div>
+            <div class="banner-decoration banner-circle-2"></div>
+            <div class="banner-decoration banner-circle-3"></div>
 
-            <!-- upload progress -->
-            <div *ngIf="uploadProgress >= 0" class="upload-progress w-100 mt-2">
-              <div class="progress">
-                <div class="progress-bar" [style.width.%]="uploadProgress">
-                  {{uploadProgress}}%
+            <div class="row align-items-center">
+
+                <!--=========================================
+                LEFT SIDE
+                ==========================================-->
+
+                <div class="col-xl-8 col-lg-8">
+
+                    <div class="d-flex align-items-center flex-wrap">
+
+                        <!--=================================
+                        PROFILE PHOTO
+                        =================================-->
+
+                        <div class="profile-photo-wrapper">
+
+                            <img
+                                class="profile-photo"
+                                [src]="profileImage"
+                                alt="Profile">
+
+                            <!-- Online Status -->
+
+                            <span class="online-status"></span>
+
+                            <!-- Upload Button -->
+
+                            <label
+                                for="profileImage"
+                                class="upload-photo-btn">
+
+                                <i class="fas fa-camera"></i>
+
+                            </label>
+
+                            <input
+                                id="profileImage"
+                                type="file"
+                                hidden
+                                accept="image/*"
+                                (change)="onImageSelected($event)">
+
+                        </div>
+
+                        <!--=================================
+                        USER DETAILS
+                        =================================-->
+
+                        <div class="profile-identity">
+
+                            <div class="d-flex align-items-center flex-wrap mb-2">
+
+                                <h2 class="employee-name mb-0">
+
+                                    {{user.name || 'Employee Name'}}
+
+                                </h2>
+
+                                <span class="badge bg-success ms-3">
+
+                                    <i class="fas fa-check-circle me-1"></i>
+
+                                    Active
+
+                                </span>
+
+                                <span class="badge bg-primary ms-2">
+
+                                    Verified Identity
+
+                                </span>
+
+                            </div>
+
+                            <div class="employee-role">
+
+                                <i class="fas fa-briefcase me-2"></i>
+
+                                {{authService.getRole()}}
+
+                            </div>
+
+                            <div class="employee-department mt-2">
+
+                                <i class="fas fa-building me-2"></i>
+
+                                Digital Lending Department
+
+                            </div>
+
+                            <div class="employee-branch mt-2">
+
+                                <i class="fas fa-map-marker-alt me-2"></i>
+
+                                {{user.branch || 'Head Office'}}
+
+                            </div>
+
+                            <!--==============================
+                            PROFILE TAGS
+                            ==============================-->
+
+                            <div class="profile-tags mt-4">
+
+                                <span class="enterprise-tag">
+
+                                    <i class="fas fa-id-badge"></i>
+
+                                    Employee ID
+
+                                    <strong>
+
+                                        {{user.accountNumber || 'EQB-000001'}}
+
+                                    </strong>
+
+                                </span>
+
+                                <span class="enterprise-tag">
+
+                                    <i class="fas fa-user-shield"></i>
+
+                                    {{authService.getRole()}}
+
+                                </span>
+
+                                <span class="enterprise-tag">
+
+                                    <i class="fas fa-university"></i>
+
+                                    CrediCore
+
+                                </span>
+
+                                <span class="enterprise-tag">
+
+                                    <i class="fas fa-globe-africa"></i>
+
+                                    Kenya Region
+
+                                </span>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
                 </div>
-              </div>
-            </div>
-          </div>
 
-          <h3 class="profile-name mt-2">{{ user.name || 'User Name' }}</h3>
-          <p class="profile-email">{{ user.email }}</p>
-          <p class="last-login">Last login: {{ user.lastLogin | date:'medium' }}</p>
+                <!--=========================================
+                RIGHT SIDE
+                ==========================================-->
+
+                <div class="col-xl-4 col-lg-4">
+
+                    <div class="enterprise-status-panel">
+
+                        <div class="status-card">
+
+                            <div class="status-title">
+
+                                Last Login
+
+                            </div>
+
+                            <div class="status-value">
+
+                                {{user.lastLogin | date:'medium'}}
+
+                            </div>
+
+                        </div>
+
+                        <div class="status-card">
+
+                            <div class="status-title">
+
+                                Email Address
+
+                            </div>
+
+                            <div class="status-value">
+
+                                {{user.email}}
+
+                            </div>
+
+                        </div>
+
+                        <div class="status-card">
+
+                            <div class="status-title">
+
+                                National ID
+
+                            </div>
+
+                            <div class="status-value">
+
+                                {{user.nationalId}}
+
+                            </div>
+
+                        </div>
+
+                        <div class="status-card">
+
+                            <div class="status-title">
+
+                                Account Status
+
+                            </div>
+
+                            <div class="status-value text-success">
+
+                                <i class="fas fa-check-circle me-2"></i>
+
+                                Active
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
         </div>
 
-        <hr class="divider" />
+        <!--=====================================================
+        ENTERPRISE QUICK ACTION TOOLBAR
+        ======================================================-->
 
-        <!-- LOADING SKELETON -->
-        <ng-container *ngIf="loading; else content">
-          <div class="skeleton-loader">
-            <div class="sk-avatar"></div>
-            <div class="sk-line short"></div>
-            <div class="sk-line"></div>
+        <div class="enterprise-toolbar mt-4">
 
-            <div class="sk-grid">
-              <div class="sk-box"></div>
-              <div class="sk-box"></div>
-              <div class="sk-box"></div>
-              <div class="sk-box"></div>
+            <div class="row align-items-center">
+
+                <div class="col-lg-8">
+
+                    <div class="toolbar-actions">
+
+                        <button
+                            class="btn btn-enterprise-primary me-3"
+                            (click)="openEditModal()">
+
+                            <i class="fas fa-user-edit me-2"></i>
+
+                            Edit Profile
+
+                        </button>
+
+                        <button
+                            class="btn btn-enterprise-light me-3"
+                            (click)="openChangePasswordModal()">
+
+                            <i class="fas fa-lock me-2"></i>
+
+                            Change Password
+
+                        </button>
+
+                        <button
+                            class="btn btn-enterprise-light me-3">
+
+                            <i class="fas fa-shield-alt me-2"></i>
+
+                            Security Settings
+
+                        </button>
+
+                        <button
+                            class="btn btn-enterprise-light me-3"
+                            (click)="openActivityPanel=!openActivityPanel">
+
+                            <i class="fas fa-history me-2"></i>
+
+                            Activity Log
+
+                        </button>
+
+                        <button
+                            class="btn btn-enterprise-light">
+
+                            <i class="fas fa-download me-2"></i>
+
+                            Download Profile
+
+                        </button>
+
+                    </div>
+
+                </div>
+
+                <div class="col-lg-4 text-lg-end mt-3 mt-lg-0">
+
+                    <span class="enterprise-last-sync">
+
+                        <i class="fas fa-sync-alt me-2"></i>
+
+                        Last synchronized
+
+                        {{user.lastLogin | date:'shortTime'}}
+
+                    </span>
+
+                </div>
+
             </div>
-          </div>
-        </ng-container>
 
-        <!-- CONTENT -->
-        <ng-template #content>
-          <div class="row g-4 justify-content-center">
+        </div>
 
-            <div class="col-md-5">
-              <div class="info-card neo-card">
-                <h6>National ID</h6>
-                <p>{{ user.nationalId || '—' }}</p>
-              </div>
+<div class="row mt-4 g-4">
+
+    <!--=========================================
+    UNREAD NOTIFICATIONS
+    ==========================================-->
+
+    <div class="col-xl-6 col-lg-6">
+
+        <div class="enterprise-kpi-card notification-card">
+
+            <!-- Card Header -->
+            <div class="d-flex justify-content-between align-items-start">
+
             </div>
 
-            <div class="col-md-5">
-              <div class="info-card neo-card">
-                <h6>Account Number</h6>
-                <p>{{ user.accountNumber || '—' }}</p>
-              </div>
+            <!-- Card Body -->
+
+            <div class="mt-1">
+
+                <div class="kpi-title">
+
+                      <i class="fas fa-bell text-danger fs-4"></i> Notifications
+
+                </div>
+
+                <div class="kpi-value">
+
+                    {{notifications.length}}
+
+                </div>
+
+                <div class="text-muted">
+
+                    Pending notifications awaiting your attention.
+
+                </div>
+
             </div>
 
-            <div class="col-md-5">
-              <div class="info-card neo-card">
-                <h6>Phone Number</h6>
-                <p>{{ user.phoneNumber || '—' }}</p>
-              </div>
+            <!-- Divider -->
+
+            <hr>
+
+            <!-- Statistics -->
+
+            <div class="row text-center">
+
+                <div class="col-4">
+
+                    <h5 class="fw-bold text-danger">
+
+                        {{notificationsCount}}
+
+                    </h5>
+
+                    <small class="text-muted">
+
+                        Unread
+
+                    </small>
+
+                </div>
+
+                <div class="col-4">
+
+                    <h5 class="fw-bold text-success">
+
+                        {{notifications.length-notificationsCount}}
+
+                    </h5>
+
+                    <small class="text-muted">
+
+                        Read
+
+                    </small>
+
+                </div>
+
+                <div class="col-4">
+
+                    <h5 class="fw-bold text-primary">
+
+                        {{notifications.length}}
+
+                    </h5>
+
+                    <small class="text-muted">
+
+                        Total
+
+                    </small>
+
+                </div>
+
             </div>
 
-            <div class="col-md-5">
-              <div class="info-card neo-card">
-                <h6>Branch</h6>
-                <p>{{ user.branch || '—' }}</p>
-              </div>
+            <!-- Footer -->
+
+            <div
+                class="d-flex justify-content-between align-items-center mt-4">
+
+                <small class="text-muted">
+
+                    Last synchronized
+
+                </small>
+
+                <span class="badge bg-success">
+
+                    Live
+
+                </span>
+
             </div>
 
-          </div>
-        </ng-template>
+        </div>
 
-        <!-- ACTIVITY PANEL -->
-        <div *ngIf="openActivityPanel" class="activity-panel mt-4">
-          <div class="d-flex justify-content-between align-items-center mb-3">
-            <h6 class="mb-0">Recent Activity</h6>
-            <input class="form-control form-control-sm activity-search"
-                   placeholder="Search activity..."
-                   [(ngModel)]="activityQ"
-                   (input)="fetchActivity()"/>
-          </div>
+    </div>
 
-          <div *ngIf="activityLoading" class="text-center py-3">
-            <div class="spinner-border text-primary"></div>
-          </div>
+    <!--=========================================
+    TRUSTED DEVICES
+    ==========================================-->
 
-          <ul *ngIf="!activityLoading" class="list-group activity-list">
-            <li class="list-group-item" *ngFor="let a of activities">
-              <div class="d-flex justify-content-between">
+    <div class="col-xl-6 col-lg-6">
+
+        <div class="enterprise-kpi-card device-card">
+
+            <!-- Body -->
+
+            <div class="mt-1">
+
+                <div class="kpi-title">
+
+                       <i class="fas fa-laptop fs-2 text-warning"></i> Trusted Devices
+
+                </div>
+
+                <div class="kpi-value">
+
+                    3
+
+                </div>
+
+                <div class="text-muted">
+
+                    Devices currently authorised to access the platform.
+
+                </div>
+
+            </div>
+
+            <!-- Devices -->
+
+            <div class="mt-4">
+
+                <div
+                    class="d-flex justify-content-between align-items-center py-2 border-bottom">
+
+                    <div>
+
+                        <i class="fas fa-desktop text-primary me-2"></i>
+
+                        Windows Workstation
+
+                    </div>
+
+                    <span class="badge bg-success">
+
+                        Online
+
+                    </span>
+
+                </div>
+
+                <div
+                    class="d-flex justify-content-between align-items-center py-2 border-bottom">
+
+                    <div>
+
+                        <i class="fas fa-mobile-alt text-success me-2"></i>
+
+                        Android Phone
+
+                    </div>
+
+                    <span class="badge bg-secondary">
+
+                        Today
+
+                    </span>
+
+                </div>
+
+                <div
+                    class="d-flex justify-content-between align-items-center py-2">
+
+                    <div>
+
+                        <i class="fas fa-tablet-alt text-warning me-2"></i>
+
+                        iPad
+
+                    </div>
+
+                    <span class="badge bg-light text-dark">
+
+                        Yesterday
+
+                    </span>
+
+                </div>
+
+            </div>
+
+            <!-- Footer -->
+
+            <div class="mt-4">
+
+                <button
+                    class="btn btn-outline-primary btn-sm w-100">
+
+                    <i class="fas fa-shield-alt me-2"></i>
+
+                    Manage Trusted Devices
+
+                </button>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+<!--=========================================================
+END PART 1A.2.a.ii.1
+
+
+<!-- ===========================================================
+ENTERPRISE EXECUTIVE DASHBOARD
+============================================================ -->
+
+<div class="row g-4 mb-4">
+
+    <!-- =======================================================
+         LEFT COLUMN
+    ========================================================-->
+
+    <div class="col-xl-8">
+
+        <!-- ================= Security & Identity ================ -->
+
+        <div class="enterprise-card mb-4">
+
+            <div class="card-header-enterprise">
+
                 <div>
-                  <div class="small text-muted">{{a.timestamp | date:'short'}}</div>
-                  <div>{{a.message}}</div>
-                </div>
-                <div class="small text-muted">{{a.source}}</div>
-              </div>
-            </li>
-          </ul>
 
-          <div class="text-center mt-3">
-            <button class="btn btn-light-action" 
-                    (click)="loadMoreActivities()" 
-                    [disabled]="activityLoading || activityEnd">
-              Load more
-            </button>
-          </div>
+                    <h4>
+                        Security & Identity
+                    </h4>
+
+                    <span>
+                        Authentication, account protection and identity status
+                    </span>
+
+                </div>
+
+            </div>
+
+            <div class="row g-3 mt-2">
+
+                <div class="col-lg-3 col-md-6">
+
+                    <div class="mini-kpi-card">
+
+                        <div class="kpi-icon bg-success">
+
+                            <i class="fas fa-shield-check"></i>
+
+                        </div>
+
+                        <div>
+
+                            <h3>98%</h3>
+
+                            <small>Security Score</small>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+                <div class="col-lg-3 col-md-6">
+
+                    <div class="mini-kpi-card">
+
+                        <div class="kpi-icon bg-primary">
+
+                            <i class="fas fa-key"></i>
+
+                        </div>
+
+                        <div>
+
+                            <h3>Enabled</h3>
+
+                            <small>Two Factor</small>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+                <div class="col-lg-3 col-md-6">
+
+                    <div class="mini-kpi-card">
+
+                        <div class="kpi-icon bg-warning">
+
+                            <i class="fas fa-laptop"></i>
+
+                        </div>
+
+                        <div>
+
+                            <h3>3</h3>
+
+                            <small>Trusted Devices</small>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+                <div class="col-lg-3 col-md-6">
+
+                    <div class="mini-kpi-card">
+
+                        <div class="kpi-icon bg-info">
+
+                            <i class="fas fa-fingerprint"></i>
+
+                        </div>
+
+                        <div>
+
+                            <h3>Verified</h3>
+
+                            <small>Identity</small>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
         </div>
 
-      </div>
-    </div>
 
-  </div>
-</div>
+        <!-- ================= Enterprise Roles ================= -->
 
+        <div class="enterprise-card mb-4">
 
-<!-- EDIT PROFILE MODAL -->
-<div class="modal fade show d-block" tabindex="-1" *ngIf="editing" role="dialog">
-  <div class="modal-dialog modal-dialog-centered modal-md">
-    <div class="modal-content rounded-4 shadow-lg">
-      <div class="modal-header">
-        <h5 class="modal-title">Edit Profile</h5>
-        <button class="btn-close" (click)="closeEditModal()"></button>
-      </div>
-      <div class="modal-body">
-        <form [formGroup]="editForm" (ngSubmit)="saveProfile()">
-          <div class="mb-3">
-            <label class="form-label">Full name</label>
-            <input class="form-control" formControlName="name" />
-            <div *ngIf="editForm.controls['name'].invalid && editForm.controls['name'].touched" class="text-danger small">Name required</div>
-          </div>
+            <div class="card-header-enterprise">
 
-          <div class="mb-3">
-            <label class="form-label">Phone</label>
-            <input class="form-control" formControlName="phoneNumber" />
-          </div>
+                <div>
 
-          <div class="mb-3">
-            <label class="form-label">Branch</label>
-            <input class="form-control" formControlName="branch" />
-          </div>
+                    <h4>
 
-          <div class="d-flex justify-content-end gap-2">
-            <button type="button" class="btn btn-outline-secondary" (click)="closeEditModal()">Cancel</button>
-            <button type="submit" class="btn btn-primary" [disabled]="editForm.invalid || saving">
-              <span *ngIf="saving" class="spinner-border spinner-border-sm me-2"></span> Save
-            </button>
-          </div>
-        </form>
-      </div>
-    </div>
-  </div>
-</div>
+                        Enterprise Roles & Permissions
 
-<!-- CHANGE PASSWORD MODAL -->
-<div class="modal fade show d-block" tabindex="-1" *ngIf="changingPassword" role="dialog">
-  <div class="modal-dialog modal-dialog-centered modal-sm">
-    <div class="modal-content rounded-4 shadow-lg">
-      <div class="modal-header">
-        <h5 class="modal-title">Change Password</h5>
-        <button class="btn-close" (click)="closeChangePasswordModal()"></button>
-      </div>
-      <div class="modal-body">
-        <form [formGroup]="passwordForm" (ngSubmit)="changePassword()">
-          <div class="mb-3">
-            <label class="form-label">Current password</label>
-            <input type="password" class="form-control" formControlName="currentPassword" />
-          </div>
-          <div class="mb-3">
-            <label class="form-label">New password</label>
-            <input type="password" class="form-control" formControlName="newPassword" />
-            <div *ngIf="passwordForm.controls['newPassword'].invalid && passwordForm.controls['newPassword'].touched" class="text-danger small">
-              Use at least 8 chars, a number and a letter.
+                    </h4>
+
+                    <span>
+
+                        Access rights assigned to this employee
+
+                    </span>
+
+                </div>
+
             </div>
-          </div>
-          <div class="mb-3">
-            <label class="form-label">Confirm new</label>
-            <input type="password" class="form-control" formControlName="confirmPassword" />
-          </div>
 
-          <div class="d-flex justify-content-end gap-2">
-            <button type="button" class="btn btn-outline-secondary" (click)="closeChangePasswordModal()">Cancel</button>
-            <button type="submit" class="btn btn-warning" [disabled]="passwordForm.invalid || changing">
-              <span *ngIf="changing" class="spinner-border spinner-border-sm me-2"></span> Update
-            </button>
-          </div>
-        </form>
-      </div>
+            <div class="table-responsive">
+
+                <table class="table enterprise-table align-middle">
+
+                    <thead>
+
+                        <tr>
+
+                            <th>Permission</th>
+
+                            <th>Level</th>
+
+                            <th>Status</th>
+
+                        </tr>
+
+                    </thead>
+
+                    <tbody>
+
+                        <tr>
+
+                            <td>Customer Management</td>
+
+                            <td>Full Access</td>
+
+                            <td>
+
+                                <span class="badge bg-success">
+
+                                    Granted
+
+                                </span>
+
+                            </td>
+
+                        </tr>
+
+                        <tr>
+
+                            <td>Loan Processing</td>
+
+                            <td>Approve & Review</td>
+
+                            <td>
+
+                                <span class="badge bg-success">
+
+                                    Granted
+
+                                </span>
+
+                            </td>
+
+                        </tr>
+
+                        <tr>
+
+                            <td>Reports</td>
+
+                            <td>Read Only</td>
+
+                            <td>
+
+                                <span class="badge bg-primary">
+
+                                    Active
+
+                                </span>
+
+                            </td>
+
+                        </tr>
+
+                        <tr>
+
+                            <td>Administration</td>
+
+                            <td>Restricted</td>
+
+                            <td>
+
+                                <span class="badge bg-secondary">
+
+                                    Limited
+
+                                </span>
+
+                            </td>
+
+                        </tr>
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+        </div>
+
+
+
     </div>
-  </div>
+
+
+    <!-- =======================================================
+         RIGHT COLUMN
+    ========================================================-->
+
+    <div class="col-xl-4">
+
+        <!-- ================= Enterprise ID ================= -->
+
+        <div class="enterprise-card mb-4">
+
+            <div class="card-header-enterprise">
+
+                <h5>
+
+                    Enterprise Identity
+
+                </h5>
+
+            </div>
+
+            <div class="identity-grid">
+
+                <div class="identity-item">
+
+                    <label>Employee ID</label>
+
+                    <span>
+
+                        EMP-{{user.nationalId}}
+
+                    </span>
+
+                </div>
+
+                <div class="identity-item">
+
+                    <label>Role</label>
+
+                    <span>
+
+                        {{user.role}}
+
+                    </span>
+
+                </div>
+
+                <div class="identity-item">
+
+                    <label>Department</label>
+
+                    <span>
+
+                        {{user.department || 'Retail Banking'}}
+
+                    </span>
+
+                </div>
+
+                <div class="identity-item">
+
+                    <label>Branch</label>
+
+                    <span>
+
+                        {{user.branch}}
+
+                    </span>
+
+                </div>
+
+                <div class="identity-item">
+
+                    <label>Status</label>
+
+                    <span class="badge bg-success">
+
+                        Active
+
+                    </span>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- ================= Contact ================= -->
+
+        <div class="enterprise-card mb-4">
+
+            <div class="card-header-enterprise">
+
+                <h5>
+
+                    Contact Directory
+
+                </h5>
+
+            </div>
+
+            <div class="contact-item">
+
+                <i class="fas fa-envelope text-success me-2"></i>
+
+                <span>{{user.email}}</span>
+
+            </div>
+
+            <div class="contact-item">
+
+                <i class="fas fa-phone text-primary me-2"></i>
+
+                <span>{{user.phoneNumber}}</span>
+
+            </div>
+
+            <div class="contact-item ">
+
+                <i class="fas fa-id-card text-warning me-2"></i>
+
+                <span>{{user.accountNumber}}</span>
+
+            </div>
+
+        </div>
+
+
+        <!-- ================= AI Security ================= -->
+
+        <div class="enterprise-card">
+
+            <div class="card-header-enterprise">
+
+                <h5>
+
+                    AI Security Insights
+
+                </h5>
+
+            </div>
+
+            <div class="alert alert-success mb-3">
+
+                <i class="fas fa-check-circle me-2"></i>
+
+                No suspicious login activity detected.
+
+            </div>
+
+            <div class="alert alert-info mb-3">
+
+                <i class="fas fa-lock me-2"></i>
+
+                Password strength is rated Excellent.
+
+            </div>
+
+            <div class="alert alert-warning">
+
+                <i class="fas fa-clock me-2"></i>
+
+                Password expires in 24 days.
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<!-- ==========================================================
+EXECUTIVE PERFORMANCE & ANALYTICS
+========================================================== -->
+
+<div class="row g-4 mb-4">
+
+    <!--=======================================================
+    LEFT COLUMN
+    ========================================================-->
+
+    <div class="col-xl-8">
+
+        <!--===================================================
+        PERFORMANCE OVERVIEW
+        ====================================================-->
+
+        <div class="enterprise-card mb-4">
+
+            <div class="card-header-enterprise">
+
+                <div>
+
+                    <h4>
+
+                        Performance Overview
+
+                    </h4>
+
+                    <span>
+
+                        Personal contribution and operational KPIs
+
+                    </span>
+
+                </div>
+
+            </div>
+
+            <div class="row g-3 mt-1">
+
+                <div class="col-lg-3 col-md-6">
+
+                    <div class="metric-card">
+
+                        <div class="metric-icon bg-primary">
+
+                            <i class="fas fa-users"></i>
+
+                        </div>
+
+                        <div>
+
+                            <h3>1,286</h3>
+
+                            <small>Customers Managed</small>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+                <div class="col-lg-3 col-md-6">
+
+                    <div class="metric-card">
+
+                        <div class="metric-icon bg-success">
+
+                            <i class="fas fa-money-bill-wave"></i>
+
+                        </div>
+
+                        <div>
+
+                            <h3>KES 284M</h3>
+
+                            <small>Loan Portfolio</small>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+                <div class="col-lg-3 col-md-6">
+
+                    <div class="metric-card">
+
+                        <div class="metric-icon bg-warning">
+
+                            <i class="fas fa-chart-line"></i>
+
+                        </div>
+
+                        <div>
+
+                            <h3>97%</h3>
+
+                            <small>Collection Rate</small>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+                <div class="col-lg-3 col-md-6">
+
+                    <div class="metric-card">
+
+                        <div class="metric-icon bg-info">
+
+                            <i class="fas fa-star"></i>
+
+                        </div>
+
+                        <div>
+
+                            <h3>4.9</h3>
+
+                            <small>Performance Rating</small>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!--===================================================
+        BRANCH CONTRIBUTION
+        ====================================================-->
+
+        <div class="enterprise-card mb-4">
+
+            <div class="card-header-enterprise">
+
+                <div>
+
+                    <h4>
+
+                        Branch Contribution
+
+                    </h4>
+
+                    <span>
+
+                        Individual contribution to branch performance
+
+                    </span>
+
+                </div>
+
+            </div>
+
+            <div class="row g-4">
+
+                <div class="col-md-6">
+
+                    <div class="performance-progress">
+
+                        <div class="d-flex justify-content-between">
+
+                            <span>Loan Disbursement</span>
+
+                            <strong>94%</strong>
+
+                        </div>
+
+                        <div class="progress mt-2">
+
+                            <div
+                                class="progress-bar bg-success"
+                                style="width:94%">
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+                <div class="col-md-6">
+
+                    <div class="performance-progress">
+
+                        <div class="d-flex justify-content-between">
+
+                            <span>Collections</span>
+
+                            <strong>98%</strong>
+
+                        </div>
+
+                        <div class="progress mt-2">
+
+                            <div
+                                class="progress-bar bg-primary"
+                                style="width:98%">
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+                <div class="col-md-6">
+
+                    <div class="performance-progress">
+
+                        <div class="d-flex justify-content-between">
+
+                            <span>Customer Satisfaction</span>
+
+                            <strong>96%</strong>
+
+                        </div>
+
+                        <div class="progress mt-2">
+
+                            <div
+                                class="progress-bar bg-warning"
+                                style="width:96%">
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+                <div class="col-md-6">
+
+                    <div class="performance-progress">
+
+                        <div class="d-flex justify-content-between">
+
+                            <span>Compliance</span>
+
+                            <strong>100%</strong>
+
+                        </div>
+
+                        <div class="progress mt-2">
+
+                            <div
+                                class="progress-bar bg-success"
+                                style="width:100%">
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!--===================================================
+        ACHIEVEMENTS
+        ====================================================-->
+
+        <div class="enterprise-card">
+
+            <div class="card-header-enterprise">
+
+                <div>
+
+                    <h4>
+
+                        Awards & Achievements
+
+                    </h4>
+
+                    <span>
+
+                        Recognition received across the organization
+
+                    </span>
+
+                </div>
+
+            </div>
+
+            <div class="achievement-grid">
+
+                <div class="achievement-card">
+
+                    <i class="fas fa-award"></i>
+
+                    <h6>
+
+                        Best Relationship Manager
+
+                    </h6>
+
+                    <small>
+
+                        Q1 2026
+
+                    </small>
+
+                </div>
+
+                <div class="achievement-card">
+
+                    <i class="fas fa-medal"></i>
+
+                    <h6>
+
+                        Customer Excellence
+
+                    </h6>
+
+                    <small>
+
+                        2025
+
+                    </small>
+
+                </div>
+
+                <div class="achievement-card">
+
+                    <i class="fas fa-trophy"></i>
+
+                    <h6>
+
+                        Sales Champion
+
+                    </h6>
+
+                    <small>
+
+                        Regional Winner
+
+                    </small>
+
+                </div>
+
+                <div class="achievement-card">
+
+                    <i class="fas fa-certificate"></i>
+
+                    <h6>
+
+                        Compliance Excellence
+
+                    </h6>
+
+                    <small>
+
+                        100% Audit Score
+
+                    </small>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!--=======================================================
+    RIGHT COLUMN
+    ========================================================-->
+
+    <div class="col-xl-4">
+
+        <!--===================================================
+        PRODUCTIVITY
+        ====================================================-->
+
+        <div class="enterprise-card mb-4">
+
+            <div class="card-header-enterprise">
+
+                <h5>
+
+                    Productivity Insights
+
+                </h5>
+
+            </div>
+
+            <div class="insight-item">
+
+                <i class="fas fa-check-circle text-success"></i>
+
+                Completed 98% of assigned workflows this month.
+
+            </div>
+
+            <div class="insight-item">
+
+                <i class="fas fa-chart-line text-primary"></i>
+
+                Portfolio growth exceeded branch average by 12%.
+
+            </div>
+
+            <div class="insight-item">
+
+                <i class="fas fa-users text-info"></i>
+
+                Customer retention remains above target.
+
+            </div>
+
+            <div class="insight-item">
+
+                <i class="fas fa-shield-alt text-warning"></i>
+
+                No compliance issues detected.
+
+            </div>
+
+        </div>
+
+
+        <!--===================================================
+        UPCOMING
+        ====================================================-->
+
+        <div class="enterprise-card mb-4">
+
+            <div class="card-header-enterprise">
+
+                <h5>
+
+                    Upcoming Activities
+
+                </h5>
+
+            </div>
+
+            <ul class="enterprise-list">
+
+                <li>
+
+                    Quarterly Performance Review
+
+                    <small>Tomorrow 09:00</small>
+
+                </li>
+
+                <li>
+
+                    AML Refresher Training
+
+                    <small>Monday</small>
+
+                </li>
+
+                <li>
+
+                    Branch Leadership Meeting
+
+                    <small>Wednesday</small>
+
+                </li>
+
+                <li>
+
+                    Compliance Certification Renewal
+
+                    <small>Next Month</small>
+
+                </li>
+
+            </ul>
+
+        </div>
+
+
+        <!--===================================================
+        AI INSIGHTS
+        ====================================================-->
+
+        <div class="enterprise-card">
+
+            <div class="card-header-enterprise">
+
+                <h5>
+
+                    Executive Summary
+
+                </h5>
+
+            </div>
+
+            <div class="ai-summary">
+
+                <div class="alert alert-success">
+
+                    <i class="fas fa-robot me-2"></i>
+
+                    Performance trend remains consistently above organizational benchmark.
+
+                </div>
+
+                <div class="alert alert-info">
+
+                    <i class="fas fa-lightbulb me-2"></i>
+
+                    Strong customer engagement and excellent repayment portfolio quality.
+
+                </div>
+
+                <div class="alert alert-warning">
+
+                    <i class="fas fa-bell me-2"></i>
+
+                    Complete the pending Customer Experience certification to maintain 100% compliance.
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
 </div>

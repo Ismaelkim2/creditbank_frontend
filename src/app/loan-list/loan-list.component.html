@@ -1,35 +1,30 @@
-  <!-- Sidebar -->
-  <app-sidebar></app-sidebar>
+<div class="loan-dashboard">
 
-<div class="main-container">
-
-  <!-- Content Area -->
-  <div class="content-container p-4 mt-2">
-
-    <!-- Header: Filters + Search -->
-    <div class="d-flex flex-wrap justify-content-between align-items-center mb-4 gap-3">
+  <!-- Filters + Search -->
+  <div class="d-flex flex-wrap justify-content-between align-items-center gap-3 mb-4">
 
       <!-- Filter & Action Buttons -->
       <div class="d-flex flex-wrap align-items-center gap-2 mb-1">
-        <button class="btn btn-secondary" (click)="filterLoans('all')">
-          All <span class="badge bg-light text-dark ms-1">{{ counts.all }}</span>
-        </button>
+      <button class="btn btn-secondary" (click)="filterLoans('all')" [disabled]="isLoading">
+  <i class="bi bi-collection-fill"></i> All <span class="badge bg-light text-dark ms-1">{{ counts.all }}</span>
+</button>
         <button class="btn btn-warning" (click)="filterLoans('pending')">
-          Pending <span class="badge bg-light text-dark ms-1">{{ counts.pending }}</span>
+          <i class="bi bi-hourglass-split"></i> Pending <span class="badge bg-light text-dark ms-1">{{ counts.pending }}</span>
         </button>
         <button class="btn btn-success" (click)="filterLoans('approved')">
-          Approved <span class="badge bg-light text-dark ms-1">{{ counts.approved }}</span>
+         <i class="bi bi-check2-circle"></i> Approved <span class="badge bg-light text-dark ms-1">{{ counts.approved }}</span>
         </button>
         <button class="btn btn-danger" (click)="filterLoans('rejected')">
-          Rejected <span class="badge bg-light text-dark ms-1">{{ counts.rejected }}</span>
+          <i class="bi bi-x-octagon-fill"></i> Rejected <span class="badge bg-light text-dark ms-1">{{ counts.rejected }}</span>
         </button>
 
         <button *ngIf="userRole === 'ADMIN' || userRole === 'DATA_MANAGER'" 
-                class="btn btn-primary" 
-                (click)="openNewLoanModal()">
-          <i class="fa fa-add me-1"></i> Apply Now
-        </button>
-        <button class="btn btn-primary" (click)="accountsApplication()">Accounts Opening</button>
+        class="btn btn-primary" 
+        (click)="router.navigate(['/app/loanApplication'])">
+  <i class="bi bi-cash-coin"></i> Borrow
+</button>
+
+        <button class="btn btn-primary" (click)="accountsApplication()"> <i class="bi bi-person-plus-fill"></i>Accounts Opening</button>
       </div>
 
     <!-- Search -->
@@ -49,6 +44,7 @@
   </div>
 </div>
 </div>
+
 
     <!-- Loan Decision Feedback Card -->
     <div *ngIf="showEligibilityCard && !isEditMode"
@@ -81,6 +77,8 @@
 
 <!-- New Loan Application Modal -->
 <div class="modal fade mt-5" id="newLoanModal" tabindex="-1" aria-labelledby="newLoanModalLabel" aria-hidden="true">
+
+  
   <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
     <div class="modal-content modal-glass">
 
@@ -94,6 +92,17 @@
 
       <!-- Modal Body -->
       <div class="modal-body p-4">
+
+        <!-- loan-insight-panel.component.html -->
+
+<div class="insight-card" [ngClass]="insights?.riskTier?.toLowerCase()">
+  <h3>Risk Assessment</h3>
+  <p><strong>Risk Tier:</strong> {{ insights?.riskTier }}</p>
+  <p><strong>Debt Ratio:</strong> {{ insights?.debtRatio }}%</p>
+  <p><strong>Eligible Limit:</strong> KES {{ insights?.eligibleLimit }}</p>
+  <p><strong>System Confidence:</strong> {{ insights?.confidence }}</p>
+</div>
+
 
         <!-- Notifications -->
         <div *ngIf="hasActiveLoanCardVisible" class="alert alert-warning">
@@ -124,20 +133,25 @@
               <input type="text" class="form-control" formControlName="phoneNumber">
             </div>
 
+<div class="col-md-6">
+  <label class="form-label">Email</label>
+  <input type="email" class="form-control shadow-sm" formControlName="email">
+</div>
+
             <div class="col-md-6">
               <label class="form-label">Location</label>
               <input type="text" class="form-control" formControlName="location">
             </div>
 
-            <div class="col-md-6">
-              <label class="form-label">Monthly Income (Ksh)</label>
-              <input type="number" class="form-control" formControlName="income">
-            </div>
+          <div class="col-md-6">
+  <label class="form-label">Monthly Income (Ksh)</label>
+  <input type="number" class="form-control shadow-sm" formControlName="monthlyIncome" />
+</div>
 
-            <div class="col-md-6">
-              <label class="form-label">Monthly Expenses (Ksh)</label>
-              <input type="number" class="form-control" formControlName="expenses">
-            </div>
+<div class="col-md-6">
+  <label class="form-label">Monthly Expenses (Ksh)</label>
+  <input type="number" class="form-control" formControlName="monthlyExpenses">
+</div>
 
             <div class="col-md-6">
               <label class="form-label">Requested Amount (Ksh)</label>
@@ -191,74 +205,235 @@
       <p class="mt-3 text-muted">Fetching loan data, please wait...</p>
     </div>
 
+
+<div
+*ngIf="successMessage"
+class="alert alert-success shadow-sm">
+
+<i class="fa fa-check-circle me-2"></i>
+
+{{ successMessage }}
+
+</div>
+
+<div
+*ngIf="errorMessage"
+class="alert alert-danger shadow-sm">
+
+<i class="fa fa-exclamation-circle me-2"></i>
+
+{{ errorMessage }}
+
+</div>
+
+
     <!-- Loan Table -->
-    <div *ngIf="!isLoading" class="table-responsive shadow-sm rounded-3 bg-white mt-4">
-      <table class="table table-hover align-middle mb-0">
-        <thead class="table-light">
-          <tr>
-            <th>Applicant</th>
-            <th>ID No.</th>
-            <th>Amount</th>
-            <th>Applied On</th>
-            <th>Balance</th>
-            <th>Due Date</th>
-            <th>Loan Status</th>
-            <th class="text-end">Actions</th>
-          </tr>
-        </thead>
+    <div *ngIf="!isLoading" class="table-responsive shadow-sm rounded-3 bg-white">
+      <table class="table table-hover align-middle">
+      <thead class="table-light">
+  <tr>
+    <th class="fw-bold">
+      <i class="fas fa-user-circle text-primary me-1"></i>
+      Applicant
+    </th>
+
+    <th class="fw-bold">
+      <i class="fas fa-id-card text-info me-1"></i>
+      ID No.
+    </th>
+
+    <th class="fw-bold">
+      <i class="fas fa-coins text-success me-1"></i>
+      Amount Applied
+    </th>
+
+    <th class="fw-bold">
+      <i class="fas fa-calendar-plus text-warning me-1"></i>
+      Applied On
+    </th>
+
+    <th class="fw-bold">
+      <i class="fas fa-wallet text-danger me-1"></i>
+      Loan Balance
+    </th>
+
+    <th class="fw-bold">
+      <i class="fas fa-calendar-check text-secondary me-1"></i>
+      Due Date
+    </th>
+
+    <th class="fw-bold text-end">
+      <i class="fas fa-cogs text-dark me-1"></i>
+      Actions
+    </th>
+  </tr>
+</thead>
         <tbody>
-          <tr *ngFor="let loan of loans">
-            <td class="d-flex align-items-center gap-2">
-              <ng-container *ngIf="loan.userImageUrl; else defaultIcon">
-                <img [src]="'http://localhost:8080/' + loan.userImageUrl" alt="User Image" class="rounded-circle" width="40" height="40"/>
-              </ng-container>
-              <ng-template #defaultIcon>
-                <div class="bg-secondary text-white rounded-circle d-flex justify-content-center align-items-center" style="width: 40px; height: 40px;">
-                  <i class="fa fa-user"></i>
-                </div>
-              </ng-template>
-              {{ loan.applicantName }}
-            </td>
-            <td>{{ loan.idNo }}</td>
+          <tr *ngFor="let loan of loans; trackBy: trackByLoanId">
+<td>
+    <div class="d-flex align-items-center">
+
+        <ng-container *ngIf="loan.userImageUrl; else defaultIcon">
+
+            <img
+                [src]="'http://localhost:8080/' + loan.userImageUrl"
+                class="rounded-circle shadow-sm me-3"
+                width="45"
+                height="45"
+                alt="Customer">
+
+        </ng-container>
+
+        <ng-template #defaultIcon>
+
+            <div
+                class="bg-secondary text-white rounded-circle d-flex justify-content-center align-items-center me-3"
+                style="width:45px;height:45px;">
+
+                <i class="fa fa-user"></i>
+
+            </div>
+
+        </ng-template>
+
+        <div>
+
+            <div class="fw-bold">
+                {{ loan.applicantName }}
+            </div>
+
+            <div class="mt-1">
+
+                <span
+                    class="badge applicant-status"
+                    [ngClass]="{
+
+                        'bg-success':
+                        loan.status?.toUpperCase() === 'APPROVED',
+
+                        'bg-warning text-dark':
+                        loan.status?.toUpperCase() === 'AWAITING_AUTHORIZATION',
+
+                        'bg-danger':
+                        loan.status?.toUpperCase() === 'REJECTED',
+
+                        'bg-info':
+                        loan.status?.toUpperCase() === 'PAID' ||
+                        loan.status?.toUpperCase() === 'REPAID',
+
+                        'bg-primary':
+                        loan.status?.toUpperCase() === 'PARTIAL',
+
+                        'bg-secondary':
+                        loan.status?.toUpperCase() === 'OVERDUE'
+                    }">
+
+                    {{ loan.status?.replace('_',' ') }}
+
+                </span>
+
+            </div>
+
+        </div>
+
+    </div>
+</td>
+            <td>{{ loan.nationalId }}</td>
             <td>{{ loan.amount | currency:'KES':'symbol':'1.2-2' }}</td>
             <td>{{ loan.applicationDate | date:'mediumDate' }}</td>
-            <td>{{ loan.totalRepayableAmount | currency:'KES':'symbol' }}</td>
-            <td>{{ loan.dueDate | date:'mediumDate' }}</td>
-            <td>
-              <span class="badge" 
-                    [ngClass]="{
-                      'bg-success': loan.status?.toLowerCase() === 'approved',
-                      'bg-warning text-dark': loan.status?.toLowerCase() === 'pending',
-                      'bg-info text-success': loan.status?.toLowerCase() === 'repaid',
-                      'bg-danger': loan.status?.toLowerCase() === 'rejected',
-                      'badge-partial': loan.status?.toLowerCase() === 'partial'
-                    }">{{ loan.status | titlecase }}</span>
-            </td>
-            <td class="text-end d-flex justify-content-end gap-2">
-              <button class="btn btn-sm btn-outline-primary" (click)="viewCustomerDetails(loan)" title="View Details">
-                <i class="fa fa-eye"></i>
-              </button>
-              <button *ngIf="userRole==='ADMIN' && loan.status?.toLowerCase()!=='pending'" 
-                      class="btn btn-sm btn-outline-warning" 
-                      (click)="editLoan(loan)" title="Edit Details">
-                <i class="fa fa-pen"></i>
-              </button>
-              <button *ngIf="userRole==='ADMIN'" 
-                      class="btn btn-sm btn-outline-danger" 
-                      (click)="deleteLoan(loan.id!)" title="Delete Loan">
-                <i class="fa fa-trash"></i>
-              </button>
-              <button *ngIf="userRole==='ADMIN' && loan.status?.toLowerCase()==='pending'" 
-                      class="btn btn-sm btn-outline-success" 
-                      (click)="approveLoan(loan.id!)" title="Approve Loan">
-                <i class="fa fa-check-circle"></i>
-              </button>
-              <button *ngIf="userRole==='ADMIN' && loan.status?.toLowerCase()==='pending'" 
-                      class="btn btn-sm btn-outline-danger" 
-                      (click)="rejectLoan(loan.id!)" title="Reject Loan">
-                <i class="fa fa-times-circle"></i>
-              </button>
-            </td>
+<td>
+  <div class="d-flex flex-column">
+
+    <span class="fw-semibold text-dark">
+      {{ loan.totalRepayableAmount | currency:'KES':'symbol':'1.2-2' }}
+    </span>
+
+  </div>
+</td>
+
+<td>{{ loan.dueDate | date:'mediumDate' }}</td>
+
+
+
+<td class="text-end">
+
+  <div class="d-flex justify-content-end align-items-center gap-2">
+
+    <!-- Details -->
+    <button
+      class="btn btn-sm btn-outline-primary"
+      (click)="goToCustomerDetails(loan)"
+      title="View Details">
+
+      <i class="fa fa-eye"></i>
+
+    </button>
+
+    <!-- Edit -->
+    <button
+      *ngIf="userRole==='ADMIN'"
+      class="btn btn-sm btn-outline-warning"
+      (click)="editLoan(loan)"
+      [disabled]="processingLoanId===loan.id">
+
+      <i class="fa fa-pen"></i>
+
+    </button>
+
+    <!-- Delete -->
+    <button
+      *ngIf="userRole==='ADMIN'"
+      class="btn btn-sm btn-outline-danger"
+      (click)="deleteLoan(loan.id!)"
+      [disabled]="processingLoanId===loan.id">
+
+      <i class="fa fa-trash"></i>
+
+    </button>
+
+    <!-- APPROVE -->
+    <button
+      *ngIf="
+      userRole==='ADMIN'
+      && loan.status==='AWAITING_AUTHORIZATION'
+      "
+      class="btn btn-success btn-sm"
+
+      (click)="approveLoan(loan.id!)"
+
+      [disabled]="processingLoanId===loan.id">
+
+      <span
+      *ngIf="processingLoanId===loan.id"
+      class="spinner-border spinner-border-sm me-1">
+      </span>
+
+      <i
+      *ngIf="processingLoanId!==loan.id"
+      class="fa fa-check-circle">
+      </i> 
+
+    </button>
+
+    <!-- REJECT -->
+
+    <button
+      *ngIf="
+      userRole==='ADMIN'
+      && loan.status==='AWAITING_AUTHORIZATION'
+      "
+      class="btn btn-danger btn-sm"
+
+      (click)="openRejectModal(loan)"
+
+      [disabled]="processingLoanId===loan.id">
+
+      <i class="fa fa-times-circle"></i>
+    </button>
+
+  </div>
+
+</td>
           </tr>
 
             <!-- EMPTY STATE MESSAGE -->
@@ -275,10 +450,10 @@
       </table>
     </div>
   </div>
-</div>
+<!-- </div> -->
 
 <!-- Customer Details Modal -->
-<div class="modal fade mt-5" id="customerDetailsModal" tabindex="-1" aria-labelledby="customerDetailsModalLabel" aria-hidden="true">
+<div class="modal fade m-5" id="customerDetailsModal" tabindex="-1" aria-labelledby="customerDetailsModalLabel" aria-hidden="true">
   <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
     <div class="modal-content modal-glass">
 
@@ -303,23 +478,22 @@
       </div>
 
       <!-- Modal Body -->
-      <div class="modal-body p-4">
+      <div class="modal-body p-2">
 
   <!-- Reminder Feedback -->
   <div *ngIf="submitSuccess" class="alert alert-success py-2 text-center">
     <i class="fas fa-check-circle me-1"></i>{{ submitSuccess }}
   </div>
-  <div *ngIf="submitError" class="alert alert-danger py-2 text-center">
+  <div *ngIf="submitError" class="alert alert-danger py-1 text-center">
     <i class="fas fa-exclamation-triangle me-1"></i>{{ submitError }}
   </div>
-
 
 <button
   *ngIf="selectedLoan && 
          (selectedLoan.status?.toLowerCase() === 'approved' ||
           selectedLoan.status?.toLowerCase() === 'partial') &&
          (selectedLoan.dueAmount ?? 0) > 0"
-  class="btn btn-success"
+  class="btn btn-success mb-1"
   (click)="clearLoan(selectedLoan.id)"
 >
   <i class="fa fa-money-bill me-1"></i>
@@ -327,24 +501,31 @@
 </button>
 
 
-
-
-
-        <div class="text-center mb-4">
+<div class="d-flex">
+  <div class="text-center mb-4 me-1">
           <img *ngIf="selectedLoan?.userImageUrl" [src]="'http://localhost:8080/' + selectedLoan?.userImageUrl" 
-               class="rounded-circle shadow-sm" width="150" alt="User Image">
+               class="rounded-circle shadow-sm" width="100" alt="User Image">
         </div>
 
-        <div class="row g-3 mb-3">
+        <div class="row g-3 mb-2">
           <div class="col-md-6"><strong>Name:</strong> {{ selectedLoan?.applicantName }}</div>
-          <div class="col-md-6"><strong>ID Number:</strong> {{ selectedLoan?.idNo }}</div>
+          <div class="col-md-6"><strong>ID Number:</strong> {{ selectedLoan?.nationalId}}</div>
           <div class="col-md-6"><strong>Loan Applied:</strong> {{ selectedLoan?.amount | currency:'KES' }}</div>
           <div class="col-md-6"><strong>Loan Balance:</strong> {{ selectedLoan?.totalRepayableAmount | currency:'KES' }}</div>
           <div class="col-md-6"><strong>Status:</strong> 
             <span class="badge bg-info">{{ selectedLoan?.status | titlecase }}</span>
           </div>
-          <div class="col-md-6"><strong>Duration:</strong> {{ selectedLoan?.duration }}</div>
-        </div>
+          <div class="col-md-6"><strong>Loan Duration:</strong> {{ selectedLoan?.duration }}</div>
+
+          <div *ngIf="selectedLoan?.status?.toLowerCase() === 'rejected' 
+            && selectedLoan?.rejectionReason"
+     class="alert alert-danger mt-3">
+  <strong>Rejection Reason:</strong>
+  <p class="mb-0">{{ selectedLoan?.rejectionReason }}</p>
+</div>
+
+</div>
+</div>
 
         <div class="mb-4">
           <h6 class="fw-semibold">Repayment Progress</h6>
@@ -375,20 +556,29 @@
         <div>
           <h6 class="fw-semibold">Repayment History</h6>
           <table class="table table-sm table-hover shadow-sm rounded-3">
-            <thead class="table-light">
-              <tr>
-                <th>Date</th>
-                <th>Amount Paid</th>
-                <th>Method</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr *ngFor="let repayment of selectedLoan?.['repayments']">
-                <td>{{ repayment.date | date:'mediumDate' }}</td>
-                <td>{{ repayment.amount | currency:'KES' }}</td>
-                <td>{{ repayment.method }}</td>
-              </tr>
-            </tbody>
+         <thead class="table-light">
+  <tr>
+    <th>Date</th>
+    <th>Amount Paid</th>
+    <th>Method</th>
+    <th>Receipt</th>
+  </tr>
+</thead>
+
+<tbody>
+  <tr *ngFor="let repayment of selectedLoan?.repayments">
+    <td>{{ repayment.date | date:'mediumDate' }}</td>
+    <td>{{ repayment.amount | currency:'KES' }}</td>
+    <td>{{ repayment.method }}</td>
+    <td>
+      <button 
+        class="btn btn-sm btn-outline-primary"
+        (click)="downloadReceipt(repayment)">
+        <i class="fa fa-file-pdf"></i> PDF
+      </button>
+    </td>
+  </tr>
+</tbody>
           </table>
         </div>
       </div>
@@ -451,19 +641,24 @@
             </div>
 
             <div class="col-md-6">
+  <label class="form-label">Email</label>
+  <input type="email" class="form-control shadow-sm" formControlName="email">
+</div>
+
+            <div class="col-md-6">
               <label class="form-label">Location</label>
               <input type="text" class="form-control shadow-sm" formControlName="location" />
             </div>
 
-            <div class="col-md-6">
-              <label class="form-label">Monthly Income (Ksh)</label>
-              <input type="number" class="form-control shadow-sm" formControlName="income" />
-            </div>
+         <div class="col-md-6">
+  <label class="form-label">Monthly Income (Ksh)</label>
+  <input type="number" class="form-control shadow-sm" formControlName="monthlyIncome" />
+</div>
 
-            <div class="col-md-6">
-              <label class="form-label">Monthly Expenses (Ksh)</label>
-              <input type="number" class="form-control shadow-sm" formControlName="expenses" />
-            </div>
+<div class="col-md-6">
+  <label class="form-label">Monthly Expenses (Ksh)</label>
+  <input type="number" class="form-control" formControlName="monthlyExpenses">
+</div>
 
             <div class="col-md-6">
               <label class="form-label">Requested Amount (Ksh)</label>
@@ -506,3 +701,46 @@
   </div>
 </div>
 
+
+<!-- Reject Loan Modal -->
+<div class="modal fade" id="rejectLoanModal" tabindex="-1">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header bg-danger text-white">
+        <h5 class="modal-title">Reject Loan</h5>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+      </div>
+
+      <div class="modal-body">
+        <label class="form-label">Reason for rejection</label>
+        <textarea class="form-control"
+                  [(ngModel)]="rejectionReason"
+                  rows="4"
+                  placeholder="Enter rejection reason"></textarea>
+      </div>
+
+      <div class="modal-footer">
+        <button class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+<button
+
+class="btn btn-danger"
+
+(click)="confirmReject()"
+
+[disabled]="
+!rejectionReason.trim()
+|| processingLoanId===loanToReject?.id
+">
+
+<span
+*ngIf="processingLoanId===loanToReject?.id"
+class="spinner-border spinner-border-sm me-2">
+</span>
+
+Reject Loan
+
+</button>
+      </div>
+    </div>
+  </div>
+</div>

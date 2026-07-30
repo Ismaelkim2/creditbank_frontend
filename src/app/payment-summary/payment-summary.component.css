@@ -15,7 +15,6 @@
   background-color: var(--bg);
   min-height: 100vh;
   margin-left: 250px;
-  margin-top: 80px;
   padding: 30px 25px 80px;
   transition: all 0.4s ease;
   font-family: "Poppins", "Segoe UI", sans-serif;

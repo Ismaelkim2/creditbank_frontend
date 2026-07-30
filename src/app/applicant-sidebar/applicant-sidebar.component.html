@@ -125,25 +125,32 @@
 
 <!-- Sidebar -->
 <aside class="sidebar mt-1" [class.open]="sidebarOpen">
-  <nav class="nav flex-column" style="cursor: pointer;">
-    <a class="nav-link active" routerLink="/applicant-dashboard">
+  <nav class="nav flex-column">
+
+    <a class="nav-link" routerLink="/app/applicant" routerLinkActive="active">
       <i class="bi bi-speedometer2 me-2"></i> Overview
     </a>
-    <a class="nav-link" (click)="goToLoans()">
-      <i class="bi bi-cash-coin me-2"></i>  Loans
+
+    <a class="nav-link" routerLink="/app/debtloans" routerLinkActive="active">
+      <i class="bi bi-cash-coin me-2"></i> Loans
     </a>
-    <a class="nav-link" (click)="transferFunds()">
+
+    <a class="nav-link" routerLink="/app/payments" routerLinkActive="active">
       <i class="bi bi-arrow-left-right me-2"></i> Payments
     </a>
-    <a class="nav-link" routerLink="/statement">
+
+    <a class="nav-link" routerLink="/app/statement" routerLinkActive="active">
       <i class="bi bi-filetype-pdf me-2"></i> Statements
     </a>
-    <a class="nav-link" routerLink="/user-profile">
+
+    <a class="nav-link" routerLink="/app/user-profile" routerLinkActive="active">
       <i class="bi bi-person me-2"></i> Profile
     </a>
+
     <a class="nav-link" (click)="openSettings()">
       <i class="bi bi-sliders me-2"></i> Settings
     </a>
+
   </nav>
 </aside>
 

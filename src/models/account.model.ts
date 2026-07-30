@@ -6,6 +6,18 @@ export interface Account {
   phoneNumber: string;
   email: string;
   balance: number;
-  createdAt: string; // can be string if returned as ISO date
-   image?: Uint8Array | null; 
+  createdAt: string;
+   modeOfOperation: string;
+  imageUrl?: string | null;
+}
+
+export interface County {
+    id: number;
+    name: string;
+}
+
+export interface Town {
+    id: number;
+    countyId: number;
+    name: string;
 }

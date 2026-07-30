@@ -1,1 +1,259 @@
-/* You can add global styles to this file, and also import other style files */
+/*=========================================================
+  ENTERPRISE THEME ENGINE
+=========================================================*/
+
+:root{
+
+    /* Main */
+    --bg:#f5f7fb;
+    --surface:#ffffff;
+    --surface-2:#f8fafc;
+    --surface-3:#eef2f7;
+
+    /* Text */
+    --text:#1f2937;
+    --text-light:#64748b;
+    --heading:#0f172a;
+
+    /* Borders */
+    --border:#dbe4ee;
+
+    /* Brand */
+    --primary:#2563eb;
+    --secondary:#1e40af;
+
+}
+
+/*=========================================================
+ DARK MODE VARIABLES
+=========================================================*/
+
+body.dark-mode{
+
+    --bg:#0b1120;
+    --surface:#172033;
+    --surface-2:#1e293b;
+    --surface-3:#263449;
+
+    --text:#f8fafc;
+    --text-light:#cbd5e1;
+    --heading:#ffffff;
+
+    --border:#334155;
+
+    background:var(--bg) !important;
+    color:var(--text) !important;
+}
+
+/*=========================================================
+ WHOLE PAGE
+=========================================================*/
+
+html,
+body,
+app-root{
+
+    background:var(--bg) !important;
+    color:var(--text);
+    transition:
+        background .35s ease,
+        color .35s ease;
+
+}
+
+/*=========================================================
+ EVERY CONTAINER
+=========================================================*/
+
+body.dark-mode
+.container,
+body.dark-mode
+.container-fluid,
+body.dark-mode
+.row,
+body.dark-mode
+main,
+body.dark-mode
+section{
+
+    background:transparent !important;
+    color:var(--text);
+
+}
+
+/*=========================================================
+ CARDS
+=========================================================*/
+
+body.dark-mode
+.card,
+body.dark-mode
+.dashboard-card,
+body.dark-mode
+.enterprise-card,
+body.dark-mode
+.card-body,
+body.dark-mode
+.modal-content,
+body.dark-mode
+.dropdown-menu{
+
+    background:var(--surface) !important;
+    color:var(--text) !important;
+    border:1px solid var(--border) !important;
+
+}
+
+/*=========================================================
+ TABLES
+=========================================================*/
+
+body.dark-mode
+table,
+body.dark-mode
+.table,
+body.dark-mode
+.table-responsive{
+
+    background:var(--surface)!important;
+    color:var(--text)!important;
+
+}
+
+body.dark-mode
+thead{
+
+    background:var(--surface-2)!important;
+
+}
+
+body.dark-mode
+th,
+body.dark-mode
+td{
+
+    background:transparent!important;
+    color:var(--text)!important;
+    border-color:var(--border)!important;
+
+}
+
+/*=========================================================
+ FORMS
+=========================================================*/
+
+body.dark-mode
+input,
+body.dark-mode
+textarea,
+body.dark-mode
+select{
+
+    background:var(--surface-2)!important;
+    color:var(--text)!important;
+    border:1px solid var(--border)!important;
+
+}
+
+body.dark-mode
+input::placeholder,
+body.dark-mode
+textarea::placeholder{
+
+    color:#94a3b8!important;
+
+}
+
+/*=========================================================
+ LINKS
+=========================================================*/
+
+body.dark-mode
+a{
+
+    color:#60a5fa;
+
+}
+
+/*=========================================================
+ BUTTONS
+=========================================================*/
+
+body.dark-mode
+.btn-light{
+
+    background:var(--surface)!important;
+    color:var(--text)!important;
+    border-color:var(--border)!important;
+
+}
+
+/*=========================================================
+ NAVBAR
+=========================================================*/
+
+body.dark-mode
+.navbar,
+body.dark-mode
+.top-nav,
+body.dark-mode
+.header,
+body.dark-mode
+.dashboard-header{
+
+    background:var(--surface)!important;
+    color:var(--text)!important;
+
+}
+
+/*=========================================================
+ SIDEBAR
+=========================================================*/
+
+body.dark-mode
+.sidebar{
+
+    background:#111827!important;
+
+}
+
+/*=========================================================
+ FOOTER
+=========================================================*/
+
+body.dark-mode
+footer{
+
+    background:var(--surface)!important;
+    color:var(--text)!important;
+
+}
+
+/*=========================================================
+ ALL TEXT
+=========================================================*/
+
+body.dark-mode
+h1,
+body.dark-mode
+h2,
+body.dark-mode
+h3,
+body.dark-mode
+h4,
+body.dark-mode
+h5,
+body.dark-mode
+h6,
+body.dark-mode
+span,
+body.dark-mode
+label,
+body.dark-mode
+small,
+body.dark-mode
+p{
+
+    color:inherit;
+
+}

@@ -1,5 +1,392 @@
-<app-sidebar></app-sidebar>
+<div class="transactions-dashboard container-fluid">
 
-<div class="container mt-5">
-<h1>coming soon!</h1>  
+  <!-- HEADER -->
+  <div class="dashboard-header d-flex justify-content-between align-items-center mb-2 flex-wrap">
+    <div>
+      <h2 class="fw-bold d-flex align-items-center gap-2">
+        <i class="bi bi-bank2 text-gradient fs-2"></i> Transaction Intelligence
+      </h2>
+      <p class="text-muted fs-6 mb-0">Real-time monitoring, analytics, and risk management</p>
+    </div>
+
+    <div class="d-flex gap-3 flex-wrap mt-3 mt-md-0">
+      <button class="btn btn-light shadow-sm" (click)="loadTransactions()">
+        <i class="fas fa-sync fa-spin"></i> Refresh
+      </button>
+
+      <button class="btn btn-light shadow-sm">
+        <i class="fas fa-file-export"></i> Export
+      </button>
+
+      <button class="btn btn-gradient shadow-lg">
+        <i class="bi bi-shield-check"></i> Compliance Report
+      </button>
+    </div>
+  </div>
+
+  <!-- KPI CARDS -->
+  <div class="row g-4 mb-3 align-items-stretch">
+
+    <!-- Total Volume -->
+    <div class="col-lg-4 col-md-6">
+      <div class="kpi-card glass p-4 shadow-lg h-50">
+        <div class="d-flex align-items-center gap-3">
+          <i class="bi bi-cash-stack fs-1 text-gradient"></i>
+
+          <div>
+            <h5 class="fw-bold mb-1">
+              <i class="fas fa-coins me-1"></i>
+              KES {{ filteredVolume | number:'1.2-2' }}
+            </h5>
+            <small class="text-muted">Total Volume</small>
+          </div>
+        </div>
+
+        <div class="sparkline mt-3" id="spark-volume"></div>
+      </div>
+    </div>
+
+    <!-- Credit / Debit -->
+    <div class="col-lg-4 col-md-6">
+      <div class="kpi-card glass p-4 shadow-lg h-50">
+
+        <div class="row text-center">
+
+          <div class="col-6">
+            <i class="bi bi-arrow-up-circle text-success fs-2"></i>
+            <h5 class="fw-bold mt-2">{{ filteredCredits }}</h5>
+            <p class="text-muted mb-0">
+              <i class="fas fa-credit-card text-success"></i> Credits
+            </p>
+          </div>
+
+          <div class="col-6 border-start">
+            <i class="bi bi-arrow-down-circle text-danger fs-2"></i>
+            <h5 class="fw-bold mt-2">{{ filteredDebits }}</h5>
+            <p class="text-muted mb-0">
+              <i class="fas fa-money-bill-wave text-danger"></i> Debits
+            </p>
+          </div>
+
+        </div>
+
+        <div class="sparkline mt-3" id="spark-credits-debits"></div>
+
+      </div>
+    </div>
+
+    <!-- SUCCESS RATE -->
+    <div class="col-lg-4 col-md-12 d-flex">
+      <div class="kpi-card glass text-center p-4 shadow-lg success-rate-card d-flex flex-column justify-content-center">
+
+        <h6 class="fw-bold mb-3">
+          <i class="bi bi-pie-chart"></i> Transaction Success Rate
+        </h6>
+
+        <div class="d-flex justify-content-center position-relative mb-3">
+
+          <div class="progress-circle position-relative">
+
+            <svg width="100" height="100">
+
+              <circle cx="50" cy="50" r="40"
+                stroke="#e9ecef" stroke-width="8" fill="none"></circle>
+
+              <circle cx="50" cy="50" r="40"
+                stroke="#28a745"
+                stroke-width="8"
+                fill="none"
+                stroke-dasharray="251"
+                [attr.stroke-dashoffset]="251 - (251 * successRate / 100)">
+              </circle>
+
+            </svg>
+
+            <div class="circle-label">
+              <h5 class="fw-bold mb-0" style="color:#208313;font-size:1rem;">
+                {{ successRate }}%
+              </h5>
+              <small style="color:#208313;font-size:0.7rem;">success</small>
+            </div>
+
+          </div>
+
+          <div class="justify-content-around">
+
+            <div>
+              <span class="badge bg-success" style="font-size:0.75rem;padding:0.25rem 0.5rem;">
+                {{ successfulTransactions }}
+              </span>
+              <small class="d-block text-muted" style="font-size:0.7rem;">completed</small>
+            </div>
+
+            <div>
+              <span class="badge bg-danger" style="font-size:0.75rem;padding:0.25rem 0.5rem;">
+                {{ filteredFailed }}
+              </span>
+              <small class="d-block text-muted" style="font-size:0.7rem;">failed</small>
+            </div>
+
+          </div>
+
+        </div>
+
+      </div>
+    </div>
+
+  </div>
+
+  <!-- FILTER BAR -->
+  <div class="filter-bar d-flex flex-nowrap gap-3 align-items-center mb-4 p-3 glass shadow-sm rounded">
+
+    <input
+      class="form-control flex-grow-1"
+      placeholder="Search transaction or client"
+      [(ngModel)]="searchQuery"
+      (input)="applyFilters()">
+
+    <select class="form-select w-auto" [(ngModel)]="selectedType" (change)="applyFilters()">
+      <option value="All">All Types</option>
+      <option value="Credit">Credit</option>
+      <option value="Debit">Debit</option>
+    </select>
+
+    <select class="form-select w-auto" [(ngModel)]="selectedStatus" (change)="applyFilters()">
+      <option value="All">All Status</option>
+<option value="COMPLETED">Completed</option>
+<option value="PENDING">Pending</option>
+<option value="FAILED">Failed</option>
+    </select>
+
+    <select class="form-select w-auto" [(ngModel)]="selectedChannel" (change)="applyFilters()">
+      <option value="All">All Channels</option>
+      <option value="Mobile">Mobile</option>
+      <option value="ATM">ATM</option>
+      <option value="Online">Online</option>
+      <option value="Branch">Branch</option>
+    </select>
+
+  </div>
+
+  <!-- TRANSACTIONS TABLE -->
+  <div class="table-wrapper glass shadow-lg rounded">
+
+    <table class="table table-hover align-middle mb-0">
+
+      <thead class="table-dark sticky-top">
+        <tr>
+          <th>Ref / Receipt</th>
+          <th>Client</th>
+          <th>Type</th>
+          <th>Amount</th>
+          <th>Status</th>
+          <th>Channel</th>
+          <th>Risk</th>
+          <th>Date</th>
+        </tr>
+      </thead>
+
+      <tbody>
+
+        <tr
+          *ngFor="let tx of paginatedTransactions; trackBy: trackByTransaction"
+          (click)="viewTransactionDetails(tx)"
+          class="transaction-row">
+
+         <td class="fw-bold text-primary">
+      {{ tx.mpesaReceiptNumber || ('# ' + tx.id) }}
+    </td>
+
+          <td>
+            <i class="bi bi-person-circle me-2"></i>
+            {{ tx.client }}
+          </td>
+
+          <td>
+            <span class="badge"
+              [ngClass]="tx.type==='Credit' ? 'bg-success' : 'bg-danger'">
+              {{ tx.type }}
+            </span>
+          </td>
+
+          <td class="fw-semibold">
+            KES {{ tx.amount | number }}
+          </td>
+
+<td>
+  <span class="badge" [ngClass]="getStatusClass(tx.status)">
+    {{ tx.status }}
+  </span>
+</td>
+          <td>
+            <i class="bi bi-phone"></i>
+            {{ tx.channel }}
+          </td>
+
+          <td>
+            <div class="risk-indicator"
+              [ngClass]="getRiskClass(tx.riskScore)">
+              {{ tx.riskScore }}%
+            </div>
+          </td>
+
+          <td>
+            {{ tx.date | date:'medium' }}
+          </td>
+
+        </tr>
+
+      </tbody>
+
+    </table>
+
+  </div>
+
+  <!-- PAGINATION -->
+  <div class="pagination mt-4 d-flex justify-content-center gap-3">
+
+    <button
+      (click)="previousPage()"
+      [disabled]="currentPage===1"
+      class="btn btn-light shadow-sm">
+      Prev
+    </button>
+
+    <span class="align-self-center">
+      Page {{currentPage}} of {{totalPages}}
+    </span>
+
+    <button
+      (click)="nextPage()"
+      [disabled]="currentPage===totalPages"
+      class="btn btn-light shadow-sm">
+      Next
+    </button>
+
+  </div>
+
+  <!-- ADVANCED TRANSACTION MODAL -->
+  <div *ngIf="showTransactionModal" class="tx-modal-overlay" (click)="closeModal()">
+
+    <div class="tx-modal" (click)="$event.stopPropagation()">
+
+      <div class="tx-header">
+        <div>
+          <h5 class="fw-bold mb-0">
+            <i class="bi bi-receipt-cutoff"></i>
+            Transaction Details
+          </h5>
+          <small class="text-muted">Financial activity intelligence</small>
+        </div>
+
+        <button class="btn-close" (click)="closeModal()"></button>
+      </div>
+
+      <div class="tx-body" *ngIf="selectedTransaction">
+
+        <div class="tx-summary">
+
+          <div class="tx-id">
+<span>Receipt Ref:</span>
+    <strong>{{ selectedTransaction.mpesaReceiptNumber || selectedTransaction.id }}</strong>
+
+            <button class="copy-btn"
+              (click)="copyTransactionId(selectedTransaction.id)">
+              <i class="bi bi-clipboard"></i>
+            </button>
+          </div>
+
+          <div class="tx-amount">
+            KES {{selectedTransaction.amount | number:'1.2-2'}}
+          </div>
+
+          <span class="badge"
+            [ngClass]="selectedTransaction.type==='Credit' ? 'bg-success':'bg-danger'">
+            {{selectedTransaction.type}}
+          </span>
+
+        </div>
+
+        <div class="tx-row">
+          <i class="bi bi-person-circle"></i>
+          <div>
+            <strong>Client</strong>
+            <p>{{selectedTransaction.client}}</p>
+          </div>
+        </div>
+
+        <div class="tx-row">
+          <i class="bi bi-phone"></i>
+          <div>
+            <strong>Channel</strong>
+            <p>{{selectedTransaction.channel}}</p>
+          </div>
+        </div>
+
+        <div class="tx-row">
+          <i class="bi bi-check-circle"></i>
+          <div>
+            <strong>Status</strong>
+            <p>{{selectedTransaction.status}}</p>
+          </div>
+        </div>
+
+        <div class="fraud-box"
+          [ngClass]="getRiskClass(selectedTransaction.riskScore)">
+
+          <i class="bi bi-shield-exclamation"></i>
+
+          <div>
+            <strong>Fraud Risk Score</strong>
+            <p>{{selectedTransaction.riskScore}}%</p>
+          </div>
+
+        </div>
+
+        <div class="timeline">
+
+          <div class="timeline-item complete">
+            <i class="bi bi-check-circle"></i>
+            Transaction initiated
+          </div>
+
+          <div class="timeline-item complete">
+            <i class="bi bi-check-circle"></i>
+            Bank verification
+          </div>
+
+          <div class="timeline-item"
+            [ngClass]="selectedTransaction.status==='COMPLETED' ? 'complete':'pending'">
+            <i class="bi bi-clock"></i>
+            Processing
+          </div>
+
+          <div class="timeline-item"
+            [ngClass]="selectedTransaction.status==='COMPLETED' ? 'complete':'pending'">
+            <i class="bi bi-bank"></i>
+            Settlement
+          </div>
+
+        </div>
+
+        <div class="tx-actions">
+
+          <button class="btn btn-light"
+            (click)="copyTransactionId(selectedTransaction.id)">
+            <i class="bi bi-clipboard"></i> Copy ID
+          </button>
+
+          <button class="btn btn-primary"
+            (click)="downloadReceipt(selectedTransaction)">
+            <i class="bi bi-download"></i> Download Receipt
+          </button>
+
+        </div>
+
+      </div>
+
+    </div>
+
+  </div>
+
 </div>

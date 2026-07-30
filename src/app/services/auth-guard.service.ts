@@ -1,49 +1,48 @@
 import { Injectable } from '@angular/core';
 import { CanActivate, ActivatedRouteSnapshot, Router } from '@angular/router';
 import { AuthService } from './auth-service.service';
-import { Observable, of } from 'rxjs';
-import { catchError, map } from 'rxjs/operators';
 
 @Injectable({
   providedIn: 'root'
 })
 export class AuthGuard implements CanActivate {
 
-  constructor(private authService: AuthService, private router: Router) {}
+  constructor(
+    private authService: AuthService,
+    private router: Router
+  ) {}
 
-  canActivate(route: ActivatedRouteSnapshot): Observable<boolean> {
-    // Step 1: Check if logged in
+  canActivate(route: ActivatedRouteSnapshot): boolean {
+
+    // 1. Check login
     if (!this.authService.isLoggedIn()) {
       this.router.navigate(['/login']);
-      return of(false);
+      return false;
     }
 
-    const expectedRole = route.data['role']?.toUpperCase();
+    // 2. Get user directly from storage (NO API CALL)
+    const user = this.authService.getCurrentUser();
 
-    // Step 2: Fetch logged-in user
-    return this.authService.getLoggedInUser().pipe(
-      map(user => {
-        // If no user, redirect to login
-        if (!user) {
-          this.router.navigate(['/login']);
-          return false;
-        }
+    if (!user) {
+      this.router.navigate(['/login']);
+      return false;
+    }
 
-        const role = (user.role || '').toUpperCase();
 
-        // If route has role restriction, validate
-        if (expectedRole && expectedRole !== role) {
-          this.router.navigate(['/unauthorized']);
-          return false;
-        }
+    const role = (user.role || '')
+  .toString()
+  .toUpperCase()
+  .replace('ROLE_', '');
 
-        return true;
-      }),
-      catchError(err => {
-        console.error('AuthGuard error:', err);
-        this.router.navigate(['/login']);
-        return of(false);
-      })
-    );
+
+    // 3. Role check
+    const expectedRoles: string[] = route.data['roles'] || [];
+
+   if (expectedRoles.length > 0 && !expectedRoles.includes(role)) {
+      this.router.navigate(['/unauthorized']);
+      return false;
+    }
+
+    return true;
   }
 }

@@ -1,158 +1,2761 @@
-<!-- ===== SIDEBAR ===== -->
-<app-sidebar *ngIf="!isApplicant"></app-sidebar>
-<app-applicant-sidebar *ngIf="isApplicant"></app-applicant-sidebar>
+<!-- ==========================================================
+     STEP 1A
+     CUSTOMER OVERVIEW + LOAN PERFORMANCE
+========================================================== -->
 
-<!-- ===== MAIN CONTAINER ===== -->
-<div class="main-container">
+<div *ngIf="currentStep === 1">
+<div class="row g-8">
 
-  <!-- CONTENT WRAPPER -->
-  <div class="content-wrapper" [class.no-sidebar]="isApplicant">
 
-    <!-- DASHBOARD HEADER -->
-    <div class="dashboard-header mb-3">
-      <h4 class="fw-bold text-primary">
-        <i class="fas fa-wallet me-2"></i> Automated Loan Repayment
-      </h4>
-      <small class="text-muted">Manage loans, track repayments & monitor performance</small>
+    <!-- ======================================================
+         CUSTOMER PROFILE CARD
+    ======================================================= -->
+
+    <div class="col-xl-4">
+
+
+        <div class="enterprise-card customer-summary-card h-100">
+
+
+            <!-- HEADER -->
+
+            <div class="customer-summary-header">
+
+
+<div class="customer-avatar-large">
+
+    <img
+        [src]="customerImage"
+        alt="Customer"
+        (error)="customerImageError($event)">
+
+</div>
+
+
+                <div>
+
+                    <h5 class="mb-1">
+
+                        {{latestLoan?.applicantName}}
+
+                    </h5>
+
+
+                    <span class="badge bg-success">
+
+                        <i class="bi bi-check-circle-fill me-1"></i>
+
+                        ACTIVE CUSTOMER
+
+                    </span>
+
+
+                </div>
+
+
+            </div>
+
+
+
+            <hr>
+
+
+
+            <!-- CUSTOMER DETAILS -->
+
+            <div class="customer-details">
+
+
+                <div class="detail-item">
+
+
+                    <div class="detail-icon bg-primary">
+
+                        <i class="bi bi-hash"></i>
+
+                    </div>
+
+
+                    <div>
+
+                        <small>
+                            Loan Number
+                        </small>
+
+                        <strong>
+                            #{{latestLoan?.id}}
+                        </strong>
+
+
+                    </div>
+
+
+                </div>
+
+
+
+
+
+                <div class="detail-item">
+
+
+                    <div class="detail-icon bg-success">
+
+                        <i class="bi bi-telephone-fill"></i>
+
+                    </div>
+
+
+                    <div>
+
+                        <small>
+                            Mobile Number
+                        </small>
+
+                        <strong>
+                            {{latestLoan?.phoneNumber}}
+                        </strong>
+
+
+                    </div>
+
+
+                </div>
+
+                
+                <div class="detail-item">
+
+
+                    <div class="detail-icon bg-warning">
+
+                        <i class="fas fa-id-card"></i>
+
+                    </div>
+
+
+                    <div>
+
+                        <small>
+                            Account Number
+                        </small>
+
+                        <strong>
+                            {{latestLoan?.accountNumber}}
+                        </strong>
+
+
+                    </div>
+
+
+                </div>
+
+
+
+
+
+                <div class="detail-item">
+
+
+                    <div class="detail-icon bg-warning">
+
+                        <i class="bi bi-clock-history"></i>
+
+                    </div>
+
+
+                    <div>
+
+                        <small>
+                            Loan Status
+                        </small>
+
+
+                        <strong>
+                            Active
+                        </strong>
+
+
+                    </div>
+
+
+                </div>
+
+
+
+            </div>
+
+
+
+        </div>
+
+
     </div>
 
-    <!-- SEARCH & USER SUMMARY CARD -->
-    <div class="card shadow-sm rounded-4 mb-4">
-      <div class="card-body p-3 p-md-4">
 
-        <!-- SEARCH SECTION -->
-        <div class="search-section mb-3">
-          <div class="row g-2 align-items-end">
-            <div class="col-auto">
-              <label class="form-label fw-semibold">Search By</label>
-              <select class="form-select" [(ngModel)]="searchType">
-                <option value="idNo">ID Number</option>
-                <option value="loanId">Loan ID</option>
-                <option value="phone">Phone Number</option>
-              </select>
+
+
+
+    <!-- ======================================================
+         LOAN PERFORMANCE PANEL
+    ======================================================= -->
+
+
+    <div class="col-xl-8">
+
+
+        <div class="row g-3">
+
+
+            <!-- LOAN AMOUNT -->
+
+            <div class="col-md-3">
+
+
+                <div class="compact-metric-card">
+
+
+                    <div class="metric-icon primary">
+
+                        <i class="bi bi-wallet2"></i>
+
+                    </div>
+
+
+                    <small>
+                        Loan Amount
+                    </small>
+
+
+                    <h5>
+
+                        KES {{latestLoan?.amount | number}}
+
+                    </h5>
+
+
+                </div>
+
+
             </div>
-            <div class="col">
-              <label class="form-label fw-semibold">Enter Value</label>
-              <input type="text" class="form-control"
-                     [(ngModel)]="repayment.identifier"
-                     (ngModelChange)="onLoanIdentifierChange($event)"
-                     [placeholder]="getPlaceholder()" />
+
+
+
+
+
+            <!-- OUTSTANDING -->
+
+
+            <div class="col-md-3">
+
+
+                <div class="compact-metric-card danger">
+
+
+                    <div class="metric-icon danger">
+
+                        <i class="bi bi-exclamation-circle"></i>
+
+                    </div>
+
+
+                    <small>
+                        Outstanding
+                    </small>
+
+
+                    <h5>
+
+                        KES {{balanceDue | number}}
+
+                    </h5>
+
+
+                </div>
+
+
             </div>
-            <div class="col-auto d-flex align-items-center">
-              <ng-container *ngIf="loading">
-                <div class="spinner-border text-primary me-2" role="status"></div>
-                <small class="text-muted">Searching...</small>
-              </ng-container>
+
+
+
+
+
+            <!-- INTEREST -->
+
+
+            <div class="col-md-3">
+
+
+                <div class="compact-metric-card warning">
+
+
+                    <div class="metric-icon warning">
+
+                        <i class="bi bi-percent"></i>
+
+                    </div>
+
+
+                    <small>
+                        Interest
+                    </small>
+
+
+                    <h5>
+
+                        {{latestLoan?.interestRate}}%
+
+                    </h5>
+
+
+                </div>
+
+
             </div>
-          </div>
-        </div>
 
-        <!-- ERROR MESSAGE -->
-        <div *ngIf="errorMessage" class="alert alert-danger my-2">
-          {{ errorMessage }}
-        </div>
 
-        <!-- USER SUMMARY -->
-        <div *ngIf="latestLoan && !errorMessage" class="user-summary p-3 rounded-4 shadow-sm mb-4">
-          <div class="d-flex align-items-center flex-wrap gap-3">
-            <img *ngIf="latestLoan.userImageUrl; else defaultPic"
-                 [src]="'http://localhost:8080/' + latestLoan.userImageUrl"
-                 class="user-avatar" loading="lazy" />
-            <ng-template #defaultPic>
-              <div class="user-avatar placeholder-avatar">
-                <i class="fa fa-user fa-lg"></i>
-              </div>
-            </ng-template>
-            <div>
-              <h5 class="fw-bold mb-1">{{ latestLoan.applicantName }}</h5>
-              <small class="text-muted"><i class="fa fa-phone me-1"></i>0{{ latestLoan.phoneNumber }}</small>
+
+
+
+            <!-- DURATION -->
+
+
+            <div class="col-md-3">
+
+
+                <div class="compact-metric-card success">
+
+
+                    <div class="metric-icon success">
+
+                        <i class="bi bi-calendar3"></i>
+
+                    </div>
+
+
+                    <small>
+                        Duration
+                    </small>
+
+
+                    <h5>
+
+                        {{latestLoan?.duration}}
+
+                    </h5>
+
+
+                </div>
+
+
             </div>
-          </div>
 
-          <div class="row mt-3 g-2 text-muted small">
-            <div class="col-6 col-md-3"><strong>ID:</strong> {{ latestLoan.idNo }}</div>
-            <div class="col-6 col-md-3"><strong>Account:</strong> {{ displayAccount }}</div>
-            <div class="col-6 col-md-3"><strong>Phone:</strong> 0{{ latestLoan.phoneNumber }}</div>
-            <div class="col-6 col-md-3"><strong>Location:</strong> {{ latestLoan.location }}</div>
-          </div>
+            <!-- LOAN DUE DATE -->
+
+<div class="detail-item">
+
+
+    <div class="detail-icon bg-danger">
+
+        <i class="bi bi-calendar-event-fill"></i>
+
+    </div>
+
+
+    <div>
+
+        <small>
+            Loan Due Date
+        </small>
+
+
+        <strong>
+
+            {{latestLoan?.dueDate | date:'dd MMM yyyy'}}
+
+        </strong>
+
+
+    </div>
+
+
+</div>
+
+
+
         </div>
 
-        <!-- LOAN TABLE -->
-        <div class="table-responsive">
-          <table class="table table-hover table-sm align-middle mb-0">
-            <thead class="table-light">
-              <tr>
-                <th>Loan ID</th>
-                <th>Applicant</th>
-                <th>Phone</th>
-                <th>Balance Due</th>
-                <th>Status</th>
-                <th class="text-end">Action</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr *ngFor="let loan of loanDetails">
-                <td>{{ loan.id }}</td>
-                <td>{{ loan.applicantName }}</td>
-                <td>0{{ loan.phoneNumber }}</td>
-                <td>{{ loan.dueAmount | currency:'KES' }}</td>
-                <td>
-                  <span class="badge"
-                        [class.bg-success]="loan.dueAmount === 0"
-                        [class.bg-warning]="loan.dueAmount??0 > 0"
-                        [class.text-dark]="loan.dueAmount??0 > 0">
-                    {{ loan.dueAmount === 0 ? 'Paid' : 'Ongoing' }}
-                  </span>
-                </td>
-                <td class="text-end">
-                  <button class="btn btn-sm btn-primary"
-                          [disabled]="loan.dueAmount === 0 || loading"
-                          (click)="selectLoanForRepayment(loan)">
-                    {{ loan.dueAmount === 0 ? 'Cleared' : 'Repay' }}
-                  </button>
-                </td>
-              </tr>
-            </tbody>
-          </table>
+
+
+
+
+
+        <!-- ==================================================
+             REPAYMENT PROGRESS
+        =================================================== -->
+
+
+        <div class="enterprise-card repayment-progress-mini mt-3">
+
+
+            <div class="d-flex justify-content-between align-items-center mb-2">
+
+
+                <div>
+
+                    <h6 class="mb-1">
+
+                        Loan Repayment Progress
+
+                    </h6>
+
+
+                    <small class="text-muted">
+
+                        Current recovery status
+
+                    </small>
+
+
+                </div>
+
+
+
+                <strong class="text-success">
+
+                    {{repaymentProgress}}%
+
+                </strong>
+
+
+
+            </div>
+
+
+
+            <div class="progress"
+                 style="height:10px;">
+
+
+                <div
+                    class="progress-bar bg-success"
+                    [style.width.%]="repaymentProgress">
+
+                </div>
+
+
+            </div>
+
+
+
+
+            <div class="d-flex justify-content-between mt-2">
+
+
+                <small class="text-muted">
+
+                    Recovered
+
+                </small>
+
+
+                <small class="fw-bold">
+
+                   KES {{((latestLoan?.amount || 0) - (balanceDue || 0)) | number}}
+
+                </small>
+
+
+            </div>
+
+
         </div>
 
-        <!-- REPAYMENT FORM -->
-        <div class="row g-3 mb-4 mt-3">
-          <div class="col-12 col-md-6">
-            <label class="form-label fw-semibold">💵 Amount to Repay</label>
-            <input type="number"
-                   class="form-control"
-                   [(ngModel)]="repayment.amountPaid"
-                   [max]="balanceDue"
-                   [placeholder]="'Max: ' + (balanceDue | currency:'KES')"
-                   [disabled]="balanceDue === 0 || loading" />
-          </div>
-          <div class="col-12 col-md-6">
-            <label class="form-label fw-semibold text-success">📊 Balance Due</label>
-            <input type="text"
-                   class="form-control text-success fw-bold"
-                   [value]="balanceDue | currency:'KES'"
-                   readonly />
-          </div>
+
+    </div>
+
+
+
+</div>
+
+
+
+
+<!-- ==========================================================
+     STEP NAVIGATION
+========================================================== -->
+
+
+<div class="wizard-actions d-flex justify-content-end">
+
+
+    <button
+        class="btn btn-primary px-4"
+        (click)="nextStep()">
+
+
+        Continue to Loan Payment Setup
+
+        <i class="bi bi-arrow-right ms-2"></i>
+
+
+    </button>
+
+
+</div>
+</div>
+
+
+
+
+
+
+
+
+<!-- ==========================================================
+     STEP 2
+     ENTERPRISE PAYMENT CONFIGURATION CENTER
+========================================================== -->
+
+
+<div *ngIf="currentStep === 2">
+
+
+<div class="payment-command-center">
+
+
+
+<!-- ======================================================
+     HEADER
+======================================================= -->
+
+
+<div class="payment-header">
+
+
+<div class="payment-title">
+
+
+<div class="payment-main-icon">
+
+<i class="bi bi-credit-card-2-front-fill"></i>
+
+</div>
+
+
+
+<div>
+
+<h4>
+
+Payment Configuration Center
+
+</h4>
+
+
+<small>
+
+Configure repayment method and transaction channel securely
+
+</small>
+
+
+</div>
+
+
+</div>
+
+
+
+
+<div class="secure-status">
+
+
+<i class="bi bi-shield-lock-fill"></i>
+
+
+Secure Transaction Setup
+
+
+</div>
+
+
+</div>
+
+
+
+
+
+
+
+
+
+<!-- ======================================================
+     PAYMENT MODE SECTION
+======================================================= -->
+
+
+<div class="configuration-section">
+
+
+
+<div class="section-top">
+
+
+<div class="section-icon blue">
+
+<i class="bi bi-wallet2"></i>
+
+</div>
+
+
+<div>
+
+<h6>
+
+Repayment Mode
+
+</h6>
+
+
+<small>
+
+Select how customer will clear the loan
+
+</small>
+
+
+</div>
+
+
+
+</div>
+
+
+
+
+
+
+
+<div class="payment-mode-grid">
+
+
+
+
+
+<!-- PARTIAL -->
+
+
+<button
+
+type="button"
+
+class="mode-card"
+
+[class.active]="paymentMode==='partial'"
+
+(click)="setMode('partial')">
+
+
+
+<div class="mode-icon partial">
+
+
+<i class="bi bi-pie-chart-fill"></i>
+
+
+</div>
+
+
+
+
+<div class="mode-content">
+
+
+<h6>
+
+Partial Repayment
+
+</h6>
+
+
+<p>
+
+Customer pays selected amount while maintaining balance.
+
+</p>
+
+
+</div>
+
+
+
+
+<div
+
+*ngIf="paymentMode==='partial'"
+
+class="selected-badge">
+
+
+<i class="bi bi-check-circle-fill"></i>
+
+Selected
+
+</div>
+
+
+
+</button>
+
+
+
+
+
+
+
+
+<!-- FULL -->
+
+
+
+<button
+
+type="button"
+
+class="mode-card"
+
+[class.active]="paymentMode==='full'"
+
+(click)="setMode('full')">
+
+
+
+<div class="mode-icon settlement">
+
+
+<i class="bi bi-check2-circle"></i>
+
+
+</div>
+
+
+
+
+<div class="mode-content">
+
+
+<h6>
+
+Full Settlement
+
+</h6>
+
+
+<p>
+
+Automatically clears outstanding loan balance.
+
+</p>
+
+
+</div>
+
+
+
+
+<div
+
+*ngIf="paymentMode==='full'"
+
+class="selected-badge success">
+
+
+<i class="bi bi-check-circle-fill"></i>
+
+Selected
+
+</div>
+
+
+
+</button>
+
+
+
+
+
+</div>
+
+
+</div>
+
+
+
+
+
+
+
+
+
+
+
+<!-- ======================================================
+     PAYMENT CHANNEL
+======================================================= -->
+
+
+<div class="configuration-section channel-section">
+
+
+
+
+
+<div class="section-top">
+
+
+<div class="section-icon green">
+
+<i class="bi bi-diagram-3-fill"></i>
+
+</div>
+
+
+<div>
+
+<h6>
+
+Payment Channel
+
+</h6>
+
+
+<small>
+
+Choose transaction source
+
+</small>
+
+
+</div>
+
+
+
+</div>
+
+
+<div class="channel-grid">
+
+<button
+
+class="channel-card"
+
+[class.active]="paymentChannel==='MPESA'"
+
+(click)="paymentChannel='MPESA';onPaymentChannelChange()">
+
+
+
+<i class="bi bi-phone-fill"></i>
+
+
+<span>
+
+M-Pesa STK Push
+
+</span>
+
+
+<small>
+
+Mobile payment
+
+</small>
+
+
+</button>
+
+
+
+
+
+
+
+<button
+
+class="channel-card"
+
+[class.active]="paymentChannel==='ACCOUNT'"
+
+(click)="paymentChannel='ACCOUNT';onPaymentChannelChange()">
+
+
+
+<i class="bi bi-bank2"></i>
+
+
+<span>
+
+Internal Account
+
+</span>
+
+
+<small>
+
+Account transfer
+
+</small>
+
+
+</button>
+
+
+
+
+
+
+
+
+<button
+
+class="channel-card"
+
+[class.active]="paymentChannel==='BANK'"
+
+(click)="paymentChannel='BANK';onPaymentChannelChange()">
+
+
+
+<i class="bi bi-credit-card-fill"></i>
+
+
+<span>
+
+Bank Transfer
+
+</span>
+
+
+<small>
+
+External settlement
+
+</small>
+
+
+</button>
+
+
+
+
+
+
+
+<button
+
+class="channel-card"
+
+[class.active]="paymentChannel==='CASH'"
+
+(click)="paymentChannel='CASH';onPaymentChannelChange()">
+
+
+
+<i class="bi bi-cash-stack"></i>
+
+
+<span>
+
+Cash Deposit
+
+</span>
+
+
+<small>
+
+Branch collection
+
+</small>
+
+</button>
+
+</div>
+
+
+</div>
+
+
+
+</div>
+
+<!-- ======================================================
+     ACTION BUTTONS
+======================================================= -->
+
+
+<div class="wizard-actions enterprise-navigation mt-3">
+
+
+
+<button
+
+class="btn btn-light"
+
+(click)="previousStep()">
+
+
+
+<i class="bi bi-arrow-left me-2"></i>
+
+
+Back
+
+
+</button>
+
+
+
+
+
+
+
+
+<button
+
+class="btn btn-primary px-5"
+
+(click)="nextStep()">
+
+
+
+Continue To Repayment Capture
+
+
+<i class="bi bi-arrow-right ms-2"></i>
+
+
+</button>
+
+
+
+</div>
+
+
+
+
+</div>
+
+
+<!-- ==========================================================
+     STEP 3
+     ENTERPRISE REPAYMENT CAPTURE COMMAND CENTER
+========================================================== -->
+
+<div *ngIf="currentStep === 3">
+
+
+<div class="repayment-command-center">
+
+
+
+<!-- ======================================================
+     HEADER
+======================================================= -->
+
+<div class="command-header">
+
+
+    <div class="command-title">
+
+
+        <div class="command-icon">
+
+            <i class="bi bi-cash-coin"></i>
+
         </div>
 
-        <!-- ALERTS -->
-        <div *ngIf="balanceDue === 0" class="alert alert-success text-center">
-          ✅ Loan Fully Paid. No further repayments required.
-        </div>
-        <div *ngIf="repayment.amountPaid && repayment.amountPaid > balanceDue" class="alert alert-warning">
-          ⚠ Amount entered exceeds balance due!
+
+
+        <div>
+
+            <h4>
+
+                Repayment Capture Center
+
+            </h4>
+
+
+            <small>
+
+                Enter customer repayment details and review live impact
+
+            </small>
+
+
         </div>
 
-        <!-- SUBMIT BUTTON -->
-        <button class="btn btn-primary btn-lg w-100 shadow-sm"
-                [disabled]="!repayment.amountPaid || balanceDue === 0 || loading"
-                (click)="submitRepayment()">
-          💰 Submit Repayment
+
+    </div>
+
+
+
+
+
+    <div class="validation-status">
+
+
+        <i class="bi bi-shield-check"></i>
+
+
+        Amount Validation Active
+
+
+    </div>
+
+
+
+</div>
+
+
+
+
+
+
+
+
+<!-- ======================================================
+     CUSTOMER QUICK PROFILE
+======================================================= -->
+
+
+<div class="customer-strip">
+
+
+    <div class="customer-main">
+
+
+        <div class="customer-avatar-large">
+
+
+            <i class="bi bi-person-fill"></i>
+
+
+        </div>
+
+
+
+        <div>
+
+
+            <small>
+                Customer
+            </small>
+
+
+            <h6>
+
+                {{latestLoan?.applicantName}}
+
+            </h6>
+
+
+        </div>
+
+
+    </div>
+
+
+
+
+
+    <div class="strip-item">
+
+
+        <small>
+            Loan Number
+        </small>
+
+
+        <strong>
+
+            #{{latestLoan?.id}}
+
+        </strong>
+
+
+    </div>
+
+
+
+
+
+
+    <div class="strip-item">
+
+
+        <small>
+            Outstanding
+        </small>
+
+
+        <strong class="danger-value">
+
+            KES {{balanceDue | number}}
+
+        </strong>
+
+
+    </div>
+
+
+
+
+
+
+    <div class="strip-item">
+
+
+        <small>
+            Payment Mode
+        </small>
+
+
+        <strong>
+
+            {{paymentMode | titlecase}}
+
+        </strong>
+
+
+    </div>
+
+
+
+
+</div>
+
+
+
+
+
+
+
+
+
+<!-- ======================================================
+     MAIN REPAYMENT AREA
+======================================================= -->
+
+
+<div class="repayment-grid">
+
+
+
+
+
+
+
+<!-- ======================================================
+     AMOUNT ENTRY PANEL
+======================================================= -->
+
+
+<div class="amount-command-card">
+
+
+
+<div class="panel-title">
+
+
+    <div class="panel-icon">
+
+
+        <i class="bi bi-wallet-fill"></i>
+
+
+    </div>
+
+
+    <div>
+
+
+        <h6>
+
+            Repayment Amount
+
+        </h6>
+
+
+        <small>
+
+            Amount customer is paying today
+
+        </small>
+
+
+    </div>
+
+
+</div>
+
+
+
+
+
+
+<div class="amount-display">
+
+
+    <span>
+
+        KES
+
+    </span>
+
+
+
+    <input
+
+        type="number"
+
+        [(ngModel)]="repayment.amountPaid"
+
+        [readonly]="paymentMode==='full'"
+
+        placeholder="0.00">
+
+
+</div>
+
+
+
+
+
+
+
+<div class="amount-helper">
+
+
+<i class="bi bi-info-circle"></i>
+
+
+<span *ngIf="paymentMode==='partial'">
+
+Partial repayment allows flexible amount entry
+
+</span>
+
+
+<span *ngIf="paymentMode==='full'">
+
+Full settlement automatically clears outstanding balance
+
+</span>
+
+
+</div>
+
+
+
+</div>
+
+
+
+
+
+
+
+
+
+
+
+<!-- ======================================================
+     QUICK PAYMENT PANEL
+======================================================= -->
+
+
+<div class="quick-command-card">
+
+
+
+<div class="panel-title">
+
+
+<div class="panel-icon lightning">
+
+
+<i class="bi bi-lightning-charge-fill"></i>
+
+
+</div>
+
+
+<div>
+
+
+<h6>
+
+Smart Quick Payment
+
+</h6>
+
+
+<small>
+
+One-click repayment calculation
+
+</small>
+
+
+</div>
+
+
+</div>
+
+
+
+
+
+
+<div class="quick-options">
+
+
+
+<button
+
+type="button"
+
+class="quick-card"
+
+(click)="quickPay(25)">
+
+
+<strong>
+
+25%
+
+</strong>
+
+
+<span>
+
+Quarter
+
+</span>
+
+
+</button>
+
+
+
+
+
+
+
+<button
+
+type="button"
+
+class="quick-card"
+
+(click)="quickPay(50)">
+
+
+
+<strong>
+
+50%
+
+</strong>
+
+
+<span>
+
+Half
+
+</span>
+
+
+</button>
+
+
+
+
+
+
+
+
+
+<button
+
+type="button"
+
+class="quick-card"
+
+(click)="quickPay(75)">
+
+
+
+<strong>
+
+75%
+
+</strong>
+
+
+<span>
+
+Majority
+
+</span>
+
+
+</button>
+
+
+
+
+
+
+
+
+
+<button
+
+type="button"
+
+class="quick-card full"
+
+(click)="quickPay(100)">
+
+
+
+<strong>
+
+FULL
+
+</strong>
+
+
+<span>
+
+Clear Loan
+
+</span>
+
+
+</button>
+
+
+
+</div>
+
+
+
+</div>
+
+
+
+
+</div>
+
+
+<!-- ======================================================
+     SECURITY VALIDATION
+======================================================= -->
+
+
+<div class="security-checks">
+
+
+
+<div class="security-card">
+
+
+<i class="bi bi-person-check-fill"></i>
+
+
+<div>
+
+
+<strong>
+
+Customer Verified
+
+</strong>
+
+
+<small>
+
+KYC confirmed
+
+</small>
+
+
+</div>
+
+
+</div>
+
+
+
+
+
+
+<div class="security-card">
+
+
+<i class="bi bi-currency-exchange"></i>
+
+
+<div>
+
+
+<strong>
+
+Amount Validated
+
+</strong>
+
+
+<small>
+
+Transaction rules passed
+
+</small>
+
+
+</div>
+
+
+</div>
+
+
+
+
+
+
+
+<div class="security-card">
+
+
+<i class="bi bi-lock-fill"></i>
+
+
+<div>
+
+
+<strong>
+
+Secure Processing
+
+</strong>
+
+
+<small>
+
+Encrypted transaction
+
+</small>
+
+
+</div>
+
+
+</div>
+
+
+
+
+
+</div>
+
+
+
+
+
+
+
+</div>
+
+
+
+
+
+
+
+
+
+<!-- ======================================================
+     ACTION BUTTONS
+======================================================= -->
+
+
+<div class="wizard-actions enterprise-navigation">
+
+
+<button
+
+class="btn btn-light"
+
+(click)="previousStep()">
+
+
+<i class="bi bi-arrow-left me-2"></i>
+
+
+Back
+
+
+</button>
+
+
+
+
+
+
+
+<button
+
+class="btn btn-primary px-5"
+
+(click)="nextStep()">
+
+
+
+Review Repayment Impact
+
+
+<i class="bi bi-arrow-right ms-2"></i>
+
+
+</button>
+
+</div>
+
+</div>
+
+<!-- ==========================================================
+     STEP 2B
+     LIVE REPAYMENT SUMMARY
+========================================================== -->
+<!-- ==========================================================
+     STEP 4
+     ENTERPRISE REPAYMENT IMPACT COMMAND CENTER
+========================================================== -->
+
+
+<div *ngIf="currentStep === 4">
+
+
+<div class="enterprise-impact-dashboard">
+
+
+
+<!-- HEADER -->
+
+<div class="impact-header">
+
+
+<div class="impact-title">
+
+
+<div class="impact-icon">
+
+<i class="bi bi-speedometer2"></i>
+
+</div>
+
+
+
+<div>
+
+<h4>
+Repayment Impact Command Center
+</h4>
+
+
+<small>
+Live transaction preview before authorization
+</small>
+
+
+</div>
+
+
+</div>
+
+
+
+
+<div class="live-status">
+
+<i class="bi bi-broadcast-pin"></i>
+
+LIVE PREVIEW
+
+</div>
+
+
+
+</div>
+
+
+
+
+
+
+
+<!-- CUSTOMER STRIP -->
+
+
+<div class="customer-impact-strip">
+
+
+
+<div class="impact-profile">
+
+
+<div class="profile-icon">
+
+<i class="bi bi-person-fill"></i>
+
+</div>
+
+
+
+<div>
+
+<small>
+Customer
+</small>
+
+
+<h6>
+{{latestLoan?.applicantName}}
+</h6>
+
+
+</div>
+
+
+</div>
+
+
+
+
+
+<div>
+
+<small>
+Loan Number
+</small>
+
+
+<h6>
+#{{latestLoan?.id}}
+</h6>
+
+</div>
+
+
+
+
+
+<div>
+
+<small>
+Loan Status
+</small>
+
+
+<h6 class="text-success">
+
+<i class="bi bi-check-circle-fill"></i>
+
+Active
+
+</h6>
+
+
+</div>
+
+
+
+
+
+<div>
+
+<small>
+Payment Channel
+</small>
+
+
+<h6>
+
+{{paymentChannel}}
+
+</h6>
+
+
+</div>
+
+
+
+
+</div>
+
+
+
+
+
+
+
+
+
+<!-- FINANCIAL IMPACT -->
+
+
+<div class="financial-impact">
+
+
+
+<div class="impact-box before">
+
+
+<span>
+Outstanding Before
+</span>
+
+
+<h2>
+
+KES {{balanceDue | number}}
+
+</h2>
+
+
+<small>
+Current balance
+</small>
+
+
+</div>
+
+
+
+
+
+
+<div class="impact-arrow">
+
+
+<i class="bi bi-arrow-right"></i>
+
+
+</div>
+
+
+<!-- PAYMENT TODAY -->
+
+<div class="impact-box payment">
+
+
+    <div class="impact-label-row">
+
+        <span>
+            Payment Today
+        </span>
+
+
+        <button
+            type="button"
+            class="edit-payment-btn"
+            title="Edit repayment amount"
+            (click)="editPaymentAmount()">
+
+            <i class="bi bi-pencil-square"></i>
+
         </button>
 
-      </div>
+
     </div>
 
-  </div>
+
+
+    <div *ngIf="!editingPaymentAmount">
+
+        <h2>
+
+            KES {{repayment.amountPaid || 0 | number}}
+
+        </h2>
+
+
+    </div>
+
+
+
+
+    <!-- INLINE EDIT MODE -->
+
+    <div 
+      *ngIf="editingPaymentAmount"
+      class="payment-edit-box">
+
+
+        <span>
+            KES
+        </span>
+
+
+        <input
+
+            type="number"
+
+            [(ngModel)]="repayment.amountPaid"
+
+            [max]="balanceDue"
+
+            min="1"
+
+            class="form-control">
+
+
+        <button
+
+            class="btn btn-success btn-sm"
+
+            (click)="savePaymentAmount()">
+
+            <i class="bi bi-check-lg"></i>
+
+        </button>
+
+
+
+        <button
+
+            class="btn btn-light btn-sm"
+
+            (click)="cancelPaymentEdit()">
+
+            <i class="bi bi-x-lg"></i>
+
+        </button>
+
+
+    </div>
+
+
+
+
+    <small>
+        Customer contribution
+    </small>
+
+
+</div>
+
+
+<div class="impact-arrow">
+
+
+<i class="bi bi-arrow-right"></i>
+
+
+</div>
+
+
+
+
+
+
+
+<div class="impact-box after">
+
+
+<span>
+New Balance
+</span>
+
+
+<h2>
+
+KES {{remainingBalance | number}}
+
+</h2>
+
+
+<small>
+After repayment
+</small>
+
+
+</div>
+
+
+
+</div>
+
+
+
+
+
+
+
+
+
+<!-- RECOVERY PROGRESS -->
+
+
+<div class="recovery-panel">
+
+
+<div class="recovery-header">
+
+
+<div>
+
+<h6>
+Loan Recovery Progress
+</h6>
+
+
+<small>
+Impact after this transaction
+</small>
+
+
+</div>
+
+
+<strong>
+
+{{repaymentProgress}}%
+
+</strong>
+
+
+</div>
+
+
+
+
+
+<div class="progress impact-progress">
+
+
+<div
+
+class="progress-bar bg-success"
+
+[style.width.%]="repaymentProgress">
+
+</div>
+
+
+</div>
+
+
+
+</div>
+
+
+
+
+
+
+
+
+
+
+<!-- VALIDATION GRID -->
+
+
+<div class="validation-grid">
+
+
+
+<div class="validation-card">
+
+
+<i class="bi bi-person-check-fill"></i>
+
+
+<div>
+
+<strong>
+Customer Verified
+</strong>
+
+
+<small>
+KYC confirmed
+</small>
+
+
+</div>
+
+
+</div>
+
+
+
+
+
+
+<div class="validation-card">
+
+
+<i class="bi bi-currency-exchange"></i>
+
+
+<div>
+
+<strong>
+Amount Validated
+</strong>
+
+
+<small>
+Transaction accepted
+</small>
+
+
+</div>
+
+
+</div>
+
+
+
+
+
+
+
+
+<div class="validation-card">
+
+
+<i class="bi bi-shield-lock-fill"></i>
+
+
+<div>
+
+<strong>
+Secure Channel
+</strong>
+
+
+<small>
+Encrypted processing
+</small>
+
+
+</div>
+
+
+</div>
+
+
+
+
+
+
+
+<div class="validation-card">
+
+
+<i class="bi bi-journal-check"></i>
+
+
+<div>
+
+<strong>
+Audit Ready
+</strong>
+
+
+<small>
+Full transaction trail
+</small>
+
+
+</div>
+
+
+</div>
+
+
+
+</div>
+
+
+
+
+
+
+</div>
+
+
+
+
+
+
+
+
+<!-- ACTIONS -->
+
+
+<div class="wizard-actions mt-3 d-flex justify-content-between">
+
+
+<button
+class="btn btn-light"
+(click)="previousStep()">
+
+
+<i class="bi bi-arrow-left"></i>
+
+Back
+
+
+</button>
+
+
+
+
+
+<button
+class="btn btn-primary px-5"
+(click)="nextStep()">
+
+
+
+Review Transaction
+
+
+<i class="bi bi-arrow-right ms-2"></i>
+
+
+</button>
+
+
+
+</div>
+
+
+
+</div>
+
+
+<!-- ==========================================================
+     STEP 3A
+     FINAL TRANSACTION REVIEW
+========================================================== -->
+
+<!-- ==========================================================
+     STEP 5
+     ENTERPRISE TRANSACTION AUTHORIZATION
+========================================================== -->
+
+<div *ngIf="currentStep === 5">
+
+
+<div class="enterprise-review-container">
+
+
+<!-- HEADER -->
+
+<div class="review-top-header">
+
+
+<div class="review-title">
+
+<div class="review-icon">
+
+<i class="bi bi-file-earmark-check-fill"></i>
+
+</div>
+
+
+<div>
+
+<h5>
+Review Repayment Transaction
+</h5>
+
+<small>
+Verify transaction details before final authorization
+</small>
+
+</div>
+
+</div>
+
+
+
+<div class="ready-badge">
+
+<i class="bi bi-shield-check"></i>
+
+Ready To Process
+
+</div>
+
+
+</div>
+
+
+
+
+
+<!-- MAIN GRID -->
+
+<div class="review-grid">
+
+
+
+<!-- CUSTOMER -->
+
+<div class="review-panel">
+
+
+<div class="panel-header">
+
+<i class="bi bi-person-circle"></i>
+
+Customer Details
+
+</div>
+
+
+
+<div class="compact-row">
+
+<span>Name</span>
+
+<strong>
+{{latestLoan?.applicantName}}
+</strong>
+
+</div>
+
+
+
+<div class="compact-row">
+
+<span>Mobile</span>
+
+<strong>
+{{latestLoan?.phoneNumber}}
+</strong>
+
+</div>
+
+
+
+<div class="compact-row">
+
+<span>Loan Number</span>
+
+<strong>
+#{{latestLoan?.id}}
+</strong>
+
+</div>
+
+
+</div>
+
+
+
+
+
+<!-- LOAN -->
+
+<div class="review-panel">
+
+
+<div class="panel-header">
+
+<i class="bi bi-bank"></i>
+
+Loan Summary
+
+</div>
+
+
+
+<div class="compact-row">
+
+<span>Loan Amount</span>
+
+<strong>
+KES {{latestLoan?.amount | number}}
+</strong>
+
+</div>
+
+
+
+<div class="compact-row danger-text">
+
+<span>Outstanding</span>
+
+<strong>
+KES {{balanceDue | number}}
+</strong>
+
+</div>
+
+
+
+<div class="compact-row success-text">
+
+<span>Balance After Payment</span>
+
+<strong>
+KES {{remainingBalance | number}}
+</strong>
+
+</div>
+
+
+</div>
+
+
+
+
+
+
+<!-- PAYMENT -->
+
+<div class="review-panel payment-panel">
+
+
+<div class="panel-header">
+
+<i class="bi bi-credit-card"></i>
+
+Payment Authorization
+
+</div>
+
+
+
+
+<div class="compact-row">
+
+<span>Mode</span>
+
+<strong>
+{{paymentMode | titlecase}}
+</strong>
+
+</div>
+
+
+
+
+<div class="compact-row">
+
+<span>Channel</span>
+
+<strong>
+{{paymentChannel}}
+</strong>
+
+</div>
+
+
+
+
+<!-- DYNAMIC SOURCE -->
+
+
+<div class="compact-row"
+*ngIf="paymentChannel==='ACCOUNT'">
+
+
+<span>
+Debit Account
+</span>
+
+
+<strong class="account-highlight">
+
+{{repayment.accountNumber}}
+
+</strong>
+
+
+</div>
+
+
+
+
+<div class="compact-row"
+*ngIf="paymentChannel==='MPESA'">
+
+
+<span>
+Registered Mobile
+</span>
+
+
+<strong>
+
+{{repayment.phoneNumber}}
+
+</strong>
+
+
+</div>
+
+
+
+
+
+<div class="compact-row"
+*ngIf="paymentChannel==='BANK'">
+
+
+<span>
+Bank Account
+</span>
+
+
+<strong>
+
+{{repayment.accountNumber}}
+
+</strong>
+
+
+</div>
+
+
+
+
+<div class="compact-row highlight">
+
+
+<span>
+Amount Paying
+</span>
+
+
+<strong>
+
+KES {{repayment.amountPaid | number}}
+
+</strong>
+
+
+</div>
+
+
+
+</div>
+
+
+</div>
+
+
+
+
+
+
+<!-- SECURITY -->
+
+<div class="security-summary">
+
+
+<div class="security-item">
+
+<i class="bi bi-person-check-fill"></i>
+
+Customer Verified
+
+</div>
+
+
+
+<div class="security-item">
+
+<i class="bi bi-currency-exchange"></i>
+
+Amount Validated
+
+</div>
+
+
+
+<div class="security-item">
+
+<i class="bi bi-lock-fill"></i>
+
+Secure Processing
+
+</div>
+
+
+
+<div class="security-item">
+
+<i class="bi bi-journal-check"></i>
+
+Audit Trail Enabled
+
+</div>
+
+
+</div>
+
+
+
+
+
+</div>
+
+
+
+
+
+
+<!-- ACTIONS -->
+
+<div class="wizard-actions enterprise-actions justify-content-between d-flex">
+
+<div>
+<button
+class="btn btn-light"
+(click)="previousStep()">
+
+
+<i class="bi bi-arrow-left"></i>
+
+Back
+
+</button>
+</div>
+
+
+<div>
+<button
+class="btn enterprise-process-btn justify-content-end"
+(click)="submit()">
+
+
+<i class="bi bi-send-check-fill"></i>
+
+Process Repayment
+
+</button>
+</div>
+
+</div>
+
 </div>

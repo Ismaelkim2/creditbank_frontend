@@ -1,17 +1,16 @@
 import { Component, OnInit } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { Router } from '@angular/router';
-import { jwtDecode } from 'jwt-decode';
-import { Observable, Subject, debounceTime } from 'rxjs';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { Subject, debounceTime } from 'rxjs';
+import { Router } from '@angular/router';
 
 interface User {
   id: number;
   name: string;
   email: string;
   role: string;
-  status: 'ACTIVE' | 'PENDING' | 'DISABLED';
+  status: string;
 }
 
 @Component({
@@ -20,209 +19,240 @@ interface User {
   styleUrls: ['./admin-approvals.component.css']
 })
 export class AdminApprovalsComponent implements OnInit {
+
+  private baseUrl = 'http://localhost:8080/api/auth';
+
   pendingUsers: User[] = [];
   allUsers: User[] = [];
+  staffUsers: User[] = [];
+  customers: User[] = [];
+
+  filteredPending: User[] = [];
+  filteredStaff: User[] = [];
+  filteredCustomers: User[] = [];
+
   approvalMessage = '';
+  successMessage = '';
+  errorMessage = '';
+
   isLoading = false;
   processingUserId: number | null = null;
 
   editUserForm!: FormGroup;
   selectedUserId: number | null = null;
-  successMessage = '';
-  errorMessage = '';
 
+  searchSubject = new Subject<string>();
   searchTerm = '';
-  searchSubject: Subject<string> = new Subject<string>();
 
-  constructor(private http: HttpClient,
-     private router: Router,
-     private fb: FormBuilder,
-    private modalService: NgbModal) {}
+  constructor(
+    private http: HttpClient,
+    private fb: FormBuilder,
+    private modalService: NgbModal,
+    private router: Router
+  ) {}
 
- ngOnInit(): void {
-  const token = sessionStorage.getItem('token');
-
-  if (!token) {
-    console.warn('🚫 No token found in localStorage');
-    this.router.navigate(['/unauthorized']);
-    return;
+  ngOnInit(): void {
+    this.initForm();
+    this.initSearch();
+    this.loadPendingUsers();
+    this.loadAllUsers();
   }
 
-  try {
-    const decoded: any = jwtDecode(token);
-    console.log('🪶 Decoded JWT:', decoded);
-
-    // Handle various possible formats
-    const role = decoded.role || decoded.roles?.[0] || decoded.authorities?.[0];
-    console.log('🎭 Extracted role:', role);
-
-    if (!role) {
-      console.warn('⚠️ No role found in token');
-      this.router.navigate(['/unauthorized']);
-      return;
-    }
-
-    if (!role.toUpperCase().includes('ADMIN')) {
-      console.warn('🚷 User is not admin — redirecting.');
-      this.router.navigate(['/unauthorized']);
-      return;
-    }
-
-    console.log('✅ Admin user verified — loading dashboard...');
-
-  } catch (err) {
-    console.error('❌ Error decoding token:', err);
-    this.router.navigate(['/unauthorized']);
-    return;
+  private getHeaders(): HttpHeaders {
+    return new HttpHeaders({
+      Authorization: `Bearer ${sessionStorage.getItem('token')}`
+    });
   }
 
-  // Load data only if admin is confirmed
-  this.loadPendingUsers();
-  this.loadAllUsers();
-
-  this.searchSubject.pipe(debounceTime(300))
-    .subscribe(term => this.searchTerm = term.toLowerCase());
-
-     this.editUserForm = this.fb.group({
+  // FORM
+  initForm(): void {
+    this.editUserForm = this.fb.group({
       name: ['', Validators.required],
       email: ['', [Validators.required, Validators.email]],
       role: ['', Validators.required],
       status: ['', Validators.required]
     });
-}
-
-openEditModal(user: User, content: any) {
-  this.selectedUserId = user.id;
-
-  this.editUserForm.patchValue({
-    name: user.name,
-    email: user.email,
-    role: user.role,
-    status: user.status
-  });
-
-  this.modalService.open(content, {
-    centered: true,
-    size: 'lg',
-    backdrop: 'static'
-  });
-}
-
-
-
-  closeModal() {
-    this.modalService.dismissAll();
-    this.selectedUserId = null;
-    this.editUserForm.reset();
   }
 
-saveUser(modal: any) {
-  if (!this.selectedUserId || this.editUserForm.invalid) return;
-
-  const payload = this.editUserForm.value;
-
-  this.http.put(`/api/auth/edit/${this.selectedUserId}`, payload, {
-    headers: this.getAuthHeaders()
-  }).subscribe({
-    next: () => {
-      this.successMessage = 'User updated successfully!';
-      modal.close();
-      this.loadAllUsers();
-    },
-    error: () => {
-      this.errorMessage = 'Failed to update user.';
-    }
-  });
-}
-
-
-
-  private getAuthHeaders(): HttpHeaders {
-  const token = sessionStorage.getItem('token') || '';
-  return new HttpHeaders({
-    'Authorization': `Bearer ${token}`
-  });
-}
-
- loadPendingUsers(): void {
-  this.isLoading = true;
-
-  this.http.get<any>('/api/auth/users/pending', { headers: this.getAuthHeaders() })
-    .subscribe({
-      next: (res) => {
-        this.pendingUsers = res.pendingUsers;  
-        this.isLoading = false;
-      },
-      error: () => {
-        this.approvalMessage = '🚫 Failed to load pending users.';
-        this.isLoading = false;
-      }
-    });
-}
-
-
- loadAllUsers(): void {
-  this.http.get<User[]>('/api/auth/users/all', {
-    headers: this.getAuthHeaders()
-  }).subscribe({
-    next: users => this.allUsers = users ?? [],
-    error: () => console.error('Error loading all users')
-  });
-}
-
-
-  approveUser(userId: number): void { this.processUserAction(userId, 'approve'); }
-  revertUser(userId: number): void { this.processUserAction(userId, 'revert'); }
-  deleteUser(userId: number): void { this.processUserAction(userId, 'delete'); }
-
-
-
-
-private processUserAction(userId: number, action: 'approve' | 'revert' | 'delete') {
-  if (action === 'delete' && !confirm('Are you sure you want to permanently delete this user?')) return;
-
-  this.processingUserId = userId;
-  let request$: Observable<any>;
-
-  if (action === 'delete') {
-    request$ = this.http.delete(`/api/auth/delete/${userId}`, {
-      headers: this.getAuthHeaders(),
-      responseType: 'text'
-    });
-  } else {
-    request$ = this.http.put(`/api/auth/${action}/${userId}`, {}, {
-      headers: this.getAuthHeaders()
-    });
+  // SEARCH
+  initSearch(): void {
+    this.searchSubject.pipe(debounceTime(300))
+      .subscribe(term => {
+        this.searchTerm = term.toLowerCase();
+        this.applyFilter();
+      });
   }
 
-  request$.subscribe({
-    next: (res) => {
-      this.approvalMessage = action === 'delete'
-        ? '🗑️ User deleted successfully!'
-        : `✅ ${res.message}`;
-
-      this.loadPendingUsers();
-      this.loadAllUsers();
-      this.processingUserId = null;
-    },
-    error: () => {
-      this.approvalMessage = `❌ Failed to ${action} user.`;
-      this.processingUserId = null;
-    }
-  });
+ onSearch(event: Event): void {
+  const value = (event.target as HTMLInputElement).value;
+  this.searchSubject.next(value);
 }
+  // FILTER
+  applyFilter(): void {
+    const term = this.searchTerm;
 
+    this.filteredPending = this.pendingUsers.filter(u =>
+      u.name?.toLowerCase().includes(term) ||
+      u.email?.toLowerCase().includes(term)
+    );
 
-  onSearch(value: string) { this.searchSubject.next(value); }
+    this.filteredStaff = this.staffUsers.filter(u =>
+      u.name?.toLowerCase().includes(term) ||
+      u.email?.toLowerCase().includes(term)
+    );
 
-  filteredUsers(users: User[]): User[] {
-    return users.filter(u =>
-      u.name.toLowerCase().includes(this.searchTerm) ||
-      u.email.toLowerCase().includes(this.searchTerm) ||
-      u.role.toLowerCase().includes(this.searchTerm)
+    this.filteredCustomers = this.customers.filter(u =>
+      u.name?.toLowerCase().includes(term) ||
+      u.email?.toLowerCase().includes(term)
     );
   }
 
-  filteredPendingUsers(): User[] { return this.filteredUsers(this.pendingUsers); }
-  filteredAllUsers(): User[] { return this.filteredUsers(this.allUsers); }
+  // LOAD
+  loadPendingUsers(): void {
+    this.isLoading = true;
+
+    this.http.get<any>(`${this.baseUrl}/users/pending`, {
+      headers: this.getHeaders()
+    }).subscribe(res => {
+      this.pendingUsers = res?.pendingUsers || [];
+      this.applyFilter();
+      this.isLoading = false;
+    });
+  }
+
+  loadAllUsers(): void {
+    this.http.get<User[]>(`${this.baseUrl}/users/all`, {
+      headers: this.getHeaders()
+    }).subscribe(users => {
+
+      this.allUsers = users || [];
+
+      this.staffUsers = users.filter(u =>
+        u.role === 'ADMIN' || u.role === 'STAFF'
+      );
+
+      this.customers = users.filter(u =>
+        u.role === 'USER'
+      );
+
+      this.applyFilter();
+    });
+  }
+
+  // ACTIONS
+  approveUser(id: number) {
+    this.process(id, 'approve');
+  }
+
+  deleteUser(id: number) {
+    if (!confirm('Delete user?')) return;
+    this.process(id, 'delete');
+  }
+
+  revertUser(id: number): void {
+
+  const confirmRevert = confirm('Revert this user back to pending status?');
+
+  if (!confirmRevert) return;
+
+  this.processingUserId = id;
+
+  this.http.put(
+    `${this.baseUrl}/revert/${id}`,
+    {}, // empty body
+    { headers: this.getHeaders() }
+  ).subscribe({
+    next: (res: any) => {
+
+      this.approvalMessage = res?.message || 'User reverted successfully';
+
+      // refresh all data
+      this.loadPendingUsers();
+      this.loadAllUsers();
+
+      this.processingUserId = null;
+    },
+
+    error: (err) => {
+      console.error(err);
+      this.approvalMessage = 'Failed to revert user';
+      this.processingUserId = null;
+    }
+  });
+}
+
+  private process(id: number, action: string): void {
+
+    this.processingUserId = id;
+
+    let req;
+
+    if (action === 'delete') {
+      req = this.http.delete(`${this.baseUrl}/delete/${id}`, {
+        headers: this.getHeaders()
+      });
+    } else {
+      req = this.http.put(`${this.baseUrl}/${action}/${id}`, {}, {
+        headers: this.getHeaders()
+      });
+    }
+
+    req.subscribe({
+      next: () => {
+        this.approvalMessage = `User ${action} successful`;
+        this.loadPendingUsers();
+        this.loadAllUsers();
+        this.processingUserId = null;
+      },
+      error: () => {
+        this.approvalMessage = `Failed to ${action}`;
+        this.processingUserId = null;
+      }
+    });
+  }
+
+  // EDIT
+  openEditModal(user: User, content: any): void {
+    this.selectedUserId = user.id;
+
+    this.editUserForm.patchValue(user);
+
+    this.modalService.open(content, {
+      size: 'lg',
+      centered: true
+    });
+  }
+
+  saveUser(modal: any): void {
+
+    if (!this.selectedUserId) return;
+
+    this.http.put(
+      `${this.baseUrl}/edit/${this.selectedUserId}`,
+      this.editUserForm.value,
+      { headers: this.getHeaders() }
+    ).subscribe(() => {
+      this.successMessage = 'Updated successfully';
+      modal.close();
+      this.loadAllUsers();
+    });
+  }
+
+
+  openOnboardUser(): void {
+  this.router.navigate(['/app/accountsopening'])
+}
+
+openOnboardStaff(): void {
+
+  this.router.navigate(
+    ['/app/assign-staff'],
+    {
+      queryParams: {
+        mode: 'onboard'
+      }
+    }
+  );
+
+}
 }

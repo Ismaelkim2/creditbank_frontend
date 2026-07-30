@@ -1,77 +1,909 @@
-/* Wrapper */
-.register-wrapper {
-  background: linear-gradient(135deg, #0d47a1, #1976d2, #42a5f5);
-  background-size: 300% 300%;
-  animation: gradientBG 10s ease infinite;
-  min-height: 100vh;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 10px;
-  overflow: hidden;
+/*==============================================================
+            CREDITBANK PREMIUM REGISTRATION
+==============================================================*/
+
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
 }
 
-/* Card */
-.register-card {
-  width: 100%;
-  max-width: 420px;
-  background: rgba(255, 255, 255, 0.95);
-  backdrop-filter: blur(12px);
-  border-radius: 1rem;
-  max-height: 95vh;
-  overflow-y: auto; /* Prevents screen scroll, keeps card scrollable if needed */
+:host{
+    display:block;
+    width:100%;
+    height:100%;
 }
 
-.card-body {
-  padding: 1.5rem;
+/*==============================================================
+BACKGROUND
+==============================================================*/
+
+.register-wrapper{
+
+    position:relative;
+
+    width:100%;
+
+    min-height:100vh;
+
+    display:flex;
+
+    justify-content:center;
+
+    align-items:center;
+
+    overflow:hidden;
+
+    padding:18px;
+
+    font-family:
+    "Segoe UI",
+    Roboto,
+    Helvetica,
+    Arial,
+    sans-serif;
+
+    background:
+    linear-gradient(
+    135deg,
+    #001B48,
+    #002855,
+    #003B73);
+
 }
 
-/* Logo */
-.login-image {
-  width: 75px;
-  height: 75px;
-  object-fit: cover;
-  border-radius: 50%;
-  margin-bottom: 10px;
-  box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.15);
+/*==============================================================
+FLOATING CIRCLES
+==============================================================*/
+
+.floating-circle{
+
+    position:absolute;
+
+    border-radius:50%;
+
+    background:rgba(255,255,255,.07);
+
+    animation:float 12s ease-in-out infinite;
+
 }
 
-/* Gradient Text */
-.text-gradient {
-  background: linear-gradient(45deg, #0d47a1, #42a5f5);
-  background-clip: text;
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  color: transparent;
+.circle-one{
+
+    width:320px;
+    height:320px;
+
+    left:-120px;
+    top:-120px;
+
 }
 
-/* Inputs */
-.form-control,
-.form-select {
-  border-radius: 0.6rem;
-  padding: 10px 12px;
-  font-size: 0.9rem;
-  border: 1px solid #d1d9e6;
+.circle-two{
+
+    width:260px;
+    height:260px;
+
+    right:-80px;
+    bottom:-80px;
+
+    animation-delay:3s;
+
 }
 
-.form-control:focus,
-.form-select:focus {
-  border-color: #42a5f5;
-  box-shadow: 0 0 6px rgba(66, 165, 245, 0.3);
+@keyframes float{
+
+    0%{
+
+        transform:translateY(0);
+
+    }
+
+    50%{
+
+        transform:translateY(35px);
+
+    }
+
+    100%{
+
+        transform:translateY(0);
+
+    }
+
 }
 
-/* Button */
-.btn-gradient {
-  background: linear-gradient(90deg, #0d47a1, #1976d2, #42a5f5);
-  border: none;
-  padding: 10px;
-  font-size: 0.95rem;
-  border-radius: 0.6rem;
-  font-weight: 600;
-  color: white;
+/*==============================================================
+CARD
+==============================================================*/
+
+.register-card{
+
+    position:relative;
+
+    width:100%;
+
+    max-width:540px;
+
+    padding:35px 42px;
+
+    border-radius:28px;
+
+    background:rgba(255,255,255,.10);
+
+    backdrop-filter:blur(25px);
+
+    border:1px solid rgba(255,255,255,.15);
+
+    box-shadow:
+
+    0 35px 70px rgba(0,0,0,.35);
+
+    animation:cardFloat 6s ease-in-out infinite;
+
 }
 
-.btn-gradient:hover {
-  opacity: 0.9;
-  transform: scale(1.02);
+.register-card:hover{
+
+    transform:translateY(-5px);
+
+}
+
+/*==============================================================
+PREMIUM BORDER
+==============================================================*/
+
+.register-card::before{
+
+    content:"";
+
+    position:absolute;
+
+    inset:0;
+
+    border-radius:28px;
+
+    padding:1px;
+
+    background:
+
+    linear-gradient(
+
+    135deg,
+
+    rgba(255,255,255,.35),
+
+    rgba(255,255,255,.05)
+
+    );
+
+    -webkit-mask:
+    linear-gradient(#fff 0 0) content-box,
+    linear-gradient(#fff 0 0);
+
+    -webkit-mask-composite:xor;
+
+    mask-composite:exclude;
+
+    pointer-events:none;
+
+}
+
+/*==============================================================
+LOGO
+==============================================================*/
+
+.logo-section{
+
+    text-align:center;
+
+    margin-bottom:25px;
+
+}
+
+.register-logo{
+
+    width:95px;
+
+    height:95px;
+
+    object-fit:contain;
+
+    background:white;
+
+    padding:10px;
+
+    border-radius:50%;
+
+    border:3px solid rgba(255,255,255,.8);
+
+    box-shadow:
+
+    0 15px 30px rgba(0,0,0,.25);
+
+    transition:.35s;
+
+}
+
+.register-logo:hover{
+
+    transform:scale(1.05);
+
+}
+
+.logo-section h2{
+
+    margin-top:15px;
+
+    color:white;
+
+    font-size:30px;
+
+    font-weight:700;
+
+}
+
+.logo-section p{
+
+    color:rgba(255,255,255,.80);
+
+    font-size:14px;
+
+    line-height:1.6;
+
+    margin-top:8px;
+
+}
+
+/*==============================================================
+FORM
+==============================================================*/
+
+.input-group-custom{
+
+    margin-bottom:18px;
+
+}
+
+.input-group-custom label{
+
+    display:block;
+
+    margin-bottom:8px;
+
+    color:white;
+
+    font-size:14px;
+
+    font-weight:600;
+
+}
+
+/*==============================================================
+INPUTS
+==============================================================*/
+
+.input-box{
+
+    display:flex;
+
+    align-items:center;
+
+    height:56px;
+
+    border-radius:16px;
+
+    background:rgba(255,255,255,.08);
+
+    border:1px solid rgba(255,255,255,.18);
+
+    overflow:hidden;
+
+    transition:.35s;
+
+}
+
+.input-box:hover{
+
+    background:rgba(255,255,255,.12);
+
+}
+
+.input-box:focus-within{
+
+    border-color:#4da3ff;
+
+    background:rgba(255,255,255,.14);
+
+    box-shadow:
+
+    0 0 0 5px rgba(77,163,255,.18);
+
+}
+
+.input-box i{
+
+    width:58px;
+
+    text-align:center;
+
+    color:white;
+
+    font-size:18px;
+
+}
+
+.input-box input,
+.input-box select{
+
+    flex:1;
+
+    height:100%;
+
+    border:none;
+
+    outline:none;
+
+    background:transparent;
+
+    color:white;
+
+    font-size:15px;
+
+    padding-right:15px;
+
+}
+
+.input-box input::placeholder{
+
+    color:rgba(255,255,255,.55);
+
+}
+
+.input-box select{
+
+    cursor:pointer;
+
+    appearance:none;
+
+}
+
+.input-box select option{
+
+    color:#222;
+
+}
+
+/*==============================================================
+PASSWORD BUTTON
+==============================================================*/
+
+.password-btn{
+
+    width:58px;
+
+    height:100%;
+
+    border:none;
+
+    background:transparent;
+
+    color:white;
+
+    cursor:pointer;
+
+    transition:.35s;
+
+}
+
+.password-btn:hover{
+
+    color:#FFD54F;
+
+}
+
+/*==============================================================
+REGISTER BUTTON
+==============================================================*/
+
+.register-btn{
+
+    width:100%;
+
+    height:56px;
+
+    border:none;
+
+    border-radius:16px;
+
+    cursor:pointer;
+
+    margin-top:8px;
+
+    color:#002855;
+
+    font-weight:700;
+
+    font-size:16px;
+
+    background:
+
+    linear-gradient(
+
+    135deg,
+
+    #FFD54F,
+
+    #FFC107
+
+    );
+
+    display:flex;
+
+    justify-content:center;
+
+    align-items:center;
+
+    gap:10px;
+
+    transition:.35s;
+
+    box-shadow:
+
+    0 18px 35px rgba(255,193,7,.35);
+
+}
+
+.register-btn:hover:not(:disabled){
+
+    transform:translateY(-3px);
+
+    box-shadow:
+
+    0 25px 45px rgba(255,193,7,.45);
+
+}
+
+.register-btn:disabled{
+
+    opacity:.70;
+
+}
+
+/*==============================================================
+ERROR
+==============================================================*/
+
+.error-box{
+
+    display:flex;
+
+    align-items:center;
+
+    gap:10px;
+
+    margin-bottom:15px;
+
+    padding:14px;
+
+    border-radius:14px;
+
+    color:white;
+
+    background:rgba(220,53,69,.18);
+
+    border-left:4px solid #dc3545;
+
+}
+
+/*==============================================================
+FOOTER
+==============================================================*/
+
+.register-footer{
+
+    text-align:center;
+
+    margin-top:22px;
+
+    color:white;
+
+}
+
+.register-footer a{
+
+    color:#FFD54F;
+
+    text-decoration:none;
+
+    font-weight:600;
+
+}
+
+.register-footer a:hover{
+
+    color:white;
+
+}
+
+/*==============================================================
+FLOAT ANIMATION
+==============================================================*/
+
+@keyframes cardFloat{
+
+    0%{
+
+        transform:translateY(0);
+
+    }
+
+    50%{
+
+        transform:translateY(-5px);
+
+    }
+
+    100%{
+
+        transform:translateY(0);
+
+    }
+
+}
+
+/*==============================================================
+SCROLLBAR
+==============================================================*/
+
+::-webkit-scrollbar{
+
+    width:7px;
+
+}
+
+::-webkit-scrollbar-thumb{
+
+    background:#4da3ff;
+
+    border-radius:20px;
+
+}
+
+/*==============================================================
+RESPONSIVE
+==============================================================*/
+
+@media(max-height:820px){
+
+    .register-card{
+
+        padding:28px 35px;
+
+    }
+
+    .logo-section{
+
+        margin-bottom:18px;
+
+    }
+
+    .register-logo{
+
+        width:80px;
+
+        height:80px;
+
+    }
+
+    .logo-section h2{
+
+        font-size:26px;
+
+    }
+
+    .input-group-custom{
+
+        margin-bottom:14px;
+
+    }
+
+    .input-box{
+
+        height:52px;
+
+    }
+
+}
+
+@media(max-width:768px){
+
+    .register-card{
+
+        max-width:100%;
+
+        padding:28px;
+
+        border-radius:22px;
+
+    }
+
+}
+
+@media(max-width:480px){
+
+    .register-wrapper{
+
+        padding:15px;
+
+    }
+
+    .register-card{
+
+        padding:24px 20px;
+
+    }
+
+    .register-logo{
+
+        width:72px;
+
+        height:72px;
+
+    }
+
+    .logo-section h2{
+
+        font-size:24px;
+
+    }
+
+    .input-box{
+
+        height:50px;
+
+    }
+
+}
+
+
+/*==================================================
+VALIDATION
+==================================================*/
+
+.validation-error{
+
+    display:block;
+
+    margin-top:6px;
+
+    margin-left:6px;
+
+    color:#ffb4b4;
+
+    font-size:13px;
+
+    font-weight:500;
+
+    animation:fadeIn .25s;
+
+}
+
+.input-box.invalid{
+
+    border:2px solid #ff5b5b;
+
+    box-shadow:0 0 12px rgba(255,91,91,.35);
+
+}
+
+.input-box.invalid i{
+
+    color:#ff5b5b;
+
+}
+
+.input-box.invalid input,
+
+.input-box.invalid select{
+
+    color:#fff;
+
+}
+
+@keyframes fadeIn{
+
+from{
+
+opacity:0;
+
+transform:translateY(-3px);
+
+}
+
+to{
+
+opacity:1;
+
+transform:translateY(0);
+
+}
+
+}
+
+/*=====================================================
+PASSWORD STRENGTH
+======================================================*/
+
+.password-strength-wrapper{
+
+    margin-top:16px;
+
+    background:rgba(255,255,255,.05);
+
+    border:1px solid rgba(255,255,255,.10);
+
+    border-radius:14px;
+
+    padding:15px;
+
+}
+
+.strength-header{
+
+    display:flex;
+
+    justify-content:space-between;
+
+    align-items:center;
+
+    margin-bottom:12px;
+
+    font-size:13px;
+
+    color:#d7dbe8;
+
+    font-weight:600;
+
+}
+
+.strength-badge{
+
+    padding:4px 14px;
+
+    border-radius:30px;
+
+    font-size:12px;
+
+    font-weight:700;
+
+    letter-spacing:.3px;
+
+}
+
+.strength-badge.weak{
+
+    background:#ffebee;
+
+    color:#d32f2f;
+
+}
+
+.strength-badge.medium{
+
+    background:#fff8e1;
+
+    color:#f9a825;
+
+}
+
+.strength-badge.strong{
+
+    background:#e8f5e9;
+
+    color:#2e7d32;
+
+}
+
+/*================================*/
+
+.strength-meter{
+
+    width:100%;
+
+    height:8px;
+
+    background:rgba(255,255,255,.12);
+
+    border-radius:30px;
+
+    overflow:hidden;
+
+    margin-bottom:14px;
+
+}
+
+.strength-fill{
+
+    height:100%;
+
+    width:30%;
+
+    border-radius:30px;
+
+    transition:.4s ease;
+
+}
+
+.strength-fill.weak{
+
+    width:30%;
+
+    background:#d32f2f;
+
+}
+
+.strength-fill.medium{
+
+    width:65%;
+
+    background:#f9a825;
+
+}
+
+.strength-fill.strong{
+
+    width:100%;
+
+    background:#2e7d32;
+
+}
+
+/*================================*/
+
+.password-checklist{
+
+    list-style:none;
+
+    padding:0;
+
+    margin:0;
+
+}
+
+.password-checklist li{
+
+    display:flex;
+
+    align-items:center;
+
+    gap:10px;
+
+    margin-bottom:8px;
+
+    font-size:13px;
+
+    color:#c5c9d4;
+
+    transition:.3s;
+
+}
+
+.password-checklist li:last-child{
+
+    margin-bottom:0;
+
+}
+
+.password-checklist li.valid{
+
+    color:#4caf50;
+
+    font-weight:600;
+
+}
+
+.password-checklist i{
+
+    font-size:15px;
+
 }

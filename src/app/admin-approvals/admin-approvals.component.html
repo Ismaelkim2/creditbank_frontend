@@ -1,84 +1,169 @@
-<div class="main-container">
-  <app-sidebar></app-sidebar>
+<div class="main-container container">
 
-  <div class="container mt-5">
+  <!-- HEADER -->
+  <!-- ================= TOP CONTROL BAR ================= -->
+<div class="top-bar d-flex flex-wrap justify-content-between align-items-center mb-4">
 
-    <!-- Approval Messages -->
-    <div *ngIf="approvalMessage" class="alert alert-info alert-dismissible fade show" role="alert">
-      {{ approvalMessage }}
-      <button type="button" class="btn-close" (click)="approvalMessage=''"></button>
-    </div>
+  <!-- LEFT: TITLE -->
+  <div class="title-block">
+    <h3 class="fw-bold mb-0">User Management Dashboard</h3>
+    <small class="text-muted">Admin control center</small>
+  </div>
 
-    <!-- Search Bar -->
-    <div class="mb-3 sticky-top bg-white py-2 shadow-sm rounded">
-      <input #searchInput type="text" class="form-control" placeholder="Search users..." (input)="onSearch(searchInput.value)">
-    </div>
+  <!-- CENTER: SEARCH -->
+  <div class="search-block">
+   <input type="text"
+       class="form-control search-input"
+       placeholder="Search users, email, role..."
+       (input)="onSearch($event)">
+  </div>
 
-    <!-- Pending Users -->
-    <div class="card mb-5 shadow-sm">
-      <div class="card-header bg-primary text-white">Pending User Approvals</div>
+  <!-- RIGHT: ACTIONS -->
+  <div class="action-block d-flex gap-2">
 
-      <div class="card-body p-0">
+    <button class="btn btn-primary action-btn"
+            (click)="openOnboardUser()">
+      <i class="fa fa-user-plus me-1"></i> Onboard Customer
+    </button>
 
-        <div *ngIf="isLoading" class="text-center py-5">
-          <i class="fa fa-spinner fa-spin fa-3x text-primary"></i>
-        </div>
+    <button class="btn btn-dark action-btn"
+            (click)="openOnboardStaff()">
+      <i class="fa fa-user-shield me-1"></i> Onboard Staff
+    </button>
 
-        <table class="table table-hover mb-0" *ngIf="filteredPendingUsers().length > 0 && !isLoading; else noUsers">
-         <thead>
+  </div>
 
-            <tr>
-              <th>Name</th>
-              <th>Email</th>
-              <th>Role</th>
-              <th>Status</th>
-              <th>Action</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr *ngFor="let user of filteredPendingUsers()">
-              <td>{{ user.name }}</td>
-              <td>{{ user.email }}</td>
-              <td>{{ user.role }}</td>
-              <td><span class="badge bg-warning text-dark">{{ user.status }}</span></td>
-             <td>
-<button class="btn-icon btn-success me-2"
-        (click)="approveUser(user.id)"
-        title="Approve">
-  <i class="fa fa-check"></i>
-</button>
+</div>
 
+  <!-- STATS -->
+  <div class="row mb-4">
 
-  <!-- DELETE -->
-  <button class="btn btn-danger btn-sm"
-          [disabled]="processingUserId===user.id"
-          (click)="deleteUser(user.id)"
-          title="Delete">
-    <i class="fa fa-trash"></i>
-  </button>
-</td>
-
-            </tr>
-          </tbody>
-        </table>
-
-        <ng-template #noUsers>
-          <div class="text-center text-muted py-4">
-            <i class="fa fa-exclamation-triangle text-warning fa-2x"></i>
-            <p class="mt-2">No users awaiting approval.</p>
-          </div>
-        </ng-template>
-
+    <div class="col-md-4">
+      <div class="card p-3 text-center">
+        <h6>Pending Users</h6>
+        <h3>{{ filteredPending.length }}</h3>
       </div>
     </div>
 
-    <!-- Current Users -->
+    <div class="col-md-4">
+      <div class="card p-3 text-center">
+        <h6>Customers</h6>
+        <h3>{{ allUsers.length }}</h3>
+      </div>
+    </div>
+
+    <div class="col-md-4">
+      <div class="card p-3 text-center">
+        <h6>Staff</h6>
+        <h3>{{ filteredStaff.length }}</h3>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- MESSAGES -->
+  <div *ngIf="approvalMessage" class="alert alert-info alert-dismissible fade show">
+    {{ approvalMessage }}
+    <button class="btn-close" (click)="approvalMessage=''"></button>
+  </div>
+
+  <!-- SEARCH -->
+  <!-- <div class="mb-3 sticky-top bg-white py-2 shadow-sm rounded">
+    <input type="text" class="form-control"
+           placeholder="Search users..."
+           (input)="onSearch($event.target.value)">
+  </div> -->
+
+  <!-- STAFF -->
+  <div class="card mb-4 shadow-sm">
+    <div class="card-header bg-dark text-white">
+      Staff Management ({{ filteredStaff.length }})
+    </div>
+
+    <div class="card-body p-0">
+
+      <table class="table table-hover mb-0">
+        <thead>
+          <tr>
+            <th>Name</th><th>Email</th><th>Role</th><th>Status</th>
+          </tr>
+        </thead>
+
+        <tbody>
+          <tr *ngFor="let staff of filteredStaff">
+            <td>{{ staff.name }}</td>
+            <td>{{ staff.email }}</td>
+            <td><span class="badge bg-primary">{{ staff.role }}</span></td>
+            <td><span class="badge bg-success">{{ staff.status }}</span></td>
+          </tr>
+        </tbody>
+      </table>
+
+      <div *ngIf="filteredStaff.length === 0" class="text-center py-3 text-muted">
+        No staff found
+      </div>
+
+    </div>
+  </div>
+
+  <!-- PENDING -->
+  <div class="card mb-4 shadow-sm">
+    <div class="card-header bg-primary text-white">
+      Pending Approvals  ({{ filteredPending.length }})
+    </div>
+
+    <div class="card-body p-0">
+
+      <div *ngIf="isLoading" class="text-center py-5">
+        <i class="fa fa-spinner fa-spin fa-2x"></i>
+      </div>
+
+      <table class="table table-hover mb-0" *ngIf="!isLoading && filteredPending.length">
+
+        <thead>
+          <tr>
+            <th>Name</th><th>Email</th><th>Role</th><th>Status</th><th>Action</th>
+          </tr>
+        </thead>
+
+        <tbody>
+          <tr *ngFor="let user of filteredPending">
+            <td>{{ user.name }}</td>
+            <td>{{ user.email }}</td>
+            <td>{{ user.role }}</td>
+            <td><span class="badge bg-warning">{{ user.status }}</span></td>
+
+            <td>
+              <button class="btn btn-success btn-sm me-2"
+                      (click)="approveUser(user.id)">
+                Approve
+              </button>
+
+              <button class="btn btn-danger btn-sm"
+                      (click)="deleteUser(user.id)">
+                Delete
+              </button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+
+      <div *ngIf="!isLoading && !filteredPending.length"
+           class="text-center py-3 text-muted">
+        No pending users
+      </div>
+
+    </div>
+  </div>
+
+  <!-- CUSTOMERS -->
+ <!-- Current Users -->
     <div class="card shadow-sm">
-      <div class="card-header bg-primary text-white">Current Users</div>
+      <div class="card-header bg-primary text-white">Current Users  ({{ allUsers.length }})</div>
 
       <div class="card-body p-0">
 
-        <table class="table table-hover mb-0" *ngIf="filteredAllUsers().length > 0; else noAllUsers">
+        <table class="table table-hover mb-0" *ngIf="allUsers.length > 0; else noAllUsers">
           <thead>
 
             <tr>
@@ -90,7 +175,7 @@
             </tr>
           </thead>
           <tbody>
-            <tr *ngFor="let user of filteredAllUsers()">
+            <tr *ngFor="let user of allUsers">
               <td>{{ user.name }}</td>
               <td>{{ user.email }}</td>
               <td>{{ user.role }}</td>
@@ -151,69 +236,71 @@
       </div>
     </div>
 
-  </div>
-  
 </div>
 
-<!-- ============================================= -->
-<!--        EDIT USER MODAL (CORRECT TEMPLATE)     -->
-<!-- ============================================= -->
+<!-- ================= EDIT MODAL ================= -->
 <ng-template #editUserModal let-modal>
+
   <div class="modal-header bg-primary text-white">
-    <h5 class="modal-title fw-bold">Edit User</h5>
-    <button type="button" class="btn-close btn-close-white" (click)="modal.dismiss()"></button>
+    <h5 class="modal-title">Edit User</h5>
+    <button class="btn-close btn-close-white" (click)="modal.dismiss()"></button>
   </div>
 
   <div class="modal-body">
 
     <form [formGroup]="editUserForm" (ngSubmit)="saveUser(modal)">
+
       <div class="row g-3">
 
         <div class="col-md-6">
-          <label class="form-label fw-semibold">Name</label>
-          <input type="text" class="form-control" formControlName="name">
+          <label>Name</label>
+          <input class="form-control" formControlName="name">
         </div>
 
         <div class="col-md-6">
-          <label class="form-label fw-semibold">Email</label>
-          <input type="email" class="form-control" formControlName="email">
+          <label>Email</label>
+          <input class="form-control" formControlName="email">
         </div>
 
         <div class="col-md-6">
-          <label class="form-label fw-semibold">Role</label>
+          <label>Role</label>
           <select class="form-select" formControlName="role">
-            <option value="ADMIN">Admin</option>
-            <option value="USER">User</option>
+            <option value="ADMIN">ADMIN</option>
+            <option value="USER">USER</option>
+            <option value="STAFF">STAFF</option>
           </select>
         </div>
 
         <div class="col-md-6">
-          <label class="form-label fw-semibold">Status</label>
+          <label>Status</label>
           <select class="form-select" formControlName="status">
-            <option value="ACTIVE">Active</option>
-            <option value="PENDING">Pending</option>
-            <option value="DISABLED">Disabled</option>
+            <option value="ACTIVE">ACTIVE</option>
+            <option value="PENDING">PENDING</option>
+            <option value="DISABLED">DISABLED</option>
           </select>
         </div>
 
       </div>
 
-      <div class="mt-4 d-flex gap-2">
-        <button type="submit" class="btn btn-primary px-4">
-          <i class="fa fa-save me-1"></i> Save
-        </button>
-        <button type="button" class="btn btn-outline-secondary px-4" (click)="modal.dismiss()">
-          <i class="fa fa-times me-1"></i> Cancel
-        </button>
+      <div class="mt-3 d-flex gap-2">
+        <button class="btn btn-primary" type="submit">Save</button>
+        <button class="btn btn-secondary" type="button"
+                (click)="modal.dismiss()">Cancel</button>
       </div>
 
       <div class="mt-3">
-        <div *ngIf="successMessage" class="alert alert-success">{{ successMessage }}</div>
-        <div *ngIf="errorMessage" class="alert alert-danger">{{ errorMessage }}</div>
+        <div *ngIf="successMessage" class="alert alert-success">
+          {{ successMessage }}
+        </div>
+
+        <div *ngIf="errorMessage" class="alert alert-danger">
+          {{ errorMessage }}
+        </div>
       </div>
 
     </form>
 
   </div>
+
 </ng-template>
 

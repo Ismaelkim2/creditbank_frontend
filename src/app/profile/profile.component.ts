@@ -48,8 +48,13 @@ export class ProfileComponent implements OnInit {
   saving = false;
   changing = false;
 
+  notifications: any[] = [];
+notificationsCount = 0;
+
+  
+
   constructor(
-    private authService: AuthService,
+    public authService: AuthService,
     private accountService: AccountService,
     private sanitizer: DomSanitizer,
     private router: Router,
@@ -60,6 +65,8 @@ export class ProfileComponent implements OnInit {
     this.initForms();
     this.loadUserDetails();
   }
+
+
 
   /** -------------------------------------------------------------
    *  INIT FORMS
@@ -108,61 +115,162 @@ export class ProfileComponent implements OnInit {
     });
   }
 
-  private patchUser(data: any): void {
-    this.user = {
-      ...this.user,
-      ...data,
-      imageUrl: data.imageUrl || 'assets/default-user.png'
-    };
+private patchUser(data: any): void {
 
-    this.editForm.patchValue({
-      name: this.user.name,
-      phoneNumber: this.user.phoneNumber,
-      branch: this.user.branch
-    });
-  }
+  this.user = {
+    ...this.user,
+    ...data,
+    imageUrl: data.imageUrl || 'assets/default-user.png'
+  };
 
-  /** -------------------------------------------------------------
-   *  GET ACCOUNT DETAILS
-   * ------------------------------------------------------------- */
-  private getAccountDetails(nationalId: string): void {
-    this.accountService.getAccountDetailsByNationalId(nationalId).subscribe({
-      next: (acct) => {
+console.log('User from Auth:', data);
+console.log('Image URL:', data.imageUrl);
+console.log('Profile Image:', this.profileImage);
+
+  //==================================================
+  // SECURITY
+  //==================================================
+
+  this.user.failedAttempts =
+    this.user.failedAttempts ?? 0;
+
+  this.user.mfaEnabled =
+    this.user.mfaEnabled ?? true;
+
+  this.user.passwordChangedAt =
+    this.user.passwordChangedAt ?? new Date();
+
+  //==================================================
+  // COMPLIANCE
+  //==================================================
+
+  this.user.accountStatus =
+    this.user.accountStatus ?? 'ACTIVE';
+
+  this.user.kycStatus =
+    this.user.kycStatus ?? 'Verified';
+
+  this.user.riskLevel =
+    this.user.riskLevel ?? 'LOW';
+
+  this.user.complianceScore =
+    this.user.complianceScore ?? 100;
+
+  this.user.createdDate =
+    this.user.createdDate ?? new Date('2024-03-12');
+
+  this.user.kycCompletedDate =
+    this.user.kycCompletedDate ?? new Date('2024-03-13');
+
+  this.user.updatedAt =
+    this.user.updatedAt ?? new Date();
+
+  this.user.createdBy =
+    this.user.createdBy ?? 'System Administrator';
+
+  this.user.approvedBy =
+    this.user.approvedBy ?? 'Branch Manager';
+
+  this.user.modifiedBy =
+    this.user.modifiedBy ?? 'Profile Owner';
+
+  //==================================================
+  // ACTIVE SESSIONS
+  //==================================================
+
+  this.user.sessions =
+    this.user.sessions ?? [
+
+      {
+        device: 'Desktop',
+        browser: 'Chrome 138',
+        location: 'Nakuru, Kenya',
+        lastSeen: 'Now',
+        current: true
+      },
+
+      {
+        device: 'Mobile',
+        browser: 'Android App',
+        location: 'Nairobi',
+        lastSeen: 'Yesterday',
+        current: false
+      }
+
+    ];
+
+  //==================================================
+  // PERMISSIONS
+  //==================================================
+
+  this.user.permissions =
+    this.user.permissions ?? [
+
+      'Loan Approval',
+      'Loan Review',
+      'Customer Management',
+      'Account Opening',
+      'Credit Scoring',
+      'Reporting',
+      'Notifications',
+      'Profile Management'
+
+    ];
+
+  this.editForm.patchValue({
+
+    name: this.user.name,
+    phoneNumber: this.user.phoneNumber,
+    branch: this.user.branch
+
+  });
+
+}
+
+private getAccountDetails(nationalId: string): void {
+
+  this.accountService
+    .getAccountDetailsByNationalId(nationalId)
+    .subscribe({
+      next: (acct: any) => {
+
         if (acct) {
           this.user.accountNumber = acct.accountNumber;
           this.user.branch = acct.branch;
           this.user.phoneNumber = acct.phoneNumber;
+          this.user.imageUrl = acct.imageUrl;
         }
+
         this.loading = false;
       },
-      error: () => (this.loading = false)
-    });
-  }
 
-  /** -------------------------------------------------------------
-   *  IMAGE UPLOAD + PREVIEW
-   * ------------------------------------------------------------- */
-  onImageSelected(event: any): void {
-    const file = event.target.files[0];
-    if (!file) return;
-
-    const reader = new FileReader();
-    reader.onload = () => {
-      this.imagePreview = this.sanitizer.bypassSecurityTrustUrl(reader.result as string);
-    };
-    reader.readAsDataURL(file);
-
-    // upload progress simulation
-    this.uploadProgress = 0;
-    let interval = setInterval(() => {
-      this.uploadProgress += 10;
-      if (this.uploadProgress >= 100) {
-        clearInterval(interval);
-        this.uploadProgress = -1;
-        this.user.imageUrl = this.imagePreview!;
+      error: () => {
+        this.loading = false;
       }
-    }, 150);
+    });
+
+}
+
+onImageSelected(event: any): void {
+
+  const file = event.target.files[0];
+
+  if (!file) {
+    return;
   }
+
+  const reader = new FileReader();
+
+  reader.onload = () => {
+    this.imagePreview =
+      this.sanitizer.bypassSecurityTrustUrl(
+        reader.result as string
+      );
+  };
+
+  reader.readAsDataURL(file);
+
+}
 
   /** -------------------------------------------------------------
    *  EDIT PROFILE
@@ -270,4 +378,27 @@ export class ProfileComponent implements OnInit {
   get isAdmin(): boolean {
     return this.authService.getRole() === 'ADMIN';
   }
+
+  get profileImage(): string {
+
+  const img = this.imagePreview
+    ? this.imagePreview.toString()
+    : this.user.imageUrl;
+
+  if (!img) {
+    return 'assets/default-user.png';
+  }
+
+  // Already full URL
+  if (
+      img.startsWith('http://') ||
+      img.startsWith('https://') ||
+      img.startsWith('data:')
+  ) {
+    return img;
+  }
+
+  // Relative path from backend
+  return `http://localhost:8080/${img}`;
+}
 }

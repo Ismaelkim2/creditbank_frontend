@@ -1,0 +1,12 @@
+<app-top-nav (mobileSidebarToggle)="toggleSidebarMobile()"></app-top-nav>
+
+<div class="layout-wrapper">
+  <app-sidebar 
+    [isMobileSidebarActive]="isMobileSidebarActive"
+    (overlayClick)="toggleSidebarMobile()">
+  </app-sidebar>
+
+  <div class="main-content">
+    <router-outlet></router-outlet>
+  </div>
+</div>

@@ -3,6 +3,7 @@ import { Router } from '@angular/router';
 import { AuthService } from './services/auth-service.service';
 import { IdleTimerService } from './services/idle-timer.service';
 import { isPlatformBrowser } from '@angular/common';
+import { ThemeService } from './services/theme-service.service';
 
 @Component({
   selector: 'app-root',
@@ -10,24 +11,32 @@ import { isPlatformBrowser } from '@angular/common';
   styleUrls: ['./app.component.css']
 })
 export class AppComponent implements OnInit, AfterViewInit {
-  title = 'credit-management';
   isBrowser: boolean;
+  isMobileSidebarActive = false;
 
-    // Add this line:
-  isMobileSidebarActive: boolean = false;
+  // Modal state and countdown
+  showIdleModal = false;
+  idleCountdown = 30;
 
   constructor(
     private authService: AuthService,
     private router: Router,
     private idleService: IdleTimerService,
+    private themeService: ThemeService,
     @Inject(PLATFORM_ID) platformId: Object
   ) {
     this.isBrowser = isPlatformBrowser(platformId);
   }
 
   ngOnInit(): void {
+    // Only start idle tracking if user is logged in
     if (this.authService.isLoggedIn()) {
-      console.log('✅ Session active. Will start idle timer after view init.');
+      this.idleService.init(
+        this.showModal.bind(this),
+        this.hideModal.bind(this),
+        this.updateCountdown.bind(this),
+        this.logoutUser.bind(this)
+      );
     } else {
       const currentRoute = this.router.url;
       if (currentRoute !== '/login' && currentRoute !== '/register') {
@@ -37,20 +46,42 @@ export class AppComponent implements OnInit, AfterViewInit {
   }
 
   ngAfterViewInit(): void {
-    if (!this.isBrowser) return; // 🚫 Skip SSR
-
+    if (!this.isBrowser) return;
     if (this.authService.isLoggedIn()) {
       this.idleService.start();
     }
-
-    const stayBtn = document.getElementById('stayBtn');
-    if (stayBtn) {
-      stayBtn.addEventListener('click', () => this.idleService.stayLoggedIn());
-    }
   }
 
-   // Add this:
-  toggleMobileSidebar() {
+  toggleSidebarMobile() {
     this.isMobileSidebarActive = !this.isMobileSidebarActive;
+  }
+
+  get isLoggedIn(): boolean {
+    return this.authService.isLoggedIn();
+  }
+
+  /** Called by IdleTimerService when 30s remaining */
+  showModal() {
+    this.showIdleModal = true;
+  }
+
+  hideModal() {
+    this.showIdleModal = false;
+  }
+
+  updateCountdown(seconds: number) {
+    this.idleCountdown = seconds;
+  }
+
+  /** User clicked continue */
+  continueSession() {
+    this.hideModal();
+    this.idleService.stayLoggedIn();
+  }
+
+  /** User clicked logout */
+  logoutUser() {
+    this.hideModal();
+    this.idleService.logout();
   }
 }

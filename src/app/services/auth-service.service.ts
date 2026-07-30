@@ -1,229 +1,168 @@
-import { Router } from '@angular/router';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable, Inject, PLATFORM_ID } from '@angular/core';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { Router } from '@angular/router';
+import { BehaviorSubject, Observable, of } from 'rxjs';
 import { isPlatformBrowser } from '@angular/common';
-import { BehaviorSubject, Observable } from 'rxjs';
-import { IdleTimerService } from './idle-timer.service';
 import { environment } from '../../environments/environment';
 
-
-
-interface RegisterRequest {
-  password: string;
-  role: string;
-  nationalId: string;
-}
-
-interface AuthResponse {
-  token?: string;
-  message?: string;
+export interface AuthUser {
   name: string;
   role: string;
   nationalId: string;
-  email?: string;
-  imageUrl?: string;   // ✅ Corrected consistently
+  email: string;
   phoneNumber?: string;
-  [key: string]: any;
+  imageUrl?: string;
+  accountNumber?: string;
+  token?: string;
 }
 
-@Injectable({
-  providedIn: 'root'
-})
+
+@Injectable({ providedIn: 'root' })
 export class AuthService {
+
   private baseUrl = `${environment.apiUrl}/auth`;
 
-  private isBrowser: boolean;
-  private usernameSubject = new BehaviorSubject<string>('');
+  private userKey = 'auth_user';
+  private tokenKey = 'auth_token';
 
-  username$ = this.usernameSubject.asObservable();
+  private userSubject = new BehaviorSubject<AuthUser | null>(null);
+  currentUser$ = this.userSubject.asObservable();
 
   constructor(
     private http: HttpClient,
     private router: Router,
-    private idleService: IdleTimerService,
     @Inject(PLATFORM_ID) private platformId: Object
   ) {
-    this.isBrowser = isPlatformBrowser(this.platformId);
-
-    if (this.isBrowser) {
-      this.usernameSubject.next(this.getUsername());
+    if (isPlatformBrowser(this.platformId)) {
+      const user = this.getStoredUser();
+      if (user) this.userSubject.next(user);
     }
   }
 
-  /** -------------------------
-   *  🔹 Register & Login
-   ---------------------------*/
-  register(data: RegisterRequest): Observable<AuthResponse> {
-    return this.http.post<AuthResponse>(`${this.baseUrl}/register`, data);
+  /** ================= LOGIN ================= */
+  login(credentials: any): Observable<any> {
+    return this.http.post(`${this.baseUrl}/login`, credentials);
   }
 
-  login(credentials: { email: string; password: string }): Observable<AuthResponse> {
-    return this.http.post<AuthResponse>(`${environment.apiUrl}/auth/login`, credentials, { withCredentials: true });
-}
-
-
-  /** -------------------------
-   *  🔹 Set Session After Login
-   ---------------------------*/
-  setSession(response: AuthResponse): void {
-    if (!this.isBrowser) return;
-
-    if (response.token) {
-      sessionStorage.setItem('token', response.token);
-    } else {
-      console.error("❌ ERROR: No token received!");
-    }
-
-    sessionStorage.setItem('username', response.name || '');
-    sessionStorage.setItem('role', (response.role || '').toUpperCase());
-    sessionStorage.setItem('email', response.email || '');
-    sessionStorage.setItem('nationalId', response.nationalId || '');
-    sessionStorage.setItem('phoneNumber', response.phoneNumber || '');
-    sessionStorage.setItem('imageUrl', response.imageUrl || ''); // ✅ Corrected
-
-    this.usernameSubject.next(response.name || '');
-
-    this.idleService.start();
-    console.log('Stored Role:', sessionStorage.getItem('role'));
+  setSession(user: AuthUser) {
+    localStorage.setItem(this.userKey, JSON.stringify(user));
+    localStorage.setItem(this.tokenKey, user.token || '');
+    this.userSubject.next(user);
   }
 
-  /** -------------------------
-   *  🔹 Getters
-   ---------------------------*/
-  getEmail(): string | null {
-    return this.isBrowser ? sessionStorage.getItem('email') : null;
+  /** ================= CURRENT USER ================= */
+  getCurrentUser(): AuthUser | null {
+    const data = localStorage.getItem(this.userKey);
+    return data ? JSON.parse(data) : null;
   }
 
-  getUsername(): string {
-    return this.isBrowser ? sessionStorage.getItem('username') || '' : '';
+  private getStoredUser(): AuthUser | null {
+    const data = localStorage.getItem(this.userKey);
+    return data ? JSON.parse(data) : null;
   }
 
+  /** ================= ROLE ================= */
   getRole(): string {
-    if (!this.isBrowser) return '';
-    const role = sessionStorage.getItem('role') || '';
-    return role.replace('ROLE_', '').toUpperCase();
+    return this.getCurrentUser()?.role || '';
   }
 
   getToken(): string {
-    return this.isBrowser ? sessionStorage.getItem('token') || '' : '';
-  }
-
-  getNationalId(): string {
-    return this.isBrowser ? sessionStorage.getItem('nationalId') || '' : '';
-  }
-
-  getPhoneNumber(): string {
-    return this.isBrowser ? sessionStorage.getItem('phoneNumber') || '' : '';
-  }
-
-  /** -------------------------
-   *  🔹 GET USER (used everywhere)
-   ---------------------------*/
-  getUser(): {
-    name: string;
-    role: string;
-    email: string;
-    nationalId: string;
-    imageUrl?: string;
-    accountNumber?: string;
-    phoneNumber?: string;
-  } | null {
-    if (!this.isBrowser) return null;
-
-    const name = sessionStorage.getItem('username') || '';
-    const role = sessionStorage.getItem('role') || '';
-    const nationalId = sessionStorage.getItem('nationalId') || '';
-    const imageUrl = sessionStorage.getItem('imageUrl') || ''; // ✅ FIXED
-    const accountNumber = sessionStorage.getItem('accountNumber') || '';
-    const phoneNumber = sessionStorage.getItem('phoneNumber') || '';
-    const email = sessionStorage.getItem('email') || '';
-
-    if (!name && !role && !nationalId) return null;
-
-    return { name, email, role, nationalId, imageUrl, accountNumber, phoneNumber };
-  }
-
-  /** -------------------------
-   *  🔹 Logout
-   ---------------------------*/
-  logout(): void {
-    if (!this.isBrowser) return;
-    sessionStorage.clear();
-    this.usernameSubject.next('');
-    this.idleService.stop();
-    this.router.navigate(['/login']);
-  }
-
-  /** -------------------------
-   *  🔹 Role Checks
-   ---------------------------*/
-  isAdmin(): boolean {
-    return this.getRole() === 'ADMIN';
-  }
-
-  isApplicant(): boolean {
-    return this.getRole() === 'APPLICANT';
-  }
-
-  isDataManager(): boolean {
-    return this.getRole() === 'DATA_MANAGER';
+    return localStorage.getItem(this.tokenKey) || '';
   }
 
   isLoggedIn(): boolean {
     return !!this.getToken();
   }
 
-  /** -------------------------
-   *  🔹 Auth Headers
-   ---------------------------*/
-  private getAuthHeaders(): HttpHeaders {
-    return new HttpHeaders({
+  logout(): void {
+    localStorage.clear();
+    this.userSubject.next(null);
+    this.router.navigate(['/login']);
+  }
+
+  /** ================= COMPATIBILITY HELPERS ================= */
+
+getUser(): AuthUser | null {
+  return this.getCurrentUser();
+}
+
+getNationalId(): string {
+  return this.getCurrentUser()?.nationalId || '';
+}
+
+getUsername(): string {
+  return this.getCurrentUser()?.name || '';
+}
+
+/** ================= OTP (restore missing methods) ================= */
+
+verifyOtp(email: string, otp: string): Observable<any> {
+  return this.http.post(`${this.baseUrl}/verify-otp`, { email, otp });
+}
+
+sendOtp(phoneNumber: string, email: string): Observable<any> {
+  return this.http.post(`${this.baseUrl}/send-otp`, { phoneNumber, email });
+}
+
+/** ================= OPTIONAL ================= */
+
+register(payload: any): Observable<any> {
+  return this.http.post(`${this.baseUrl}/register`, payload);
+}
+
+getLoggedInUser(): Observable<AuthUser> {
+  const user = this.getCurrentUser();
+
+  if (user) {
+    return of(user);
+  }
+
+  return this.http.get<AuthUser>(`${this.baseUrl}/me`, {
+    headers: {
       Authorization: `Bearer ${this.getToken()}`
-    });
-  }
-
-  /** -------------------------
-   *  🔹 Get Logged-in User From API
-   ---------------------------*/
-  getLoggedInUser(): Observable<any> {
-    const storedUser = this.getUser();
-
-    if (storedUser && storedUser.nationalId) {
-      return new Observable((observer) => {
-        observer.next(storedUser);
-        observer.complete();
-      });
     }
+  });
+}
 
-    const token = this.getToken();
-    if (!token) {
-      return new Observable((observer) => {
-        observer.error('No token found');
-      });
+
+/** Safely resolves user from memory OR storage */
+resolveCurrentUser(): AuthUser | null {
+  // 1. try BehaviorSubject (fastest + reliable after login)
+  const cached = this.userSubject.value;
+  if (cached) return cached;
+
+  // 2. fallback to localStorage
+  const stored = localStorage.getItem(this.userKey);
+  if (stored) {
+    const user = JSON.parse(stored);
+    this.userSubject.next(user); // rehydrate memory
+    return user;
+  }
+
+  return null;
+}
+
+
+resetPassword(data: any) {
+
+    return this.http.post(
+
+        this.baseUrl + '/forgot-password',
+
+        data
+
+    );
+
+}
+
+verifyAccount(email: string, accountNumber: string) {
+  return this.http.post(
+    `${this.baseUrl}/verify-account`,
+    {
+      email,
+      accountNumber
     }
+  );
+}
 
-    return this.http.get<any>(`${this.baseUrl}/me`, {
-      headers: this.getAuthHeaders()
-    });
-  }
-
-  /** -------------------------
-   *  🔹 OTP Services
-   ---------------------------*/
-
-  initiateLogin(credentials: { email: string; password: string }): Observable<any> {
-    return this.http.post(`${this.baseUrl}/login-init`, credentials);
-  }
-
-  verifyOtp(email: string, otp: string): Observable<any> {
-    return this.http.post(`${this.baseUrl}/verify-otp`, { email, otp });
-  }
-
-  sendOtp(phoneNumber: string, email: string): Observable<any> {
-    return this.http.post(`${this.baseUrl}/send-otp`, { phoneNumber, email });
-  }
-
-  sendOtpToPhone(phoneNumber: string): Observable<any> {
-    return this.http.post(`${this.baseUrl}/send-otp`, { phoneNumber });
-  }
 }

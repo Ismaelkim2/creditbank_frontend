@@ -1,0 +1,286 @@
+<div class="assignment-dashboard" *ngIf="!isLoading" >
+
+  <!-- HEADER -->
+  <div class="dashboard-header">
+
+    <div>
+      <h2>
+        <i class="fa fa-users"></i>
+        Staff Assignment Center
+      </h2>
+
+      <p>
+        Allocate relationship managers and loan officers to customer facilities
+      </p>
+    </div>
+
+    <div class="header-actions">
+
+      <button
+        class="btn btn-success btn-premium"
+        (click)="openStaffModal(staffModal)">
+
+        <i class="fa fa-user-plus me-2"></i>
+        Onboard Staff
+
+      </button>
+
+    </div>
+
+  </div>
+
+  <!-- KPI CARDS -->
+
+  <div class="row g-4 mb-4">
+
+    <div class="col-lg-3 col-md-6">
+      <div class="metric-card">
+        <span>Total Staff</span>
+        <h3>{{ staffList.length }}</h3>
+      </div>
+    </div>
+
+    <div class="col-lg-3 col-md-6">
+      <div class="metric-card">
+        <span>Available Officers</span>
+        <h3>{{ staffList.length }}</h3>
+      </div>
+    </div>
+
+    <div class="col-lg-3 col-md-6">
+      <div class="metric-card">
+        <span>Facility Amount</span>
+        <h3>{{ loan?.amount | currency:'KES':'symbol':'1.0-0' }}</h3>
+      </div>
+    </div>
+
+    <div class="col-lg-3 col-md-6">
+      <div class="metric-card">
+        <span>Facility ID</span>
+        <h3>#{{ loan?.id }}</h3>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- CUSTOMER PROFILE -->
+
+  <div class="loan-profile-card"  *ngIf="!isOnboardingOnly">
+
+    <div class="customer-avatar">
+      {{ loan?.applicantName?.charAt(0) }}
+    </div>
+
+    <div class="customer-details">
+
+      <h4>{{ loan?.applicantName }}</h4>
+
+      <div class="details-grid">
+
+        <span>
+          <i class="fa fa-id-card"></i>
+          Loan ID: {{ loan?.id }}
+        </span>
+
+        <span>
+          <i class="fa fa-money"></i>
+          {{ loan?.amount | currency:'KES' }}
+        </span>
+
+        <span>
+          <i class="fa fa-check-circle text-success"></i>
+          {{ loan?.status }}
+        </span>
+
+      </div>
+
+    </div>
+
+  </div>
+
+  <!-- SEARCH BAR -->
+
+  <div class="search-wrapper">
+
+    <i class="fa fa-search"></i>
+
+    <input
+      type="text"
+      placeholder="Search by name, email, phone or department..."
+      [(ngModel)]="searchText">
+
+  </div>
+
+  <!-- STAFF GRID -->
+
+  <div class="staff-grid">
+
+    <div
+      class="staff-card"
+      *ngFor="let staff of filteredStaff()"
+      (click)="selectedStaffId = staff.id"
+      [class.selected]="selectedStaffId === staff.id">
+
+      <div class="staff-top">
+
+        <div class="avatar">
+          {{ staff.name?.charAt(0) }}
+        </div>
+
+        <div>
+
+          <h5>{{ staff.name }}</h5>
+
+          <span class="role-badge">
+            {{ staff.department || 'Loan Officer' }}
+          </span>
+
+        </div>
+
+      </div>
+
+      <div class="staff-body">
+
+        <p>
+          <i class="fa fa-envelope"></i>
+          {{ staff.email }}
+        </p>
+
+        <p>
+          <i class="fa fa-phone"></i>
+          {{ staff.phone }}
+        </p>
+
+      </div>
+
+      <div class="availability">
+
+        <span class="online-dot"></span>
+
+        Available for Assignment
+
+      </div>
+
+    </div>
+
+  </div>
+
+  <!-- ACTION -->
+
+  <button
+    class="assign-btn"
+    (click)="assign()"
+    [disabled]="isAssigning || !selectedStaffId">
+
+    <i class="fa fa-check-circle me-2"></i>
+
+    {{ isAssigning
+      ? 'Assigning Officer...'
+      : 'Assign Selected Officer' }}
+
+  </button>
+
+</div>
+
+<!-- LOADER -->
+
+<div *ngIf="isLoading" class="loading-state">
+
+  <div class="spinner-border text-primary"></div>
+
+  <h5 class="mt-3">
+    Loading Staff Assignment Center...
+  </h5>
+
+</div>
+
+<!-- STAFF ONBOARDING MODAL -->
+
+<ng-template #staffModal let-modal>
+
+  <div class="modal-header premium-header">
+
+    <h5>
+      <i class="fa fa-user-plus me-2"></i>
+      Staff Onboarding
+    </h5>
+
+    <button
+      class="btn-close btn-close-white"
+      (click)="modal.dismiss()">
+    </button>
+
+  </div>
+
+  <div class="modal-body">
+
+    <form [formGroup]="staffForm">
+
+      <div class="row">
+
+        <div class="col-md-6 mb-3">
+          <label class="form-label">Full Name</label>
+          <input
+            class="form-control"
+            formControlName="name">
+        </div>
+
+        <div class="col-md-6 mb-3">
+          <label class="form-label">Email Address</label>
+          <input
+            class="form-control"
+            formControlName="email">
+        </div>
+
+        <div class="col-md-6 mb-3">
+          <label class="form-label">Phone Number</label>
+          <input
+            class="form-control"
+            formControlName="phone">
+        </div>
+
+        <div class="col-md-6 mb-3">
+          <label class="form-label">Department</label>
+
+          <select
+            class="form-select"
+            formControlName="department">
+
+            <option value="Loans">Loans</option>
+            <option value="Collections">Collections</option>
+            <option value="Customer Service">Customer Service</option>
+            <option value="Credit Risk">Credit Risk</option>
+            <option value="Operations">Operations</option>
+
+          </select>
+
+        </div>
+
+      </div>
+
+    </form>
+
+  </div>
+
+  <div class="modal-footer">
+
+    <button
+      class="btn btn-light"
+      (click)="modal.dismiss()">
+
+      Cancel
+
+    </button>
+
+    <button
+      class="btn btn-success"
+      (click)="saveStaff(modal)"
+      [disabled]="staffForm.invalid">
+
+      Create Staff
+
+    </button>
+
+  </div>
+
+</ng-template>

@@ -47,9 +47,24 @@ export class ApplicantSidebarComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    this.loadUserDetails();
-    this.loadPreferences();
-  }
+  this.authService.currentUser$.subscribe(user => {
+    if (!user) return;
+
+    this.user = {
+      name: user.name,
+      email: user.email,
+      accountNumber: '',
+      profileImage: user.imageUrl || 'assets/default-user.png',
+      nationalId: user.nationalId
+    };
+
+    if (user.nationalId) {
+      this.fetchAccount(user.nationalId);
+    }
+  });
+
+  this.loadPreferences();
+}
 
   /** ✅ Load logged-in user and account details */
   private loadUserDetails(): void {
@@ -84,16 +99,6 @@ export class ApplicantSidebarComponent implements OnInit {
       },
       error: (err) => console.error('❌ Account fetch failed:', err)
     });
-  }
-
-  /** ✅ Navigation Actions */
-  goToLoans(): void {
-    this.router.navigate(['/debtloans']); // ✅ Angular navigation
-  }
-
-  transferFunds(): void {
-    this.transferFundsEvent.emit();
-    this.router.navigate(['/payments'])
   }
 
   logout(): void {

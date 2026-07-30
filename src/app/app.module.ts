@@ -12,12 +12,10 @@ import { LoanListComponent } from './loan-list/loan-list.component';
 import { SidebarComponent } from './sidebar/sidebar.component';
 import { ReportsComponent } from './reports/reports.component';
 import { SettingsComponent } from './settings/settings.component';
-import { TopNavComponent } from './top-nav/top-nav.component';
 import { LoginComponent } from './login/login.component';
 import { RegistrationComponent } from './registration/registration.component';
 import { RepaymentFormComponent } from './repayment-form/repayment-form.component';
 import { UnauthorizedComponent } from './unauthorized/unauthorized.component';
-import { AdminApprovalsComponent } from './admin-approvals/admin-approvals.component';
 import { ApplicantDashboardComponent } from './applicant-dashboard/applicant-dashboard.component';
 import { AccountRegistrationComponent } from './account-registration/account-registration.component';
 import { DebtloansComponent } from './debtloans/debtloans.component';
@@ -28,6 +26,16 @@ import { ProfileComponent } from './profile/profile.component';
 import { AccountsComponent } from './accounts/accounts.component';
 import { TokenInterceptor } from './services/token.interceptor';
 import { TransactionsComponent } from './transactions/transactions.component';
+import { LoanApplicationComponent } from './loan-application/loan-application.component';
+import { MainLayoutComponent } from './main-layout/main-layout.component';
+import { LayoutComponent } from './layout/layout.component';
+import { CustomerDetailsComponent } from './customer-details/customer-details.component';
+import { AssignStaffComponent } from './assign-staff/assign-staff.component';
+import { AdminApprovalsComponent } from './admin-approvals/admin-approvals.component';
+import { StaffComponent } from './staff/staff.component';
+import { TopNavComponent } from './top-nav/top-nav.component';
+import { ForgotPasswordComponent } from './forgot-password/forgot-password.component';
+import { AuthLayoutComponent } from './auth-layout/auth-layout.component';
 
 @NgModule({
   declarations: [
@@ -51,7 +59,16 @@ import { TransactionsComponent } from './transactions/transactions.component';
     PaymentsComponent,
     ProfileComponent,
     AccountsComponent,
-    TransactionsComponent
+    StaffComponent,
+    TransactionsComponent,
+    LoanApplicationComponent,
+    MainLayoutComponent,
+    CustomerDetailsComponent,
+    LayoutComponent,
+    AssignStaffComponent,
+    ForgotPasswordComponent,
+    AuthLayoutComponent
+
   ],
   imports: [
     BrowserModule,

@@ -16,6 +16,8 @@ export class AccountService {
   private passwordUrl = `${environment.apiUrl}/auth/change-password`;
   private statementsUrl = `${environment.apiUrl}/statements`;
   private loansUrl = `${environment.apiUrl}/loans`;
+  private baseUrl = `${environment.apiUrl}`;
+
 
   constructor(private http: HttpClient) {}
 
@@ -58,11 +60,23 @@ export class AccountService {
     });
   }
 
-  deleteAccount(accountNumber: string): Observable<any> {
-    return this.http.delete(`${this.accountsUrl}/${accountNumber}`, {
-      headers: this.getHeaders(),
-    });
-  }
+closeAccount(accountNumber: string, reason: string) {
+
+    return this.http.put(
+
+        `${this.accountsUrl}/${accountNumber}/close`,
+
+        {
+            reason
+        },
+
+        {
+            headers: this.getHeaders()
+        }
+
+    );
+
+}
 
   getByNationalId(nationalId: string): Observable<Account> {
     return this.http.get<Account>(`${this.accountsUrl}/by-id/${nationalId}`, {
@@ -87,6 +101,18 @@ export class AccountService {
       { headers: this.getHeaders() }
     );
   }
+
+  getByPhoneNumber(phone: string) {
+  return this.http.get(
+    `${this.accountsUrl}/phone/${phone}`
+  );
+}
+
+getByEmail(email: string) {
+  return this.http.get(
+    `${this.accountsUrl}/email/${email}`
+  );
+}
 
   /** ----------------------------------------------------------------------
    *  UPDATE PROFILE
@@ -124,4 +150,26 @@ export class AccountService {
       { headers: this.getHeaders() }
     );
   }
+
+
+  // account.service.ts
+
+getCounties() {
+  return this.http.get<any[]>(
+    `${this.baseUrl}/locations/counties`
+  );
+}
+
+getTowns(countyCode: string) {
+  return this.http.get<any[]>(
+    `${this.baseUrl}/locations/counties/${countyCode}/towns`
+  );
+}
+
+getAccountsByStatus(status: string) {
+  return this.http.get<Account[]>(
+    `${this.baseUrl}/status/${status.toUpperCase()}`
+  );
+}
+
 }

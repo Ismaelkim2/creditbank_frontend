@@ -3,9 +3,9 @@
    ============================ */
 .statement-container {
   font-family: 'Poppins', sans-serif;
-  max-width: 1100px;
+  max-width: 100%;
   margin: 0 auto;
-  margin-left: 260px;
+
   padding-top: 40px;
   transition: all 0.3s ease;
   background: #f8fafc;

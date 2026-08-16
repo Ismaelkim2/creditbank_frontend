@@ -271,10 +271,21 @@
                         </button>
 
                         <button
+                            class="btn btn-enterprise-primary me-3"
+                            (click)="LoanSetting()">
+
+                            <i class="fas fa-cogs text-primary mt-2"></i>
+
+                            Loan Setting
+
+                        </button>
+
+
+                        <button
                             class="btn btn-enterprise-light me-3"
                             (click)="openChangePasswordModal()">
 
-                            <i class="fas fa-lock me-2"></i>
+                            <i class="fas fa-lock text-warning me-2"></i>
 
                             Change Password
 
@@ -283,19 +294,9 @@
                         <button
                             class="btn btn-enterprise-light me-3">
 
-                            <i class="fas fa-shield-alt me-2"></i>
+                            <i class="fas fa-shield-alt text-danger me-2"></i>
 
                             Security Settings
-
-                        </button>
-
-                        <button
-                            class="btn btn-enterprise-light me-3"
-                            (click)="openActivityPanel=!openActivityPanel">
-
-                            <i class="fas fa-history me-2"></i>
-
-                            Activity Log
 
                         </button>
 
@@ -610,7 +611,7 @@ ENTERPRISE EXECUTIVE DASHBOARD
 
                         <div class="kpi-icon bg-success">
 
-                            <i class="fas fa-shield-check"></i>
+                           <i class="fas fa-shield-alt"></i>
 
                         </div>
 

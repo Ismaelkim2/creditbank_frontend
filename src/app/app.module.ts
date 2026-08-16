@@ -4,10 +4,8 @@ import { RouterModule } from '@angular/router';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { HTTP_INTERCEPTORS, HttpClientModule } from '@angular/common/http';
 import { DatePipe, DecimalPipe } from '@angular/common'; 
-
 import { AppComponent } from './app.component';
 import { AppRoutingModule } from './app-routing.module';
-import { DashboardComponent } from './dashboard/dashboard.component';
 import { LoanListComponent } from './loan-list/loan-list.component';
 import { SidebarComponent } from './sidebar/sidebar.component';
 import { ReportsComponent } from './reports/reports.component';
@@ -36,11 +34,11 @@ import { StaffComponent } from './staff/staff.component';
 import { TopNavComponent } from './top-nav/top-nav.component';
 import { ForgotPasswordComponent } from './forgot-password/forgot-password.component';
 import { AuthLayoutComponent } from './auth-layout/auth-layout.component';
+import { MainDashboardComponent } from './main-dashboard/main-dashboard.component';
 
 @NgModule({
   declarations: [
     AppComponent,
-    DashboardComponent,
     LoanListComponent,
     SidebarComponent,
     ReportsComponent,
@@ -67,7 +65,8 @@ import { AuthLayoutComponent } from './auth-layout/auth-layout.component';
     LayoutComponent,
     AssignStaffComponent,
     ForgotPasswordComponent,
-    AuthLayoutComponent
+    AuthLayoutComponent,
+    MainDashboardComponent,
 
   ],
   imports: [

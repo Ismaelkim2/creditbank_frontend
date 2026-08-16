@@ -6,95 +6,86 @@
 
       <div class="col-12">
 
-        <div class="card bank-card shadow-lg border-0  col-12" >
+        <div class="card bank-card shadow-lg border-0">
 
-<div class="enterprise-progress-card">
+          <!-- ===================================================== -->
+          <!-- ENTERPRISE PROGRESS HEADER -->
+          <!-- ===================================================== -->
 
-    <div class="progress-header">
+          <div
+            class="enterprise-progress-card"
+            *ngIf="currentStep > 0">
 
-        <div>
+            <div class="progress-header">
 
-            <h5 class="text-primary fw-bold fs-4">
+              <div>
 
-                <i class="fas fa-route me-2"></i>
+                <h5 class="text-primary fw-bold fs-4 mb-1">
+                  <i class="fas fa-route me-2"></i>
+                  Enterprise Account Registration
+                </h5>
 
-                Registration Progress
+                <small class="text-muted">
+                  Complete every section to activate your account.
+                </small>
 
-            </h5>
-
-            <small>
-
-                Complete all stages to activate your account.
-
-            </small>
-
-        </div>
-
-    </div>
-
-    
-            <!-- PROGRESS STEPS -->
-            <div class="wizard-progress mb-2">
-
-              <div class="step" [class.active]="currentStep >= 1">
-                <span>1</span>
-                <small>Personal</small>
-              </div>
-
-              <div class="step" [class.active]="currentStep >= 2">
-                <span>2</span>
-                <small>Contact</small>
-              </div>
-
-              <div class="step" [class.active]="currentStep >= 3">
-                <span>3</span>
-                <small>Employment</small>
-              </div>
-
-              <div class="step" [class.active]="currentStep >= 4">
-                <span>4</span>
-                <small>Kin</small>
-              </div>
-
-              <div class="step" [class.active]="currentStep >= 5">
-                <span>5</span>
-                <small>Upload</small>
-              </div>
-
-              <div class="step" [class.active]="currentStep >= 6">
-                <span>6</span>
-                <small>Submit</small>
               </div>
 
             </div>
 
-</div>
+            <div class="wizard-progress mt-3">
 
+              <div
+                class="step"
+                *ngFor="let title of stepTitles; let i = index"
+                [class.active]="currentStep >= i + 1">
 
-          <!-- BODY -->
-          <div class="card-body p-4 p-md-5 w-100">
+                <span>{{ i + 1 }}</span>
 
-            <!-- SUCCESS MESSAGE -->
-          <div *ngIf="successMessage" class="success-banner  mt-1 animate__animated animate__fadeIn">
+                <small>{{ title }}</small>
 
-  <div class="icon">
-    <i class="fas fa-check-circle"></i>
-  </div>
+              </div>
 
-  <div class="content">
-    <h5>Success!</h5>
-    <p>{{ successMessage }}</p>
-    <small>You will be redirected shortly...</small>
-  </div>
+            </div>
 
-</div>
+          </div>
 
-            <!-- ERROR MESSAGE -->
+          <!-- ===================================================== -->
+          <!-- CARD BODY -->
+          <!-- ===================================================== -->
+
+          <div class="card-body p-4 p-md-5">
+
+            <!-- SUCCESS -->
+
+            <div
+              *ngIf="successMessage"
+              class="success-banner animate__animated animate__fadeIn">
+
+              <div class="icon">
+                <i class="fas fa-check-circle"></i>
+              </div>
+
+              <div class="content">
+
+                <h5>Registration Successful</h5>
+
+                <p>{{ successMessage }}</p>
+
+                <small>You will be redirected shortly...</small>
+
+              </div>
+
+            </div>
+
+            <!-- ERROR -->
+
             <div
               *ngIf="errorMessage"
               class="alert alert-danger alert-dismissible fade show">
 
               <i class="fas fa-exclamation-triangle me-2"></i>
+
               {{ errorMessage }}
 
               <button
@@ -105,676 +96,853 @@
 
             </div>
 
+            <!-- ===================================================== -->
+            <!-- ACCOUNT REGISTRATION FORM -->
+            <!-- ===================================================== -->
 
-            <!-- FORM -->
             <form
               [formGroup]="accountForm"
               (ngSubmit)="onSubmit()"
               novalidate>
 
-              <!-- ========================================= -->
-              <!-- STEP 1 PERSONAL INFORMATION -->
-              <!-- ========================================= -->
-              <div *ngIf="currentStep === 1" class="row g-3">
+              <!-- ===================================================== -->
+              <!-- STEP 0 : CUSTOMER CATEGORY -->
+              <!-- ===================================================== -->
 
-                <div class="section-title">
-                  <i class="fas fa-user-circle me-2"></i>
-                  Personal Information
-                </div>
+              <div
+                class="row"
+                *ngIf="currentStep === 0">
 
-                <div class="col-md-6">
-  <div class="form-floating">
+                <div class="col-12">
 
-    <!-- <h3>Which Type of account are you onboarding?</h3> -->
+                  <div class="enterprise-section-header mb-4">
 
-    <select
-      class="form-select"
-      formControlName="modeOfOperation">
+                    <h3>
 
-      <option value="">Select Mode Of Operation</option>
-      <option>Self</option>
-      <option>Joint</option>
-      <option>Two To Sign</option>
-      <option>TTS</option>
+                      <i class="fas fa-users text-primary me-2"></i>
 
-    </select>
+                      Select Customer Category
 
-    <label>Mode Of Operation</label>
+                    </h3>
 
-  </div>
-  <small
-  class="text-danger"
-  *ngIf="
-    accountForm.get('modeOfOperation')?.touched &&
-    accountForm.get('modeOfOperation')?.hasError('required')
-  ">
+                    <p class="text-muted mb-0">
 
-  Mode Of Operation is required. Whic account are you onboarding?
+                      Choose the customer category before proceeding with registration.
 
-</small>
-</div>
+                    </p>
 
-                <div class="col-md-6">
-                  <div class="form-floating">
-                    <input
-                      type="text"
-                      class="form-control"
-                      formControlName="fullName"
-                      placeholder="Full Name">
-
-                    <label>Full Name</label>
                   </div>
 
-                  <small
-                    class="text-danger"
-                    *ngIf="accountForm.get('fullName')?.touched &&
-                           accountForm.get('fullName')?.invalid">
-
-                    Full Name is required.
-
-                  </small>
                 </div>
 
+                <!-- ================= INDIVIDUAL ================= -->
 
-<div class="col-lg-7">
+<div class="col-lg-3 col-md-6 mb-4">
+  <div
+    class="customer-card"
+    [class.active]="accountForm.get('customerCategory')?.value === 'INDIVIDUAL'"
+    (click)="selectCustomerCategory(CustomerCategory.INDIVIDUAL)">
 
-<label class="enterprise-label">
+    <!-- SELECTED BADGE -->
+    <div
+      class="selected-badge"
+      *ngIf="accountForm.get('customerCategory')?.value === 'INDIVIDUAL'">
 
-Identification
+      <i class="fas fa-check-circle me-1"></i>
+      Selected
+    </div>
 
+    <div class="customer-icon bg-primary">
+      <i class="fas fa-user"></i>
+    </div>
 
+    <h4>Individual</h4>
+
+    <p>
+      Single account owned by one customer.
+    </p>
+
+    <ul>
+      <li>✔ Savings</li>
+      <li>✔ Current</li>
+      <li>✔ Fixed Deposit</li>
+      <li>✔ Salary Account</li>
+    </ul>
+
+    <!-- SELECT INDICATOR -->
+    <div
+      class="selection-indicator"
+      [class.selected]="accountForm.get('customerCategory')?.value === 'INDIVIDUAL'">
+
+      <i
+        class="fas"
+        [ngClass]="
+          accountForm.get('customerCategory')?.value === 'INDIVIDUAL'
+            ? 'fa-check-circle'
+            : 'fa-circle'
+        ">
+      </i>
+
+      <span>
+        {{
+          accountForm.get('customerCategory')?.value === 'INDIVIDUAL'
+            ? 'Individual Selected'
+            : 'Select Individual'
+        }}
+      </span>
+
+    </div>
+
+  </div>
+</div>
+
+                <!-- ================= GROUP ================= -->
+
+<div class="col-lg-3 col-md-6 mb-4">
+  <div
+    class="customer-card"
+    [class.active]="accountForm.get('customerCategory')?.value === 'GROUP'"
+    (click)="selectCustomerCategory(CustomerCategory.GROUP)">
+
+    <div
+      class="selected-badge"
+      *ngIf="accountForm.get('customerCategory')?.value === 'GROUP'">
+
+      <i class="fas fa-check-circle me-1"></i>
+      Selected
+    </div>
+
+    <div class="customer-icon bg-success">
+      <i class="fas fa-users"></i>
+    </div>
+
+    <h4>Group</h4>
+
+    <p>
+      Chamas, SACCOs, Welfare Groups,
+      Investment Clubs and Associations.
+    </p>
+
+    <ul>
+      <li>✔ Officials</li>
+      <li>✔ Members</li>
+      <li>✔ Multiple Signatories</li>
+      <li>✔ Resolutions</li>
+    </ul>
+
+    <div
+      class="selection-indicator"
+      [class.selected]="accountForm.get('customerCategory')?.value === 'GROUP'">
+
+      <i
+        class="fas"
+        [ngClass]="
+          accountForm.get('customerCategory')?.value === 'GROUP'
+            ? 'fa-check-circle'
+            : 'fa-circle'
+        ">
+      </i>
+
+      <span>
+        {{
+          accountForm.get('customerCategory')?.value === 'GROUP'
+            ? 'Group Selected'
+            : 'Select Group'
+        }}
+      </span>
+
+    </div>
+
+  </div>
+</div>
+
+                <!-- ================= COMPANY ================= -->
+
+<div class="col-lg-3 col-md-6 mb-4">
+  <div
+    class="customer-card"
+    [class.active]="accountForm.get('customerCategory')?.value === 'COMPANY'"
+    (click)="selectCustomerCategory(CustomerCategory.COMPANY)">
+
+    <div
+      class="selected-badge"
+      *ngIf="accountForm.get('customerCategory')?.value === 'COMPANY'">
+
+      <i class="fas fa-check-circle me-1"></i>
+      Selected
+    </div>
+
+    <div class="customer-icon bg-warning">
+      <i class="fas fa-building"></i>
+    </div>
+
+    <h4>Company</h4>
+
+    <p>
+      Registered companies, SMEs and corporate organizations.
+    </p>
+
+    <ul>
+      <li>✔ Directors</li>
+      <li>✔ Beneficial Owners</li>
+      <li>✔ Company Signatories</li>
+      <li>✔ CR12 Verification</li>
+    </ul>
+
+    <div
+      class="selection-indicator"
+      [class.selected]="accountForm.get('customerCategory')?.value === 'COMPANY'">
+
+      <i
+        class="fas"
+        [ngClass]="
+          accountForm.get('customerCategory')?.value === 'COMPANY'
+            ? 'fa-check-circle'
+            : 'fa-circle'
+        ">
+      </i>
+
+      <span>
+        {{
+          accountForm.get('customerCategory')?.value === 'COMPANY'
+            ? 'Company Selected'
+            : 'Select Company'
+        }}
+      </span>
+
+    </div>
+
+  </div>
+</div>
+
+                <!-- ================= INSTITUTION ================= -->
+
+<div class="col-lg-3 col-md-6 mb-4">
+  <div
+    class="customer-card"
+    [class.active]="accountForm.get('customerCategory')?.value === 'INSTITUTION'"
+    (click)="selectCustomerCategory(CustomerCategory.INSTITUTION)">
+
+    <div
+      class="selected-badge"
+      *ngIf="accountForm.get('customerCategory')?.value === 'INSTITUTION'">
+
+      <i class="fas fa-check-circle me-1"></i>
+      Selected
+    </div>
+
+    <div class="customer-icon bg-danger">
+      <i class="fas fa-university"></i>
+    </div>
+
+    <h4>Institution</h4>
+
+    <p>
+      Schools, Churches, NGOs,
+      Government Bodies and Trusts.
+    </p>
+
+    <ul>
+      <li>✔ Officials</li>
+      <li>✔ Trustees</li>
+      <li>✔ Authorized Signatories</li>
+      <li>✔ Registration Documents</li>
+    </ul>
+
+    <div
+      class="selection-indicator"
+      [class.selected]="accountForm.get('customerCategory')?.value === 'INSTITUTION'">
+
+      <i
+        class="fas"
+        [ngClass]="
+          accountForm.get('customerCategory')?.value === 'INSTITUTION'
+            ? 'fa-check-circle'
+            : 'fa-circle'
+        ">
+      </i>
+
+      <span>
+        {{
+          accountForm.get('customerCategory')?.value === 'INSTITUTION'
+            ? 'Institution Selected'
+            : 'Select Institution'
+        }}
+      </span>
+
+    </div>
+
+  </div>
+</div>
+
+<!-- ========================================================= -->
+<!-- SELECTED CUSTOMER CATEGORY -->
+<!-- ========================================================= -->
+
+<div
+  class="selected-category-panel mt-3"
+  *ngIf="accountForm.get('customerCategory')?.value">
+
+  <div class="selected-category-icon">
+
+    <i
+      class="fas"
+      [ngClass]="{
+        'fa-user': accountForm.get('customerCategory')?.value === 'INDIVIDUAL',
+        'fa-users': accountForm.get('customerCategory')?.value === 'GROUP',
+        'fa-building': accountForm.get('customerCategory')?.value === 'COMPANY',
+        'fa-university': accountForm.get('customerCategory')?.value === 'INSTITUTION'
+      }">
+    </i>
+
+  </div>
+
+  <div class="selected-category-content">
+
+    <small>CUSTOMER CATEGORY SELECTED</small>
+
+    <h4>
+      {{
+        accountForm.get('customerCategory')?.value === 'INDIVIDUAL'
+          ? 'Individual Account'
+          : accountForm.get('customerCategory')?.value === 'GROUP'
+            ? 'Group Account'
+            : accountForm.get('customerCategory')?.value === 'COMPANY'
+              ? 'Company Account'
+              : 'Institution Account'
+      }}
+
+      <i class="fas fa-check-circle text-success ms-2"></i>
+    </h4>
+
+    <p class="mb-0">
+      Your customer category has been selected successfully.
+      Click <strong>Continue</strong> below to begin the registration process.
+    </p>
+
+  </div>
+
+</div>
+
+                <!-- ================= CONTINUE ================= -->
+
+                <div class="col-12">
+
+                  <div class="text-end mt-2">
+
+<button
+  type="button"
+  class="btn btn-primary btn-lg px-5 continue-category-btn"
+  [disabled]="!accountForm.get('customerCategory')?.value"
+  (click)="nextStep()">
+
+  <span>
+    Continue With
+    {{
+      accountForm.get('customerCategory')?.value === 'INDIVIDUAL'
+        ? 'Individual'
+        : accountForm.get('customerCategory')?.value === 'GROUP'
+          ? 'Group'
+          : accountForm.get('customerCategory')?.value === 'COMPANY'
+            ? 'Company'
+            : 'Institution'
+    }}
+  </span>
+
+  <i class="fas fa-arrow-right ms-2"></i>
+
+</button>
+
+                  </div>
+
+                </div>
+
+              </div>
+
+              <!-- ===================================================== -->
+              <!-- REGISTRATION WIZARD -->
+              <!-- ===================================================== -->
+
+              <ng-container *ngIf="currentStep > 0">
+
+                <div class="enterprise-section-header mb-4">
+
+<h3>
+    <i class="fas fa-id-card text-primary me-2"></i>
+    {{ registrationTitle }}
+</h3>
+
+                  <small class="text-muted">
+
+                    Complete all required information before submitting the application.
+
+                  </small>
+
+                </div>
+
+                <!-- STEP 1 STARTS IN PART 2 -->
+              
+              
+              <!-- ===================================================== -->
+                <!-- STEP 1 : CUSTOMER INFORMATION -->
+                <!-- ===================================================== -->
+
+                <div
+                  class="row g-4"
+                  *ngIf="currentStep === 1">
+
+<div class="section-title">
+
+    <i class="fas fa-id-card text-primary me-2"></i>
+
+    <span *ngIf="isIndividual">Personal Information</span>
+
+    <span *ngIf="isGroup">Group Information</span>
+
+    <span *ngIf="isCompany">Company Information</span>
+
+    <span *ngIf="isInstitution">Institution Information</span>
+
+</div>
+
+<p class="text-muted">
+
+<span *ngIf="isIndividual">
+Provide the applicant's personal identification details.
+</span>
+
+<span *ngIf="isGroup">
+Provide the registered group's information.
+</span>
+
+<span *ngIf="isCompany">
+Provide the company's registration information.
+</span>
+
+<span *ngIf="isInstitution">
+Provide the institution's registration details.
+</span>
+
+</p>
+
+<!-- MODE OF OPERATION -->
+<div class="col-md-6">
+
+<div class="form-floating">
+
+<select
+class="form-select"
+formControlName="modeOfOperation">
+
+<option value="">
+Select Mode of Operation
+</option>
+
+<option
+*ngFor="let mode of modeOfOperationOptions"
+[value]="mode.value">
+
+{{ mode.label }}
+
+</option>
+
+</select>
+
+<label>
+Mode of Operation *
+</label>
+
+</div>
+
+</div>
+
+<!-- FULL NAME -->
+
+<!-- ===================================================== -->
+<!-- INDIVIDUAL FULL NAME -->
+<!-- ===================================================== -->
+
+<div class="col-md-6" *ngIf="isIndividual">
+
+    <div class="form-floating">
+
+        <input
+            type="text"
+            class="form-control"
+            formControlName="fullName"
+            placeholder="Enter Full Name">
+
+        <label>
+            Full Name *
+        </label>
+
+    </div>
+
+</div>
+
+<!-- ===================================================== -->
+<!-- ORGANIZATION NAME -->
+<!-- ===================================================== -->
+
+<div
+    class="col-md-6"
+    *ngIf="isGroup || isCompany || isInstitution">
+
+    <div class="form-floating">
+
+        <input
+            type="text"
+            class="form-control"
+            formControlName="organizationName"
+            [placeholder]="
+                isGroup
+                    ? 'Enter Group Name'
+                    : isCompany
+                        ? 'Enter Company Name'
+                        : 'Enter Institution Name'
+            ">
+
+        <label>
+
+            {{
+                isGroup
+                    ? 'Group Name *'
+                    : isCompany
+                        ? 'Company Name *'
+                        : 'Institution Name *'
+            }}
+
+        </label>
+
+    </div>
+
+</div>
+
+<!-- IDENTIFICATION -->
+
+<div class="col-md-6" *ngIf="isIndividual">
+
+    <label class="form-label">
+        Identification
+    </label>
+
+    <div class="enterprise-id-group">
+
+        <select
+            class="enterprise-select"
+            formControlName="idType"
+            (change)="onIdTypeChange()">
+
+            <option value="NATIONAL_ID">
+                National ID
+            </option>
+
+            <option value="MAISHA_CARD">
+                Maisha Card
+            </option>
+
+            <option value="PASSPORT">
+                Passport
+            </option>
+
+        </select>
+
+        <div class="enterprise-divider"></div>
+
+        <input
+            type="text"
+            class="enterprise-input"
+            formControlName="nationalId"
+            [maxlength]="idMaxLength"
+            [placeholder]="idPlaceholder"
+            (input)="allowNumbersOnly($event)">
+
+    </div>
+
+</div>
+
+                  <!-- DATE OF BIRTH -->
+
+                  <div class="col-md-6" *ngIf="selectedCustomerCategory===CustomerCategory.INDIVIDUAL">
+
+                    <div class="form-floating">
+
+                      <input
+                        type="date"
+                        class="form-control"
+                        formControlName="dateOfBirth">
+
+                      <label>
+
+                        Date of Birth *
+
+                      </label>
+
+                    </div>
+
+                  </div>
+
+                  <!-- GENDER -->
+
+                  <div class="col-md-6" *ngIf="selectedCustomerCategory===CustomerCategory.INDIVIDUAL">
+
+                    <div class="form-floating">
+
+                      <select
+                        class="form-select"
+                        formControlName="gender">
+
+                        <option value="">
+
+                          Select Gender
+
+                        </option>
+
+                        <option value="Male">
+
+                          Male
+
+                        </option>
+
+                        <option value="Female">
+
+                          Female
+
+                        </option>
+
+                        <option value="Other">
+
+                          Other
+
+                        </option>
+
+                      </select>
+
+                      <label>
+
+                        Gender *
+
+                      </label>
+
+                    </div>
+
+                  </div>
+
+                  <!-- NATIONALITY -->
+
+<div class="col-md-6" *ngIf="isIndividual">
+
+    <div class="form-floating">
+
+        <input
+            type="text"
+            class="form-control"
+            formControlName="nationality"
+            placeholder="Nationality">
+
+        <label>
+            Nationality
+        </label>
+
+    </div>
+
+</div>
+
+                  <!-- MARITAL STATUS -->
+
+                  <div class="col-md-6" *ngIf="selectedCustomerCategory===CustomerCategory.INDIVIDUAL">
+
+                    <div class="form-floating">
+
+                      <select
+                        class="form-select"
+                        formControlName="maritalStatus">
+
+                        <option value="">
+
+                          Select Marital Status
+
+                        </option>
+
+                      <option value="SINGLY">Singly</option>
+
+                        <option value="MARRIED">
+                          Married
+                        </option>
+
+                        <option value="DIVORCED">
+                          Divorced
+                        </option>
+
+                        <option value="WIDOWED">
+                          Widowed
+                        </option>
+
+                      </select>
+
+                      <label>
+
+                        Marital Status
+
+                      </label>
+
+                    </div>
+
+                  </div>
+
+                  <!-- PIN -->
+
+                  <div class="col-md-6">
+
+                    <div class="form-floating">
+
+                      <input
+                        type="text"
+                        class="form-control"
+                        formControlName="kraPin"
+                        placeholder="KRA PIN">
+
+<label>
+
+<span *ngIf="isIndividual">
+KRA PIN
+</span>
+
+<span *ngIf="isGroup">
+Group KRA PIN
+</span>
+
+<span *ngIf="isCompany">
+Company KRA PIN
+</span>
+
+<span *ngIf="isInstitution">
+Institution KRA PIN
+</span>
 
 </label>
 
-<div class="enterprise-id-group">
+                    </div>
 
-<select
-class="enterprise-select"
-formControlName="idType"
-(change)="onIdTypeChange()">
+                  </div>
 
-<option value="NATIONAL_ID">
 
-National ID
+                  <div class="col-md-6" *ngIf="!isIndividual">
 
-</option>
+    <div class="form-floating">
 
-<option value="MAISHA_CARD">
+        <input
+            class="form-control"
+            formControlName="registrationDate"
+            type="date">
 
-Maisha Card
+        <label>Registration Date</label>
 
-</option>
-
-</select>
-
-<div class="enterprise-divider"></div>
-
-<input
-
-type="text"
-
-class="enterprise-input text-start"
-
-formControlName="nationalId"
-
-inputmode="numeric"
-
-[maxlength]="idMaxLength"
-
-[placeholder]="idPlaceholder"
-
-(input)="allowNumbersOnly($event)"
-
-autocomplete="off">
-
-<div
-class="verification-icon"
-*ngIf="accountLoaded">
-
-<i class="fas fa-check-circle"></i>
+    </div>
 
 </div>
 
-</div>
+<div class="col-md-6" *ngIf="!isIndividual">
 
-<small class="enterprise-helper">
-
-{{ idPlaceholder }}
-
-</small>
-
-</div>
-
-                <div class="col-md-6">
-                  <div class="form-floating">
-                    <input
-                      type="date"
-                      class="form-control"
-                      formControlName="dateOfBirth">
-
-                    <label>Date of Birth</label>
-                  </div>
-                  <small
-  class="text-danger"
-  *ngIf="accountForm.get('dateOfBirth')?.errors?.['underAge']">
-
-  Applicant must be 18 years or older.
-
-</small>
-                </div>
-
-                <div class="col-md-6">
-                  <div class="form-floating">
-
-                    <select
-                      class="form-select"
-                      formControlName="gender">
-
-                      <option value="">Select Gender</option>
-                      <option>Male</option>
-                      <option>Female</option>
-                      <option>Other</option>
-
-                    </select>
-
-                    <label>Gender</label>
-
-                  </div>
-                </div>
-
-                <div class="col-12 text-end">
-
-                  <button
-                    type="button"
-                    class="btn btn-bank px-5"
-                    (click)="nextStep()">
-
-                    Continue
-                    <i class="fas fa-arrow-right ms-2"></i>
-
-                  </button>
-
-                </div>
-
-              </div>
-
-              <!-- ========================================= -->
-              <!-- STEP 2 CONTACT -->
-              <!-- ========================================= -->
-              <div *ngIf="currentStep === 2" class="row g-3">
-
-                <div class="section-title">
-                  <i class="fas fa-address-book me-2"></i>
-                  Contact Information
-                </div>
-
-                <div class="col-md-6">
-
-                  <div class="form-floating">
-
-                    <input
-                      type="text"
-                      class="form-control"
-                      formControlName="phoneNumber"
-                      placeholder="Phone Number"
-                      (blur)="checkPhoneNumber()">
-
-                    <label>Phone Number</label>
-
-                  </div>
-
-                  <small
-                    class="text-danger"
-                    *ngIf="accountForm.get('phoneNumber')?.errors?.['duplicate']">
-
-                    An account with this phone number already exists.
-
-                  </small>
-
-                </div>
-
-                <div class="col-md-6">
-                  <div class="form-floating">
-
-                   <input
-  type="email"
-  class="form-control"
-  formControlName="email"
-  placeholder="Email"
-  (blur)="checkEmail()">
-
-  <small
-  class="text-danger"
-  *ngIf="accountForm.get('email')?.errors?.['duplicate']">
-
-  An account with this email already exists.
-
-</small>
-
-                    <label>Email Address</label>
-
-                  </div>
-                </div>
-
-                <div class="col-12">
-                  <div class="form-floating">
-
-                    <input
-                      type="text"
-                      class="form-control"
-                      formControlName="residentialAddress"
-                      placeholder="Residential Address">
-
-                    <label>Residential Address</label>
-
-                  </div>
-                </div>
-
-                <div class="col-md-6">
-                  <div class="form-floating">
-
-    <select
-    class="form-select"
-    formControlName="county"
-    (change)="onCountyChange()">
-
-    <option value="">Select County</option>
-
-    <option
-        *ngFor="let county of counties"
-        [value]="county.id">
-
-        {{ county.name }}
-
-    </option>
-
-</select>
-
-                    <label>County</label>
-
-                  </div>
-                </div>
-
-                <div class="col-md-6">
-                  <div class="form-floating">
-
-<select
-    class="form-select"
-    formControlName="city">
-
-    <option value="">Select Town</option>
-
-    <option
-        *ngFor="let town of towns"
-        [value]="town.name">
-
-        {{ town.name }}
-
-    </option>
-
-</select>
-
-                    <label>City</label>
-
-                  </div>
-                </div>
-
-                <div class="col-12 d-flex justify-content-between">
-
-                  <button
-                    type="button"
-                    class="btn btn-outline-secondary"
-                    (click)="previousStep()">
-
-                    Back
-
-                  </button>
-
-                <button
-  type="button"
-  class="btn btn-bank"
-  (click)="nextStep()"
-  [disabled]="hasDuplicateErrors()">
-
-  Continue
-</button>
-
-                </div>
-
-              </div>
-
-            <!-- ========================================= -->
-<!-- STEP 3 EMPLOYMENT & FINANCIAL PROFILE -->
-<!-- ========================================= -->
-<div *ngIf="currentStep === 3" class="row g-3">
-
-  <div class="section-title">
-    <i class="fas fa-briefcase me-2"></i>
-    Employment & Financial Profile
-  </div>
-
-  <div class="col-md-6">
-    <div class="form-floating">
-      <select class="form-select" formControlName="employmentStatus">
-        <option value="">Select Status</option>
-        <option>Employed</option>
-        <option>Self-Employed</option>
-        <option>Business Owner</option>
-        <option>Unemployed</option>
-        <option>Student</option>
-      </select>
-      <label>Employment Status *</label>
-    </div>
-  </div>
-
-  <div class="col-md-6">
-    <div class="form-floating">
-      <input
-        type="text"
-        class="form-control"
-        formControlName="employerName"
-        placeholder="Employer Name">
-      <label>Employer / Business Name</label>
-    </div>
-  </div>
-
-  <div class="col-md-6">
-    <div class="form-floating">
-      <input
-        type="text"
-        class="form-control"
-        formControlName="businessType"
-        placeholder="Business Type">
-      <label>Business Type</label>
-    </div>
-  </div>
-
-  <div class="col-md-6">
-    <div class="form-floating">
-      <input
-        type="text"
-        class="form-control"
-        formControlName="businessLocation"
-        placeholder="Business Location">
-      <label>Business Location</label>
-    </div>
-  </div>
-
-  <div class="col-md-6">
-    <div class="form-floating">
-      <input
-        type="number"
-        class="form-control"
-        formControlName="monthlyIncome"
-        placeholder="Monthly Income">
-      <label>Monthly Income *</label>
-    </div>
-  </div>
-
-  <div class="col-md-6">
-    <div class="form-floating">
-      <select
-        class="form-select"
-        formControlName="sourceOfFunds">
-
-        <option value="">Select Source</option>
-        <option>Salary</option>
-        <option>Business Income</option>
-        <option>Investments</option>
-        <option>Farming</option>
-        <option>Other</option>
-
-      </select>
-
-      <label>Source of Funds *</label>
-    </div>
-  </div>
-
-  <div class="col-md-6">
     <div class="form-floating">
 
-      <select
-        class="form-select"
-        formControlName="accountType">
+        <input
+            class="form-control"
+            formControlName="registrationNumber">
 
-        <option value="">Select Account Type</option>
-        <option>Savings</option>
-        <option>Current</option>
-        <option>Business</option>
-        <option>Fixed Deposit</option>
-
-      </select>
-
-      <label>Account Type *</label>
+        <label>Registration Number</label>
 
     </div>
-  </div>
-
-  <div class="col-12 d-flex justify-content-between mt-4">
-
-    <button
-      type="button"
-      class="btn btn-outline-secondary"
-      (click)="previousStep()">
-
-      Back
-
-    </button>
-
-    <button
-      type="button"
-      class="btn btn-bank"
-      (click)="nextStep()">
-
-      Continue
-
-    </button>
-
-  </div>
 
 </div>
 
-              <!-- STEP 4 NEXT OF KIN -->
-            <!-- ========================================= -->
-<!-- STEP 4 NEXT OF KIN -->
-<!-- ========================================= -->
-<div *ngIf="currentStep === 4" class="row g-3">
+<div class="col-md-6" *ngIf="isCompany">
 
-  <div class="section-title">
-    <i class="fas fa-users me-2"></i>
-    Next Of Kin Information
-  </div>
-
-  <div class="col-md-6">
     <div class="form-floating">
-      <input
-        type="text"
-        class="form-control"
-        formControlName="nextOfKinName"
-        placeholder="Next Of Kin Name">
 
-      <label>Next Of Kin Name *</label>
+        <input
+            class="form-control"
+            formControlName="industry">
+
+        <label>Industry</label>
+
     </div>
-  </div>
-
-  <div class="col-md-6">
-    <div class="form-floating">
-      <input
-        type="text"
-        class="form-control"
-        formControlName="nextOfKinPhone"
-        placeholder="Phone Number">
-
-      <label>Next Of Kin Phone *</label>
-    </div>
-
-    <small
-  class="text-danger"
-  *ngIf="accountForm.errors?.['samePhone']">
-
-  Next of Kin phone number cannot be the same as applicant phone number.
-
-</small>
-
-<small
-  class="text-danger"
-  *ngIf="accountForm.get('nextOfKinPhone')?.errors?.['pattern']">
-
-  Phone number must start with 07 (10 digits) or 254 (12 digits).
-
-</small>
-  </div>
-
-  <div class="col-md-6">
-    <div class="form-floating">
-      <input
-        type="text"
-        class="form-control"
-        formControlName="nextOfKinRelationship"
-        placeholder="Relationship">
-
-      <label>Relationship *</label>
-    </div>
-  </div>
-
-  <div class="col-12 d-flex justify-content-between mt-4">
-
-    <button
-      type="button"
-      class="btn btn-outline-secondary"
-      (click)="previousStep()">
-
-      Back
-
-    </button>
-
-    <button
-      type="button"
-      class="btn btn-bank"
-      (click)="nextStep()">
-
-      Continue
-
-    </button>
-
-  </div>
 
 </div>
 
-              <!-- ========================================= -->
-              <!-- STEP 5 UPLOAD DOCUMENTS -->
-              <!-- ========================================= -->
-              <div *ngIf="currentStep === 5" class="row g-3">
+<div class="col-md-6" *ngIf="isCompany">
 
-                <div class="section-title">
-                  <i class="fas fa-cloud-upload-alt me-2"></i>
-                  Upload Profile Picture
-                </div>
+    <div class="form-floating">
 
-                <div class="col-md-6">
+        <input
+            class="form-control"
+            formControlName="natureOfBusiness">
 
-                  <label class="form-label fw-semibold">
-                    Profile Picture *
-                  </label>
+        <label>Nature of Business</label>
 
-                  <div class="upload-zone text-center position-relative">
+    </div>
 
-                    <ng-container *ngIf="previewUrl; else uploadPlaceholder">
+</div>
 
-                      <img
-                        [src]="previewUrl"
-                        class="img-preview mb-2"
-                        (error)="onImageError($event)">
+<div class="col-md-6" *ngIf="isInstitution">
 
-                      <p class="small text-muted">
-                        Click to change image
-                      </p>
+    <div class="form-floating">
 
-                    </ng-container>
+        <select
+            class="form-select"
+            formControlName="institutionType">
 
-                    <ng-template #uploadPlaceholder>
+            <option value="">Select Institution Type</option>
 
-                      <i class="fas fa-cloud-upload-alt fs-2 text-primary"></i>
+            <option>School</option>
 
-                      <p class="mb-0 mt-2">
-                        Click to upload
-                      </p>
+            <option>Church</option>
 
-                    </ng-template>
+            <option>NGO</option>
 
-                    <input
-                      type="file"
-                      class="file-input"
-                      accept="image/*"
-                      (change)="onFileChange($event)">
+            <option>Government Agency</option>
 
-                  </div>
+            <option>Trust</option>
 
-                  <small
-                    class="text-danger"
-                    *ngIf="imageError">
+            <option>University</option>
 
-                    {{ imageError }}
+            <option>Hospital</option>
 
-                  </small>
+        </select>
 
-                </div>
+        <label>Institution Type</label>
 
-                <div class="col-12 d-flex justify-content-between">
+    </div>
 
-                  <button
-                    type="button"
-                    class="btn btn-outline-secondary"
-                    (click)="previousStep()">
+</div>
 
-                    Back
+                  <!-- NAVIGATION -->
 
-                  </button>
+                  <div class="col-12 mt-4">
 
-                  <button
-                    type="button"
-                    class="btn btn-bank"
-                    (click)="nextStep()">
+                    <div class="d-flex justify-content-between">
 
-                    Review & Submit
+                      <button
+                        type="button"
+                        class="btn btn-outline-secondary px-4"
+                        (click)="previousStep()">
 
-                  </button>
+                        <i class="fas fa-arrow-left me-2"></i>
 
-                </div>
+                        Back
 
-              </div>
+                      </button>
 
-              <!-- ========================================= -->
-              <!-- STEP 6 REVIEW & SUBMIT -->
-              <!-- ========================================= -->
-              <div *ngIf="currentStep === 6" class="row g-3">
+                      <button
+                        type="button"
+                        class="btn btn-bank px-5"
+                        (click)="nextStep()">
 
-                <div class="col-12">
+                        Continue
 
-                  <div class="review-card">
+                        <i class="fas fa-arrow-right ms-2"></i>
 
-                    <h5 class="mb-4">
-                      <i class="fas fa-check-circle text-success me-2"></i>
-                      Review Information
-                    </h5>
-
-                    <div class="row">
-
-                      <div class="col-md-6">
-                        <p>
-  <strong>Mode Of Operation:</strong>
-  {{ accountForm.value.modeOfOperation }}
-</p>
-                        <p><strong>Name:</strong> {{ accountForm.value.fullName }}</p>
-                        <p><strong>ID:</strong> {{ accountForm.value.nationalId }}</p>
-                        <p><strong>Phone:</strong> {{ accountForm.value.phoneNumber }}</p>
-                      </div>
-
-                      <div class="col-md-6">
-                        <p><strong>Email:</strong> {{ accountForm.value.email }}</p>
-                        <p><strong>Account Type:</strong> {{ accountForm.value.accountType }}</p>
-                        <p><strong>County:</strong> {{ accountForm.value.county }}</p>
-                      </div>
+                      </button>
 
                     </div>
 
@@ -782,64 +950,3751 @@ class="verification-icon"
 
                 </div>
 
-                <div class="col-12">
+           
+<!-- ===================================================== -->
+<!-- STEP 2 : CONTACT INFORMATION -->
+<!-- ===================================================== -->
+<div *ngIf="currentStep === 2" class="row g-4">
 
-                  <div class="form-check">
+    <!-- SECTION TITLE -->
+    <div class="col-12">
+        <div class="section-title">
+            <i class="fas fa-address-book me-2"></i>
+            Contact Information
+        </div>
+    </div>
 
-                    <input
-                      type="checkbox"
-                      class="form-check-input"
-                      formControlName="declaration">
+    <!-- PHONE -->
+    <div class="col-md-6"  *ngIf="isIndividual">
+        <div class="form-floating">
+            <input
+                type="text"
+                class="form-control"
+                formControlName="phoneNumber"
+                placeholder="Phone Number"
+                (blur)="checkPhoneNumber()">
 
-                    <label class="form-check-label">
+            <label>Phone Number *</label>
+        </div>
 
-                      I confirm the information provided is accurate and truthful.
+        <small
+            class="text-danger"
+            *ngIf="accountForm.get('phoneNumber')?.errors?.['duplicate']">
 
-                    </label>
+            An account with this phone number already exists.
 
-                  </div>
+        </small>
+    </div>
 
-                </div>
+    <!-- EMAIL -->
+    <div class="col-md-6">
+        <div class="form-floating">
+            <input
+                type="email"
+                class="form-control"
+                formControlName="email"
+                placeholder="Email Address"
+                (blur)="checkEmail()">
 
-                <div class="col-12 d-flex justify-content-between">
+            <label>Email Address *</label>
+        </div>
 
-                  <button
-                    type="button"
-                    class="btn btn-outline-secondary"
-                    (click)="previousStep()">
+        <small
+            class="text-danger"
+            *ngIf="accountForm.get('email')?.errors?.['duplicate']">
 
-                    Back
+            An account with this email already exists.
 
-                  </button>
+        </small>
+    </div>
 
-                  <button
-                    type="submit"
-                    class="btn btn-bank px-5 py-3"
-                    [disabled]="accountForm.invalid || !selectedImage || loading">
+    <!-- ADDRESS -->
+    <div class="col-12">
+        <div class="form-floating">
+            <input
+                type="text"
+                class="form-control"
+                formControlName="residentialAddress"
+                placeholder="Residential Address">
 
-                    <span
-                      *ngIf="loading"
-                      class="spinner-border spinner-border-sm me-2">
-                    </span>
+            <label>Residential Address *</label>
+        </div>
+    </div>
 
-                    {{ loading ? 'Processing...' : 'Create Secure Account' }}
+    <!-- COUNTY -->
+    <div class="col-md-6">
+        <div class="form-floating">
+            <select
+                class="form-select"
+                formControlName="county"
+                (change)="onCountyChange()">
 
-                  </button>
+                <option value="">Select County</option>
 
-                </div>
+                <option
+                    *ngFor="let county of counties"
+                    [value]="county.id">
 
-              </div>
+                    {{ county.name }}
 
-            </form>
+                </option>
 
-          </div>
+            </select>
+
+            <label>County *</label>
+        </div>
+    </div>
+
+    <!-- TOWN -->
+    <div class="col-md-6">
+        <div class="form-floating">
+            <select
+                class="form-select"
+                formControlName="city">
+
+                <option value="">Select Town</option>
+
+                <option
+                    *ngFor="let town of towns"
+                    [value]="town.name">
+
+                    {{ town.name }}
+
+                </option>
+
+            </select>
+
+            <label>Town / City *</label>
+        </div>
+    </div>
+
+    <!-- ================================================= -->
+    <!-- ORGANIZATION PEOPLE -->
+    <!-- ================================================= -->
+
+    <ng-container *ngIf="!isIndividual">
+
+        <div class="col-12 mt-4">
+
+            <div class="section-title">
+                <i class="fas fa-users me-2 text-primary"></i>
+
+                {{
+                    isGroup
+                        ? 'Group Members'
+                        : isCompany
+                            ? 'Company Directors'
+                            : 'Institution Officials'
+                }}
+
+            </div>
+
+            <p class="text-muted mb-4">
+
+                Add all authorized people associated with this account.
+                Signatories and account operators will be selected in the next step.
+
+            </p>
 
         </div>
 
-      </div>
+        <div class="col-12" formArrayName="organizationPeople">
+
+            <div
+                *ngFor="let person of organizationPeople.controls; let i=index"
+                class="card shadow-sm border-0 mb-4"
+                [formGroupName]="i">
+
+                <!-- CARD HEADER -->
+
+                <div class="card-header bg-light d-flex justify-content-between align-items-center">
+
+                    <strong>
+
+                        <i class="fas fa-user-circle me-2"></i>
+
+                        Person {{ i + 1 }}
+
+                    </strong>
+
+                    <button
+                        *ngIf="organizationPeople.length > 1"
+                        type="button"
+                        class="btn btn-sm btn-outline-danger"
+                        (click)="removeOrganizationPerson(i)">
+
+                        <i class="fas fa-trash"></i>
+
+                    </button>
+
+                </div>
+
+                <!-- CARD BODY -->
+
+                <div class="card-body">
+
+                    <div class="row g-3">
+
+                        <!-- NAME -->
+
+                        <div class="col-md-6">
+
+                            <div class="form-floating">
+
+                                <input
+                                    class="form-control"
+                                    formControlName="fullName">
+
+                                <label>Full Name *</label>
+
+                            </div>
+
+                        </div>
+
+                        <!-- ID -->
+
+                        <div class="col-md-6">
+
+                            <div class="form-floating">
+
+                                <input
+                                    class="form-control"
+                                    formControlName="nationalId">
+
+                                <label>National ID *</label>
+
+                            </div>
+
+                        </div>
+
+                        <!-- PHONE -->
+
+                        <div class="col-md-6">
+
+                            <div class="form-floating">
+
+                                <input
+                                    class="form-control"
+                                    formControlName="phone">
+
+                                <label>Phone Number</label>
+
+                            </div>
+
+                        </div>
+
+                        <!-- EMAIL -->
+
+                        <div class="col-md-6">
+
+                            <div class="form-floating">
+
+                                <input
+                                    class="form-control"
+                                    formControlName="email">
+
+                                <label>Email Address</label>
+
+                            </div>
+
+                        </div>
+
+                        <!-- DESIGNATION -->
+
+                        <div class="col-md-6">
+
+                            <div class="form-floating">
+
+                                <select
+                                    class="form-select"
+                                    formControlName="designation">
+
+                                    <option value="">Select Designation</option>
+
+                                    <!-- GROUP -->
+
+                                    <ng-container *ngIf="isGroup">
+
+                                        <option>Chairperson</option>
+                                        <option>Vice Chairperson</option>
+                                        <option>Secretary</option>
+                                        <option>Treasurer</option>
+                                        <option>Member</option>
+
+                                    </ng-container>
+
+                                    <!-- COMPANY -->
+
+                                    <ng-container *ngIf="isCompany">
+
+                                        <option>Managing Director</option>
+                                        <option>Director</option>
+                                        <option>CEO</option>
+                                        <option>Company Secretary</option>
+                                        <option>Finance Director</option>
+
+                                    </ng-container>
+
+                                    <!-- INSTITUTION -->
+
+                                    <ng-container *ngIf="isInstitution">
+
+                                        <option>Chairperson</option>
+                                        <option>Trustee</option>
+                                        <option>Secretary</option>
+                                        <option>Treasurer</option>
+                                        <option>Principal</option>
+                                        <option>Pastor</option>
+                                        <option>Bishop</option>
+                                        <option>CEO</option>
+
+                                    </ng-container>
+
+                                </select>
+
+                                <label>Designation *</label>
+
+                            </div>
+
+                        </div>
+
+                        <!-- FLAGS -->
+
+                        <div class="col-12">
+
+                            <div class="row">
+
+                                <div class="col-md-3">
+
+                                    <div class="form-check">
+
+                                        <input
+                                            class="form-check-input"
+                                            type="checkbox"
+                                            formControlName="isOfficial">
+
+                                        <label class="form-check-label">
+
+                                            Official
+
+                                        </label>
+
+                                    </div>
+
+                                </div>
+
+                                <div
+                                    class="col-md-3"
+                                    *ngIf="isCompany">
+
+                                    <div class="form-check">
+
+                                        <input
+                                            class="form-check-input"
+                                            type="checkbox"
+                                            formControlName="isDirector">
+
+                                        <label>
+
+                                            Director
+
+                                        </label>
+
+                                    </div>
+
+                                </div>
+
+                                <div
+                                    class="col-md-3"
+                                    *ngIf="isInstitution">
+
+                                    <div class="form-check">
+
+                                        <input
+                                            class="form-check-input"
+                                            type="checkbox"
+                                            formControlName="isTrustee">
+
+                                        <label>
+
+                                            Trustee
+
+                                        </label>
+
+                                    </div>
+
+                                </div>
+
+                                <div
+                                    class="col-md-3"
+                                    *ngIf="isCompany">
+
+                                    <div class="form-check">
+
+                                        <input
+                                            class="form-check-input"
+                                            type="checkbox"
+                                            formControlName="isBeneficialOwner">
+
+                                        <label>
+
+                                            Beneficial Owner
+
+                                        </label>
+
+                                    </div>
+
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+            <!-- ADD PERSON -->
+
+            <div class="text-center mb-4">
+
+                <button
+                    type="button"
+                    class="btn btn-bank btn-lg"
+                    (click)="addOrganizationPerson()">
+
+                    <i class="fas fa-user-plus me-2"></i>
+
+                    Add Another Person
+
+                </button>
+
+            </div>
+
+        </div>
+
+    </ng-container>
+
+    <!-- ================================================= -->
+    <!-- NAVIGATION -->
+    <!-- ================================================= -->
+
+    <div class="col-12 d-flex justify-content-between mt-3">
+
+        <button
+            type="button"
+            class="btn btn-outline-secondary"
+            (click)="previousStep()">
+
+            <i class="fas fa-arrow-left me-2"></i>
+
+            Back
+
+        </button>
+
+        <button
+            type="button"
+            class="btn btn-bank"
+            (click)="nextStep()"
+            [disabled]="hasDuplicateErrors()">
+
+            Continue
+
+            <i class="fas fa-arrow-right ms-2"></i>
+
+        </button>
 
     </div>
 
-  </div>
+</div>
+
+
+
+
+
+<!-- ===================================================== -->
+<!-- STEP 3 : ACCOUNT OPERATION -->
+<!-- ===================================================== -->
+<div *ngIf="currentStep === 3" class="row g-4">
+
+    <!-- ===================================================== -->
+    <!-- PAGE HEADER -->
+    <!-- ===================================================== -->
+    <div class="col-12">
+
+        <div class="section-title">
+
+            <i class="fas fa-user-shield me-2 text-primary"></i>
+
+            {{
+                isIndividual
+                    ? 'Account Operation & Banking Preferences'
+                    : 'Account Operation & Signatory Configuration'
+            }}
+
+        </div>
+
+        <p class="text-muted mb-4">
+
+            {{
+                isIndividual
+                    ? 'Configure how your account will operate, preferred banking services and transaction controls.'
+                    : 'Configure account operation rules, authorized signatories and transaction controls.'
+            }}
+
+        </p>
+
+    </div>
+
+    <!-- ===================================================== -->
+    <!-- INDIVIDUAL ACCOUNT SETTINGS -->
+    <!-- ===================================================== -->
+    <ng-container *ngIf="isIndividual">
+
+        <div class="col-12">
+
+            <div class="card shadow-sm border-0">
+
+                <div class="card-header bg-light">
+
+                    <h5 class="mb-0">
+
+                        <i class="fas fa-cogs me-2 text-primary"></i>
+
+                        Account Operation
+
+                    </h5>
+
+                </div>
+
+                <div class="card-body">
+
+                    <div class="row g-3">
+
+                        <!-- Mode of Operation -->
+
+                        <div class="col-md-6">
+
+                            <div class="form-floating">
+
+                                <select
+                                    class="form-select"
+                                    formControlName="modeOfOperation">
+
+                                    <option value="">Select Mode</option>
+                                    <option value="SINGLY">Single Signatory</option>
+
+                                    <option value="POWER_OF_ATTORNEY">
+                                        Power of Attorney
+                                    </option>
+
+                                    <option value="JOINT">
+                                        Joint Account
+                                    </option>
+
+                                </select>
+
+                                <label>Mode of Operation *</label>
+
+                            </div>
+
+                        </div>
+
+                        <!-- Preferred Currency -->
+
+                        <div class="col-md-6">
+
+                            <div class="form-floating">
+
+                                <select
+                                    class="form-select"
+                                    formControlName="currency">
+
+                                    <option value="KES">Kenya Shilling (KES)</option>
+
+                                    <option value="USD">US Dollar (USD)</option>
+
+                                    <option value="EUR">Euro (EUR)</option>
+
+                                    <option value="GBP">British Pound (GBP)</option>
+
+                                </select>
+
+                                <label>Operating Currency</label>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <!-- ===================================================== -->
+        <!-- DIGITAL BANKING -->
+        <!-- ===================================================== -->
+
+        <div class="col-lg-6">
+
+            <div class="card shadow-sm border-0 h-100">
+
+                <div class="card-header bg-light">
+
+                    <h5 class="mb-0">
+
+                        <i class="fas fa-mobile-alt me-2 text-success"></i>
+
+                        Digital Banking
+
+                    </h5>
+
+                </div>
+
+                <div class="card-body">
+
+                    <div class="form-check mb-3">
+
+                        <input
+                            type="checkbox"
+                            class="form-check-input"
+                            formControlName="internetBanking">
+
+                        <label class="form-check-label">
+
+                            Internet Banking
+
+                        </label>
+
+                    </div>
+
+                    <div class="form-check mb-3">
+
+                        <input
+                            type="checkbox"
+                            class="form-check-input"
+                            formControlName="mobileBanking">
+
+                        <label class="form-check-label">
+
+                            Mobile Banking
+
+                        </label>
+
+                    </div>
+
+                    <div class="form-check mb-3">
+
+                        <input
+                            type="checkbox"
+                            class="form-check-input"
+                            formControlName="smsAlerts">
+
+                        <label class="form-check-label">
+
+                            SMS Alerts
+
+                        </label>
+
+                    </div>
+
+                    <div class="form-check">
+
+                        <input
+                            type="checkbox"
+                            class="form-check-input"
+                            formControlName="emailStatements">
+
+                        <label class="form-check-label">
+
+                            Email Statements
+
+                        </label>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <!-- ===================================================== -->
+        <!-- ACCOUNT SERVICES -->
+        <!-- ===================================================== -->
+
+        <div class="col-lg-6">
+
+            <div class="card shadow-sm border-0 h-100">
+
+                <div class="card-header bg-light">
+
+                    <h5 class="mb-0">
+
+                        <i class="fas fa-credit-card me-2 text-warning"></i>
+
+                        Banking Services
+
+                    </h5>
+
+                </div>
+
+                <div class="card-body">
+
+                    <div class="form-check mb-3">
+
+                        <input
+                            class="form-check-input"
+                            type="checkbox"
+                            formControlName="atmCard">
+
+                        <label class="form-check-label">
+
+                            ATM Card
+
+                        </label>
+
+                    </div>
+
+                    <div class="form-check mb-3">
+
+                        <input
+                            class="form-check-input"
+                            type="checkbox"
+                            formControlName="visaCard">
+
+                        <label>
+
+                            Visa Debit Card
+
+                        </label>
+
+                    </div>
+
+                    <div class="form-check mb-3">
+
+                        <input
+                            class="form-check-input"
+                            type="checkbox"
+                            formControlName="chequeBook">
+
+                        <label>
+
+                            Cheque Book
+
+                        </label>
+
+                    </div>
+
+                    <div class="form-check">
+
+                        <input
+                            class="form-check-input"
+                            type="checkbox"
+                            formControlName="standingOrder">
+
+                        <label>
+
+                            Standing Orders
+
+                        </label>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <!-- ===================================================== -->
+        <!-- COMMUNICATION -->
+        <!-- ===================================================== -->
+
+        <div class="col-lg-6">
+
+            <div class="card shadow-sm border-0">
+
+                <div class="card-header bg-light">
+
+                    <h5 class="mb-0">
+
+                        <i class="fas fa-envelope-open-text me-2 text-info"></i>
+
+                        Communication Preferences
+
+                    </h5>
+
+                </div>
+
+                <div class="card-body">
+
+                    <div class="form-floating mb-3">
+
+                        <select
+                            class="form-select"
+                            formControlName="statementFrequency">
+
+                            <option value="MONTHLY">Monthly</option>
+                            <option value="QUARTERLY">Quarterly</option>
+                            <option value="HALF_YEARLY">Half Yearly</option>
+                            <option value="YEARLY">Yearly</option>
+
+                        </select>
+
+                        <label>
+
+                            Statement Frequency
+
+                        </label>
+
+                    </div>
+
+                    <div class="form-floating">
+
+                        <select
+                            class="form-select"
+                            formControlName="communicationChannel">
+
+                            <option value="SMS">
+                                SMS
+                            </option>
+
+                            <option value="EMAIL">
+                                Email
+                            </option>
+
+                            <option value="BOTH">
+                                SMS & Email
+                            </option>
+
+                        </select>
+
+                        <label>
+
+                            Preferred Communication
+
+                        </label>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <!-- ===================================================== -->
+        <!-- TRANSACTION LIMITS -->
+        <!-- ===================================================== -->
+
+        <div class="col-lg-6">
+
+            <div class="card shadow-sm border-0">
+
+                <div class="card-header bg-light">
+
+                    <h5 class="mb-0">
+
+                        <i class="fas fa-money-check-alt me-2 text-danger"></i>
+
+                        Transaction Limits
+
+                    </h5>
+
+                </div>
+
+                <div class="card-body">
+
+                    <div class="form-floating mb-3">
+
+                        <input
+                            type="number"
+                            min="0"
+                            class="form-control"
+                            formControlName="dailyWithdrawalLimit">
+
+                        <label>
+
+                            Daily Withdrawal Limit (KES)
+
+                        </label>
+
+                    </div>
+
+                    <div class="form-floating mb-3">
+
+                        <input
+                            type="number"
+                            min="0"
+                            class="form-control"
+                            formControlName="dailyTransferLimit">
+
+                        <label>
+
+                            Daily Transfer Limit (KES)
+
+                        </label>
+
+                    </div>
+
+                    <div class="form-floating">
+
+                        <input
+                            type="number"
+                            min="0"
+                            class="form-control"
+                            formControlName="maximumTransactionLimit">
+
+                        <label>
+
+                            Maximum Single Transaction (KES)
+
+                        </label>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </ng-container>
+
+        <!-- ===================================================== -->
+    <!-- ORGANIZATION ACCOUNT OPERATION -->
+    <!-- ===================================================== -->
+    <ng-container *ngIf="!isIndividual">
+
+        <!-- ACCOUNT OPERATION -->
+
+        <div class="col-12">
+
+            <div class="card shadow-sm border-0">
+
+                <div class="card-header bg-light">
+
+                    <h5 class="mb-0">
+
+                        <i class="fas fa-building me-2 text-primary"></i>
+
+                        Account Operation
+
+                    </h5>
+
+                </div>
+
+                <div class="card-body">
+
+                    <div class="row g-3">
+
+                        <!-- MODE OF OPERATION -->
+
+                        <div class="col-lg-6">
+
+                            <div class="form-floating">
+
+                                <select
+                                    class="form-select"
+                                    formControlName="modeOfOperation">
+
+<option [ngValue]="ModeOfOperation.SINGLY">
+    Single Signatory
+</option>
+
+<option [ngValue]="ModeOfOperation.ANY_ONE">
+    Any One to Sign
+</option>
+
+<option [ngValue]="ModeOfOperation.ANY_TWO">
+    Any Two to Sign
+</option>
+
+<option [ngValue]="ModeOfOperation.ANY_THREE">
+    Any Three to Sign
+</option>
+
+<option [ngValue]="ModeOfOperation.ALL">
+    All Signatories
+</option>
+
+<option [ngValue]="ModeOfOperation.BOARD_APPROVAL">
+    Board Resolution Required
+</option>
+
+                                </select>
+
+                                <label>
+
+                                    Mode of Operation *
+
+                                </label>
+
+                            </div>
+
+                        </div>
+
+                        <!-- ACCOUNT CURRENCY -->
+
+                        <div class="col-lg-6">
+
+                            <div class="form-floating">
+
+                                <select
+                                    class="form-select"
+                                    formControlName="currency">
+
+                                    <option value="KES">
+                                        Kenya Shilling (KES)
+                                    </option>
+
+                                    <option value="USD">
+                                        US Dollar (USD)
+                                    </option>
+
+                                    <option value="EUR">
+                                        Euro (EUR)
+                                    </option>
+
+                                    <option value="GBP">
+                                        British Pound
+                                    </option>
+
+                                </select>
+
+                                <label>
+
+                                    Operating Currency
+
+                                </label>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <!-- SIGNATORIES -->
+
+        <div class="col-12">
+
+            <div class="card shadow border-0">
+
+                <div class="card-header bg-light">
+
+                    <h5 class="mb-0">
+
+                        <i class="fas fa-signature me-2 text-success"></i>
+
+                        Authorized Signatories
+
+                    </h5>
+
+                    <small class="text-muted">
+
+                        Select the officials allowed to operate this account.
+
+                    </small>
+
+                </div>
+
+                <div class="card-body">
+
+                    <div
+                        formArrayName="organizationPeople"
+                        class="row">
+
+                        <div
+                            class="col-lg-6 mb-4"
+                            *ngFor="let person of organizationPeople.controls; let i=index"
+                            [formGroupName]="i">
+
+                            <div class="card h-100 border">
+
+                                <div class="card-body">
+
+                                    <div
+                                        class="d-flex justify-content-between align-items-center mb-3">
+
+                                        <div>
+
+                                            <h6 class="fw-bold mb-1">
+
+                                                {{person.get('fullName')?.value}}
+
+                                            </h6>
+
+                                            <small class="text-muted">
+
+                                                {{person.get('designation')?.value}}
+
+                                            </small>
+
+                                        </div>
+
+                                        <i class="fas fa-user-circle fa-2x text-primary"></i>
+
+                                    </div>
+
+                                    <!-- SIGNATORY -->
+
+<div class="form-check">
+
+    <input
+        type="radio"
+        name="primarySignatory"
+        class="form-check-input"
+        [checked]="person.get('primarySignatory')?.value"
+        [disabled]="!person.get('isSignatory')?.value"
+        (change)="setPrimarySignatory(i)">
+
+        <div class="form-check mb-3">
+
+    <input
+        class="form-check-input"
+        type="checkbox"
+        formControlName="isSignatory">
+
+    <label class="form-check-label">
+
+        Authorized Signatory
+
+    </label>
 
 </div>
+
+    <label class="form-check-label">
+        Primary Signatory
+    </label>
+
+</div>
+
+                                    <!-- MAKER -->
+
+                                    <div class="form-check mb-2">
+
+                                        <input
+                                            class="form-check-input"
+                                            type="checkbox"
+                                            formControlName="isMaker">
+
+                                        <label class="form-check-label">
+
+                                            Maker
+
+                                        </label>
+
+                                    </div>
+
+                                    <!-- CHECKER -->
+
+                                    <div class="form-check mb-2">
+
+                                        <input
+                                            class="form-check-input"
+                                            type="checkbox"
+                                            formControlName="isChecker">
+
+                                        <label class="form-check-label">
+
+                                            Checker
+
+                                        </label>
+
+                                    </div>
+
+                                    <!-- APPROVER -->
+
+                                    <div class="form-check mb-3">
+
+                                        <input
+                                            class="form-check-input"
+                                            type="checkbox"
+                                            formControlName="isApprover">
+
+                                        <label class="form-check-label">
+
+                                            Approver
+
+                                        </label>
+
+                                    </div>
+
+                                    <!-- LIMIT -->
+
+                                    <div class="form-floating">
+
+                                        <input
+                                            type="number"
+                                            class="form-control"
+                                            min="0"
+                                            formControlName="transactionLimit">
+
+                                        <label>
+
+                                            Transaction Limit (KES)
+
+                                        </label>
+
+                                    </div>
+
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <!-- CUSTOM RULE -->
+
+        <div
+            class="col-12"
+            *ngIf="accountForm.get('modeOfOperation')?.value=='CUSTOM'">
+
+            <div class="card border-0 shadow-sm">
+
+                <div class="card-header bg-warning bg-opacity-10">
+
+                    <h5 class="mb-0">
+
+                        <i class="fas fa-project-diagram me-2"></i>
+
+                        Custom Signing Rule
+
+                    </h5>
+
+                </div>
+
+                <div class="card-body">
+
+                    <div class="row g-3">
+
+                        <div class="col-md-6">
+
+                            <div class="form-floating">
+
+                                <input
+                                    class="form-control"
+                                    formControlName="customRuleName">
+
+                                <label>
+
+                                    Rule Name
+
+                                </label>
+
+                            </div>
+
+                        </div>
+
+                        <div class="col-md-6">
+
+                            <div class="form-floating">
+
+                                <textarea
+                                    class="form-control"
+                                    style="height:120px"
+                                    formControlName="customRuleDescription"></textarea>
+
+                                <label>
+
+                                    Rule Description
+
+                                </label>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </ng-container>
+
+    <!-- ===================================================== -->
+<!-- STEP 3 NAVIGATION -->
+<!-- ===================================================== -->
+
+<div class="col-12 mt-5">
+
+    <hr class="mb-4">
+
+    <div class="d-flex justify-content-between align-items-center flex-wrap gap-3">
+
+        <button
+            type="button"
+            class="btn btn-outline-secondary btn-lg px-4"
+            (click)="previousStep()">
+
+            <i class="fas fa-arrow-left me-2"></i>
+            Back
+
+        </button>
+
+        <div class="text-center flex-grow-1">
+
+            <small class="text-muted d-block">
+                <i class="fas fa-shield-check me-1 text-success"></i>
+                Financial information is collected to comply with KYC,
+                AML and regulatory requirements.
+            </small>
+
+        </div>
+<div
+    *ngIf="errorMessage"
+    class="alert alert-danger">
+
+    <h6 class="mb-2">
+        Please correct the following:
+    </h6>
+
+    <div style="white-space: pre-line;">
+        {{ errorMessage }}
+    </div>
+
+</div>
+        <button
+            type="button"
+            class="btn btn-bank btn-lg px-5"
+            (click)="nextStep()">
+
+            Continue
+
+            <i class="fas fa-arrow-right ms-2"></i>
+
+        </button>
+
+    </div>
+
+</div>
+
+</div>
+
+<!-- ===================================================== -->
+<!-- STEP 4 : DOCUMENTS & VERIFICATION -->
+<!-- ===================================================== -->
+
+<div *ngIf="currentStep === 4" class="row g-4">
+
+    <div class="col-12">
+
+        <div class="section-title">
+
+            <i class="fas fa-folder-open text-primary me-2"></i>
+
+            Documents & Verification
+
+        </div>
+
+        <p class="text-muted">
+
+            Upload all required documents before submitting the account application.
+
+        </p>
+
+    </div>
+
+    <!-- ===================================================== -->
+    <!-- UNIVERSAL DOCUMENTS -->
+    <!-- ===================================================== -->
+
+    <div class="col-12">
+
+        <h5 class="fw-bold text-primary">
+
+            Required Documents
+
+        </h5>
+
+    </div>
+
+    <!-- PHOTO -->
+
+    <div class="col-lg-4">
+
+<div class="card shadow-sm border-0 h-100">
+    <div class="card-body">
+
+        <h6 class="fw-bold">
+            <i class="fas fa-camera text-primary me-2"></i>
+            Passport Photograph
+            <span class="text-danger">*</span>
+        </h6>
+
+        <input
+            type="file"
+            class="form-control mt-3"
+            accept="image/*"
+            (change)="onPassportPhotoSelected($event)">
+
+        <small
+            class="text-success"
+            *ngIf="passportPhotoName">
+
+            <i class="fas fa-check-circle"></i>
+            {{passportPhotoName}}
+
+        </small>
+
+    </div>
+</div>
+
+    </div>
+
+    <!-- SIGNATURE -->
+
+    <div class="col-lg-4">
+
+<div class="card shadow-sm border-0 h-100">
+    <div class="card-body">
+
+        <h6 class="fw-bold">
+            <i class="fas fa-signature text-primary me-2"></i>
+            Signature Specimen
+            <span class="text-danger">*</span>
+        </h6>
+
+        <input
+            type="file"
+            class="form-control mt-3"
+            (change)="onSignatureSelected($event)">
+
+        <small
+            class="text-success"
+            *ngIf="signatureName">
+
+            {{signatureName}}
+
+        </small>
+
+    </div>
+</div>
+
+    </div>
+
+    <!-- KRA -->
+
+    <div class="col-lg-4">
+
+<div class="card shadow-sm border-0 h-100">
+    <div class="card-body">
+
+        <h6 class="fw-bold">
+            <i class="fas fa-file-invoice text-primary me-2"></i>
+            KRA PIN Certificate
+            <span class="text-danger">*</span>
+        </h6>
+
+        <input
+            type="file"
+            class="form-control mt-3"
+            (change)="onKraDocumentSelected($event)">
+
+        <small
+            class="text-success"
+            *ngIf="kraPinDocumentName">
+
+            {{kraPinDocumentName}}
+
+        </small>
+
+    </div>
+</div>
+
+    </div>
+
+    <!-- ===================================================== -->
+    <!-- INDIVIDUAL -->
+    <!-- ===================================================== -->
+
+    <ng-container *ngIf="isIndividual">
+
+        <div class="col-12">
+
+            <h5 class="fw-bold text-success">
+
+                Individual Supporting Documents
+
+            </h5>
+
+        </div>
+
+        <div class="col-lg-4">
+
+  <div class="card shadow-sm border-0 h-100">
+    <div class="card-body">
+
+        <h6 class="fw-bold mb-3">
+            <i class="fas fa-id-card text-primary me-2"></i>
+            National ID / Passport
+            <span class="text-danger">*</span>
+        </h6>
+
+        <input
+            type="file"
+            class="form-control"
+            accept=".pdf,.jpg,.jpeg,.png"
+            (change)="onIdDocumentSelected($event)">
+
+        <small
+            class="text-success d-block mt-2"
+            *ngIf="nationalIdDocumentName">
+
+            <i class="fas fa-check-circle me-1"></i>
+            {{ nationalIdDocumentName }}
+
+        </small>
+
+        <!-- Image Preview -->
+        <div
+            class="mt-3 text-center"
+            *ngIf="nationalIdDocumentPreview">
+
+            <img
+                [src]="nationalIdDocumentPreview"
+                class="img-fluid rounded border shadow-sm"
+                style="max-height:180px;">
+
+        </div>
+
+    </div>
+</div>
+
+        </div>
+
+        <div class="col-lg-4">
+
+<div class="card shadow-sm border-0 h-100">
+    <div class="card-body">
+
+        <h6 class="fw-bold mb-3">
+            <i class="fas fa-home text-primary me-2"></i>
+            Proof of Address
+        </h6>
+
+        <input
+            type="file"
+            class="form-control"
+            accept=".pdf,.jpg,.jpeg,.png"
+            (change)="onAddressProofSelected($event)">
+
+        <small
+            class="text-success d-block mt-2"
+            *ngIf="addressProofName">
+
+            <i class="fas fa-check-circle me-1"></i>
+            {{ addressProofName }}
+
+        </small>
+
+        <div
+            class="mt-3 text-center"
+            *ngIf="addressProofPreview">
+
+            <img
+                [src]="addressProofPreview"
+                class="img-fluid rounded border"
+                style="max-height:180px;">
+
+        </div>
+
+    </div>
+</div>
+
+        </div>
+
+        <div class="col-lg-4">
+
+<div class="card shadow-sm border-0 h-100">
+    <div class="card-body">
+
+        <h6 class="fw-bold mb-3">
+            <i class="fas fa-money-check text-primary me-2"></i>
+            Source of Income
+        </h6>
+
+        <input
+            type="file"
+            class="form-control"
+            accept=".pdf,.jpg,.jpeg,.png"
+            (change)="onIncomeProofSelected($event)">
+
+        <small
+            class="text-success d-block mt-2"
+            *ngIf="incomeProofName">
+
+            <i class="fas fa-check-circle me-1"></i>
+            {{ incomeProofName }}
+
+        </small>
+
+        <div
+            class="mt-3 text-center"
+            *ngIf="incomeProofPreview">
+
+            <img
+                [src]="incomeProofPreview"
+                class="img-fluid rounded border"
+                style="max-height:180px;">
+
+        </div>
+
+    </div>
+</div>
+
+        </div>
+
+    </ng-container>
+
+    <!-- ===================================================== -->
+    <!-- GROUP -->
+    <!-- ===================================================== -->
+
+    <ng-container *ngIf="isGroup">
+
+        <div class="col-12">
+
+            <h5 class="fw-bold text-success">
+
+                Group Documents
+
+            </h5>
+
+        </div>
+
+        <div class="col-lg-4">
+
+<div class="card shadow-sm border-0 h-100">
+    <div class="card-body">
+
+        <h6 class="fw-bold mb-3">
+            <i class="fas fa-certificate text-primary me-2"></i>
+            Group Registration Certificate
+            <span class="text-danger">*</span>
+        </h6>
+
+        <input
+            type="file"
+            class="form-control"
+            accept=".pdf,.jpg,.jpeg,.png"
+            (change)="onGroupCertificateSelected($event)">
+
+        <small
+            class="text-success d-block mt-2"
+            *ngIf="groupCertificateName">
+
+            <i class="fas fa-check-circle me-1"></i>
+            {{ groupCertificateName }}
+
+        </small>
+
+    </div>
+</div>
+
+        </div>
+
+
+<div class="col-lg-4">
+
+<div class="card shadow-sm border-0 h-100">
+    <div class="card-body">
+
+        <h6 class="fw-bold mb-3">
+            <i class="fas fa-gavel text-primary me-2"></i>
+            Meeting Resolution
+            <span class="text-danger">*</span>
+        </h6>
+
+        <input
+            type="file"
+            class="form-control"
+            accept=".pdf,.jpg,.jpeg,.png"
+            (change)="onMeetingResolutionSelected($event)">
+
+        <small
+            class="text-success d-block mt-2"
+            *ngIf="meetingResolutionName">
+
+            <i class="fas fa-check-circle me-1"></i>
+            {{ meetingResolutionName }}
+
+        </small>
+
+    </div>
+</div>
+
+</div>
+
+        <div class="col-lg-4">
+
+<div class="card shadow-sm border-0 h-100">
+    <div class="card-body">
+
+        <h6 class="fw-bold mb-3">
+            <i class="fas fa-book text-primary me-2"></i>
+            Constitution
+            <span class="text-danger">*</span>
+        </h6>
+
+        <input
+            type="file"
+            class="form-control"
+            accept=".pdf,.jpg,.jpeg,.png"
+            (change)="onGroupConstitutionSelected($event)">
+
+        <small
+            class="text-success d-block mt-2"
+            *ngIf="groupConstitutionName">
+
+            <i class="fas fa-check-circle me-1"></i>
+            {{groupConstitutionName }}
+
+        </small>
+
+    </div>
+</div>
+
+        </div>
+
+    </ng-container>
+
+    <!-- ===================================================== -->
+    <!-- COMPANY -->
+    <!-- ===================================================== -->
+
+    <ng-container *ngIf="isCompany">
+
+        <div class="col-12">
+
+            <h5 class="fw-bold text-success">
+
+                Company Documents
+
+            </h5>
+
+        </div>
+
+ <div class="col-lg-4">
+
+    <div class="card shadow-sm border-0 h-100">
+        <div class="card-body">
+
+            <h6 class="fw-bold mb-3">
+                <i class="fas fa-building text-primary me-2"></i>
+                Certificate of Incorporation
+                <span class="text-danger">*</span>
+            </h6>
+
+            <input
+                type="file"
+                class="form-control"
+                accept=".pdf,.jpg,.jpeg,.png"
+                (change)="onCertificateOfIncorporationSelected($event)">
+
+            <small
+                class="text-success d-block mt-2"
+                *ngIf="certificateOfIncorporationName">
+
+                <i class="fas fa-check-circle me-1"></i>
+                {{certificateOfIncorporationName}}
+
+            </small>
+
+        </div>
+    </div>
+
+</div>
+
+<div class="col-lg-4">
+
+    <div class="card shadow-sm border-0 h-100">
+        <div class="card-body">
+
+            <h6 class="fw-bold mb-3">
+                <i class="fas fa-users text-primary me-2"></i>
+                CR12
+                <span class="text-danger">*</span>
+            </h6>
+
+            <input
+                type="file"
+                class="form-control"
+                accept=".pdf,.jpg,.jpeg,.png"
+                (change)="onCr12Selected($event)">
+
+            <small
+                class="text-success d-block mt-2"
+                *ngIf="cr12Name">
+
+                <i class="fas fa-check-circle me-1"></i>
+                {{cr12Name}}
+
+            </small>
+
+        </div>
+    </div>
+
+</div>
+
+<div class="col-lg-4">
+
+    <div class="card shadow-sm border-0 h-100">
+        <div class="card-body">
+
+            <h6 class="fw-bold mb-3">
+                <i class="fas fa-gavel text-primary me-2"></i>
+                Board Resolution
+                <span class="text-danger">*</span>
+            </h6>
+
+            <input
+                type="file"
+                class="form-control"
+                accept=".pdf,.jpg,.jpeg,.png"
+                (change)="onBoardResolutionSelected($event)">
+
+            <small
+                class="text-success d-block mt-2"
+                *ngIf="boardResolutionName">
+
+                <i class="fas fa-check-circle me-1"></i>
+                {{boardResolutionName}}
+
+            </small>
+
+        </div>
+    </div>
+
+</div>
+
+<div class="col-lg-4">
+
+    <div class="card shadow-sm border-0 h-100">
+        <div class="card-body">
+
+            <h6 class="fw-bold mb-3">
+                <i class="fas fa-book text-primary me-2"></i>
+                Memorandum & Articles
+            </h6>
+
+            <input
+                type="file"
+                class="form-control"
+                accept=".pdf,.jpg,.jpeg,.png"
+                (change)="onMemorandumSelected($event)">
+
+            <small
+                class="text-success d-block mt-2"
+                *ngIf="memorandumName">
+
+                <i class="fas fa-check-circle me-1"></i>
+                {{memorandumName}}
+
+            </small>
+
+        </div>
+    </div>
+
+</div>
+
+</ng-container>
+
+<!-- ===================================================== -->
+<!-- INSTITUTION -->
+<!-- ===================================================== -->
+
+<ng-container *ngIf="isInstitution">
+
+    <div class="col-12">
+
+        <h5 class="fw-bold text-success">
+
+            Institution Documents
+
+        </h5>
+
+    </div>
+
+    <div class="col-lg-4">
+
+        <div class="card shadow-sm border-0 h-100">
+            <div class="card-body">
+
+                <h6 class="fw-bold mb-3">
+                    <i class="fas fa-certificate text-primary me-2"></i>
+                    Registration Certificate
+                    <span class="text-danger">*</span>
+                </h6>
+
+                <input
+                    type="file"
+                    class="form-control"
+                    accept=".pdf,.jpg,.jpeg,.png"
+                    (change)="onRegistrationCertificateSelected($event)">
+
+                <small
+                    class="text-success d-block mt-2"
+                    *ngIf="registrationCertificateName">
+
+                    <i class="fas fa-check-circle me-1"></i>
+                    {{registrationCertificateName}}
+
+                </small>
+
+            </div>
+        </div>
+
+    </div>
+
+    <div class="col-lg-4">
+
+        <div class="card shadow-sm border-0 h-100">
+            <div class="card-body">
+
+                <h6 class="fw-bold mb-3">
+                    <i class="fas fa-book text-primary me-2"></i>
+                    Trust Deed / Constitution
+                    <span class="text-danger">*</span>
+                </h6>
+
+                <input
+                    type="file"
+                    class="form-control"
+                    accept=".pdf,.jpg,.jpeg,.png"
+                    (change)="onTrustDeedSelected($event)">
+
+                <small
+                    class="text-success d-block mt-2"
+                    *ngIf="trustDeedName">
+
+                    <i class="fas fa-check-circle me-1"></i>
+                    {{trustDeedName}}
+
+                </small>
+
+            </div>
+        </div>
+
+    </div>
+
+    <div class="col-lg-4">
+
+        <div class="card shadow-sm border-0 h-100">
+            <div class="card-body">
+
+                <h6 class="fw-bold mb-3">
+                    <i class="fas fa-gavel text-primary me-2"></i>
+                    Board Resolution
+                    <span class="text-danger">*</span>
+                </h6>
+
+                <input
+                    type="file"
+                    class="form-control"
+                    accept=".pdf,.jpg,.jpeg,.png"
+                    (change)="onInstitutionResolutionSelected($event)">
+
+                <small
+                    class="text-success d-block mt-2"
+                    *ngIf="institutionResolutionName">
+
+                    <i class="fas fa-check-circle me-1"></i>
+                    {{institutionResolutionName}}
+
+                </small>
+
+            </div>
+        </div>
+
+    </div>
+
+</ng-container>
+
+  
+
+    <!-- ===================================================== -->
+    <!-- DOCUMENT STATUS -->
+    <!-- ===================================================== -->
+
+    <div class="col-12">
+
+        <div class="alert alert-info">
+
+            <div class="d-flex justify-content-between">
+
+                <div>
+
+                    <strong>
+
+                        Uploaded Documents
+
+                    </strong>
+
+                </div>
+
+                <div>
+
+                    {{uploadedDocuments}} / {{requiredDocuments}}
+
+                </div>
+
+            </div>
+
+            <div class="progress mt-2">
+
+                <div
+                    class="progress-bar bg-success"
+                    [style.width.%]="uploadProgress">
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- ===================================================== -->
+    <!-- NAVIGATION -->
+    <!-- ===================================================== -->
+
+    <div class="col-12">
+
+        <hr>
+
+        <div class="d-flex justify-content-between">
+
+            <button
+                type="button"
+                class="btn btn-outline-secondary btn-lg"
+                (click)="previousStep()">
+
+                <i class="fas fa-arrow-left me-2"></i>
+
+                Back
+
+            </button>
+
+            <button
+                type="button"
+                class="btn btn-bank btn-lg px-5"
+                (click)="nextStep()"
+                [disabled]="uploadedDocuments < requiredDocuments">
+
+                Continue
+
+                <i class="fas fa-arrow-right ms-2"></i>
+
+            </button>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<!-- ========================================================= -->
+<!-- STEP 5 : ENTERPRISE REVIEW & SUBMIT -->
+<!-- PART 1 : REVIEW DASHBOARD + CUSTOMER SUMMARY -->
+<!-- ========================================================= -->
+
+<div *ngIf="currentStep === 5" class="row g-4">
+
+    <!-- ===================================================== -->
+    <!-- PAGE HEADER -->
+    <!-- ===================================================== -->
+
+    <div class="col-12">
+
+        <div class="section-title d-flex align-items-center">
+
+           <i class="fas fa-user-shield text-success me-3 fs-2"></i>
+
+            <div>
+
+                <h3 class="mb-1 fw-bold">
+                    Review & Submit Application
+                </h3>
+
+                <small class="text-muted">
+
+                    Verify customer information, uploaded documents and KYC
+                    requirements before creating the account.
+
+                </small>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- ===================================================== -->
+    <!-- KYC READINESS -->
+    <!-- ===================================================== -->
+
+    <div class="col-12">
+
+        <div class="card border-0 shadow-lg">
+
+            <div class="card-body">
+
+                <div class="row align-items-center">
+
+                    <!-- LEFT -->
+
+                    <div class="col-lg-3 text-center">
+
+                        <div
+                            class="rounded-circle mx-auto mb-3 d-flex align-items-center justify-content-center bg-success text-white"
+                            style="width:120px;height:120px;">
+
+                            <div>
+
+                                <div class="display-5 fw-bold">
+
+                                    {{uploadProgress}}%
+
+                                </div>
+
+                                <small>
+
+                                    Complete
+
+                                </small>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                    <!-- RIGHT -->
+
+                    <div class="col-lg-9">
+
+                        <h5 class="fw-bold mb-3">
+
+                            KYC Readiness Status
+
+                        </h5>
+
+                        <div
+                            class="progress mb-4"
+                            style="height:12px;">
+
+                            <div
+                                class="progress-bar bg-success progress-bar-striped progress-bar-animated"
+                                [style.width.%]="uploadProgress">
+
+                            </div>
+
+                        </div>
+
+                        <div class="row">
+
+                            <div class="col-md-4 mb-3">
+
+                                <div class="border rounded p-3 h-100">
+
+                                    <div class="fw-bold">
+
+                                        Customer Details
+
+                                    </div>
+
+                                    <div>
+
+                                        <i
+                                            class="fas"
+                                            [class.fa-check-circle]="accountForm.valid"
+                                            [class.fa-times-circle]="!accountForm.valid"
+                                            [class.text-success]="accountForm.valid"
+                                            [class.text-danger]="!accountForm.valid">
+
+                                        </i>
+
+{{ missingItems.length === 0 ? 'Complete' : 'Incomplete (' + missingItems.length + ' Issue(s))' }}
+
+                                    </div>
+
+                                </div>
+
+                            </div>
+
+                            <div class="col-md-4 mb-3">
+
+                                <div class="border rounded p-3 h-100">
+
+                                    <div class="fw-bold">
+
+                                        Documents
+
+                                    </div>
+
+                                    <div>
+
+                                        <i class="fas fa-file-alt text-primary me-2"></i>
+
+                                        {{uploadedDocuments}}
+
+                                        /
+
+                                        {{requiredDocuments}}
+
+                                        Uploaded
+
+                                    </div>
+
+                                </div>
+
+                            </div>
+
+                            <div class="col-md-4 mb-3">
+
+                                <div class="border rounded p-3 h-100">
+
+                                    <div class="fw-bold">
+
+                                        Submission Status
+
+                                    </div>
+
+                                    <div>
+
+                                        <span
+                                            class="badge"
+                                            [ngClass]="uploadProgress==100 && accountForm.valid
+                                            ? 'bg-success'
+                                            : 'bg-warning text-dark'">
+
+                                            {{
+                                            uploadProgress==100 &&
+                                            accountForm.valid
+                                            ? 'READY'
+                                            : 'PENDING'
+                                            }}
+
+                                        </span>
+
+                                    </div>
+
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <div
+    *ngIf="missingItems.length > 0"
+    class="alert alert-danger mt-3">
+
+    <h5 class="fw-bold mb-3">
+
+        <i class="fas fa-exclamation-triangle me-2"></i>
+
+        Cannot Submit Yet
+
+    </h5>
+
+    <p class="mb-2">
+
+        Please complete the following items:
+
+    </p>
+
+    <ul class="mb-0">
+
+        <li *ngFor="let item of missingItems">
+
+            {{ item }}
+
+        </li>
+
+    </ul>
+
+</div>
+
+<div
+    *ngIf="missingItems.length === 0"
+    class="alert alert-success mt-3">
+
+    <i class="fas fa-check-circle me-2"></i>
+
+    All validation checks passed.
+    The account is ready for submission.
+
+</div>
+
+    <!-- ===================================================== -->
+    <!-- CUSTOMER / ORGANIZATION SUMMARY -->
+    <!-- ===================================================== -->
+
+    <div class="col-lg-6">
+
+        <div class="card border-0 shadow-sm h-100">
+
+            <div class="card-header bg-light">
+
+                <h5 class="mb-0">
+
+                    <i class="fas fa-user-circle me-2"></i>
+
+                    Customer Summary
+
+                </h5>
+
+            </div>
+
+            <div class="card-body">
+
+                <table class="table table-borderless table-sm">
+
+                    <tbody>
+
+                        <tr>
+
+                            <th width="45%">
+
+                                Customer Category
+
+                            </th>
+
+                            <td>
+
+                                {{accountForm.value.customerCategory}}
+
+                            </td>
+
+                        </tr>
+
+                        <tr>
+
+                            <th>
+
+                                Mode of Operation
+
+                            </th>
+
+                            <td>
+
+                                {{accountForm.value.modeOfOperation}}
+
+                            </td>
+
+                        </tr>
+
+                        <!-- ================================= -->
+                        <!-- INDIVIDUAL -->
+                        <!-- ================================= -->
+
+                        <ng-container *ngIf="isIndividual">
+
+                            <tr>
+
+                                <th>
+
+                                    Full Name
+
+                                </th>
+
+                                <td>
+
+                                    {{accountForm.value.fullName}}
+
+                                </td>
+
+                            </tr>
+
+                            <tr>
+
+                                <th>
+
+                                    National ID
+
+                                </th>
+
+                                <td>
+
+                                    {{accountForm.value.nationalId}}
+
+                                </td>
+
+                            </tr>
+
+                            <tr>
+
+                                <th>
+
+                                    Date of Birth
+
+                                </th>
+
+                                <td>
+
+                                    {{accountForm.value.dateOfBirth}}
+
+                                </td>
+
+                            </tr>
+
+                            <tr>
+
+                                <th>
+
+                                    Gender
+
+                                </th>
+
+                                <td>
+
+                                    {{accountForm.value.gender}}
+
+                                </td>
+
+                            </tr>
+
+                        </ng-container>
+
+                        <!-- ================================= -->
+                        <!-- ORGANIZATION -->
+                        <!-- ================================= -->
+
+                        <ng-container *ngIf="!isIndividual">
+
+                            <tr>
+
+                                <th>
+
+                                    Organization Name
+
+                                </th>
+
+                                <td>
+
+                                    {{accountForm.value.fullName}}
+
+                                </td>
+
+                            </tr>
+
+                            <tr>
+
+                                <th>
+
+                                    Officials
+
+                                </th>
+
+                                <td>
+
+                                    {{organizationPeople.length}}
+
+                                </td>
+
+                            </tr>
+
+                            <tr>
+
+                                <th>
+
+                                    Authorized Signatories
+
+                                </th>
+
+                                <td>
+
+                                   {{ totalSignatories }}
+
+                                </td>
+
+                            </tr>
+
+                        </ng-container>
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- ===================================================== -->
+    <!-- CONTACT SUMMARY -->
+    <!-- ===================================================== -->
+
+    <div class="col-lg-6">
+
+        <div class="card border-0 shadow-sm h-100">
+
+            <div class="card-header bg-light">
+
+                <h5 class="mb-0">
+
+                    <i class="fas fa-address-book me-2"></i>
+
+                    Contact Information
+
+                </h5>
+
+            </div>
+
+            <div class="card-body">
+
+                <table class="table table-borderless table-sm">
+
+                    <tbody>
+
+                        <tr *ngIf="isIndividual">
+
+                            <th width="45%">
+
+                                Mobile Number
+
+                            </th>
+
+                            <td>
+
+                                {{accountForm.value.phoneNumber}}
+
+                            </td>
+
+                        </tr>
+
+                        <tr>
+
+                            <th>
+
+                                Email
+
+                            </th>
+
+                            <td>
+
+                                {{accountForm.value.email}}
+
+                            </td>
+
+                        </tr>
+
+                        <tr>
+
+                            <th>
+
+                                County
+
+                            </th>
+
+                            <td>
+
+                                {{accountForm.value.county}}
+
+                            </td>
+
+                        </tr>
+
+                        <tr>
+
+                            <th>
+
+                                Town
+
+                            </th>
+
+                            <td>
+
+                                {{accountForm.value.city}}
+
+                            </td>
+
+                        </tr>
+
+                        <tr>
+
+                            <th>
+
+                                Physical Address
+
+                            </th>
+
+                            <td>
+
+                                {{accountForm.value.residentialAddress}}
+
+                            </td>
+
+                        </tr>
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- ===================================================== -->
+<!-- PART 2 : EMPLOYMENT / ORGANIZATION REVIEW -->
+<!-- ===================================================== -->
+
+<!-- ================================================ -->
+<!-- INDIVIDUAL : EMPLOYMENT & FINANCIAL PROFILE -->
+<!-- ================================================ -->
+
+<div class="col-lg-6" *ngIf="isIndividual">
+
+    <div class="card border-0 shadow-sm h-100">
+
+        <div class="card-header bg-light">
+
+            <h5 class="mb-0">
+
+                <i class="fas fa-briefcase me-2 text-primary"></i>
+
+                Employment & Financial Profile
+
+            </h5>
+
+        </div>
+
+        <div class="card-body">
+
+            <table class="table table-borderless table-sm">
+
+                <tbody>
+
+                    <tr>
+
+                        <th width="45%">
+
+                            Employment Status
+
+                        </th>
+
+                        <td>
+
+                            {{accountForm.value.employmentStatus}}
+
+                        </td>
+
+                    </tr>
+
+                    <tr>
+
+                        <th>
+
+                            Employer
+
+                        </th>
+
+                        <td>
+
+                            {{accountForm.value.employerName || '-' }}
+
+                        </td>
+
+                    </tr>
+
+                    <tr>
+
+                        <th>
+
+                            Business
+
+                        </th>
+
+                        <td>
+
+                            {{accountForm.value.businessType || '-'}}
+
+                        </td>
+
+                    </tr>
+
+                    <tr>
+
+                        <th>
+
+                            Monthly Income
+
+                        </th>
+
+                        <td>
+
+                            {{accountForm.value.monthlyIncome | number}}
+
+                        </td>
+
+                    </tr>
+
+                    <tr>
+
+                        <th>
+
+                            Source of Funds
+
+                        </th>
+
+                        <td>
+
+                            {{accountForm.value.sourceOfFunds}}
+
+                        </td>
+
+                    </tr>
+
+                    <tr>
+
+                        <th>
+
+                            Account Type
+
+                        </th>
+
+                        <td>
+
+                            {{accountForm.value.accountType}}
+
+                        </td>
+
+                    </tr>
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+    </div>
+
+</div>
+
+<!-- ================================================ -->
+<!-- NEXT OF KIN -->
+<!-- ================================================ -->
+
+<div class="col-lg-6" *ngIf="isIndividual">
+
+    <div class="card border-0 shadow-sm h-100">
+
+        <div class="card-header bg-light">
+
+            <h5 class="mb-0">
+
+                <i class="fas fa-users me-2 text-success"></i>
+
+                Next of Kin
+
+            </h5>
+
+        </div>
+
+        <div class="card-body">
+
+            <table class="table table-borderless table-sm">
+
+                <tbody>
+
+                    <tr>
+
+                        <th width="45%">
+
+                            Name
+
+                        </th>
+
+                        <td>
+
+                            {{accountForm.value.nextOfKinName}}
+
+                        </td>
+
+                    </tr>
+
+                    <tr>
+
+                        <th>
+
+                            Relationship
+
+                        </th>
+
+                        <td>
+
+                            {{accountForm.value.nextOfKinRelationship}}
+
+                        </td>
+
+                    </tr>
+
+                    <tr>
+
+                        <th>
+
+                            Phone
+
+                        </th>
+
+                        <td>
+
+                            {{accountForm.value.nextOfKinPhone}}
+
+                        </td>
+
+                    </tr>
+
+                    <tr>
+
+                        <th>
+
+                            Email
+
+                        </th>
+
+                        <td>
+
+                            {{accountForm.value.nextOfKinEmail || '-'}}
+
+                        </td>
+
+                    </tr>
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+    </div>
+
+</div>
+
+<!-- ================================================ -->
+<!-- ORGANIZATION OFFICIALS -->
+<!-- ================================================ -->
+
+<div class="col-12" *ngIf="!isIndividual">
+
+    <div class="card border-0 shadow">
+
+        <div class="card-header bg-light d-flex justify-content-between align-items-center">
+
+            <h5 class="mb-0">
+
+                <i class="fas fa-users-cog me-2"></i>
+
+                Officials / Directors / Trustees / Signatories
+
+            </h5>
+
+            <span class="badge bg-primary">
+
+                {{organizationPeople.length}}
+
+                Record(s)
+
+            </span>
+
+        </div>
+
+        <div class="card-body p-0">
+
+            <div class="table-responsive">
+
+                <table class="table table-hover table-bordered align-middle mb-0">
+
+                    <thead class="table-light">
+
+                        <tr>
+
+                            <th>#</th>
+
+                            <th>Name</th>
+
+                            <th>ID Number</th>
+
+                            <th>KRA PIN</th>
+
+                            <th>Designation</th>
+
+                            <th>Phone</th>
+
+                            <th>Email</th>
+
+                            <th class="text-center">
+
+                                Director
+
+                            </th>
+
+                            <th class="text-center">
+
+                                Official
+
+                            </th>
+
+                            <th class="text-center">
+
+                                Trustee
+
+                            </th>
+
+                            <th class="text-center">
+
+                                Beneficial Owner
+
+                            </th>
+
+                            <th class="text-center">
+
+                                Signatory
+
+                            </th>
+
+                            <th class="text-center">
+
+                                Primary
+
+                            </th>
+
+                        </tr>
+
+                    </thead>
+
+                    <tbody>
+
+                        <tr
+
+                            *ngFor="let person of organizationPeople.controls; let i=index"
+
+                            [formGroup]="$any(person)">
+
+                            <td>
+
+                                {{i+1}}
+
+                            </td>
+
+                            <td>
+
+                                {{person.value.fullName}}
+
+                            </td>
+
+                            <td>
+
+                                {{person.value.nationalId}}
+
+                            </td>
+
+                            <td>
+
+                                {{person.value.kraPin || '-'}}
+
+                            </td>
+
+                            <td>
+
+                                {{person.value.designation}}
+
+                            </td>
+
+                            <td>
+
+                                {{person.value.phone}}
+
+                            </td>
+
+                            <td>
+
+                                {{person.value.email}}
+
+                            </td>
+
+                            <td class="text-center">
+
+                                <i
+
+                                    class="fas"
+
+                                    [class.fa-check-circle]="person.value.isDirector"
+
+                                    [class.fa-times-circle]="!person.value.isDirector"
+
+                                    [class.text-success]="person.value.isDirector"
+
+                                    [class.text-secondary]="!person.value.isDirector">
+
+                                </i>
+
+                            </td>
+
+                            <td class="text-center">
+
+                                <i
+
+                                    class="fas"
+
+                                    [class.fa-check-circle]="person.value.isOfficial"
+
+                                    [class.fa-times-circle]="!person.value.isOfficial"
+
+                                    [class.text-success]="person.value.isOfficial"
+
+                                    [class.text-secondary]="!person.value.isOfficial">
+
+                                </i>
+
+                            </td>
+
+                            <td class="text-center">
+
+                                <i
+
+                                    class="fas"
+
+                                    [class.fa-check-circle]="person.value.isTrustee"
+
+                                    [class.fa-times-circle]="!person.value.isTrustee"
+
+                                    [class.text-success]="person.value.isTrustee"
+
+                                    [class.text-secondary]="!person.value.isTrustee">
+
+                                </i>
+
+                            </td>
+
+                            <td class="text-center">
+
+                                <i
+
+                                    class="fas"
+
+                                    [class.fa-check-circle]="person.value.isBeneficialOwner"
+
+                                    [class.fa-times-circle]="!person.value.isBeneficialOwner"
+
+                                    [class.text-success]="person.value.isBeneficialOwner"
+
+                                    [class.text-secondary]="!person.value.isBeneficialOwner">
+
+                                </i>
+
+                            </td>
+
+                            <td class="text-center">
+
+                                <span
+
+                                    *ngIf="person.value.isSignatory"
+
+                                    class="badge bg-success">
+
+                                    YES
+
+                                </span>
+
+                                <span
+
+                                    *ngIf="!person.value.isSignatory"
+
+                                    class="badge bg-secondary">
+
+                                    NO
+
+                                </span>
+
+                            </td>
+
+<td class="text-center">
+
+    <div class="form-check d-flex justify-content-center">
+
+        <input
+            class="form-check-input"
+            type="radio"
+            name="primarySignatory"
+            [checked]="person.get('primarySignatory')?.value"
+            [disabled]="!person.get('isSignatory')?.value"
+            (change)="setPrimarySignatory(i)">
+
+    </div>
+
+    <small
+        *ngIf="person.get('primarySignatory')?.value"
+        class="text-warning fw-bold">
+
+        PRIMARY
+
+    </small>
+
+</td>
+
+                        </tr>
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+<!-- ================================================ -->
+<!-- ORGANIZATION SUMMARY -->
+<!-- ================================================ -->
+
+<div class="col-12" *ngIf="!isIndividual">
+
+    <div class="card border-0 shadow-sm">
+
+        <div class="card-header bg-light">
+
+            <h5 class="mb-0">
+
+                <i class="fas fa-chart-pie me-2 text-info"></i>
+
+                Organization Summary
+
+            </h5>
+
+        </div>
+
+        <div class="card-body">
+
+            <div class="row text-center">
+
+                <div class="col-md-3">
+
+                    <h3 class="fw-bold text-primary">
+
+                        {{organizationPeople.length}}
+
+                    </h3>
+
+                    <small class="text-muted">
+
+                        Total Officials
+
+                    </small>
+
+                </div>
+
+                <div class="col-md-3">
+
+                    <h3 class="fw-bold text-success">
+
+                        {{totalSignatories}}
+
+                    </h3>
+
+                    <small class="text-muted">
+
+                        Signatories
+
+                    </small>
+
+                </div>
+
+                <div class="col-md-3">
+
+                    <h3 class="fw-bold text-warning">
+
+                        {{accountForm.value.modeOfOperation}}
+
+                    </h3>
+
+                    <small class="text-muted">
+
+                        Signing Rule
+
+                    </small>
+
+                </div>
+
+                <div class="col-md-3">
+
+                    <h3 class="fw-bold text-info">
+
+                        {{accountForm.value.customerCategory}}
+
+                    </h3>
+
+                    <small class="text-muted">
+
+                        Account Category
+
+                    </small>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+<!-- ===================================================== -->
+<!-- DOCUMENTS REVIEW -->
+<!-- ===================================================== -->
+
+<div class="col-12">
+
+    <div class="card border-0 shadow-lg">
+
+        <div class="card-header bg-white">
+
+            <div class="d-flex justify-content-between align-items-center">
+
+                <h5 class="mb-0 fw-bold">
+                    <i class="fas fa-folder-open text-primary me-2"></i>
+                    Uploaded Documents
+                </h5>
+
+                <span class="badge bg-success px-3 py-2">
+                    {{uploadedDocuments}} / {{requiredDocuments}} Uploaded
+                </span>
+
+            </div>
+
+        </div>
+
+        <div class="card-body">
+
+            <!-- ========================================= -->
+            <!-- INDIVIDUAL DOCUMENTS -->
+            <!-- ========================================= -->
+
+            <div *ngIf="isIndividual">
+
+                <div class="row g-3">
+
+                    <!-- Passport -->
+                    <div class="col-lg-6">
+
+                        <div class="document-review-card">
+
+                            <div class="document-header">
+
+                                <i class="fas fa-camera text-primary"></i>
+
+                                <strong>Passport Photo</strong>
+
+                            </div>
+
+                            <div *ngIf="passportPhoto">
+
+                                <img
+                                    [src]="passportPhotoPreview"
+                                    class="img-thumbnail review-document-image">
+
+                                <div class="mt-2">
+
+                                    <strong>{{passportPhotoName}}</strong>
+
+                                    <br>
+
+                                    <small class="text-success">
+                                        Uploaded Successfully
+                                    </small>
+
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                    <!-- National ID -->
+
+                    <div class="col-lg-6">
+
+                        <div class="document-review-card">
+
+                            <div class="document-header">
+
+                                <i class="fas fa-id-card text-success"></i>
+
+                                <strong>National ID</strong>
+
+                            </div>
+
+                            <div *ngIf="nationalIdDocument">
+
+                                <img
+                                    *ngIf="nationalIdDocumentPreview"
+                                    [src]="nationalIdDocumentPreview"
+                                    class="img-thumbnail review-document-image">
+
+                                <div class="mt-2">
+
+                                    <strong>{{nationalIdDocumentName}}</strong>
+
+                                    <br>
+
+                                    <small class="text-success">
+                                        Ready for Verification
+                                    </small>
+
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                    <!-- Signature -->
+
+                    <div class="col-lg-6">
+
+                        <div class="document-review-card">
+
+                            <div class="document-header">
+
+                                <i class="fas fa-signature text-warning"></i>
+
+                                <strong>Signature</strong>
+
+                            </div>
+
+                            <div *ngIf="signatureDocument">
+
+                                <img
+                                    *ngIf="signaturePreview"
+                                    [src]="signaturePreview"
+                                    class="img-thumbnail review-document-image">
+
+                                <div class="mt-2">
+
+                                    <strong>{{signatureName}}</strong>
+
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                    <!-- KRA -->
+
+                    <div class="col-lg-6">
+
+                        <div class="document-review-card">
+
+                            <div class="document-header">
+
+                                <i class="fas fa-file-invoice text-danger"></i>
+
+                                <strong>KRA PIN</strong>
+
+                            </div>
+
+                            <div *ngIf="kraPinDocument">
+
+                                <div class="pdf-document">
+
+                                    <i class="fas fa-file-pdf fa-4x text-danger"></i>
+
+                                </div>
+
+                                <div class="mt-2">
+
+                                    <strong>{{kraPinDocumentName}}</strong>
+
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+            <!-- ========================================= -->
+            <!-- GROUP DOCUMENTS -->
+            <!-- ========================================= -->
+
+            <div *ngIf="isGroup">
+
+                <div class="row g-3">
+
+                    <div class="col-md-4">
+
+                        <div class="document-review-card">
+
+                            <i class="fas fa-users fa-3x text-primary mb-2"></i>
+
+                            <h6>Registration Certificate</h6>
+
+                            <strong>{{groupCertificateName}}</strong>
+
+                        </div>
+
+                    </div>
+
+                    <div class="col-md-4">
+
+                        <div class="document-review-card">
+
+                            <i class="fas fa-book fa-3x text-success mb-2"></i>
+
+                            <h6>Group Constitution</h6>
+
+                            <strong>{{groupConstitutionName}}</strong>
+
+                        </div>
+
+                    </div>
+
+                    <div class="col-md-4">
+
+                        <div class="document-review-card">
+
+                            <i class="fas fa-gavel fa-3x text-warning mb-2"></i>
+
+                            <h6>Meeting Resolution</h6>
+
+                            <strong>{{meetingResolutionName}}</strong>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+            <!-- ========================================= -->
+            <!-- COMPANY DOCUMENTS -->
+            <!-- ========================================= -->
+
+            <div *ngIf="isCompany">
+
+                <div class="row g-3">
+
+                    <div class="col-md-4">
+
+                        <div class="document-review-card">
+
+                            <i class="fas fa-building fa-3x text-primary mb-2"></i>
+
+                            <h6>Certificate of Incorporation</h6>
+
+                            <strong>{{certificateOfIncorporationName}}</strong>
+
+                        </div>
+
+                    </div>
+
+                    <div class="col-md-4">
+
+                        <div class="document-review-card">
+
+                            <i class="fas fa-file-alt fa-3x text-success mb-2"></i>
+
+                            <h6>CR12</h6>
+
+                            <strong>{{cr12Name}}</strong>
+
+                        </div>
+
+                    </div>
+
+                    <div class="col-md-4">
+
+                        <div class="document-review-card">
+
+                            <i class="fas fa-university fa-3x text-warning mb-2"></i>
+
+                            <h6>Board Resolution</h6>
+
+                            <strong>{{boardResolutionName}}</strong>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+            <!-- ========================================= -->
+            <!-- INSTITUTION DOCUMENTS -->
+            <!-- ========================================= -->
+
+            <div *ngIf="isInstitution">
+
+                <div class="row g-3">
+
+                    <div class="col-md-4">
+
+                        <div class="document-review-card">
+
+                            <i class="fas fa-certificate fa-3x text-primary mb-2"></i>
+
+                            <h6>Registration Certificate</h6>
+
+                            <strong>{{registrationCertificateName}}</strong>
+
+                        </div>
+
+                    </div>
+
+                    <div class="col-md-4">
+
+                        <div class="document-review-card">
+
+                            <i class="fas fa-scroll fa-3x text-success mb-2"></i>
+
+                            <h6>Trust Deed</h6>
+
+                            <strong>{{trustDeedName}}</strong>
+
+                        </div>
+
+                    </div>
+
+                    <div class="col-md-4">
+
+                        <div class="document-review-card">
+
+                            <i class="fas fa-balance-scale fa-3x text-warning mb-2"></i>
+
+                            <h6>Institution Resolution</h6>
+
+                            <strong>{{institutionResolutionName}}</strong>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+<!-- ===================================================== -->
+<!-- VALIDATION STATUS -->
+<!-- ===================================================== -->
+
+<div class="col-12">
+
+    <div class="alert alert-info shadow-sm">
+
+        <div class="row text-center">
+
+            <div class="col-md-3">
+
+                <h4 class="fw-bold text-success">
+
+                    {{uploadedDocuments}}
+
+                </h4>
+
+                Documents Uploaded
+
+            </div>
+
+            <div class="col-md-3">
+
+                <h4 class="fw-bold text-primary">
+
+                    {{requiredDocuments}}
+
+                </h4>
+
+                Required
+
+            </div>
+
+            <div class="col-md-3">
+
+                <h4 class="fw-bold text-warning">
+
+                    {{uploadProgress}}%
+
+                </h4>
+
+                Completion
+
+            </div>
+
+            <div class="col-md-3">
+
+                <h4>
+
+                    <i
+                        class="fas"
+                        [ngClass]="uploadProgress==100
+                        ?'fa-check-circle text-success'
+                        :'fa-clock text-warning'">
+
+                    </i>
+
+                </h4>
+
+                Validation Status
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+<!-- ===================================================== -->
+<!-- DECLARATION -->
+<!-- ===================================================== -->
+
+<div class="col-12">
+
+    <div class="card border-success shadow">
+
+        <div class="card-header bg-success text-white">
+
+            <i class="fas fa-shield-check me-2"></i>
+
+            Customer Declaration
+
+        </div>
+
+        <div class="card-body">
+
+            <div class="form-check">
+
+                <input
+                    class="form-check-input"
+                    type="checkbox"
+                    formControlName="declaration">
+
+                <label class="form-check-label">
+
+                    I certify that all information submitted is true,
+                    complete and accurate.
+
+                    I authorize the institution to verify my identity,
+                    KRA PIN, company/group registration and any supporting
+                    documents with relevant government agencies.
+
+                    I understand that providing false information may lead
+                    to rejection of this application or legal action.
+
+                </label>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+<!-- ===================================================== -->
+<!-- ACTION BUTTONS -->
+<!-- ===================================================== -->
+
+<div class="col-12 mt-4">
+
+    <div class="d-flex justify-content-between align-items-center">
+
+        <button
+            type="button"
+            class="btn btn-outline-secondary btn-lg"
+            (click)="previousStep()">
+
+            <i class="fas fa-arrow-left me-2"></i>
+
+            Back
+
+        </button>
+
+        <button
+            type="submit"
+            class="btn btn-success btn-lg px-5"
+            [disabled]="loading || accountForm.invalid">
+
+            <span
+                *ngIf="loading"
+                class="spinner-border spinner-border-sm me-2">
+            </span>
+
+            <i
+                *ngIf="!loading"
+                class="fas fa-lock me-2">
+            </i>
+
+            {{loading ? 'Creating Account...' : 'Submit Account Opening'}}
+
+        </button>
+
+    </div>
+
+</div>
+
+
+<!-- ===================================================== -->
+<!-- END OF REGISTRATION WIZARD -->
+<!-- ===================================================== -->
+
+</div>
+
+

@@ -502,3 +502,933 @@ background:white;
 font-size:15px;
 
 }
+
+
+/*==========================================================
+=            ENTERPRISE DOCUMENT MANAGEMENT CENTER         =
+==========================================================*/
+
+/*-------------------------
+    SECTION CONTAINER
+--------------------------*/
+
+.documents-section{
+    padding:30px 0;
+}
+
+
+/*-------------------------
+      DOCUMENT CARD
+--------------------------*/
+
+.enterprise-upload-card{
+
+    background:#fff;
+
+    border:1px solid #e9ecef;
+
+    border-radius:20px;
+
+    overflow:hidden;
+
+    box-shadow:0 10px 30px rgba(0,0,0,.07);
+
+    transition:.35s;
+
+    height:100%;
+
+    display:flex;
+
+    flex-direction:column;
+
+}
+
+.enterprise-upload-card:hover{
+
+    transform:translateY(-6px);
+
+    box-shadow:0 18px 45px rgba(0,0,0,.12);
+
+}
+
+
+/*-------------------------
+        HEADER
+--------------------------*/
+
+.upload-header{
+
+    display:flex;
+
+    justify-content:space-between;
+
+    align-items:center;
+
+    padding:20px 25px;
+
+    border-bottom:1px solid #edf2f7;
+
+}
+
+.upload-title{
+
+    display:flex;
+
+    align-items:center;
+
+}
+
+.upload-title h5{
+
+    margin:0;
+
+    font-size:1rem;
+
+    font-weight:700;
+
+}
+
+.upload-title small{
+
+    color:#7b8794;
+
+}
+
+
+/*-------------------------
+        ICON
+--------------------------*/
+
+.upload-icon{
+
+    width:60px;
+
+    height:60px;
+
+    border-radius:16px;
+
+    background:linear-gradient(135deg,#0047AB,#007BFF);
+
+    color:#fff;
+
+    display:flex;
+
+    align-items:center;
+
+    justify-content:center;
+
+    font-size:24px;
+
+    margin-right:15px;
+
+}
+
+
+/*-------------------------
+      DRAG AREA
+--------------------------*/
+
+.upload-drop-zone{
+
+    margin:25px;
+
+    border:2px dashed #d5dbe2;
+
+    border-radius:18px;
+
+    min-height:270px;
+
+    display:flex;
+
+    justify-content:center;
+
+    align-items:center;
+
+    text-align:center;
+
+    padding:30px;
+
+    transition:.35s;
+
+    background:#fafbfc;
+
+    position:relative;
+
+}
+
+.upload-drop-zone:hover{
+
+    border-color:#0d6efd;
+
+    background:#f5faff;
+
+}
+
+
+/*-------------------------
+     SUCCESS STATE
+--------------------------*/
+
+.document-uploaded{
+
+    border-style:solid;
+
+    border-width:2px;
+
+    border-color:#198754;
+
+    background:#f6fff9;
+
+}
+
+
+/*-------------------------
+       CLOUD ICON
+--------------------------*/
+
+.upload-cloud{
+
+    width:90px;
+
+    height:90px;
+
+    border-radius:50%;
+
+    background:#eaf3ff;
+
+    color:#0d6efd;
+
+    display:flex;
+
+    align-items:center;
+
+    justify-content:center;
+
+    margin:auto;
+
+    margin-bottom:18px;
+
+    font-size:42px;
+
+}
+
+
+/*-------------------------
+     INFORMATION
+--------------------------*/
+
+.upload-info{
+
+    margin-top:18px;
+
+    color:#6c757d;
+
+    font-size:13px;
+
+    line-height:22px;
+
+}
+
+
+/*-------------------------
+      PREVIEW IMAGE
+--------------------------*/
+
+.document-image{
+
+    max-width:100%;
+
+    max-height:260px;
+
+    border-radius:14px;
+
+    object-fit:contain;
+
+    border:1px solid #e5e5e5;
+
+    background:white;
+
+}
+
+
+/*-------------------------
+        PDF
+--------------------------*/
+
+.pdf-placeholder{
+
+    width:160px;
+
+    height:160px;
+
+    border-radius:18px;
+
+    background:#fff0f0;
+
+    color:#dc3545;
+
+    display:flex;
+
+    justify-content:center;
+
+    align-items:center;
+
+    font-size:70px;
+
+    margin:auto;
+
+}
+
+
+/*-------------------------
+      DOCUMENT INFO
+--------------------------*/
+
+.document-details{
+
+    padding:22px;
+
+    border-top:1px solid #eef2f5;
+
+}
+
+
+.document-name{
+
+    font-weight:700;
+
+    color:#1f2937;
+
+    font-size:15px;
+
+}
+
+
+/*-------------------------
+      SUCCESS ICON
+--------------------------*/
+
+.success-icon{
+
+    width:46px;
+
+    height:46px;
+
+    border-radius:50%;
+
+    background:#d1fae5;
+
+    color:#198754;
+
+    display:flex;
+
+    justify-content:center;
+
+    align-items:center;
+
+    font-size:22px;
+
+    margin-right:15px;
+
+}
+
+
+/*-------------------------
+      ACTION BUTTONS
+--------------------------*/
+
+.document-actions{
+
+    margin-top:22px;
+
+    display:flex;
+
+    flex-wrap:wrap;
+
+    gap:10px;
+
+}
+
+
+.document-actions .btn{
+
+    border-radius:10px;
+
+    min-width:120px;
+
+}
+
+
+/*-------------------------
+      STATUS BAR
+--------------------------*/
+
+.upload-status{
+
+    padding:15px 22px;
+
+    border-top:1px solid #eef2f5;
+
+    background:#fafbfc;
+
+    font-size:14px;
+
+    font-weight:600;
+
+}
+
+
+/*-------------------------
+     PROGRESS SUMMARY
+--------------------------*/
+
+.document-summary{
+
+    background:#ffffff;
+
+    border-radius:18px;
+
+    padding:25px;
+
+    margin-bottom:30px;
+
+    box-shadow:0 8px 30px rgba(0,0,0,.06);
+
+}
+
+
+.summary-title{
+
+    font-size:20px;
+
+    font-weight:700;
+
+}
+
+
+.summary-stats{
+
+    display:flex;
+
+    gap:30px;
+
+    margin-top:20px;
+
+    flex-wrap:wrap;
+
+}
+
+
+.summary-box{
+
+    flex:1;
+
+    min-width:170px;
+
+    border-radius:14px;
+
+    background:#f8f9fa;
+
+    padding:18px;
+
+}
+
+
+.summary-box h2{
+
+    font-size:32px;
+
+    font-weight:700;
+
+    margin-bottom:4px;
+
+}
+
+
+.summary-box span{
+
+    color:#6c757d;
+
+}
+
+
+/*-------------------------
+      PROGRESS BAR
+--------------------------*/
+
+.progress{
+
+    height:12px;
+
+    border-radius:20px;
+
+    overflow:hidden;
+
+}
+
+
+.progress-bar{
+
+    font-weight:600;
+
+}
+
+
+/*-------------------------
+      BADGES
+--------------------------*/
+
+.badge{
+
+    border-radius:40px;
+
+    padding:8px 15px;
+
+    font-weight:600;
+
+}
+
+
+/*-------------------------
+      BUTTONS
+--------------------------*/
+
+.btn-bank{
+
+    background:linear-gradient(135deg,#0047AB,#0d6efd);
+
+    color:white;
+
+    border:none;
+
+    border-radius:10px;
+
+    padding:12px 28px;
+
+    transition:.3s;
+
+}
+
+
+.btn-bank:hover{
+
+    color:white;
+
+    transform:translateY(-2px);
+
+    box-shadow:0 12px 24px rgba(13,110,253,.3);
+
+}
+
+
+/*-------------------------
+        ANIMATION
+--------------------------*/
+
+.enterprise-upload-card{
+
+    animation:fadeInUp .45s ease;
+
+}
+
+
+@keyframes fadeInUp{
+
+    from{
+
+        opacity:0;
+
+        transform:translateY(25px);
+
+    }
+
+    to{
+
+        opacity:1;
+
+        transform:translateY(0);
+
+    }
+
+}
+
+
+/*==========================================================
+                TABLET RESPONSIVE
+==========================================================*/
+
+@media(max-width:992px){
+
+.upload-header{
+
+    flex-direction:column;
+
+    align-items:flex-start;
+
+    gap:15px;
+
+}
+
+.document-actions .btn{
+
+    flex:1;
+
+}
+
+.summary-stats{
+
+    flex-direction:column;
+
+}
+
+}
+
+
+/*==========================================================
+                MOBILE RESPONSIVE
+==========================================================*/
+
+@media(max-width:768px){
+
+.enterprise-upload-card{
+
+    margin-bottom:20px;
+
+}
+
+.upload-drop-zone{
+
+    min-height:210px;
+
+    padding:20px;
+
+}
+
+.upload-cloud{
+
+    width:70px;
+
+    height:70px;
+
+    font-size:34px;
+
+}
+
+.upload-title h5{
+
+    font-size:16px;
+
+}
+
+.document-actions{
+
+    flex-direction:column;
+
+}
+
+.document-actions .btn{
+
+    width:100%;
+
+}
+
+.summary-box{
+
+    width:100%;
+
+}
+
+}
+
+
+/*==========================================================
+              SMALL PHONES
+==========================================================*/
+
+@media(max-width:480px){
+
+.upload-header{
+
+    padding:18px;
+
+}
+
+.document-details{
+
+    padding:18px;
+
+}
+
+.upload-status{
+
+    padding:15px 18px;
+
+}
+
+.document-image{
+
+    max-height:180px;
+
+}
+
+.summary-title{
+
+    font-size:18px;
+
+}
+
+}
+
+/* =========================================================
+   CUSTOMER CATEGORY CARDS
+   ========================================================= */
+
+.customer-card {
+    position: relative;
+    height: 100%;
+    padding: 30px 24px 24px;
+    background: #ffffff;
+    border: 2px solid #e5e7eb;
+    border-radius: 18px;
+    cursor: pointer;
+    transition: all 0.25s ease;
+    overflow: hidden;
+}
+
+.customer-card:hover {
+    transform: translateY(-5px);
+    border-color: #0d6efd;
+    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.10);
+}
+
+/* SELECTED CARD */
+
+.customer-card.active {
+    transform: translateY(-5px);
+    border-color: #0d6efd;
+    background: linear-gradient(
+        145deg,
+        #ffffff,
+        #f4f8ff
+    );
+
+    box-shadow:
+        0 0 0 4px rgba(13, 110, 253, 0.10),
+        0 15px 35px rgba(13, 110, 253, 0.18);
+}
+
+/* SELECTED BADGE */
+
+.selected-badge {
+    position: absolute;
+    top: 14px;
+    right: 14px;
+
+    background: #198754;
+    color: #ffffff;
+
+    padding: 6px 12px;
+    border-radius: 30px;
+
+    font-size: 12px;
+    font-weight: 700;
+
+    box-shadow: 0 4px 12px rgba(25, 135, 84, 0.25);
+
+    animation: selectedBadgeIn 0.25s ease;
+}
+
+@keyframes selectedBadgeIn {
+
+    from {
+        opacity: 0;
+        transform: scale(0.7);
+    }
+
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+
+/* ICON */
+
+.customer-icon {
+    width: 68px;
+    height: 68px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 18px;
+
+    color: #ffffff;
+
+    font-size: 28px;
+
+    margin-bottom: 20px;
+
+    transition: transform 0.25s ease;
+}
+
+.customer-card:hover .customer-icon,
+.customer-card.active .customer-icon {
+    transform: scale(1.08);
+}
+
+
+/* SELECTION INDICATOR */
+
+.selection-indicator {
+    margin-top: 22px;
+
+    padding: 10px 14px;
+
+    border-radius: 10px;
+
+    background: #f8f9fa;
+
+    color: #6c757d;
+
+    font-size: 13px;
+    font-weight: 600;
+
+    display: flex;
+    align-items: center;
+    gap: 8px;
+
+    transition: all 0.25s ease;
+}
+
+.selection-indicator.selected {
+    background: #e8f5ee;
+    color: #198754;
+}
+
+.selection-indicator.selected i {
+    font-size: 17px;
+}
+
+
+/* =========================================================
+   SELECTED CATEGORY CONFIRMATION
+   ========================================================= */
+
+.selected-category-panel {
+
+    display: flex;
+    align-items: center;
+    gap: 18px;
+
+    padding: 20px 24px;
+
+    background: linear-gradient(
+        135deg,
+        #f8fbff,
+        #ffffff
+    );
+
+    border: 1px solid #dbe7f5;
+
+    border-left: 5px solid #0d6efd;
+
+    border-radius: 14px;
+
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.06);
+
+    animation: panelSlideIn 0.3s ease;
+}
+
+@keyframes panelSlideIn {
+
+    from {
+        opacity: 0;
+        transform: translateY(8px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.selected-category-icon {
+
+    width: 55px;
+    height: 55px;
+
+    flex-shrink: 0;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 14px;
+
+    background: #e8f1ff;
+    color: #0d6efd;
+
+    font-size: 22px;
+}
+
+.selected-category-content small {
+
+    display: block;
+
+    font-size: 11px;
+    font-weight: 700;
+
+    letter-spacing: 1px;
+
+    color: #6c757d;
+
+    margin-bottom: 3px;
+}
+
+.selected-category-content h4 {
+
+    margin: 0 0 4px;
+
+    font-weight: 700;
+
+    color: #1f2937;
+}
+
+.selected-category-content p {
+
+    color: #6c757d;
+    font-size: 14px;
+}
+
+
+/* =========================================================
+   CONTINUE BUTTON
+   ========================================================= */
+
+.continue-category-btn {
+
+    min-width: 220px;
+
+    border-radius: 12px;
+
+    font-weight: 600;
+
+    box-shadow: 0 8px 20px rgba(13, 110, 253, 0.20);
+
+    transition: all 0.25s ease;
+}
+
+.continue-category-btn:hover:not(:disabled) {
+
+    transform: translateY(-2px);
+
+    box-shadow: 0 12px 25px rgba(13, 110, 253, 0.30);
+}
+
+.continue-category-btn:disabled {
+
+    cursor: not-allowed;
+    opacity: 0.55;
+}

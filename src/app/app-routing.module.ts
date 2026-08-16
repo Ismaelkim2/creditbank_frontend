@@ -1,7 +1,5 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
-
-import { DashboardComponent } from './dashboard/dashboard.component';
 import { LoanListComponent } from './loan-list/loan-list.component';
 import { ReportsComponent } from './reports/reports.component';
 import { SettingsComponent } from './settings/settings.component';
@@ -30,6 +28,7 @@ import { AdminGuard } from './services/services/AdminGuard.services';
 import { DataManagerGuard } from './services/services/DataManagerGuard.service';
 import { ApplicantGuard } from './services/services/ApplicantGuard.service';
 import { AdminOrDataManagerGuard } from './services/admin-or-data-manager-guard.service';
+import { MainDashboardComponent } from './main-dashboard/main-dashboard.component';
 
 
 const routes: Routes = [
@@ -93,9 +92,16 @@ const routes: Routes = [
       // ADMIN + DATA MANAGER
       // =====================================================
 
-      {
+      // {
+      //   path: 'dashboard',
+      //   component: DashboardComponent,
+      //   canActivate: [AdminOrDataManagerGuard]
+      // },
+
+
+   {
         path: 'dashboard',
-        component: DashboardComponent,
+        component: MainDashboardComponent,
         canActivate: [AdminOrDataManagerGuard]
       },
 

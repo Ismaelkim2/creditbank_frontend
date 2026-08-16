@@ -543,19 +543,35 @@ left:0;
 
 
 /* Dropdown fits mobile */
+/* ==========================================
+   RESPONSIVE NOTIFICATION / EMAIL DROPDOWN
+========================================== */
+
 .notification-dropdown{
 
-    position:fixed;
+    position:absolute;
 
-    top:70px;
+    top:58px;
+    right:0;
 
-    left:10px;
-
-    right:10px;
-
-    width:auto;
+    width:420px;
+    max-width:calc(100vw - 20px);
 
     max-height:75vh;
+
+    overflow:hidden;
+
+    background:#fff;
+
+    color:#1e293b;
+
+    border-radius:18px;
+
+    border:1px solid #e5e7eb;
+
+    box-shadow:0 18px 45px rgba(0,0,0,.18);
+
+    z-index:9999;
 }
 
 }
@@ -638,17 +654,28 @@ left:0;
 
 /* CARD */
 
-.notification-card {
-  display: flex;
-  align-items: flex-start;
-  gap: 14px;
+.notification-card{
 
-  padding: 15px 18px;
+    display:flex;
 
-  border-bottom: 1px solid #f1f5f9;
+    align-items:flex-start;
 
-  cursor: pointer;
-  transition: all 0.25s ease;
+    gap:14px;
+
+    padding:16px;
+
+    border-bottom:1px solid #eef2f7;
+
+    transition:.25s;
+
+    cursor:pointer;
+
+    width:100%;
+}
+
+.notification-card:hover{
+
+    background:#f8fafc;
 }
 
 .notification-card:hover {
@@ -677,21 +704,43 @@ left:0;
 
 /* CONTENT */
 
-.notification-content {
-  flex: 1;
+.notification-content{
+
+    flex:1;
+
+    min-width:0;
+
+    overflow:hidden;
 }
 
-.notification-title {
-  font-size: 14px;
-  font-weight: 700;
-  color: #0f172a;
-  margin-bottom: 4px;
+.notification-title{
+
+    font-size:14px;
+
+    font-weight:700;
+
+    color:#0f172a;
+
+    white-space:normal;
+
+    word-break:break-word;
 }
 
-.notification-message {
-  font-size: 13px;
-  color: #475569;
-  line-height: 1.5;
+.notification-message{
+
+    font-size:13px;
+
+    color:#475569;
+
+    line-height:1.55;
+
+    margin-top:3px;
+
+    white-space:normal;
+
+    word-break:break-word;
+
+    overflow-wrap:anywhere;
 }
 
 .notification-time {

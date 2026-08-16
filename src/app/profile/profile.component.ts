@@ -307,6 +307,10 @@ onImageSelected(event: any): void {
     this.changingPassword = true;
   }
 
+LoanSetting(): void {
+  this.router.navigate(['/app/settings']);
+}
+
   closeChangePasswordModal(): void {
     this.changingPassword = false;
   }

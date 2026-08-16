@@ -82,6 +82,65 @@
 
     </div>
 
+
+    <!-- ==========================================================
+     CUSTOMER CATEGORY FILTERS
+========================================================== -->
+
+<div class="customer-category-toolbar mt-3 mb-4">
+
+    <button
+        class="btn"
+        [class.btn-primary]="selectedCategory==='ALL'"
+        [class.btn-outline-primary]="selectedCategory!=='ALL'"
+        (click)="filterByCategory('ALL')">
+
+        <i class="bi bi-grid-3x3-gap-fill me-2"></i>
+        All Accounts
+    </button>
+
+    <button
+        class="btn"
+        [class.btn-success]="selectedCategory==='INDIVIDUAL'"
+        [class.btn-outline-success]="selectedCategory!=='INDIVIDUAL'"
+        (click)="filterByCategory('INDIVIDUAL')">
+
+        <i class="bi bi-person-fill me-2"></i>
+        Individuals
+    </button>
+
+    <button
+        class="btn"
+        [class.btn-warning]="selectedCategory==='GROUP'"
+        [class.btn-outline-warning]="selectedCategory!=='GROUP'"
+        (click)="filterByCategory('GROUP')">
+
+        <i class="bi bi-people-fill me-2"></i>
+        Groups
+    </button>
+
+    <button
+        class="btn"
+        [class.btn-info]="selectedCategory==='COMPANY'"
+        [class.btn-outline-info]="selectedCategory!=='COMPANY'"
+        (click)="filterByCategory('COMPANY')">
+
+        <i class="bi bi-building me-2"></i>
+        Companies
+    </button>
+
+    <button
+        class="btn"
+        [class.btn-danger]="selectedCategory==='INSTITUTION'"
+        [class.btn-outline-danger]="selectedCategory!=='INSTITUTION'"
+        (click)="filterByCategory('INSTITUTION')">
+
+        <i class="bi bi-bank2 me-2"></i>
+        Institutions
+    </button>
+
+</div>
+
     <!-- Right -->
 
     <div class="header-actions">
@@ -158,67 +217,210 @@
        class="table-responsive fintech-table-wrapper">
 
     <table class="table fintech-table align-middle shadow-sm rounded">
-    <thead class="table-header">
-    <tr>
+<thead class="table-header">
+<tr>
 
-        <th>
-            <i class="bi bi-credit-card-2-front-fill text-primary me-2"></i>
-            Account Number
-        </th>
+    <th>
+        <i class="bi bi-credit-card-2-front-fill me-2"></i>
+        Account No
+    </th>
 
-        <th>
-            <i class="bi bi-person-circle text-primary me-2"></i>
-            Customer Name
-        </th>
+    <th>
+        <i class="bi bi-person-fill me-2"></i>
+        {{ selectedCategory === 'INDIVIDUAL' || selectedCategory === 'ALL'
+            ? 'Customer Name'
+            : 'Organization Name' }}
+    </th>
 
-        <th>
-            <i class="bi bi-person-vcard-fill text-primary me-2"></i>
-            National ID
-        </th>
+    <!-- INDIVIDUAL -->
+<th>
+    ID / Registration No.
+</th>
 
-        <th>
-            <i class="bi bi-telephone-fill text-primary me-2"></i>
-            Mobile Number
-        </th>
+    <th *ngIf="selectedCategory === 'ALL' || selectedCategory === 'INDIVIDUAL'">
+        Phone No.
+    </th>
 
-        <th class="text-center">
-            <i class="bi bi-lightning-charge-fill text-primary me-2"></i>
-            Quick Actions
-        </th>
+    <!-- ORGANIZATIONS -->
+    <th *ngIf="selectedCategory !== 'INDIVIDUAL' && selectedCategory !== 'ALL'">
+        Registration No.
+    </th>
 
-    </tr>
+    <th *ngIf="selectedCategory !== 'INDIVIDUAL' && selectedCategory !== 'ALL'">
+        Category
+    </th>
+
+    <th *ngIf="selectedCategory !== 'INDIVIDUAL' && selectedCategory !== 'ALL'">
+        Officials
+    </th>
+
+    <th>
+        Mode OF OPERATION
+    </th>
+
+    <th>
+        Status
+    </th>
+
+    <th class="text-center">
+        Actions
+    </th>
+
+</tr>
 </thead>
 
-      <tbody>
-        <tr *ngFor="let acc of filteredAccounts">
-          <td class="fw-semibold">{{ acc.accountNumber }}</td>
-          <td class="fw-semibold">{{ acc.fullName }}</td>
-          <td>{{ acc.nationalId }}</td>
-          <td>{{ acc.phoneNumber }}</td>
+<tbody>
 
-          <td class="text-center">
-            <div class="d-flex justify-content-center gap-2">
+<tr *ngFor="let acc of filteredAccounts">
 
-              <!-- VIEW -->
-              <button class="btn-action view"
-                      (click)="viewDetails(acc)">
-                <i class="bi bi-eye-fill"></i>
-              </button>
+    <td class="fw-bold">
+        {{ acc.accountNumber }}
+    </td>
 
-<!-- CLOSE ACCOUNT -->
-<button
-    class="btn-action close-account"
-    (click)="closeAccount(acc)"
-    title="Close Account">
+    <td>
 
-    <i class="bi bi-lock-fill"></i>
+        <!-- Individual -->
+        <ng-container *ngIf="acc.customerCategory==='INDIVIDUAL'; else organization">
 
-</button>
-
+            <div class="fw-bold">
+                {{ acc.fullName }}
             </div>
-          </td>
-        </tr>
-      </tbody>
+
+            <small class="text-muted">
+                {{ acc.email }}
+            </small>
+
+        </ng-container>
+
+        <!-- Organization -->
+        <ng-template #organization>
+
+            <div class="fw-bold text-primary">
+                {{ acc.organizationName || acc.fullName }}
+            </div>
+
+            <small class="text-muted">
+                {{ acc.customerCategory }}
+            </small>
+
+        </ng-template>
+
+    </td>
+
+    <!-- INDIVIDUAL COLUMNS -->
+
+<td>
+
+    <ng-container *ngIf="acc.customerCategory === 'INDIVIDUAL'; else organizationId">
+
+        {{ acc.nationalId }}
+
+    </ng-container>
+
+    <ng-template #organizationId>
+
+        {{ acc.registrationNumber }}
+
+    </ng-template>
+
+</td>
+
+    <td *ngIf="selectedCategory === 'ALL' || selectedCategory === 'INDIVIDUAL'">
+        {{ acc.phoneNumber }}
+    </td>
+
+    <!-- ORGANIZATION COLUMNS -->
+
+    <td *ngIf="selectedCategory !== 'INDIVIDUAL' && selectedCategory !== 'ALL'">
+        {{ acc.registrationNumber }}
+    </td>
+
+    <td *ngIf="selectedCategory !== 'INDIVIDUAL' && selectedCategory !== 'ALL'">
+
+        <span class="badge bg-info">
+
+            {{ acc.customerCategory }}
+
+        </span>
+
+    </td>
+
+    <td *ngIf="selectedCategory !== 'INDIVIDUAL' && selectedCategory !== 'ALL'">
+
+       <div *ngFor="let official of acc.officials">
+
+    <strong>
+        {{official.fullName}}
+    </strong>
+
+    <br>
+
+    <small>
+        {{official.designation}}
+    </small>
+
+</div>
+
+    </td>
+
+    <td>
+
+        <span class="badge bg-primary">
+
+            {{ acc.modeOfOperation }}
+
+        </span>
+
+    </td>
+
+    <td>
+
+        <span
+            class="badge"
+
+            [ngClass]="{
+
+                'bg-success':acc.accountStatus==='ACTIVE',
+
+                'bg-warning text-dark':acc.accountStatus==='DORMANT',
+
+                'bg-danger':acc.accountStatus==='CLOSED'
+
+            }">
+
+            {{ acc.accountStatus }}
+
+        </span>
+
+    </td>
+
+    <td class="text-center">
+
+        <div class="d-flex justify-content-center gap-2">
+
+            <button
+                class="btn-action view"
+                (click)="viewDetails(acc)">
+
+                <i class="bi bi-eye-fill"></i>
+
+            </button>
+
+            <button
+                class="btn-action close-account"
+                (click)="closeAccount(acc)">
+
+                <i class="bi bi-lock-fill"></i>
+
+            </button>
+
+        </div>
+
+    </td>
+
+</tr>
+
+</tbody>
     </table>
 
   </div>
@@ -241,234 +443,1619 @@
 <div *ngIf="showDetailsModal" class="modal-backdrop fade show"></div>
 
 <!-- MODAL -->
-<div *ngIf="showDetailsModal" class="modal d-block fade-in" mt-2>
-  <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable custom-modal-width details-dialog">
-    <div class="modal-content details-modal shadow-lg rounded-4 border-0 animate__animated animate__fadeInUp">
+<!-- ========================================================= -->
+<!-- CUSTOMER PROFILE DETAILS MODAL                            -->
+<!-- ========================================================= -->
 
-      <!-- HEADER -->
-      <div class="modal-header details-header text-white rounded-top">
-        <h5 class="modal-title fw-semibold">
-          <i class="bi bi-person-vcard me-2"></i>
-          Customer Profile & Loan Summary
-        </h5>
-        <button type="button" class="btn-close btn-close-white" (click)="showDetailsModal = false"></button>
-      </div>
+<div
+    *ngIf="showDetailsModal"
+    class="modal fade show d-block mt-5"
+    tabindex="-1"
+    role="dialog"
+    aria-modal="true"
+    style="background: rgba(0,0,0,.65);">
 
-      <!-- BODY -->
-      <div class="modal-body px-4">
+    <div class="modal-dialog modal-xl modal-dialog-centered modal-dialog-scrollable">
 
-        <!-- CUSTOMER SECTION -->
-        <div class="row align-items-center mb-3">
+        <div class="modal-content border-0 shadow-lg rounded-4 overflow-hidden">
 
-          <!-- Customer Image -->
-          <div class="col-md-4 text-center">
-           <img
-  *ngIf="selectedAccount?.imageUrl"
-  [src]="selectedAccount.imageUrl"
-  alt="User Photo"
-  class="customer-img shadow-sm"
-  (error)="onImageError($event)"
-/>
-            <h6 class="fw-bold mt-3">{{ selectedAccount?.fullName }}</h6>
-            <p class="text-muted small mb-0">
-              <i class="bi bi-envelope me-1"></i>{{ selectedAccount?.email }}
-            </p>
-          </div>
+            <!-- ================================================= -->
+            <!-- MODAL HEADER                                      -->
+            <!-- ================================================= -->
 
-          <!-- Customer Details -->
-          <div class="col-md-8">
-            <div class="info-card p-3 shadow-sm rounded-3">
-              <table class="table table-borderless mb-0 small">
-                <tbody>
-  <tr>
-    <th class="text-muted">National ID:</th>
-    <td>{{ selectedAccount?.nationalId }}</td>
-  </tr>
+            <div class="modal-header details-header text-white">
 
-  <tr>
-    <th class="text-muted">Phone:</th>
-    <td>{{ selectedAccount?.phoneNumber }}</td>
-  </tr>
+                <div class="d-flex align-items-center">
 
-  <tr>
-    <th class="text-muted">Account Opened:</th>
-    <td>
-      <span class="badge bg-primary-subtle text-primary">
-        {{ selectedAccount?.createdAt | date:'dd MMM yyyy, hh:mm a' }}
-      </span>
-    </td>
-  </tr>
+                    <div class="profile-header-icon me-3">
+                        <i class="bi bi-person-vcard-fill"></i>
+                    </div>
 
-  <tr>
-    <th class="text-muted">Mode of Operation:</th>
-    <td>
-      <span class="badge bg-info-subtle text-info fw-bold">
-        {{ selectedAccount?.modeOfOperation }}
-      </span>
-    </td>
-  </tr>
+                    <div>
 
-<tr>
-  <th class="text-muted">Account Status:</th>
+                        <h5 class="modal-title fw-bold mb-1">
 
-  <td>
+                            {{ selectedAccount?.displayName
+                                || selectedAccount?.fullName
+                                || selectedAccount?.organizationName
+                                || 'Customer Profile' }}
 
-    <!-- Status Badge -->
-    <span
-      class="badge fw-bold px-3 py-2"
-      [ngClass]="{
-        'bg-success': selectedAccount?.accountStatus === 'ACTIVE',
-        'bg-warning text-dark': selectedAccount?.accountStatus === 'DORMANT',
-        'bg-danger': selectedAccount?.accountStatus === 'CLOSED'
-      }">
+                        </h5>
 
-      <i
-        class="bi"
-        [ngClass]="{
-          'bi-check-circle-fill': selectedAccount?.accountStatus === 'ACTIVE',
-          'bi-moon-stars-fill': selectedAccount?.accountStatus === 'DORMANT',
-          'bi-x-circle-fill': selectedAccount?.accountStatus === 'CLOSED'
-        }">
-      </i>
+                        <div class="small opacity-75">
 
-      {{ selectedAccount?.accountStatus }}
+                            <i class="bi bi-credit-card-2-front me-1"></i>
 
-    </span>
+                            {{ selectedAccount?.accountNumber }}
 
-    <!-- Closure Reason -->
+                            <span class="mx-2">•</span>
+
+                            {{ selectedAccount?.customerCategory }}
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+                <button
+                    type="button"
+                    class="btn-close btn-close-white"
+                    (click)="closeDetailsModal()">
+                </button>
+
+            </div>
+
+
+            <!-- ================================================= -->
+            <!-- BODY                                               -->
+            <!-- ================================================= -->
+
+            <div class="modal-body bg-light p-4">
+
+
+                <!-- ================================================= -->
+                <!-- PROFILE HERO CARD                                 -->
+                <!-- ================================================= -->
+
+                <div class="card border-0 shadow-sm rounded-4 mb-4">
+
+                    <div class="card-body p-4">
+
+                        <div class="row align-items-center">
+
+
+                            <!-- PROFILE IMAGE -->
+                            <div class="col-lg-3 text-center">
+
+<div class="profile-photo-wrapper">
+
+    <img
+        *ngIf="
+            selectedAccount?.imageUrl ||
+            selectedAccount?.organizationImageUrl
+        "
+        [src]="
+            selectedAccount?.imageUrl ||
+            selectedAccount?.organizationImageUrl
+        "
+        class="customer-img"
+        alt="Customer Photo"
+        (error)="onImageError($event)"
+    >
+
     <div
-      *ngIf="selectedAccount?.accountStatus === 'CLOSED'"
-      class="mt-2">
+        *ngIf="
+            !selectedAccount?.imageUrl &&
+            !selectedAccount?.organizationImageUrl
+        "
+        class="profile-placeholder"
+    >
 
-      <small
-        class="text-danger fst-italic">
-
-        <i class="bi bi-info-circle me-1"></i>
-
-        <strong>Reason:</strong>
-        {{ selectedAccount?.closureReason || 'No closure reason provided.' }}
-
-      </small>
+        <i
+            class="bi"
+            [ngClass]="
+                selectedAccount?.customerCategory === 'INDIVIDUAL'
+                    ? 'bi-person-fill'
+                    : 'bi-building-fill'
+            ">
+        </i>
 
     </div>
 
-  </td>
-</tr>
+</div>
 
-  <tr>
-    <th class="text-muted">Account Balance:</th>
-    <td>
-      <span class="badge bg-success-subtle text-success fw-bold px-3 py-2">
-        {{ selectedAccount?.balance | currency:'KES ' }}
-      </span>
-    </td>
-  </tr>
-</tbody>
-              </table>
+
+                                <!-- NAME -->
+
+                                <h5 class="fw-bold mt-3 mb-1">
+
+                                    {{ selectedAccount?.displayName
+                                        || selectedAccount?.fullName
+                                        || selectedAccount?.organizationName }}
+
+                                </h5>
+
+
+                                <!-- CATEGORY -->
+
+                                <span class="badge bg-primary rounded-pill px-3">
+
+                                    <i
+                                        class="bi"
+                                        [ngClass]="{
+                                            'bi-person-fill':
+                                                selectedAccount?.customerCategory === 'INDIVIDUAL',
+
+                                            'bi-people-fill':
+                                                selectedAccount?.customerCategory === 'GROUP',
+
+                                            'bi-building':
+                                                selectedAccount?.customerCategory === 'COMPANY',
+
+                                            'bi-bank2':
+                                                selectedAccount?.customerCategory === 'INSTITUTION'
+                                        }">
+                                    </i>
+
+                                    {{ selectedAccount?.customerCategory }}
+
+                                </span>
+
+                            </div>
+
+
+                            <!-- ACCOUNT SUMMARY -->
+
+                            <div class="col-lg-9 mt-4 mt-lg-0">
+
+                                <div class="row g-3">
+
+
+                                    <!-- ACCOUNT NUMBER -->
+
+                                    <div class="col-md-4">
+
+                                        <div class="summary-box">
+
+                                            <small class="text-muted">
+                                                Account Number
+                                            </small>
+
+                                            <div class="fw-bold">
+
+                                                {{ selectedAccount?.accountNumber }}
+
+                                            </div>
+
+                                        </div>
+
+                                    </div>
+
+
+                                    <!-- BALANCE -->
+
+                                    <div class="col-md-4">
+
+                                        <div class="summary-box">
+
+                                            <small class="text-muted">
+                                                Available Balance
+                                            </small>
+
+                                            <div class="fw-bold text-success fs-5">
+
+                                                {{ selectedAccount?.balance || 0
+                                                   | currency:'KES ' }}
+
+                                            </div>
+
+                                        </div>
+
+                                    </div>
+
+
+                                    <!-- BORROWED -->
+
+                                    <div class="col-md-4">
+
+                                        <div class="summary-box">
+
+                                            <small class="text-muted">
+                                                Outstanding Loans
+                                            </small>
+
+                                            <div class="fw-bold text-danger fs-5">
+
+                                                {{ selectedAccount?.borrowedAmount || 0
+                                                   | currency:'KES ' }}
+
+                                            </div>
+
+                                        </div>
+
+                                    </div>
+
+
+                                    <!-- NET -->
+
+                                    <div class="col-md-4">
+
+                                        <div class="summary-box">
+
+                                            <small class="text-muted">
+                                                Net Position
+                                            </small>
+
+                                            <div class="fw-bold text-primary fs-5">
+
+                                                {{ selectedAccount?.netBalance || 0
+                                                   | currency:'KES ' }}
+
+                                            </div>
+
+                                        </div>
+
+                                    </div>
+
+
+                                    <!-- STATUS -->
+
+                                    <div class="col-md-4">
+
+                                        <div class="summary-box">
+
+                                            <small class="text-muted d-block mb-1">
+                                                Account Status
+                                            </small>
+
+                                            <span
+                                                class="badge px-3 py-2"
+                                                [ngClass]="getAccountStatusClass(
+                                                    selectedAccount?.accountStatus
+                                                )">
+
+                                                <i
+                                                    class="bi me-1"
+                                                    [ngClass]="getAccountStatusIcon(
+                                                        selectedAccount?.accountStatus
+                                                    )">
+                                                </i>
+
+                                                {{ selectedAccount?.accountStatus }}
+
+                                            </span>
+
+                                        </div>
+
+                                    </div>
+
+
+                                    <!-- APPROVAL -->
+
+                                    <div class="col-md-4">
+
+                                        <div class="summary-box">
+
+                                            <small class="text-muted d-block mb-1">
+                                                Approval Status
+                                            </small>
+
+                                            <span
+                                                class="badge px-3 py-2"
+                                                [ngClass]="getApprovalStatusClass(
+                                                    selectedAccount?.approvalStatus
+                                                )">
+
+                                                {{ selectedAccount?.approvalStatus || 'N/A' }}
+
+                                            </span>
+
+                                        </div>
+
+                                    </div>
+
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <!-- ================================================= -->
+                <!-- ACCOUNT INFORMATION                                -->
+                <!-- ================================================= -->
+
+                <div class="card border-0 shadow-sm rounded-4 mb-4">
+
+                    <div class="card-header bg-white border-0 pt-4 px-4">
+
+                        <h6 class="fw-bold text-primary mb-0">
+
+                            <i class="bi bi-person-lines-fill me-2"></i>
+
+                            Account Information
+
+                        </h6>
+
+                    </div>
+
+                    <div class="card-body px-4 pb-4">
+
+                        <div class="row g-3">
+
+
+                            <!-- FULL NAME -->
+
+                            <div class="col-md-4">
+
+                                <label class="info-label">
+                                    Customer Name
+                                </label>
+
+                                <div class="info-value">
+
+                                    {{ selectedAccount?.fullName || 'N/A' }}
+
+                                </div>
+
+                            </div>
+
+
+                            <!-- ORGANIZATION -->
+
+                            <div
+                                class="col-md-4"
+                                *ngIf="selectedAccount?.customerCategory !== 'INDIVIDUAL'">
+
+                                <label class="info-label">
+                                    Organization Name
+                                </label>
+
+                                <div class="info-value">
+
+                                    {{ selectedAccount?.organizationName || 'N/A' }}
+
+                                </div>
+
+                            </div>
+
+
+                            <!-- NATIONAL ID -->
+
+                            <div
+                                class="col-md-4"
+                                *ngIf="selectedAccount?.customerCategory === 'INDIVIDUAL'">
+
+                                <label class="info-label">
+                                    National ID
+                                </label>
+
+                                <div class="info-value">
+
+                                    {{ selectedAccount?.nationalId || 'N/A' }}
+
+                                </div>
+
+                            </div>
+
+
+                            <!-- REGISTRATION -->
+
+                            <div
+                                class="col-md-4"
+                                *ngIf="selectedAccount?.customerCategory !== 'INDIVIDUAL'">
+
+                                <label class="info-label">
+                                    Registration Number
+                                </label>
+
+                                <div class="info-value">
+
+                                    {{ selectedAccount?.registrationNumber || 'N/A' }}
+
+                                </div>
+
+                            </div>
+
+
+                            <!-- PHONE -->
+
+                            <div class="col-md-4">
+
+                                <label class="info-label">
+                                    Phone Number
+                                </label>
+
+                                <div class="info-value">
+
+                                    <i class="bi bi-telephone-fill text-success me-2"></i>
+
+                                    {{ selectedAccount?.phoneNumber || 'N/A' }}
+
+                                </div>
+
+                            </div>
+
+
+                            <!-- EMAIL -->
+
+                            <div class="col-md-4">
+
+                                <label class="info-label">
+                                    Email Address
+                                </label>
+
+                                <div class="info-value">
+
+                                    <i class="bi bi-envelope-fill text-primary me-2"></i>
+
+                                    {{ selectedAccount?.email || 'N/A' }}
+
+                                </div>
+
+                            </div>
+
+
+                            <!-- DOB -->
+
+                            <div
+                                class="col-md-4"
+                                *ngIf="selectedAccount?.customerCategory === 'INDIVIDUAL'">
+
+                                <label class="info-label">
+                                    Date of Birth
+                                </label>
+
+                                <div class="info-value">
+
+                                    {{ selectedAccount?.dateOfBirth
+                                       ? (selectedAccount.dateOfBirth | date:'dd MMM yyyy')
+                                       : 'N/A' }}
+
+                                </div>
+
+                            </div>
+
+
+                            <!-- CITY -->
+
+                            <div class="col-md-4">
+
+                                <label class="info-label">
+                                    City / Town
+                                </label>
+
+                                <div class="info-value">
+
+                                    {{ selectedAccount?.city || 'N/A' }}
+
+                                </div>
+
+                            </div>
+
+
+                            <!-- COUNTY -->
+
+                            <div class="col-md-4">
+
+                                <label class="info-label">
+                                    County
+                                </label>
+
+                                <div class="info-value">
+
+                                    {{ selectedAccount?.county || 'N/A' }}
+
+                                </div>
+
+                            </div>
+
+
+                            <!-- MODE -->
+
+                            <div class="col-md-4">
+
+                                <label class="info-label">
+                                    Mode of Operation
+                                </label>
+
+                                <div>
+
+                                    <span class="badge bg-primary px-3 py-2">
+
+                                        <i class="bi bi-shield-check me-1"></i>
+
+                                        {{ selectedAccount?.modeOfOperation || 'N/A' }}
+
+                                    </span>
+
+                                </div>
+
+                            </div>
+
+
+                            <!-- CREATED -->
+
+                            <div class="col-md-4">
+
+                                <label class="info-label">
+                                    Account Opened
+                                </label>
+
+                                <div class="info-value">
+
+                                    {{ selectedAccount?.createdAt
+                                       ? (selectedAccount.createdAt | date:'dd MMM yyyy HH:mm')
+                                       : 'N/A' }}
+
+                                </div>
+
+                            </div>
+
+
+                            <!-- LAST TRANSACTION -->
+
+                            <div class="col-md-4">
+
+                                <label class="info-label">
+                                    Last Transaction
+                                </label>
+
+                                <div class="info-value">
+
+                                    {{ selectedAccount?.lastTransactionDate
+                                       ? (selectedAccount.lastTransactionDate | date:'dd MMM yyyy HH:mm')
+                                       : 'No transactions' }}
+
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <!-- ================================================= -->
+                <!-- BANKING / COMPLIANCE INFORMATION                  -->
+                <!-- ================================================= -->
+
+                <div class="card border-0 shadow-sm rounded-4 mb-4">
+
+                    <div class="card-header bg-white border-0 pt-4 px-4">
+
+                        <h6 class="fw-bold text-primary mb-0">
+
+                            <i class="bi bi-shield-lock-fill me-2"></i>
+
+                            Banking & Compliance
+
+                        </h6>
+
+                    </div>
+
+                    <div class="card-body px-4 pb-4">
+
+                        <div class="row g-3">
+
+
+                            <div class="col-md-3">
+
+                                <label class="info-label">
+                                    CIF Number
+                                </label>
+
+                                <div class="info-value">
+
+                                    {{ selectedAccount?.cifNumber || 'N/A' }}
+
+                                </div>
+
+                            </div>
+
+
+                            <div class="col-md-3">
+
+                                <label class="info-label">
+                                    KYC Status
+                                </label>
+
+                                <div>
+
+                                    <span
+                                        class="badge"
+                                        [ngClass]="getComplianceClass(
+                                            selectedAccount?.kycStatus
+                                        )">
+
+                                        {{ selectedAccount?.kycStatus || 'N/A' }}
+
+                                    </span>
+
+                                </div>
+
+                            </div>
+
+
+                            <div class="col-md-3">
+
+                                <label class="info-label">
+                                    AML Status
+                                </label>
+
+                                <div>
+
+                                    <span
+                                        class="badge"
+                                        [ngClass]="getComplianceClass(
+                                            selectedAccount?.amlStatus
+                                        )">
+
+                                        {{ selectedAccount?.amlStatus || 'N/A' }}
+
+                                    </span>
+
+                                </div>
+
+                            </div>
+
+
+                            <div class="col-md-3">
+
+                                <label class="info-label">
+                                    Risk Rating
+                                </label>
+
+                                <div>
+
+                                    <span
+                                        class="badge"
+                                        [ngClass]="getRiskClass(
+                                            selectedAccount?.riskRating
+                                        )">
+
+                                        {{ selectedAccount?.riskRating || 'N/A' }}
+
+                                    </span>
+
+                                </div>
+
+                            </div>
+
+
+                            <div class="col-md-4">
+
+                                <label class="info-label">
+                                    Relationship Manager
+                                </label>
+
+                                <div class="info-value">
+
+                                    {{ selectedAccount?.relationshipManager || 'Unassigned' }}
+
+                                </div>
+
+                            </div>
+
+
+                            <div class="col-md-4">
+
+                                <label class="info-label">
+                                    Currency
+                                </label>
+
+                                <div class="info-value">
+
+                                    {{ selectedAccount?.currency || 'KES' }}
+
+                                </div>
+
+                            </div>
+
+
+                            <div class="col-md-4">
+
+                                <label class="info-label">
+                                    Profile Completion
+                                </label>
+
+                                <div>
+
+                                    <div class="progress rounded-pill">
+
+                                        <div
+                                            class="progress-bar bg-success"
+                                            [style.width.%]="selectedAccount?.profileCompletion || 0">
+
+                                            {{ selectedAccount?.profileCompletion || 0 }}%
+
+                                        </div>
+
+                                    </div>
+
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <!-- ================================================= -->
+                <!-- ORGANIZATION PEOPLE                               -->
+                <!-- ================================================= -->
+
+                <div
+                    *ngIf="
+                        selectedAccount?.customerCategory !== 'INDIVIDUAL' &&
+                        selectedAccount?.officials?.length
+                    "
+                    class="card border-0 shadow-sm rounded-4 mb-4">
+
+                    <div class="card-header bg-white border-0 pt-4 px-4">
+
+                        <div class="d-flex justify-content-between">
+
+                            <h6 class="fw-bold text-primary mb-0">
+
+                                <i class="bi bi-people-fill me-2"></i>
+
+                                Officials & Signatories
+
+                            </h6>
+
+                            <span class="badge bg-primary">
+
+                                {{ selectedAccount?.officials?.length || 0 }}
+                                Officials
+
+                            </span>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="card-body px-4 pb-4">
+
+                        <div class="table-responsive">
+
+                            <table class="table table-hover align-middle mb-0">
+
+                                <thead class="table-light">
+
+                                    <tr>
+
+                                        <th>#</th>
+                                        <th>Name</th>
+                                        <th>Designation</th>
+                                        <th>Phone</th>
+                                        <th>Email</th>
+                                        <th>Roles</th>
+                                        <th>Signing Limit</th>
+
+                                    </tr>
+
+                                </thead>
+
+
+                                <tbody>
+
+                                    <tr
+                                        *ngFor="
+                                            let official of selectedAccount?.officials;
+                                            let i = index
+                                        ">
+
+                                        <td>{{ i + 1 }}</td>
+
+                                        <td class="fw-bold">
+
+                                            {{ official.fullName }}
+
+                                        </td>
+
+                                        <td>
+
+                                            {{ official.designation || official.position || 'N/A' }}
+
+                                        </td>
+
+                                        <td>
+
+                                            {{ official.phone || 'N/A' }}
+
+                                        </td>
+
+                                        <td>
+
+                                            {{ official.email || 'N/A' }}
+
+                                        </td>
+
+                                        <td>
+
+                                            <span
+                                                *ngIf="official.isOfficial"
+                                                class="badge bg-secondary me-1">
+                                                Official
+                                            </span>
+
+                                            <span
+                                                *ngIf="official.isDirector"
+                                                class="badge bg-info me-1">
+                                                Director
+                                            </span>
+
+                                            <span
+                                                *ngIf="official.isTrustee"
+                                                class="badge bg-warning text-dark me-1">
+                                                Trustee
+                                            </span>
+
+                                            <span
+                                                *ngIf="official.isBeneficialOwner"
+                                                class="badge bg-dark me-1">
+                                                Beneficial Owner
+                                            </span>
+
+                                            <span
+                                                *ngIf="official.isSignatory"
+                                                class="badge bg-success">
+                                                Signatory
+                                            </span>
+
+                                        </td>
+
+                                        <td>
+
+                                            {{ official.signingLimit
+                                                ? (official.signingLimit | currency:'KES ')
+                                                : 'N/A' }}
+
+                                        </td>
+
+                                    </tr>
+
+                                </tbody>
+
+                            </table>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <!-- ================================================= -->
+                <!-- LOANS                                              -->
+                <!-- ================================================= -->
+
+                <div class="card border-0 shadow-sm rounded-4 mb-4">
+
+                    <div class="card-header bg-white border-0 pt-4 px-4">
+
+                        <div class="d-flex justify-content-between align-items-center">
+
+                            <h6 class="fw-bold text-primary mb-0">
+
+                                <i class="bi bi-cash-stack me-2"></i>
+
+                                Loan Portfolio
+
+                            </h6>
+
+                            <button
+                                class="btn btn-sm btn-outline-primary rounded-pill px-3"
+                                (click)="showLoanSummary = !showLoanSummary">
+
+                                <i
+                                    class="bi"
+                                    [ngClass]="showLoanSummary
+                                        ? 'bi-chevron-up'
+                                        : 'bi-chevron-down'">
+                                </i>
+
+                                {{ showLoanSummary
+                                    ? 'Hide Loans'
+                                    : 'Show Loans' }}
+
+                            </button>
+
+                        </div>
+
+                    </div>
+
+
+                    <div
+                        class="card-body px-4 pb-4"
+                        *ngIf="showLoanSummary">
+
+                        <div
+                            *ngIf="(loanDetails?.length ?? 0) > 0"
+                            class="table-responsive">
+
+                            <table
+                                class="table modern-loan-table table-hover align-middle">
+
+                                <thead class="table-light">
+
+                                    <tr>
+
+                                        <th>#</th>
+                                        <th>Loan Type</th>
+                                        <th>Amount</th>
+                                        <th>Status</th>
+                                        <th>Issued</th>
+
+                                    </tr>
+
+                                </thead>
+
+                                <tbody>
+
+                                    <tr
+                                        *ngFor="
+                                            let loan of loanDetails;
+                                            index as i
+                                        ">
+
+                                        <td>{{ i + 1 }}</td>
+
+                                        <td class="fw-semibold">
+
+                                            {{ loan.loanType || 'Loan' }}
+
+                                        </td>
+
+                                        <td class="fw-bold">
+
+                                            {{ loan.amount || 0 | currency:'KES ' }}
+
+                                        </td>
+
+                                        <td>
+
+                                            <span
+                                                class="badge px-3 py-2"
+                                                [ngClass]="getStatusClass(loan.status)">
+
+                                                {{ loan.status || 'N/A' }}
+
+                                            </span>
+
+                                        </td>
+
+                                        <td>
+
+                                            {{ loan.issueDate
+                                                ? (loan.issueDate | date:'dd MMM yyyy')
+                                                : 'N/A' }}
+
+                                        </td>
+
+                                    </tr>
+
+                                </tbody>
+
+                            </table>
+
+                        </div>
+
+
+                        <div
+                            *ngIf="!loanDetails || loanDetails.length === 0"
+                            class="text-center py-4">
+
+                            <i class="bi bi-cash-stack fs-1 text-secondary"></i>
+
+                            <p class="text-muted mt-2 mb-0">
+
+                                No loan records found.
+
+                            </p>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <!-- ================================================= -->
+                <!-- TRANSACTIONS                                       -->
+                <!-- ================================================= -->
+
+                <div class="card border-0 shadow-sm rounded-4 mb-4">
+
+                    <div class="card-header bg-white border-0 pt-4 px-4">
+
+                        <h6 class="fw-bold text-primary mb-0">
+
+                            <i class="bi bi-arrow-left-right me-2"></i>
+
+                            Recent Transactions
+
+                        </h6>
+
+                    </div>
+
+                    <div class="card-body px-4 pb-4">
+
+                        <div
+                            *ngIf="selectedAccount?.transactions?.length > 0"
+                            class="table-responsive">
+
+                            <table class="table table-hover align-middle">
+
+                                <thead class="table-light">
+
+                                    <tr>
+
+                                        <th>#</th>
+                                        <th>Reference</th>
+                                        <th>Type</th>
+                                        <th>Amount</th>
+                                        <th>Channel</th>
+                                        <th>Status</th>
+                                        <th>Date</th>
+
+                                    </tr>
+
+                                </thead>
+
+                                <tbody>
+
+                                    <tr
+                                        *ngFor="
+                                            let tx of selectedAccount?.transactions;
+                                            let i = index
+                                        ">
+
+                                        <td>{{ i + 1 }}</td>
+
+                                        <td class="fw-semibold">
+
+                                            {{ tx.reference || tx.transactionReference || 'N/A' }}
+
+                                        </td>
+
+                                        <td>
+
+                                            {{ tx.transactionType || 'N/A' }}
+
+                                        </td>
+
+                                        <td class="fw-bold">
+
+                                            {{ tx.amount || 0 | currency:'KES ' }}
+
+                                        </td>
+
+                                        <td>
+
+                                            {{ tx.channel || 'N/A' }}
+
+                                        </td>
+
+                                        <td>
+
+                                            <span class="badge bg-success">
+
+                                                {{ tx.status || 'N/A' }}
+
+                                            </span>
+
+                                        </td>
+
+                                        <td>
+
+                                            {{ tx.initiatedAt
+                                                ? (tx.initiatedAt | date:'dd MMM yyyy HH:mm')
+                                                : 'N/A' }}
+
+                                        </td>
+
+                                    </tr>
+
+                                </tbody>
+
+                            </table>
+
+                        </div>
+
+
+                        <div
+                            *ngIf="!selectedAccount?.transactions?.length"
+                            class="text-center py-4">
+
+                            <i class="bi bi-receipt fs-1 text-secondary"></i>
+
+                            <p class="text-muted mb-0">
+
+                                No transaction records found.
+
+                            </p>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <!-- ================================================= -->
+                <!-- DOCUMENTS                                         -->
+                <!-- ================================================= -->
+
+                <div class="card border-0 shadow-sm rounded-4 mb-4">
+
+                    <div class="card-header bg-white border-0 pt-4 px-4">
+
+                        <div class="d-flex justify-content-between align-items-center">
+
+                            <h6 class="fw-bold text-primary mb-0">
+
+                                <i class="bi bi-folder2-open me-2"></i>
+
+                                Customer Documents
+
+                            </h6>
+
+                            <!-- ========================================================= -->
+<!-- ACCOUNT DOCUMENTS -->
+<!-- ========================================================= -->
+
+<div class="row mt-4">
+
+    <div class="col-12">
+
+        <div class="card border-0 shadow-sm">
+
+            <!-- HEADER -->
+
+            <div class="card-header bg-white border-bottom">
+
+                <div class="d-flex justify-content-between align-items-center">
+
+                    <div>
+
+                        <h5 class="mb-1">
+
+                            <i class="bi bi-folder2-open me-2 text-primary"></i>
+
+                            Customer Documents
+
+                        </h5>
+
+                        <small class="text-muted">
+
+                            KYC and account supporting documents
+
+                        </small>
+
+                    </div>
+
+                    <span class="badge bg-primary">
+
+                        {{ documents.length }}
+
+                        {{ documents.length === 1 ? 'Document' : 'Documents' }}
+
+                    </span>
+
+                </div>
+
             </div>
-          </div>
+
+
+            <!-- BODY -->
+
+            <div class="card-body">
+
+
+                <!-- ================================================= -->
+                <!-- NO DOCUMENTS -->
+                <!-- ================================================= -->
+
+                <div
+                    *ngIf="documents.length === 0"
+                    class="text-center py-5"
+                >
+
+                    <i
+                        class="bi bi-folder-x display-5 text-muted"
+                    ></i>
+
+                    <h6 class="mt-3">
+
+                        No documents available
+
+                    </h6>
+
+                    <p class="text-muted mb-0">
+
+                        No documents have been uploaded for this account.
+
+                    </p>
+
+                </div>
+
+
+                <!-- ================================================= -->
+                <!-- DOCUMENT LIST -->
+                <!-- ================================================= -->
+
+                <div
+                    *ngIf="documents.length > 0"
+                    class="row g-3"
+                >
+
+                    <div
+                        class="col-md-6 col-xl-4"
+                        *ngFor="let document of documents"
+                    >
+
+                        <div
+                            class="document-card border rounded-3 p-3 h-100"
+                        >
+
+                            <!-- DOCUMENT HEADER -->
+
+                            <div
+                                class="d-flex align-items-start justify-content-between"
+                            >
+
+                                <div
+                                    class="d-flex align-items-center"
+                                >
+
+                                    <div class="document-icon me-3">
+
+                                        <i
+                                            [class]="getDocumentIcon(document.documentType)"
+                                        ></i>
+
+                                    </div>
+
+                                    <div>
+
+                                        <h6 class="mb-1">
+
+                                            {{
+                                                formatDocumentType(
+                                                    document.documentType
+                                                )
+                                            }}
+
+                                        </h6>
+
+                                        <small class="text-muted">
+
+                                            {{
+                                                document.source
+                                            }}
+
+                                        </small>
+
+                                    </div>
+
+                                </div>
+
+                            </div>
+
+
+                            <!-- FILE NAME -->
+
+                            <div class="mt-3">
+
+                                <small class="text-muted d-block">
+
+                                    File
+
+                                </small>
+
+                                <span
+                                    class="fw-semibold text-break"
+                                >
+
+                                    {{
+                                        document.originalName ||
+                                        document.storedName
+                                    }}
+
+                                </span>
+
+                            </div>
+
+
+                            <!-- FILE DETAILS -->
+
+                            <div
+                                class="d-flex justify-content-between mt-3"
+                            >
+
+                                <small class="text-muted">
+
+                                    {{
+                                        formatFileSize(
+                                            document.fileSize
+                                        )
+                                    }}
+
+                                </small>
+
+                                <small class="text-muted">
+
+                                    {{
+                                        document.uploadedAt
+                                            | date:'dd MMM yyyy, HH:mm'
+                                    }}
+
+                                </small>
+
+                            </div>
+
+
+                            <!-- ACTIONS -->
+
+                            <div
+                                class="d-flex gap-2 mt-3"
+                            >
+
+                                <button
+                                    type="button"
+                                    class="btn btn-sm btn-primary flex-fill"
+                                    (click)="viewDocument(document)"
+                                >
+
+                                    <i class="bi bi-eye me-1"></i>
+
+                                    View
+
+                                </button>
+
+
+                                <button
+                                    type="button"
+                                    class="btn btn-sm btn-outline-secondary"
+                                   
+                                >
+
+                                    <i class="bi bi-download"></i>
+
+                                </button>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
 
         </div>
 
-        <hr />
-
-<!-- ===================================================== -->
-<!-- LOAN SUMMARY -->
-<!-- ===================================================== -->
-
-<div class="d-flex justify-content-between align-items-center mb-3">
-
-    <h6 class="fw-bold text-primary mb-0">
-        <i class="bi bi-briefcase-fill me-2"></i>
-        Loan Summary
-    </h6>
-
-    <button
-        class="btn btn-sm btn-outline-primary rounded-pill px-3"
-        (click)="showLoanSummary = !showLoanSummary">
-
-        <i class="bi"
-           [ngClass]="showLoanSummary
-           ? 'bi-chevron-up'
-           : 'bi-chevron-down'"></i>
-
-        {{ showLoanSummary ? 'Hide Transactions' : 'Recent Transactions' }}
-
-    </button>
-
-</div>
-
-<div *ngIf="showLoanSummary" class="loan-summary-container">
-
-    <!-- Loan Table -->
-    <table *ngIf="loanDetails.length > 0"
-           class="table modern-loan-table table-striped table-hover align-middle">
-
-        <thead class="table-light">
-
-        <tr>
-
-            <th>#</th>
-
-            <th>Loan Type</th>
-
-            <th>Amount</th>
-
-            <th>Status</th>
-
-            <th>Issued</th>
-
-        </tr>
-
-        </thead>
-
-        <tbody>
-
-        <tr *ngFor="let loan of loanDetails; index as i">
-
-            <td>{{ i + 1 }}</td>
-
-            <td>{{ loan.loanType }}</td>
-
-            <td>{{ loan.amount | currency:'KES ' }}</td>
-
-            <td>
-
-                <span
-                    class="badge fw-bold px-3 py-2"
-                    [ngClass]="getStatusClass(loan.status)">
-
-                    {{ loan.status }}
-
-                </span>
-
-            </td>
-
-            <td>{{ loan.issueDate | date:'dd MMM yyyy' }}</td>
-
-        </tr>
-
-        </tbody>
-
-    </table>
-
-    <div
-        *ngIf="loanDetails.length === 0"
-        class="text-center py-4">
-
-        <i class="bi bi-inbox fs-1 text-secondary"></i>
-
-        <p class="text-muted mt-2 mb-0">
-
-            No loan records found.
-
-        </p>
-
     </div>
 
 </div>
 
-      </div>
+                            <span class="badge bg-secondary">
+
+                                {{ selectedAccount?.documents?.length || 0 }}
+                                Documents
+
+                            </span>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="card-body px-4 pb-4">
+
+                        <div
+                            *ngIf="selectedAccount?.documents?.length > 0"
+                            class="row g-3">
+
+                            <div
+                                class="col-md-6 col-lg-4"
+                                *ngFor="
+                                    let document of selectedAccount?.documents
+                                ">
+
+                                <div class="document-card">
+
+                                    <div class="d-flex align-items-center">
+
+                                        <div class="document-icon me-3">
+
+                                            <i
+                                                class="bi"
+                                                [ngClass]="
+                                                    document.contentType?.includes('pdf')
+                                                    ? 'bi-file-earmark-pdf-fill'
+                                                    : 'bi-file-earmark-image-fill'
+                                                ">
+                                            </i>
+
+                                        </div>
+
+                                        <div class="flex-grow-1">
+
+                                            <div class="fw-bold">
+
+                                                {{ formatDocumentType(
+                                                    document.documentType
+                                                ) }}
+
+                                            </div>
+
+                                            <small class="text-muted">
+
+                                                {{ document.originalFileName
+                                                    || document.fileName }}
+
+                                            </small>
+
+                                        </div>
+
+                                    </div>
+
+
+                                    <div class="mt-3">
+
+                                        <span
+                                            class="badge me-2"
+                                            [ngClass]="
+                                                document.verified
+                                                ? 'bg-success'
+                                                : 'bg-warning text-dark'
+                                            ">
+
+                                            <i
+                                                class="bi"
+                                                [ngClass]="
+                                                    document.verified
+                                                    ? 'bi-check-circle-fill'
+                                                    : 'bi-clock-fill'
+                                                ">
+                                            </i>
+
+                                            {{ document.verified
+                                                ? 'Verified'
+                                                : 'Pending Verification' }}
+
+                                        </span>
+
+
+                                        <a
+                                            *ngIf="
+                                                document.downloadUrl ||
+                                                document.fileUrl ||
+                                                document.filePath
+                                            "
+                                            [href]="
+                                                document.downloadUrl ||
+                                                document.fileUrl ||
+                                                ('http://localhost:8080/' + document.filePath)
+                                            "
+                                            target="_blank"
+                                            class="btn btn-sm btn-outline-primary">
+
+                                            <i class="bi bi-eye me-1"></i>
+
+                                            View
+
+                                        </a>
+
+                                    </div>
+
+                                </div>
+
+                            </div>
+
+                        </div>
+
+
+                        <div
+                            *ngIf="!selectedAccount?.documents?.length"
+                            class="text-center py-4">
+
+                            <i class="bi bi-folder-x fs-1 text-secondary"></i>
+
+                            <p class="text-muted mt-2 mb-0">
+
+                                No documents uploaded.
+
+                            </p>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <!-- ================================================= -->
+                <!-- CLOSURE INFORMATION                                -->
+                <!-- ================================================= -->
+
+                <div
+                    *ngIf="selectedAccount?.accountStatus === 'CLOSED'"
+                    class="alert alert-danger border-0 rounded-4">
+
+                    <div class="d-flex">
+
+                        <i class="bi bi-lock-fill fs-4 me-3"></i>
+
+                        <div>
+
+                            <strong>Account Closed</strong>
+
+                            <div class="small mt-1">
+
+                                <strong>Reason:</strong>
+
+                                {{ selectedAccount?.closureReason
+                                    || 'No closure reason provided.' }}
+
+                            </div>
+
+                            <div
+                                *ngIf="selectedAccount?.closedAt"
+                                class="small">
+
+                                <strong>Closed:</strong>
+
+                                {{ selectedAccount.closedAt
+                                    | date:'dd MMM yyyy HH:mm' }}
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <!-- ================================================= -->
+            <!-- FOOTER                                             -->
+            <!-- ================================================= -->
+
+            <div class="modal-footer bg-white border-0 px-4 py-3">
+
+                <button
+                    type="button"
+                    class="btn btn-secondary rounded-pill px-4"
+                    (click)="closeDetailsModal()">
+
+                    <i class="bi bi-x-circle me-2"></i>
+
+                    Close
+
+                </button>
+
+            </div>
+
+        </div>
+
     </div>
-  </div>
+
 </div>

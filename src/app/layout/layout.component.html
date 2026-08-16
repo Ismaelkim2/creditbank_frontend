@@ -1,22 +1,30 @@
-<app-top-nav (mobileSidebarToggle)="toggleSidebarMobile()"></app-top-nav>
+<app-top-nav
+  (mobileSidebarToggle)="toggleSidebarMobile()">
+</app-top-nav>
 
-<div class="layout-wrapper">
+<div class="app-layout">
 
-  <!-- Admin Sidebar -->
-  <app-sidebar *ngIf="role === 'ADMIN'"></app-sidebar>
+    <aside class="app-sidebar-area">
 
-  <!-- Applicant Sidebar -->
-  <app-applicant-sidebar *ngIf="role === 'APPLICANT'"></app-applicant-sidebar>
+        <app-sidebar
+          *ngIf="role === 'ADMIN'">
+        </app-sidebar>
 
-  <!-- Data Manager Sidebar -->
-  <app-sidebar *ngIf="role === 'DATA_MANAGER'"></app-sidebar>
+        <app-applicant-sidebar
+          *ngIf="role === 'APPLICANT'">
+        </app-applicant-sidebar>
+
+        <app-sidebar
+          *ngIf="role === 'DATA_MANAGER'">
+        </app-sidebar>
+
+    </aside>
 
 
+    <!-- <main class="app-content-area">
+
+        <router-outlet></router-outlet>
+
+    </main> -->
 
 </div>
-
-
- <div>
-<router-outlet *ngIf="role=== 'APPLICANT'"></router-outlet>
-
- </div> 

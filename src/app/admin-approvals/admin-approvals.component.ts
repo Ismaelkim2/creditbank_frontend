@@ -4,6 +4,7 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { Subject, debounceTime } from 'rxjs';
 import { Router } from '@angular/router';
+import { environment } from '../../environments/environment.prod';
 
 interface User {
   id: number;
@@ -20,7 +21,7 @@ interface User {
 })
 export class AdminApprovalsComponent implements OnInit {
 
-  private baseUrl = 'http://localhost:8080/api/auth';
+  private baseUrl = `${environment.apiUrl}/auth`;
 
   pendingUsers: User[] = [];
   allUsers: User[] = [];

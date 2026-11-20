@@ -1,0 +1,403 @@
+
+<div class="lease-page container-fluid py-4">
+
+  <!-- PAGE HEADER -->
+  <div class="lease-page-header d-flex flex-wrap justify-content-between align-items-center gap-3 mb-4">
+    <div>
+      <div class="lease-eyebrow">
+        <i class="fas fa-file-contract me-2"></i> PROPERTY OPERATIONS
+      </div>
+      <h2 class="lease-title mb-1">Lease Management</h2>
+      <p class="lease-subtitle mb-0">
+        Create tenancy agreements, manage occupancy and control lease status.
+      </p>
+    </div>
+
+    <button type="button"
+            class="btn btn-outline-primary refresh-btn"
+            (click)="refresh()"
+            [disabled]="loadingLookups">
+      <i class="fas fa-sync-alt me-2"
+         [class.fa-spin]="loadingLookups"></i>
+      Refresh data
+    </button>
+  </div>
+
+  <!-- FEEDBACK -->
+  <div *ngIf="pageError" class="alert alert-danger lease-alert" role="alert">
+    <i class="fas fa-exclamation-circle me-2"></i>{{ pageError }}
+    <button type="button" class="btn-close float-end"
+            aria-label="Dismiss" (click)="pageError = ''"></button>
+  </div>
+
+  <div *ngIf="successMessage" class="alert alert-success lease-alert" role="status">
+    <i class="fas fa-check-circle me-2"></i>{{ successMessage }}
+    <button type="button" class="btn-close float-end"
+            aria-label="Dismiss" (click)="successMessage = ''"></button>
+  </div>
+
+  <!-- SUMMARY CARDS -->
+  <div class="row g-3 mb-4">
+    <div class="col-6 col-xl-3">
+      <div class="lease-stat-card">
+        <div class="lease-stat-icon icon-blue">
+          <i class="fas fa-file-signature"></i>
+        </div>
+        <div>
+          <span class="lease-stat-label">Total leases</span>
+          <h3>{{ leases.length }}</h3>
+          <small>All recorded agreements</small>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-6 col-xl-3">
+      <div class="lease-stat-card">
+        <div class="lease-stat-icon icon-green">
+          <i class="fas fa-check-circle"></i>
+        </div>
+        <div>
+          <span class="lease-stat-label">Active leases</span>
+          <h3>{{ activeCount }}</h3>
+          <small>Currently active agreements</small>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-6 col-xl-3">
+      <div class="lease-stat-card">
+        <div class="lease-stat-icon icon-amber">
+          <i class="fas fa-hourglass-half"></i>
+        </div>
+        <div>
+          <span class="lease-stat-label">Draft leases</span>
+          <h3>{{ draftCount }}</h3>
+          <small>Awaiting activation</small>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-6 col-xl-3">
+      <div class="lease-stat-card">
+        <div class="lease-stat-icon icon-purple">
+          <i class="fas fa-coins"></i>
+        </div>
+        <div class="lease-stat-value">
+          <span class="lease-stat-label">Active monthly rent</span>
+          <h3>{{ activeMonthlyRent | currency:'KES':'symbol':'1.2-2' }}</h3>
+          <small>Combined rent on active leases</small>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- REGISTRATION PANEL -->
+  <section class="lease-panel mb-4">
+    <div class="lease-panel-header">
+      <div class="d-flex align-items-center gap-3">
+        <div class="panel-heading-icon">
+          <i class="fas fa-file-circle-plus"></i>
+        </div>
+        <div>
+          <h4 class="mb-1">Create a lease</h4>
+          <p class="mb-0">Connect a tenant to a vacant unit and define the agreement.</p>
+        </div>
+      </div>
+      <span class="required-note">* Required fields</span>
+    </div>
+
+    <div *ngIf="formError" class="alert alert-warning mx-3 mt-3 mb-0" role="alert">
+      <i class="fas fa-exclamation-triangle me-2"></i>{{ formError }}
+    </div>
+
+    <div *ngIf="loadingLookups" class="lookup-loading">
+      <span class="spinner-border spinner-border-sm me-2" role="status"></span>
+      Loading tenants, properties and lease records...
+    </div>
+
+    <form [formGroup]="leaseForm" (ngSubmit)="submitLease()" novalidate>
+      <div class="lease-form-body">
+
+        <div class="form-section-title">
+          <span>01</span>
+          Tenant and unit
+        </div>
+
+        <div class="row g-3">
+          <div class="col-12 col-lg-6">
+            <label for="tenantId" class="form-label">Tenant *</label>
+            <select id="tenantId" class="form-select"
+                    formControlName="tenantId"
+                    [class.is-invalid]="isInvalid('tenantId')">
+              <option [ngValue]="null">Select a tenant</option>
+              <option *ngFor="let tenant of availableTenants"
+                      [ngValue]="tenant.id">
+                {{ tenant.fullName }}
+                <ng-container *ngIf="tenant.identificationNumber">
+                  — {{ tenant.identificationNumber }}
+                </ng-container>
+              </option>
+            </select>
+            <div class="invalid-feedback">Select an active tenant.</div>
+            <small class="field-hint">Only tenants returned by your resident API are listed.</small>
+          </div>
+
+          <div class="col-12 col-lg-6">
+            <label for="propertyId" class="form-label">Property *</label>
+            <select id="propertyId" class="form-select"
+                    formControlName="propertyId"
+                    [class.is-invalid]="isInvalid('propertyId')">
+              <option [ngValue]="null">Select a property</option>
+              <option *ngFor="let property of availableProperties"
+                      [ngValue]="property.id">
+                {{ property.name }}
+                <ng-container *ngIf="property.town"> — {{ property.town }}</ng-container>
+              </option>
+            </select>
+            <div class="invalid-feedback">Select a property.</div>
+          </div>
+
+          <div class="col-12 col-lg-6">
+            <label for="unitId" class="form-label">Vacant unit *</label>
+            <select id="unitId" class="form-select"
+                    formControlName="unitId"
+                    [class.is-invalid]="isInvalid('unitId')"
+                    [disabled]="!selectedPropertyId || loadingUnits">
+              <option [ngValue]="null">
+                {{ loadingUnits ? 'Loading units...' :
+                   (!selectedPropertyId ? 'Select a property first' : 'Select a vacant unit') }}
+              </option>
+              <option *ngFor="let unit of units" [ngValue]="unit.id">
+                {{ unit.unitNumber }}
+                <ng-container *ngIf="unit.unitType"> — {{ unit.unitType }}</ng-container>
+                — {{ unit.monthlyRent | currency:'KES':'symbol':'1.0-0' }}/month
+              </option>
+            </select>
+            <div class="invalid-feedback">Select an available unit.</div>
+            <small class="field-hint">
+              <i class="fas fa-info-circle me-1"></i>
+              Units are filtered to those marked VACANT. The backend must verify availability again when saving and activating.
+            </small>
+          </div>
+        </div>
+
+        <div class="form-section-title mt-4">
+          <span>02</span>
+          Lease period and payment terms
+        </div>
+
+        <div class="row g-3">
+          <div class="col-12 col-md-6 col-xl-3">
+            <label for="startDate" class="form-label">Start date *</label>
+            <input id="startDate" type="date" class="form-control"
+                   formControlName="startDate"
+                   [class.is-invalid]="isInvalid('startDate')">
+            <div class="invalid-feedback">Enter the lease start date.</div>
+          </div>
+
+          <div class="col-12 col-md-6 col-xl-3">
+            <label for="endDate" class="form-label">End date *</label>
+            <input id="endDate" type="date" class="form-control"
+                   formControlName="endDate"
+                   [class.is-invalid]="isInvalid('endDate')">
+            <div class="invalid-feedback">Enter the lease end date.</div>
+          </div>
+
+          <div class="col-12 col-md-6 col-xl-3">
+            <label for="monthlyRent" class="form-label">Monthly rent (KES) *</label>
+            <div class="input-group">
+              <span class="input-group-text">KES</span>
+              <input id="monthlyRent" type="number" min="0.01" step="0.01"
+                     class="form-control" formControlName="monthlyRent"
+                     [class.is-invalid]="isInvalid('monthlyRent')">
+            </div>
+            <div *ngIf="isInvalid('monthlyRent')" class="field-error">
+              Monthly rent must be greater than zero.
+            </div>
+          </div>
+
+          <div class="col-12 col-md-6 col-xl-3">
+            <label for="depositAmount" class="form-label">Deposit (KES) *</label>
+            <div class="input-group">
+              <span class="input-group-text">KES</span>
+              <input id="depositAmount" type="number" min="0" step="0.01"
+                     class="form-control" formControlName="depositAmount"
+                     [class.is-invalid]="isInvalid('depositAmount')">
+            </div>
+            <div *ngIf="isInvalid('depositAmount')" class="field-error">
+              Deposit cannot be negative.
+            </div>
+          </div>
+
+          <div class="col-12 col-md-6 col-xl-3">
+            <label for="rentDueDay" class="form-label">Rent due day *</label>
+            <select id="rentDueDay" class="form-select"
+                    formControlName="rentDueDay"
+                    [class.is-invalid]="isInvalid('rentDueDay')">
+              <option *ngFor="let day of [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28]"
+                      [ngValue]="day">
+                {{ day }}{{ day === 1 ? 'st' : day === 2 ? 'nd' : day === 3 ? 'rd' : 'th' }} of the month
+              </option>
+            </select>
+            <div class="invalid-feedback">Choose a due day from 1 to 28.</div>
+            <small class="field-hint">Days 1–28 avoid month-length ambiguity.</small>
+          </div>
+
+          <div class="col-12">
+            <label for="terms" class="form-label">Lease terms and special conditions</label>
+            <textarea id="terms" rows="4" maxlength="10000"
+                      class="form-control terms-input"
+                      formControlName="terms"
+                      placeholder="Enter agreed conditions, notice requirements, utility responsibilities and other terms..."></textarea>
+            <div class="d-flex justify-content-between field-hint">
+              <span>Optional. Avoid entering unnecessary sensitive personal information.</span>
+              <span>{{ leaseForm.get('terms')?.value?.length || 0 }}/10000</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="lease-form-footer">
+          <div class="form-security-note">
+            <i class="fas fa-shield-alt me-2"></i>
+            The lease is created as a draft. Activation is a separate action.
+          </div>
+
+          <div class="d-flex flex-wrap gap-2">
+            <button type="button" class="btn btn-light border"
+                    (click)="resetForm()" [disabled]="saving">
+              Clear form
+            </button>
+            <button type="submit" class="btn btn-primary lease-submit-btn"
+                    [disabled]="saving || loadingLookups || loadingUnits">
+              <span *ngIf="saving" class="spinner-border spinner-border-sm me-2"></span>
+              <i *ngIf="!saving" class="fas fa-save me-2"></i>
+              {{ saving ? 'Saving lease...' : 'Create draft lease' }}
+            </button>
+          </div>
+        </div>
+      </div>
+    </form>
+  </section>
+
+  <!-- LEASE REGISTER -->
+  <section class="lease-panel">
+    <div class="lease-panel-header register-header">
+      <div>
+        <h4 class="mb-1">Lease register</h4>
+        <p class="mb-0">Search agreements, monitor their status and take permitted actions.</p>
+      </div>
+      <span class="record-count">{{ filteredLeases.length }} records</span>
+    </div>
+
+    <div class="lease-toolbar">
+<div class="lease-search">
+  <span class="lease-search-icon">
+    <i class="fas fa-search"></i>
+  </span>
+
+  <input
+    type="search"
+    class="form-control"
+    [(ngModel)]="searchTerm"
+    [ngModelOptions]="{ standalone: true }"
+    placeholder="Search lease code, tenant, property or unit..."
+    aria-label="Search leases">
+</div>
+
+      <select class="form-select status-filter"
+              [(ngModel)]="statusFilter"
+              [ngModelOptions]="{ standalone: true }"
+              aria-label="Filter by lease status">
+        <option value="ALL">All statuses</option>
+        <option value="DRAFT">Draft</option>
+        <option value="ACTIVE">Active</option>
+        <option value="TERMINATED">Terminated</option>
+        <option value="EXPIRED">Expired</option>
+      </select>
+    </div>
+
+    <div *ngIf="loading" class="lookup-loading">
+      <span class="spinner-border spinner-border-sm me-2"></span>
+      Loading leases...
+    </div>
+
+    <div *ngIf="!filteredLeases.length" class="empty-state">
+      <div class="empty-state-icon"><i class="fas fa-file-contract"></i></div>
+      <h5>No leases found</h5>
+      <p class="mb-0">
+        {{ searchTerm || statusFilter !== 'ALL'
+            ? 'Try changing your search or status filter.'
+            : 'Create your first lease using the form above.' }}
+      </p>
+    </div>
+
+    <div *ngIf="filteredLeases.length" class="table-responsive lease-table-wrap">
+      <table class="table lease-table align-middle mb-0">
+        <thead>
+          <tr>
+            <th>LEASE</th>
+            <th>TENANT / UNIT</th>
+            <th>LEASE PERIOD</th>
+            <th>MONTHLY RENT</th>
+            <th>DEPOSIT</th>
+            <th>STATUS</th>
+            <th class="text-end">ACTIONS</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let lease of filteredLeases; trackBy: trackByLease">
+            <td>
+              <div class="lease-code">{{ lease.leaseCode }}</div>
+              <small class="text-muted">{{ lease.propertyName }}</small>
+            </td>
+            <td>
+              <div class="tenant-name">{{ lease.tenantName }}</div>
+              <small class="text-muted">Unit {{ lease.unitNumber }}</small>
+            </td>
+            <td>
+              <div>{{ lease.startDate | date:'dd MMM yyyy' }}</div>
+              <small class="text-muted">to {{ lease.endDate | date:'dd MMM yyyy' }}</small>
+            </td>
+            <td class="money-cell">
+              {{ lease.monthlyRent | currency:'KES':'symbol':'1.2-2' }}
+            </td>
+            <td>
+              {{ lease.depositAmount | currency:'KES':'symbol':'1.2-2' }}
+            </td>
+            <td>
+              <span class="lease-status" [ngClass]="statusClass(lease.status)">
+                {{ lease.status }}
+              </span>
+            </td>
+            <td class="text-end action-cell">
+              <button *ngIf="lease.status === 'DRAFT'"
+                      type="button" class="btn btn-sm btn-outline-success me-1"
+                      (click)="activateLease(lease)"
+                      [disabled]="actionLeaseId !== null"
+                      title="Activate lease">
+                <i class="fas fa-check me-1"></i>Activate
+              </button>
+              <button *ngIf="lease.status === 'ACTIVE'"
+                      type="button" class="btn btn-sm btn-outline-danger"
+                      (click)="terminateLease(lease)"
+                      [disabled]="actionLeaseId !== null"
+                      title="Terminate lease">
+                <i class="fas fa-ban me-1"></i>Terminate
+              </button>
+              <span *ngIf="lease.status === 'TERMINATED' || lease.status === 'EXPIRED'"
+                    class="text-muted small">No actions</span>
+              <span *ngIf="actionLeaseId === lease.id"
+                    class="spinner-border spinner-border-sm ms-1"
+                    role="status" aria-label="Processing action"></span>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="lease-register-footer">
+      <span><i class="fas fa-info-circle me-1"></i> Lease actions are recorded by the backend.</span>
+      <span>{{ terminatedCount }} terminated</span>
+    </div>
+  </section>
+</div>

@@ -1,98 +1,92 @@
-/* ============================================================
-   CREDIBANK — CUSTOMER CREDIT INTELLIGENCE
-   PREMIUM LIGHT ENTERPRISE DESIGN SYSTEM
-   EXECUTIVE FINANCIAL PROFILE
-============================================================ */
-
 :host {
-
-  /* ==========================================================
-     BRAND
-  ========================================================== */
 
   --ci-primary: #2563eb;
   --ci-primary-dark: #1d4ed8;
-  --ci-primary-deep: #1e40af;
-
+  --ci-primary-deep: #1e3a8a;
   --ci-primary-soft: #eff6ff;
   --ci-primary-light: #dbeafe;
 
+  --ci-blue-50: #f8fbff;
+  --ci-blue-100: #eef6ff;
+  --ci-blue-200: #dbeafe;
+  --ci-blue-300: #bfdbfe;
+
   --ci-success: #059669;
+  --ci-success-dark: #047857;
   --ci-success-soft: #ecfdf5;
   --ci-success-border: #a7f3d0;
 
   --ci-warning: #d97706;
+  --ci-warning-dark: #b45309;
   --ci-warning-soft: #fffbeb;
   --ci-warning-border: #fde68a;
 
   --ci-danger: #dc2626;
+  --ci-danger-dark: #b91c1c;
   --ci-danger-soft: #fef2f2;
   --ci-danger-border: #fecaca;
 
   --ci-info: #0891b2;
+  --ci-info-dark: #0e7490;
   --ci-info-soft: #ecfeff;
 
-  /* ==========================================================
-     TEXT
-  ========================================================== */
+  --ci-purple: #7c3aed;
+  --ci-purple-soft: #f5f3ff;
 
   --ci-dark: #0f172a;
   --ci-dark-2: #1e293b;
-
   --ci-text: #334155;
   --ci-muted: #64748b;
   --ci-light-text: #94a3b8;
+  --ci-faint-text: #cbd5e1;
 
-  /* ==========================================================
-     SURFACES
-  ========================================================== */
-
-  --ci-background: #f6f9fd;
+  --ci-background: #f5f8fc;
   --ci-white: #ffffff;
-
-  --ci-surface-blue:
-    linear-gradient(
-      135deg,
-      #f8fbff 0%,
-      #eef6ff 100%
-    );
-
-  --ci-surface-blue-strong:
-    linear-gradient(
-      135deg,
-      #eff6ff 0%,
-      #e0efff 100%
-    );
 
   --ci-border: #e2e8f0;
   --ci-border-blue: #d7e7fb;
-
-  /* ==========================================================
-     RADIUS
-  ========================================================== */
 
   --ci-radius-xl: 24px;
   --ci-radius-lg: 18px;
   --ci-radius-md: 14px;
   --ci-radius-sm: 10px;
 
-  /* ==========================================================
-     SHADOWS
-  ========================================================== */
-
   --ci-shadow:
-    0 18px 45px rgba(15, 23, 42, .07);
+    0 20px 50px rgba(15, 23, 42, .075);
 
   --ci-shadow-soft:
-    0 8px 26px rgba(15, 23, 42, .06);
+    0 8px 28px rgba(15, 23, 42, .055);
 
   --ci-shadow-blue:
-    0 12px 30px rgba(37, 99, 235, .10);
+    0 14px 34px rgba(37, 99, 235, .105);
+
+  --ci-shadow-hover:
+    0 18px 38px rgba(37, 99, 235, .13);
 }
 
 
 /* ============================================================
-   PAGE
+   2. GLOBAL BOX MODEL
+============================================================ */
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+img {
+  max-width: 100%;
+}
+
+button {
+  font-family: inherit;
+  -webkit-tap-highlight-color: transparent;
+}
+
+
+/* ============================================================
+   3. PAGE
 ============================================================ */
 
 .customer-intelligence-page {
@@ -101,16 +95,20 @@
 
   background:
     radial-gradient(
-      circle at 85% 0%,
-      rgba(37, 99, 235, .055),
+      circle at 88% 0%,
+      rgba(37, 99, 235, .075),
       transparent 25%
     ),
     radial-gradient(
-      circle at 10% 40%,
-      rgba(14, 165, 233, .025),
-      transparent 25%
+      circle at 8% 42%,
+      rgba(14, 165, 233, .035),
+      transparent 24%
     ),
-    var(--ci-background);
+    linear-gradient(
+      180deg,
+      #f9fbff 0%,
+      #f5f8fc 100%
+    );
 
   color: var(--ci-text);
 
@@ -123,11 +121,14 @@
     sans-serif;
 
   font-size: 14px;
+
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
 }
 
 
 /* ============================================================
-   HERO
+   4. HERO
 ============================================================ */
 
 .ci-hero {
@@ -144,54 +145,14 @@
     linear-gradient(
       180deg,
       #ffffff 0%,
-      #f8fbff 62%,
+      #f9fbff 60%,
       #f1f7ff 100%
     );
 
-  border-bottom:
-    1px solid var(--ci-border);
+  border-bottom: 1px solid var(--ci-border);
 
   box-shadow:
-    0 8px 30px rgba(15, 23, 42, .035);
-}
-
-
-/* ============================================================
-   HERO GLOWS
-============================================================ */
-
-.ci-hero-glow {
-
-  position: absolute;
-
-  width: 420px;
-  height: 420px;
-
-  border-radius: 50%;
-
-  filter: blur(90px);
-
-  opacity: .28;
-
-  pointer-events: none;
-}
-
-
-.ci-glow-one {
-
-  top: -280px;
-  right: 3%;
-
-  background: #bfdbfe;
-}
-
-
-.ci-glow-two {
-
-  bottom: -320px;
-  left: 18%;
-
-  background: #bae6fd;
+    0 10px 32px rgba(15, 23, 42, .035);
 }
 
 
@@ -204,16 +165,55 @@
 
 
 /* ============================================================
-   BREADCRUMB / TITLE
+   5. HERO GLOWS
+============================================================ */
+
+.ci-hero-glow {
+
+  position: absolute;
+
+  width: 440px;
+  height: 440px;
+
+  border-radius: 50%;
+
+  filter: blur(95px);
+
+  opacity: .25;
+
+  pointer-events: none;
+}
+
+
+.ci-glow-one {
+
+  top: -290px;
+  right: 2%;
+
+  background: #bfdbfe;
+}
+
+
+.ci-glow-two {
+
+  bottom: -330px;
+  left: 16%;
+
+  background: #bae6fd;
+}
+
+
+/* ============================================================
+   6. BREADCRUMB / TITLE
 ============================================================ */
 
 .ci-breadcrumb {
 
   display: flex;
-
   align-items: center;
-
   justify-content: space-between;
+
+  gap: 20px;
 
   margin-bottom: 24px;
 }
@@ -221,8 +221,9 @@
 
 .breadcrumb-left {
 
-  display: flex;
+  min-width: 0;
 
+  display: flex;
   align-items: center;
 
   gap: 14px;
@@ -231,32 +232,32 @@
 
 .breadcrumb-icon {
 
-  width: 46px;
-  height: 46px;
+  width: 48px;
+  height: 48px;
+
+  flex: 0 0 48px;
 
   display: flex;
-
   align-items: center;
   justify-content: center;
 
-  border-radius: 14px;
+  border-radius: 15px;
 
   background:
     linear-gradient(
-      135deg,
+      145deg,
       #eff6ff,
       #dbeafe
     );
 
-  border:
-    1px solid #d7e7fb;
+  border: 1px solid #d7e7fb;
 
   color: var(--ci-primary);
 
   font-size: 18px;
 
   box-shadow:
-    0 6px 15px rgba(37,99,235,.08);
+    0 8px 20px rgba(37, 99, 235, .09);
 }
 
 
@@ -267,11 +268,10 @@
 
   color: var(--ci-primary);
 
-  font-size: 11px;
+  font-size: 10px;
+  font-weight: 850;
 
-  font-weight: 800;
-
-  letter-spacing: .13em;
+  letter-spacing: .14em;
 
   text-transform: uppercase;
 }
@@ -283,15 +283,16 @@
 
   color: var(--ci-dark);
 
-  font-size: 24px;
+  font-size: 25px;
+  font-weight: 800;
 
-  font-weight: 750;
-
-  letter-spacing: -.03em;
+  letter-spacing: -.035em;
 }
 
 
 .loan-reference {
+
+  flex: 0 0 auto;
 
   text-align: right;
 }
@@ -304,8 +305,7 @@
   color: var(--ci-light-text);
 
   font-size: 10px;
-
-  font-weight: 800;
+  font-weight: 850;
 
   letter-spacing: .13em;
 
@@ -322,30 +322,35 @@
   color: var(--ci-primary-dark);
 
   font-size: 16px;
+  font-weight: 800;
 
-  font-weight: 750;
-
-  letter-spacing: .04em;
+  letter-spacing: .045em;
 }
 
 
 /* ============================================================
-   CUSTOMER HERO CARD
+   7. CUSTOMER HERO CARD
+   IMPORTANT:
+   IDENTITY + STATUS ARE TWO CONTROLLED COLUMNS
 ============================================================ */
 
 .customer-hero-card {
 
   position: relative;
 
-  display: flex;
+  width: 100%;
+
+  display: grid;
+
+  grid-template-columns:
+    minmax(0, 1fr)
+    auto;
 
   align-items: center;
 
-  justify-content: space-between;
+  gap: 2px;
 
-  gap: 32px;
-
-  padding: 28px;
+  padding: 18px 10px;
 
   border-radius: var(--ci-radius-xl);
 
@@ -353,17 +358,18 @@
     linear-gradient(
       135deg,
       #ffffff 0%,
-      #ffffff 62%,
+      #ffffff 60%,
       #f1f7ff 100%
     );
 
-  border:
-    1px solid #dfe8f3;
+  border: 1px solid #dfe8f3;
 
   box-shadow:
-    0 16px 38px rgba(15,23,42,.075);
+    0 18px 42px rgba(15, 23, 42, .075);
 
   overflow: hidden;
+
+  isolation: isolate;
 }
 
 
@@ -373,8 +379,8 @@
 
   position: absolute;
 
-  left: 0;
   top: 0;
+  left: 0;
   bottom: 0;
 
   width: 5px;
@@ -385,20 +391,31 @@
       #2563eb,
       #38bdf8
     );
+
+  z-index: -1;
+}
+
+
+.customer-hero-card:hover {
+
+  box-shadow:
+    0 22px 48px rgba(15, 23, 42, .09);
 }
 
 
 /* ============================================================
-   CUSTOMER IDENTITY
+   8. CUSTOMER IDENTITY
 ============================================================ */
 
 .customer-identity {
 
-  display: flex;
+  min-width: 0;
+  max-width: 100%;
 
+  display: flex;
   align-items: center;
 
-  gap: 21px;
+  gap: 18px;
 }
 
 
@@ -406,35 +423,35 @@
 
   position: relative;
 
-  width: 90px;
-  height: 90px;
+  width: 82px;
+  height: 82px;
 
-  flex-shrink: 0;
+  flex: 0 0 82px;
 }
 
 
 .profile-image,
 .profile-placeholder {
 
-  width: 100%;
-  height: 100%;
+  width: 82px;
+  height: 82px;
 
-  border-radius: 23px;
+  display: block;
+
+  border-radius: 21px;
 
   object-fit: cover;
 
-  border:
-    3px solid #ffffff;
+  border: 3px solid #ffffff;
 
   box-shadow:
-    0 9px 24px rgba(15,23,42,.14);
+    0 10px 26px rgba(15, 23, 42, .15);
 }
 
 
 .profile-placeholder {
 
   display: flex;
-
   align-items: center;
   justify-content: center;
 
@@ -445,9 +462,9 @@
       #60a5fa
     );
 
-  color: white;
+  color: #ffffff;
 
-  font-size: 29px;
+  font-size: 27px;
 }
 
 
@@ -455,15 +472,15 @@
 
   position: absolute;
 
-  right: 1px;
-  bottom: 1px;
+  right: 0;
+  bottom: 0;
 
-  width: 17px;
-  height: 17px;
+  width: 16px;
+  height: 16px;
 
   border-radius: 50%;
 
-  border: 3px solid white;
+  border: 3px solid #ffffff;
 }
 
 
@@ -472,29 +489,35 @@
   background: #22c55e;
 
   box-shadow:
-    0 0 0 3px rgba(34,197,94,.12);
+    0 0 0 3px rgba(34, 197, 94, .12);
 }
 
 
 /* ============================================================
-   CUSTOMER TEXT
+   9. CUSTOMER TEXT
 ============================================================ */
+
+.customer-identity-content {
+
+  min-width: 0;
+
+  flex: 1 1 auto;
+}
+
 
 .customer-overline {
 
   display: flex;
-
   align-items: center;
 
   gap: 7px;
 
   color: var(--ci-primary);
 
-  font-size: 11px;
+  font-size: 9px;
+  font-weight: 850;
 
-  font-weight: 800;
-
-  letter-spacing: .12em;
+  letter-spacing: .13em;
 
   text-transform: uppercase;
 }
@@ -502,18 +525,22 @@
 
 .customer-identity-content h2 {
 
-  margin: 6px 0 4px;
+  max-width: 100%;
+
+  margin: 5px 0 4px;
 
   color: var(--ci-dark);
 
   font-size:
-    clamp(28px, 3vw, 34px);
+    clamp(25px, 2.6vw, 34px);
 
   line-height: 1.12;
 
-  font-weight: 780;
+  font-weight: 800;
 
   letter-spacing: -.045em;
+
+  overflow-wrap: anywhere;
 }
 
 
@@ -523,7 +550,7 @@
 
   color: var(--ci-muted);
 
-  font-size: 13px;
+  font-size: 12px;
 
   line-height: 1.5;
 }
@@ -531,72 +558,124 @@
 
 .customer-identity-content p span {
 
-  padding: 0 8px;
+  padding: 0 7px;
 
   color: #cbd5e1;
 }
 
 
 /* ============================================================
-   CUSTOMER IDENTIFIERS
+   10. CUSTOMER IDENTIFIERS
 ============================================================ */
 
 .customer-identifiers {
 
-  display: flex;
+  max-width: 100%;
 
+  display: flex;
   flex-wrap: wrap;
 
-  gap: 8px;
+  gap: 7px;
 
-  margin-top: 16px;
+  margin-top: 13px;
 }
 
 
 .customer-identifiers span {
 
-  display: inline-flex;
+  max-width: 100%;
 
+  display: inline-flex;
   align-items: center;
 
-  gap: 7px;
+  gap: 6px;
 
-  padding: 8px 11px;
+  padding: 7px 10px;
 
   border-radius: 9px;
 
-  background: #f7f9fc;
+  background:
+    linear-gradient(
+      180deg,
+      #ffffff,
+      #f7f9fc
+    );
 
-  border:
-    1px solid #e2e8f0;
+  border: 1px solid #e2e8f0;
 
   color: #475569;
 
-  font-size: 11px;
-
+  font-size: 10px;
   font-weight: 650;
 
   line-height: 1.2;
+
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+
+  transition:
+    border-color .2s ease,
+    transform .2s ease;
+}
+
+
+.customer-identifiers span:hover {
+
+  border-color: #cbdcf2;
+
+  transform: translateY(-1px);
 }
 
 
 .customer-identifiers i {
 
+  flex: 0 0 auto;
+
   color: var(--ci-primary);
 
-  font-size: 11px;
+  font-size: 10px;
 }
 
 
 /* ============================================================
-   CUSTOMER STATUS
+   11. CUSTOMER STATUS AREA
+   COMPACT RIGHT-SIDE COLUMN
 ============================================================ */
 
 .customer-status-area {
 
-  min-width: 190px;
+  min-width: 0;
 
-  text-align: right;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+
+  gap: 10px;
+
+  padding-left: 18px;
+
+  border-left: 1px solid #e6edf6;
+}
+
+
+/* ============================================================
+   12. STATUS SUMMARY
+============================================================ */
+
+.status-summary {
+
+  flex: 0 0 auto;
+
+  display: flex;
+  flex-direction: column;
+
+  align-items: flex-end;
+  justify-content: center;
+
+  gap: 5px;
+
+  min-width: 116px;
 }
 
 
@@ -604,39 +683,50 @@
 
   display: block;
 
-  margin-bottom: 8px;
-
   color: var(--ci-light-text);
 
-  font-size: 10px;
+  font-size: 8px;
+  font-weight: 850;
 
-  font-weight: 800;
-
-  letter-spacing: .13em;
+  letter-spacing: .11em;
 
   text-transform: uppercase;
+
+  white-space: nowrap;
 }
 
 
 .premium-status {
 
   display: inline-flex;
-
   align-items: center;
+  justify-content: center;
 
-  gap: 8px;
+  gap: 6px;
 
-  padding: 10px 15px;
+  min-height: 32px;
+
+  padding: 6px 11px;
 
   border-radius: 999px;
 
+  font-size: 10px;
+  font-weight: 850;
+
+  letter-spacing: .035em;
+
+  white-space: nowrap;
+
+  border: 1px solid transparent;
+
+  box-shadow:
+    0 4px 12px rgba(15, 23, 42, .045);
+}
+
+
+.premium-status i {
+
   font-size: 11px;
-
-  font-weight: 800;
-
-  text-transform: uppercase;
-
-  letter-spacing: .04em;
 }
 
 
@@ -647,34 +737,49 @@
 .status-approved,
 .status-paid {
 
-  color: #047857;
+  color: var(--ci-success-dark);
 
-  background: var(--ci-success-soft);
+  background:
+    linear-gradient(
+      135deg,
+      #f0fdf7,
+      #ecfdf5
+    );
 
-  border:
-    1px solid var(--ci-success-border);
+  border-color:
+    var(--ci-success-border);
 }
 
 
 .status-pending {
 
-  color: #b45309;
+  color: var(--ci-warning-dark);
 
-  background: var(--ci-warning-soft);
+  background:
+    linear-gradient(
+      135deg,
+      #fffdf4,
+      #fffbeb
+    );
 
-  border:
-    1px solid var(--ci-warning-border);
+  border-color:
+    var(--ci-warning-border);
 }
 
 
 .status-rejected {
 
-  color: #b91c1c;
+  color: var(--ci-danger-dark);
 
-  background: var(--ci-danger-soft);
+  background:
+    linear-gradient(
+      135deg,
+      #fff7f7,
+      #fef2f2
+    );
 
-  border:
-    1px solid var(--ci-danger-border);
+  border-color:
+    var(--ci-danger-border);
 }
 
 
@@ -682,21 +787,777 @@
 
   color: #c2410c;
 
-  background: #fff7ed;
+  background:
+    linear-gradient(
+      135deg,
+      #fffaf5,
+      #fff7ed
+    );
 
-  border:
-    1px solid #fed7aa;
+  border-color:
+    #fed7aa;
 }
 
+
+.status-active {
+
+  color: #0369a1;
+
+  background:
+    linear-gradient(
+      135deg,
+      #eff6ff,
+      #f0f9ff
+    );
+
+  border-color:
+    #bfdbfe;
+}
+
+
 /* ============================================================
-   EXECUTIVE FINANCIAL SNAPSHOT
+   13. HERO APPROVE / REJECT ACTIONS
+   STANDARD COMPACT SIZE
+============================================================ */
+
+.hero-decision-actions {
+
+  flex: 0 0 auto;
+
+  display: flex;
+  align-items: center;
+
+  gap: 6px;
+
+  padding: 4px;
+
+  border:
+    1px solid #e2e8f0;
+
+  border-radius: 13px;
+
+  background: #ffffff;
+
+  box-shadow:
+    0 5px 16px rgba(15, 23, 42, .055);
+}
+
+
+/* ============================================================
+   14. HERO DECISION BUTTON
+============================================================ */
+
+.hero-decision-button {
+
+  width: 104px;
+  min-width: 104px;
+
+  height: 40px;
+
+  display: flex;
+  align-items: center;
+
+  gap: 7px;
+
+  padding: 5px 8px;
+
+  border-radius: 9px;
+
+  border: 1px solid transparent;
+
+  cursor: pointer;
+
+  text-align: left;
+
+  transition:
+    transform .18s ease,
+    box-shadow .18s ease,
+    border-color .18s ease;
+}
+
+
+.hero-decision-button:hover:not(:disabled) {
+
+  transform: translateY(-1px);
+}
+
+
+.hero-decision-button:active:not(:disabled) {
+
+  transform: translateY(0);
+}
+
+
+.hero-decision-button:disabled {
+
+  opacity: .6;
+
+  cursor: not-allowed;
+}
+
+
+/* ============================================================
+   15. HERO DECISION ICON
+============================================================ */
+
+.hero-decision-icon {
+
+  width: 27px;
+  height: 27px;
+
+  flex: 0 0 27px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  border-radius: 7px;
+
+  color: #ffffff;
+
+  font-size: 10px;
+}
+
+
+/* ============================================================
+   16. HERO DECISION CONTENT
+============================================================ */
+
+.hero-decision-content {
+
+  min-width: 0;
+
+  overflow: hidden;
+}
+
+
+.hero-decision-content strong {
+
+  display: block;
+
+  color: inherit;
+
+  font-size: 9px;
+  font-weight: 850;
+
+  line-height: 1.2;
+
+  white-space: nowrap;
+}
+
+
+.hero-decision-content small {
+
+  display: block;
+
+  margin-top: 2px;
+
+  color: var(--ci-muted);
+
+  font-size: 7px;
+  font-weight: 650;
+
+  line-height: 1.1;
+
+  white-space: nowrap;
+}
+
+
+/* ============================================================
+   17. APPROVE BUTTON
+============================================================ */
+
+.hero-approve-button {
+
+  color: #047857;
+
+  border-color: #a7f3d0;
+
+  background:
+    linear-gradient(
+      135deg,
+      #f0fdf4,
+      #ecfdf5
+    );
+}
+
+
+.hero-approve-button .hero-decision-icon {
+
+  background:
+    linear-gradient(
+      135deg,
+      #10b981,
+      #059669
+    );
+
+  box-shadow:
+    0 3px 8px rgba(5, 150, 105, .17);
+}
+
+
+.hero-approve-button:hover:not(:disabled) {
+
+  border-color: #34d399;
+
+  box-shadow:
+    0 6px 15px rgba(5, 150, 105, .10);
+}
+
+
+/* ============================================================
+   18. REJECT BUTTON
+============================================================ */
+
+.hero-reject-button {
+
+  color: #b91c1c;
+
+  border-color: #fecaca;
+
+  background:
+    linear-gradient(
+      135deg,
+      #fff7f7,
+      #fef2f2
+    );
+}
+
+
+.hero-reject-button .hero-decision-icon {
+
+  background:
+    linear-gradient(
+      135deg,
+      #ef4444,
+      #dc2626
+    );
+
+  box-shadow:
+    0 3px 8px rgba(220, 38, 38, .15);
+}
+
+
+.hero-reject-button:hover:not(:disabled) {
+
+  border-color: #f87171;
+
+  box-shadow:
+    0 6px 15px rgba(220, 38, 38, .09);
+}
+
+
+/* ============================================================
+   19. HERO DECISION RECORDED
+============================================================ */
+
+.hero-decision-record {
+
+  flex: 0 0 auto;
+
+  width: auto;
+
+  min-width: 135px;
+  max-width: 160px;
+
+  display: flex;
+  align-items: center;
+
+  gap: 8px;
+
+  padding: 6px 9px;
+
+  border-radius: 11px;
+
+  background: #f8fafc;
+
+  border: 1px solid #e2e8f0;
+
+  box-shadow:
+    0 4px 12px rgba(15, 23, 42, .04);
+}
+
+
+.hero-decision-record-icon {
+
+  width: 29px;
+  height: 29px;
+
+  flex: 0 0 29px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  border-radius: 8px;
+
+  color: #ffffff;
+
+  font-size: 10px;
+}
+
+
+.hero-decision-record-content {
+
+  min-width: 0;
+}
+
+
+.hero-decision-record-content span {
+
+  display: block;
+
+  color: var(--ci-muted);
+
+  font-size: 6.5px;
+  font-weight: 800;
+
+  letter-spacing: .07em;
+
+  white-space: nowrap;
+}
+
+
+.hero-decision-record-content strong {
+
+  display: block;
+
+  margin-top: 2px;
+
+  font-size: 9px;
+  font-weight: 850;
+
+  white-space: nowrap;
+}
+
+
+/* ============================================================
+   RECORDED STATES
+============================================================ */
+
+.hero-decision-record.record-approved {
+  background: #f0fdf4;
+  border-color: #a7f3d0;
+}
+
+.hero-decision-record.record-approved
+.hero-decision-record-content strong {
+  color: #047857;
+}
+
+.hero-decision-record.record-rejected {
+  background: #fff7f7;
+  border-color: #fecaca;
+}
+
+.hero-decision-record.record-rejected
+.hero-decision-record-content strong {
+  color: #b91c1c;
+}
+
+.hero-decision-record.record-active {
+  background: #f0f9ff;
+  border-color: #bae6fd;
+}
+
+.hero-decision-record.record-active
+.hero-decision-record-content strong {
+  color: #0369a1;
+}
+
+.hero-decision-record.record-completed {
+  background: #f0fdf4;
+  border-color: #bbf7d0;
+}
+
+.hero-decision-record.record-completed
+.hero-decision-record-content strong {
+  color: #15803d;
+}
+
+
+.hero-decision-record-icon.record-approved {
+  background: #059669;
+}
+
+.hero-decision-record-icon.record-rejected {
+  background: #dc2626;
+}
+
+.hero-decision-record-icon.record-active {
+  background: #0284c7;
+}
+
+.hero-decision-record-icon.record-completed {
+  background: #16a34a;
+}
+
+
+/* ============================================================
+   20. DETAILED DECISION RECORDS
+   FULL WIDTH — NEVER COMPETE WITH HERO
+============================================================ */
+
+.decision-record {
+
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+
+  margin-top: 20px;
+
+  padding: 20px;
+
+  border-radius: 17px;
+
+  background:
+    linear-gradient(
+      145deg,
+      #ffffff,
+      #f8fafc
+    );
+
+  border: 1px solid #e2e8f0;
+
+  box-shadow:
+    0 9px 26px rgba(15, 23, 42, .055);
+
+  overflow: hidden;
+}
+
+
+/* ============================================================
+   21. REJECTION RECORD
+============================================================ */
+
+.decision-record.rejected-record {
+
+  border-color: #fecaca;
+
+  background:
+    linear-gradient(
+      145deg,
+      #fff7f7,
+      #ffffff
+    );
+
+  box-shadow:
+    0 9px 26px rgba(220, 38, 38, .065);
+}
+
+
+/* ============================================================
+   22. APPROVED RECORD
+============================================================ */
+
+.decision-record.approved-record {
+
+  border-color: #a7f3d0;
+
+  background:
+    linear-gradient(
+      145deg,
+      #f0fdf7,
+      #ffffff
+    );
+}
+
+
+/* ============================================================
+   23. ACTIVE RECORD
+============================================================ */
+
+.decision-record.active-record {
+
+  border-color: #bae6fd;
+
+  background:
+    linear-gradient(
+      145deg,
+      #eff9ff,
+      #ffffff
+    );
+}
+
+
+/* ============================================================
+   24. COMPLETED RECORD
+============================================================ */
+
+.decision-record.completed-record {
+
+  border-color: #bbf7d0;
+
+  background:
+    linear-gradient(
+      145deg,
+      #f0fdf7,
+      #ffffff
+    );
+}
+
+
+/* ============================================================
+   25. DECISION RECORD HEADER
+============================================================ */
+
+.decision-record-header {
+
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  gap: 15px;
+
+  margin-bottom: 18px;
+}
+
+
+.decision-record-heading {
+
+  min-width: 0;
+
+  display: flex;
+  align-items: center;
+
+  gap: 12px;
+}
+
+
+.decision-record-icon {
+
+  width: 43px;
+  height: 43px;
+
+  flex: 0 0 43px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  border-radius: 12px;
+
+  background: #fee2e2;
+
+  color: #dc2626;
+
+  border: 1px solid #fecaca;
+
+  font-size: 16px;
+}
+
+
+.decision-record-heading span {
+
+  display: block;
+
+  color: #dc2626;
+
+  font-size: 8px;
+  font-weight: 850;
+
+  letter-spacing: .13em;
+
+  text-transform: uppercase;
+}
+
+
+.decision-record-heading h3 {
+
+  margin: 4px 0 0;
+
+  color: #7f1d1d;
+
+  font-size: 17px;
+  font-weight: 850;
+}
+
+
+/* ============================================================
+   26. DECISION BADGE
+============================================================ */
+
+.decision-record-badge {
+
+  flex: 0 0 auto;
+
+  padding: 7px 10px;
+
+  border-radius: 999px;
+
+  color: #b91c1c;
+
+  background: #ffffff;
+
+  border: 1px solid #fecaca;
+
+  font-size: 8px;
+  font-weight: 850;
+
+  letter-spacing: .07em;
+
+  white-space: nowrap;
+}
+
+
+/* ============================================================
+   27. REASON BOX
+============================================================ */
+
+.decision-reason-box {
+
+  display: flex;
+  align-items: flex-start;
+
+  gap: 13px;
+
+  padding: 16px;
+
+  border-radius: 13px;
+
+  background: #ffffff;
+
+  border: 1px solid #fee2e2;
+}
+
+
+.reason-box-icon {
+
+  width: 38px;
+  height: 38px;
+
+  flex: 0 0 38px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  border-radius: 10px;
+
+  background: #fff1f2;
+
+  color: #dc2626;
+
+  font-size: 13px;
+}
+
+
+.decision-reason-box > div:last-child {
+
+  min-width: 0;
+}
+
+
+.decision-reason-box span {
+
+  display: block;
+
+  color: #9f1239;
+
+  font-size: 8px;
+  font-weight: 850;
+
+  letter-spacing: .11em;
+
+  text-transform: uppercase;
+}
+
+
+.decision-reason-box strong {
+
+  display: block;
+
+  margin-top: 5px;
+
+  color: #334155;
+
+  font-size: 13px;
+  font-weight: 750;
+
+  line-height: 1.55;
+
+  overflow-wrap: anywhere;
+}
+
+
+/* ============================================================
+   28. DECISION META
+============================================================ */
+
+.decision-record-meta {
+
+  display: grid;
+
+  grid-template-columns:
+    repeat(2, minmax(0, 1fr));
+
+  gap: 10px;
+
+  margin-top: 10px;
+}
+
+
+.decision-record-meta > div {
+
+  min-width: 0;
+
+  padding: 12px;
+
+  border-radius: 11px;
+
+  background:
+    rgba(255, 255, 255, .72);
+
+  border: 1px solid #fee2e2;
+}
+
+
+.decision-record-meta span {
+
+  display: flex;
+  align-items: center;
+
+  gap: 6px;
+
+  color: #9f1239;
+
+  font-size: 8px;
+  font-weight: 800;
+
+  text-transform: uppercase;
+}
+
+
+.decision-record-meta span i {
+
+  color: #dc2626;
+}
+
+
+.decision-record-meta strong {
+
+  display: block;
+
+  margin-top: 5px;
+
+  color: #475569;
+
+  font-size: 10px;
+  font-weight: 750;
+
+  overflow-wrap: anywhere;
+}
+
+
+/* ============================================================
+   29. FINANCIAL SNAPSHOT
 ============================================================ */
 
 .financial-snapshot {
 
   width: 100%;
 
-  margin-top: 18px;
+  margin-top: 20px;
 
   display: grid;
 
@@ -704,60 +1565,48 @@
     repeat(4, minmax(0, 1fr));
 
   gap: 16px;
-
-  align-items: stretch;
 }
 
-/* ============================================================
-   SNAPSHOT CARD
-============================================================ */
 
 .snapshot-card {
 
   position: relative;
 
   min-width: 0;
+
   width: 100%;
 
   display: flex;
-
   align-items: flex-start;
 
-  gap: 14px;
+  gap: 13px;
 
   min-height: 112px;
 
-  padding: 14px;
-
-  box-sizing: border-box;
+  padding: 16px;
 
   border-radius: 16px;
-    background:
+
+  background:
     linear-gradient(
-      135deg,
-      #ffffff 0%,
-      #f4f8ff 100%
+      145deg,
+      #ffffff,
+      #f8fbff
     );
 
-  border:
-    1px solid #dfe9f7;
+  border: 1px solid #dfe9f7;
 
   box-shadow:
-    0 7px 20px rgba(37,99,235,.055);
+    0 8px 23px rgba(37, 99, 235, .055);
+
+  overflow: hidden;
 
   transition:
     transform .22s ease,
     box-shadow .22s ease,
     border-color .22s ease;
-
-  overflow: hidden;
 }
 
-
-
-/* ============================================================
-   PREMIUM TOP ACCENT
-============================================================ */
 
 .snapshot-card::before {
 
@@ -770,453 +1619,74 @@
   right: 0;
 
   height: 3px;
-
-  opacity: .85;
 }
 
 
 .snapshot-card-exposure::before {
-
-  background:
-    linear-gradient(
-      90deg,
-      #ef4444,
-      #f97316
-    );
+  background: linear-gradient(90deg, #ef4444, #f97316);
 }
-
 
 .snapshot-card-paid::before {
-
-  background:
-    linear-gradient(
-      90deg,
-      #059669,
-      #10b981
-    );
+  background: linear-gradient(90deg, #059669, #10b981);
 }
-
 
 .snapshot-card-loan::before {
-
-  background:
-    linear-gradient(
-      90deg,
-      #2563eb,
-      #38bdf8
-    );
+  background: linear-gradient(90deg, #2563eb, #38bdf8);
 }
-
 
 .snapshot-card-balance::before {
-
-  background:
-    linear-gradient(
-      90deg,
-      #0891b2,
-      #22d3ee
-    );
-}
-
-
-/* ============================================================
-   HOVER
-============================================================ */
-
-.snapshot-card:hover {
-
-  transform:
-    translateY(-3px);
-
-  border-color:
-    #bfd5f3;
-
-  box-shadow:
-    0 12px 27px rgba(37, 99, 235, .10);
-}
-
-
-/* ============================================================
-   SNAPSHOT ICON
-============================================================ */
-
-.snapshot-icon {
-
-  width: 46px;
-  height: 46px;
-
-  flex: 0 0 46px;
-
-  display: flex;
-
-  align-items: center;
-  justify-content: center;
-
-  border-radius: 13px;
-
-  font-size: 16px;
-}
-
-
-.snapshot-icon.exposure {
-
-  color: #dc2626;
-
-  background:
-    #fef2f2;
-}
-
-
-.snapshot-icon.paid {
-
-  color: #059669;
-
-  background:
-    #ecfdf5;
-}
-
-
-.snapshot-icon.loan {
-
-  color: var(--ci-primary);
-
-  background:
-    #eff6ff;
-}
-
-
-.snapshot-icon.balance {
-
-  color: #0891b2;
-
-  background:
-    #ecfeff;
-}
-
-
-/* ============================================================
-   SNAPSHOT CONTENT
-============================================================ */
-
-.snapshot-content {
-
-  min-width: 0;
-
-  flex: 1;
-}
-
-
-.snapshot-content span {
-
-  display: block;
-
-  color:
-    var(--ci-muted);
-
-  font-size: 11px;
-
-  font-weight: 700;
-
-  line-height: 1.25;
-
-  white-space: nowrap;
-
-  overflow: hidden;
-
-  text-overflow: ellipsis;
-}
-
-
-.snapshot-content strong {
-
-  display: block;
-
-  margin-top: 4px;
-
-  color:
-    var(--ci-dark);
-
-  font-size: 18px;
-
-  line-height: 1.2;
-
-  font-weight: 780;
-
-  letter-spacing: -.025em;
-
-  white-space: nowrap;
-
-  overflow: hidden;
-
-  text-overflow: ellipsis;
-}
-
-
-/* ============================================================
-   SNAPSHOT META
-============================================================ */
-
-.snapshot-content small {
-
-  display: flex;
-
-  align-items: center;
-
-  gap: 5px;
-
-  margin-top: 5px;
-
-  color:
-    var(--ci-light-text);
-
-  font-size: 10px;
-
-  line-height: 1.3;
-
-  white-space: nowrap;
-
-  overflow: hidden;
-
-  text-overflow: ellipsis;
-}
-
-
-.snapshot-meta i {
-
-  font-size: 9px;
-}
-
-
-.snapshot-due-date {
-
-  color:
-    #dc2626 !important;
-
-  font-weight: 650;
-}
-
-
-.snapshot-due-date i {
-
-  color:
-    #ef4444;
-}
-
-
-.snapshot-application-date {
-
-  color:
-    #2563eb !important;
-
-  font-weight: 650;
-}
-
-
-.snapshot-application-date i {
-
-  color:
-    #2563eb;
-}
-
-
-/* ============================================================
-   LARGE DESKTOP
-   1200px+
-============================================================ */
-
-@media (min-width: 1200px) {
-
-  .financial-snapshot-row {
-
-    display: flex;
-
-    flex-direction: row;
-
-    gap: 16px;
-  }
-
-
-  .snapshot-card {
-
-    flex:
-      1 1 0;
-
-    min-width:
-      0;
-  }
-
-}
-
-
-/* ============================================================
-   TABLET / MEDIUM
-============================================================ */
-
-@media (max-width: 1199px) {
-
-  .financial-snapshot-row {
-
-    display: grid;
-
-    grid-template-columns:
-      repeat(2, minmax(0, 1fr));
-
-    gap: 14px;
-  }
-
-
-  .snapshot-card {
-
-    width: 100%;
-  }
-
-}
-
-
-/* ============================================================
-   MOBILE
-============================================================ */
-
-@media (max-width: 600px) {
-
-  .financial-snapshot-row {
-
-    display: flex;
-
-    flex-direction: column;
-
-    gap: 12px;
-  }
-
-
-  .snapshot-card {
-
-    width: 100%;
-
-    min-height: 82px;
-
-    padding: 15px;
-  }
-
-
-  .snapshot-content strong {
-
-    font-size: 17px;
-  }
-
-}
-
-
-/* ============================================================
-   SNAPSHOT CARD
-============================================================ */
-
-.snapshot-card {
-
-  position: relative;
-
-  display: flex;
-
-  align-items: flex-start;
-
-  gap: 14px;
-
-  min-height: 112px;
-
-  padding: 18px;
-
-  border-radius: 16px;
-
-  background:
-    linear-gradient(
-      135deg,
-      #ffffff 0%,
-      #f4f8ff 100%
-    );
-
-  border:
-    1px solid #dfe9f7;
-
-  box-shadow:
-    0 7px 20px rgba(37,99,235,.055);
-
-  transition:
-    transform .22s ease,
-    box-shadow .22s ease,
-    border-color .22s ease;
+  background: linear-gradient(90deg, #0891b2, #22d3ee);
 }
 
 
 .snapshot-card:hover {
 
-  transform:
-    translateY(-3px);
+  transform: translateY(-3px);
 
-  border-color:
-    #bfd5f3;
+  border-color: #bfd5f3;
 
   box-shadow:
-    0 12px 27px rgba(37,99,235,.10);
+    0 14px 30px rgba(37, 99, 235, .10);
 }
 
 
-/* ============================================================
-   SNAPSHOT ICON
-============================================================ */
-
 .snapshot-icon {
 
-  width: 46px;
-  height: 46px;
+  width: 45px;
+  height: 45px;
 
-  flex-shrink: 0;
+  flex: 0 0 45px;
 
   display: flex;
-
   align-items: center;
   justify-content: center;
 
   border-radius: 13px;
 
-  font-size: 16px;
+  font-size: 15px;
 }
 
 
 .snapshot-icon.exposure {
-
   color: #dc2626;
-
   background: #fef2f2;
 }
 
-
 .snapshot-icon.paid {
-
   color: #059669;
-
   background: #ecfdf5;
 }
 
-
 .snapshot-icon.loan {
-
   color: var(--ci-primary);
-
   background: #eff6ff;
 }
 
-
 .snapshot-icon.balance {
-
   color: #0891b2;
-
   background: #ecfeff;
 }
 
-
-/* ============================================================
-   SNAPSHOT CONTENT
-============================================================ */
 
 .snapshot-content {
 
@@ -1232,15 +1702,14 @@
 
   color: var(--ci-muted);
 
-  font-size: 11px;
-
-  font-weight: 750;
+  font-size: 9px;
+  font-weight: 800;
 
   line-height: 1.3;
 
   text-transform: uppercase;
 
-  letter-spacing: .035em;
+  letter-spacing: .045em;
 }
 
 
@@ -1252,50 +1721,46 @@
 
   color: var(--ci-dark);
 
-  font-size: 19px;
+  font-size: 18px;
 
   line-height: 1.2;
 
   font-weight: 800;
 
-  letter-spacing: -.03em;
+  letter-spacing: -.025em;
 
   white-space: nowrap;
+
+  overflow: hidden;
+
+  text-overflow: ellipsis;
 }
 
-
-/* ============================================================
-   SNAPSHOT SECONDARY INFORMATION
-   Used for Due Date / Application Date
-============================================================ */
 
 .snapshot-content small {
 
   display: flex;
-
   align-items: center;
 
   gap: 6px;
 
-  margin-top: 8px;
+  margin-top: 7px;
 
   color: var(--ci-light-text);
 
-  font-size: 10px;
+  font-size: 9px;
 
   line-height: 1.3;
 
-  font-weight: 600;
+  font-weight: 650;
+
+  white-space: nowrap;
+
+  overflow: hidden;
+
+  text-overflow: ellipsis;
 }
 
-
-/* ============================================================
-   DATE PRESENTATION
-
-   Because the snapshot now contains:
-   Outstanding Balance + Due Date
-   Original Loan + Application Date
-============================================================ */
 
 .snapshot-content small::before {
 
@@ -1304,7 +1769,7 @@
   width: 5px;
   height: 5px;
 
-  flex-shrink: 0;
+  flex: 0 0 5px;
 
   border-radius: 50%;
 
@@ -1312,67 +1777,59 @@
 }
 
 
-/* Outstanding balance date emphasis */
+.snapshot-due-date {
 
-.snapshot-card:has(.snapshot-icon.exposure)
-.snapshot-content small {
-
-  color: #b45309;
+  color: #dc2626 !important;
 
   font-weight: 700;
 }
 
 
-.snapshot-card:has(.snapshot-icon.exposure)
-.snapshot-content small::before {
+.snapshot-due-date i {
 
-  background: #f59e0b;
+  color: #ef4444;
 }
 
 
-/* Original loan application date */
+.snapshot-application-date {
 
-.snapshot-card:has(.snapshot-icon.loan)
-.snapshot-content small {
+  color: #2563eb !important;
 
-  color: #64748b;
-
-  font-weight: 650;
+  font-weight: 700;
 }
 
 
-.snapshot-card:has(.snapshot-icon.loan)
-.snapshot-content small::before {
+.snapshot-application-date i {
 
-  background: var(--ci-primary);
+  color: #2563eb;
 }
 
 
 /* ============================================================
-   MAIN CONTENT
+   30. MAIN CONTENT
 ============================================================ */
 
 .ci-main {
 
   padding-top: 30px;
-
-  padding-bottom: 55px;
+  padding-bottom: 60px;
 }
 
 
 .ci-layout {
 
+  width: 100%;
+  max-width: 1800px;
+
+  margin: 0 auto;
+
   display: grid;
 
   grid-template-columns:
     minmax(0, 1fr)
-    360px;
+    350px;
 
   gap: 24px;
-
-  max-width: 1800px;
-
-  margin: auto;
 }
 
 
@@ -1381,15 +1838,27 @@
   min-width: 0;
 
   display: flex;
-
   flex-direction: column;
 
   gap: 20px;
 }
 
 
+.ci-sidebar {
+
+  min-width: 0;
+
+  display: flex;
+  flex-direction: column;
+
+  gap: 20px;
+
+  align-self: start;
+}
+
+
 /* ============================================================
-   PREMIUM WHITE CARDS
+   31. PREMIUM CARDS
 ============================================================ */
 
 .premium-card,
@@ -1397,6 +1866,8 @@
 .risk-card,
 .command-card,
 .empty-history-card {
+
+  min-width: 0;
 
   background: #ffffff;
 
@@ -1410,26 +1881,41 @@
     var(--ci-shadow-soft);
 
   overflow: hidden;
+
+  transition:
+    box-shadow .23s ease,
+    border-color .23s ease;
+}
+
+
+.premium-card:hover,
+.officer-card:hover,
+.risk-card:hover {
+
+  border-color: #d5e1ef;
+
+  box-shadow:
+    0 13px 32px rgba(15, 23, 42, .065);
 }
 
 
 .premium-card {
 
-  padding: 26px;
+  padding: 27px;
 }
 
 
 /* ============================================================
-   CARD HEADERS
+   32. CARD HEADERS
 ============================================================ */
 
 .card-header-premium {
 
   display: flex;
-
   align-items: center;
-
   justify-content: space-between;
+
+  gap: 15px;
 
   margin-bottom: 22px;
 }
@@ -1448,7 +1934,7 @@
 
   line-height: 1.25;
 
-  font-weight: 750;
+  font-weight: 800;
 
   letter-spacing: -.025em;
 }
@@ -1456,15 +1942,16 @@
 
 .header-icon {
 
-  width: 44px;
-  height: 44px;
+  width: 45px;
+  height: 45px;
+
+  flex: 0 0 45px;
 
   display: flex;
-
   align-items: center;
   justify-content: center;
 
-  border-radius: 12px;
+  border-radius: 13px;
 
   background:
     linear-gradient(
@@ -1477,13 +1964,12 @@
 
   font-size: 17px;
 
-  border:
-    1px solid #dbeafe;
+  border: 1px solid #dbeafe;
 }
 
 
 /* ============================================================
-   INTELLIGENCE GRID
+   33. INTELLIGENCE / LOAN GRID
 ============================================================ */
 
 .intel-grid,
@@ -1500,61 +1986,65 @@
 
 .intel-box {
 
-  min-height: 98px;
+  min-width: 0;
+
+  min-height: 100px;
 
   display: flex;
-
   flex-direction: column;
-
   justify-content: center;
 
   padding: 16px;
 
-  border-radius: 13px;
+  border-radius: 14px;
 
-  background: #f9fbfd;
+  background:
+    linear-gradient(
+      145deg,
+      #fbfdff,
+      #f7fafd
+    );
 
-  border:
-    1px solid #e5eaf1;
+  border: 1px solid #e5eaf1;
+
+  overflow: hidden;
 
   transition:
-    all .2s ease;
+    transform .2s ease,
+    background .2s ease,
+    border-color .2s ease,
+    box-shadow .2s ease;
 }
 
 
 .intel-box:hover {
 
-  transform:
-    translateY(-2px);
+  transform: translateY(-2px);
 
-  background:
-    #ffffff;
+  background: #ffffff;
 
-  border-color:
-    #cfe0f7;
+  border-color: #cfe0f7;
 
   box-shadow:
-    0 8px 20px rgba(37,99,235,.055);
+    0 9px 22px rgba(37, 99, 235, .065);
 }
 
 
 .intel-box > span {
 
   display: flex;
-
   align-items: center;
 
   gap: 7px;
 
   color: var(--ci-muted);
 
-  font-size: 11px;
-
-  font-weight: 750;
+  font-size: 10px;
+  font-weight: 800;
 
   text-transform: uppercase;
 
-  letter-spacing: .045em;
+  letter-spacing: .05em;
 
   line-height: 1.35;
 }
@@ -1562,8 +2052,7 @@
 
 .intel-box > span i {
 
-  color:
-    #7da2d4;
+  color: #7da2d4;
 
   font-size: 11px;
 }
@@ -1581,7 +2070,7 @@
 
   line-height: 1.35;
 
-  font-weight: 750;
+  font-weight: 800;
 
   word-break: break-word;
 }
@@ -1603,10 +2092,6 @@
 }
 
 
-/* ============================================================
-   BLUE HIGHLIGHT
-============================================================ */
-
 .intel-box.highlight {
 
   background:
@@ -1616,61 +2101,41 @@
       #e9f3ff
     );
 
-  border-color:
-    #d4e5fa;
+  border-color: #d4e5fa;
 }
 
 
 .intel-box.highlight strong {
 
-  color:
-    var(--ci-primary-dark);
+  color: var(--ci-primary-dark);
 }
 
 
 .segment-value {
 
-  color:
-    #6d28d9 !important;
+  color: #6d28d9 !important;
 }
 
 
 /* ============================================================
-   SIDEBAR
-============================================================ */
-
-.ci-sidebar {
-
-  display: flex;
-
-  flex-direction: column;
-
-  gap: 20px;
-
-  align-self: start;
-}
-
-
-/* ============================================================
-   COMMAND CENTER
+   34. COMMAND CENTER
 ============================================================ */
 
 .command-card {
 
   position: relative;
 
-  padding: 23px;
+  padding: 24px;
 
   background:
     linear-gradient(
       145deg,
       #eff6ff 0%,
-      #e7f1ff 55%,
-      #f7fbff 100%
+      #e7f1ff 52%,
+      #f8fbff 100%
     );
 
-  border:
-    1px solid #cfe1f8;
+  border-color: #cfe1f8;
 
   box-shadow:
     var(--ci-shadow-blue);
@@ -1701,7 +2166,6 @@
 .command-header {
 
   display: flex;
-
   align-items: center;
 
   gap: 13px;
@@ -1710,25 +2174,22 @@
 
 .command-icon {
 
-  width: 46px;
-  height: 46px;
+  width: 47px;
+  height: 47px;
+
+  flex: 0 0 47px;
 
   display: flex;
-
   align-items: center;
   justify-content: center;
 
-  border-radius: 13px;
+  border-radius: 14px;
 
   background: #ffffff;
 
   color: var(--ci-primary);
 
-  border:
-    1px solid #d7e7fb;
-
-  box-shadow:
-    0 5px 15px rgba(37,99,235,.07);
+  border: 1px solid #d7e7fb;
 
   font-size: 17px;
 }
@@ -1738,46 +2199,32 @@
 
   display: block;
 
-  color:
-    var(--ci-primary);
+  color: var(--ci-primary);
 
   font-size: 10px;
+  font-weight: 850;
 
-  font-weight: 800;
-
-  letter-spacing: .13em;
+  letter-spacing: .14em;
 
   text-transform: uppercase;
 }
 
 
-.command-header h3 {
-
-  color:
-    var(--ci-dark);
-
-  font-size: 18px;
-}
-
-
 .command-description {
 
-  margin:
-    17px 0;
+  margin: 17px 0;
 
-  color:
-    var(--ci-muted);
+  color: var(--ci-muted);
 
   font-size: 12px;
 
-  line-height: 1.6;
+  line-height: 1.65;
 }
 
 
 .command-actions {
 
   display: flex;
-
   flex-direction: column;
 
   gap: 9px;
@@ -1789,74 +2236,77 @@
   width: 100%;
 
   display: flex;
-
   align-items: center;
 
   gap: 12px;
 
   padding: 13px;
 
-  border:
-    1px solid #dce8f7;
+  border: 1px solid #dce8f7;
 
-  border-radius: 12px;
+  border-radius: 13px;
 
   background:
-    rgba(255,255,255,.82);
+    rgba(255, 255, 255, .86);
 
-  color:
-    var(--ci-dark);
+  color: var(--ci-dark);
 
   text-align: left;
 
   cursor: pointer;
 
   transition:
-    all .2s ease;
+    transform .2s ease,
+    background .2s ease,
+    border-color .2s ease,
+    box-shadow .2s ease;
 }
 
 
 .command-action:hover {
 
-  transform:
-    translateX(3px);
+  transform: translateX(3px);
 
-  background:
-    #ffffff;
+  background: #ffffff;
 
-  border-color:
-    #b9d2f3;
+  border-color: #b9d2f3;
 
   box-shadow:
-    0 6px 17px rgba(37,99,235,.08);
+    0 7px 18px rgba(37, 99, 235, .085);
 }
 
 
 .action-icon {
 
-  width: 38px;
-  height: 38px;
+  width: 39px;
+  height: 39px;
+
+  flex: 0 0 39px;
 
   display: flex;
-
   align-items: center;
   justify-content: center;
 
-  flex-shrink: 0;
-
-  border-radius: 10px;
+  border-radius: 11px;
 
   background:
-    #eff6ff;
+    linear-gradient(
+      145deg,
+      #eff6ff,
+      #e6f0ff
+    );
 
-  color:
-    var(--ci-primary);
+  color: var(--ci-primary);
 
   font-size: 14px;
+
+  border: 1px solid #dce9f8;
 }
 
 
 .action-content {
+
+  min-width: 0;
 
   flex: 1;
 }
@@ -1866,12 +2316,10 @@
 
   display: block;
 
-  color:
-    var(--ci-dark);
+  color: var(--ci-dark);
 
   font-size: 12px;
-
-  font-weight: 750;
+  font-weight: 800;
 }
 
 
@@ -1881,8 +2329,7 @@
 
   margin-top: 3px;
 
-  color:
-    var(--ci-muted);
+  color: var(--ci-muted);
 
   font-size: 10px;
 }
@@ -1890,15 +2337,14 @@
 
 .action-arrow {
 
-  color:
-    #94a3b8;
+  color: #94a3b8;
 
   font-size: 11px;
 }
 
 
 /* ============================================================
-   OFFICER CARD
+   35. OFFICER / RISK
 ============================================================ */
 
 .officer-card,
@@ -1912,10 +2358,10 @@
 .risk-header {
 
   display: flex;
-
   justify-content: space-between;
-
   align-items: flex-start;
+
+  gap: 12px;
 
   margin-bottom: 20px;
 }
@@ -1926,12 +2372,10 @@
 
   display: block;
 
-  color:
-    var(--ci-primary);
+  color: var(--ci-primary);
 
   font-size: 10px;
-
-  font-weight: 800;
+  font-weight: 850;
 
   letter-spacing: .13em;
 
@@ -1942,28 +2386,26 @@
 .officer-header > i,
 .risk-header > i {
 
-  color:
-    #8fb1dc;
+  color: #8fb1dc;
 
   font-size: 15px;
 }
 
 
 /* ============================================================
-   OFFICER PROFILE
+   36. OFFICER PROFILE
 ============================================================ */
 
 .officer-profile {
 
   display: flex;
-
   align-items: center;
 
   gap: 13px;
 
   padding: 14px;
 
-  border-radius: 13px;
+  border-radius: 14px;
 
   background:
     linear-gradient(
@@ -1972,8 +2414,7 @@
       #f2f7fd
     );
 
-  border:
-    1px solid #e5edf7;
+  border: 1px solid #e5edf7;
 }
 
 
@@ -1982,20 +2423,32 @@
   width: 47px;
   height: 47px;
 
-  display: flex;
+  flex: 0 0 47px;
 
+  display: flex;
   align-items: center;
   justify-content: center;
 
-  border-radius: 12px;
+  border-radius: 13px;
 
   background:
-    #eaf3ff;
+    linear-gradient(
+      135deg,
+      #eaf3ff,
+      #dcecff
+    );
 
-  color:
-    var(--ci-primary);
+  color: var(--ci-primary);
 
   font-size: 16px;
+
+  border: 1px solid #d8e7f9;
+}
+
+
+.officer-details {
+
+  min-width: 0;
 }
 
 
@@ -2003,10 +2456,12 @@
 
   display: block;
 
-  color:
-    var(--ci-dark);
+  color: var(--ci-dark);
 
   font-size: 13px;
+  font-weight: 800;
+
+  overflow-wrap: anywhere;
 }
 
 
@@ -2016,8 +2471,7 @@
 
   margin-top: 3px;
 
-  color:
-    var(--ci-muted);
+  color: var(--ci-muted);
 
   font-size: 10px;
 }
@@ -2026,7 +2480,6 @@
 .officer-contact {
 
   display: flex;
-
   flex-direction: column;
 
   gap: 10px;
@@ -2038,13 +2491,11 @@
 .officer-contact div {
 
   display: flex;
-
   align-items: center;
 
   gap: 9px;
 
-  color:
-    var(--ci-muted);
+  color: var(--ci-muted);
 
   font-size: 12px;
 }
@@ -2054,53 +2505,51 @@
 
   width: 18px;
 
-  color:
-    var(--ci-primary);
+  color: var(--ci-primary);
 
   font-size: 12px;
 }
 
 
 /* ============================================================
-   NO OFFICER
+   37. NO OFFICER
 ============================================================ */
 
 .no-officer {
 
-  padding: 22px 14px;
+  padding: 24px 14px;
 
   text-align: center;
 
-  border-radius: 13px;
+  border-radius: 14px;
 
   background:
-    #fffaf0;
+    linear-gradient(
+      135deg,
+      #fffdf6,
+      #fffaf0
+    );
 
-  border:
-    1px solid #fde7b2;
+  border: 1px solid #fde7b2;
 }
 
 
 .no-officer-icon {
 
-  width: 44px;
-  height: 44px;
+  width: 46px;
+  height: 46px;
 
   display: flex;
-
   align-items: center;
   justify-content: center;
 
-  margin:
-    auto auto 10px;
+  margin: 0 auto 11px;
 
   border-radius: 50%;
 
-  background:
-    #fff1cc;
+  background: #fff1cc;
 
-  color:
-    #d97706;
+  color: #d97706;
 
   font-size: 16px;
 }
@@ -2110,10 +2559,10 @@
 
   display: block;
 
-  color:
-    #92400e;
+  color: #92400e;
 
   font-size: 12px;
+  font-weight: 800;
 }
 
 
@@ -2123,8 +2572,7 @@
 
   margin-top: 5px;
 
-  color:
-    #a16207;
+  color: #a16207;
 
   font-size: 10px;
 
@@ -2133,7 +2581,7 @@
 
 
 /* ============================================================
-   RISK CARD
+   38. RISK CARD
 ============================================================ */
 
 .risk-card {
@@ -2145,8 +2593,7 @@
       #f5f9ff
     );
 
-  border-color:
-    #dfe9f5;
+  border-color: #dfe9f5;
 }
 
 
@@ -2155,7 +2602,7 @@
   display: grid;
 
   grid-template-columns:
-    repeat(2, 1fr);
+    repeat(2, minmax(0, 1fr));
 
   gap: 10px;
 }
@@ -2163,15 +2610,16 @@
 
 .risk-item {
 
+  min-width: 0;
+
   padding: 13px;
 
-  border-radius: 11px;
+  border-radius: 12px;
 
   background:
-    rgba(255,255,255,.88);
+    rgba(255, 255, 255, .9);
 
-  border:
-    1px solid #e6edf5;
+  border: 1px solid #e6edf5;
 }
 
 
@@ -2179,12 +2627,10 @@
 
   display: block;
 
-  color:
-    var(--ci-muted);
+  color: var(--ci-muted);
 
   font-size: 10px;
-
-  font-weight: 750;
+  font-weight: 800;
 
   text-transform: uppercase;
 
@@ -2198,15 +2644,17 @@
 
   margin-top: 6px;
 
-  color:
-    var(--ci-dark);
+  color: var(--ci-dark);
 
   font-size: 14px;
+  font-weight: 800;
+
+  overflow-wrap: anywhere;
 }
 
 
 /* ============================================================
-   REPAYMENT HISTORY
+   39. REPAYMENT HISTORY
 ============================================================ */
 
 .repayment-card {
@@ -2218,7 +2666,6 @@
 .payment-count {
 
   display: inline-flex;
-
   align-items: center;
 
   gap: 6px;
@@ -2227,87 +2674,75 @@
 
   border-radius: 999px;
 
-  color:
-    var(--ci-success);
+  color: var(--ci-success);
 
   background:
-    var(--ci-success-soft);
+    linear-gradient(
+      135deg,
+      #f0fdf7,
+      #ecfdf5
+    );
 
-  border:
-    1px solid var(--ci-success-border);
+  border: 1px solid var(--ci-success-border);
 
   font-size: 10px;
-
-  font-weight: 750;
+  font-weight: 800;
 }
 
 
 /* ============================================================
-   TABLE
+   40. REPAYMENT TABLE
 ============================================================ */
 
 .premium-repayment-table {
 
   width: 100%;
 
-  border-collapse:
-    separate;
+  border-collapse: separate;
 
-  border-spacing:
-    0;
+  border-spacing: 0;
 }
 
 
 .premium-repayment-table thead th {
 
-  padding:
-    13px 15px;
+  padding: 14px 15px;
 
   background:
-    #f5f8fc;
+    linear-gradient(
+      180deg,
+      #f8fafc,
+      #f3f6fa
+    );
 
-  border-top:
-    1px solid var(--ci-border);
+  border-top: 1px solid var(--ci-border);
 
-  border-bottom:
-    1px solid var(--ci-border);
+  border-bottom: 1px solid var(--ci-border);
 
-  color:
-    #64748b;
+  color: #64748b;
 
-  font-size:
-    10px;
+  font-size: 10px;
+  font-weight: 850;
 
-  font-weight:
-    800;
+  text-transform: uppercase;
 
-  text-transform:
-    uppercase;
+  letter-spacing: .075em;
 
-  letter-spacing:
-    .07em;
-
-  white-space:
-    nowrap;
+  white-space: nowrap;
 }
 
 
 .premium-repayment-table tbody td {
 
-  padding:
-    16px 15px;
+  padding: 16px 15px;
 
-  border-bottom:
-    1px solid #eef2f6;
+  border-bottom: 1px solid #eef2f6;
 
-  color:
-    var(--ci-text);
+  color: var(--ci-text);
 
-  font-size:
-    12px;
+  font-size: 12px;
 
-  vertical-align:
-    middle;
+  vertical-align: middle;
 }
 
 
@@ -2321,34 +2756,31 @@
 .premium-repayment-table tbody tr:hover {
 
   background:
-    #f8fbff;
+    linear-gradient(
+      90deg,
+      #f8fbff,
+      #ffffff
+    );
 }
 
 
 .row-number {
 
-  color:
-    #94a3b8 !important;
+  color: #94a3b8 !important;
 
-  font-weight:
-    700;
+  font-weight: 750;
 
   font-size: 11px !important;
 }
 
 
-/* ============================================================
-   TRANSACTION DATE
-============================================================ */
-
 .transaction-date strong {
 
   display: block;
 
-  font-size:
-    12px;
+  font-size: 12px;
 
-  font-weight: 650;
+  font-weight: 700;
 }
 
 
@@ -2356,260 +2788,1122 @@
 
   display: block;
 
-  margin-top:
-    3px;
+  margin-top: 3px;
 
-  color:
-    #94a3b8;
+  color: #94a3b8;
 
-  font-size:
-    10px;
+  font-size: 10px;
 }
 
-
-/* ============================================================
-   AMOUNT
-============================================================ */
 
 .transaction-amount {
 
-  color:
-    var(--ci-dark) !important;
+  color: var(--ci-dark) !important;
 
   font-size: 13px !important;
 
-  font-weight:
-    800;
+  font-weight: 850;
 
-  white-space:
-    nowrap;
+  white-space: nowrap;
 }
 
 
-/* ============================================================
-   PAYMENT METHOD
-============================================================ */
-
 .payment-method {
 
-  display:
-    inline-flex;
+  display: inline-flex;
+  align-items: center;
 
-  align-items:
-    center;
+  gap: 7px;
 
-  gap:
-    7px;
+  color: #475569;
 
-  color:
-    #475569;
-
-  font-size:
-    11px;
+  font-size: 11px;
 }
 
 
 .payment-method i {
 
-  color:
-    #16a34a;
+  color: #16a34a;
 }
 
-
-/* ============================================================
-   TRANSACTION REFERENCE
-============================================================ */
 
 .transaction-reference {
 
-  display:
-    inline-block;
+  display: inline-block;
 
-  padding:
-    6px 9px;
+  padding: 6px 9px;
 
-  border-radius:
-    7px;
+  border-radius: 7px;
 
-  background:
-    #f1f5f9;
+  background: #f1f5f9;
 
-  color:
-    #475569;
+  color: #475569;
 
-  font-family:
-    monospace;
+  font-family: monospace;
 
-  font-size:
-    10px;
+  font-size: 10px;
 
-  font-weight:
-    700;
+  font-weight: 700;
+
+  border: 1px solid #e2e8f0;
 }
 
-
-/* ============================================================
-   SUCCESS
-============================================================ */
 
 .transaction-success {
 
-  display:
-    inline-flex;
+  display: inline-flex;
+  align-items: center;
 
-  align-items:
-    center;
+  gap: 6px;
 
-  gap:
-    6px;
+  color: var(--ci-success);
 
-  color:
-    var(--ci-success);
+  font-size: 11px;
 
-  font-size:
-    11px;
-
-  font-weight:
-    750;
+  font-weight: 800;
 }
 
 
-/* ============================================================
-   RECEIPT
-============================================================ */
-
 .receipt-button {
 
-  display:
-    inline-flex;
+  display: inline-flex;
+  align-items: center;
 
-  align-items:
-    center;
+  gap: 7px;
 
-  gap:
-    7px;
+  padding: 8px 11px;
 
-  padding:
-    8px 11px;
+  border: 1px solid #cfe0f7;
 
-  border:
-    1px solid #cfe0f7;
-
-  border-radius:
-    8px;
+  border-radius: 9px;
 
   background:
-    #eff6ff;
+    linear-gradient(
+      135deg,
+      #eff6ff,
+      #e6f0ff
+    );
 
-  color:
-    var(--ci-primary);
+  color: var(--ci-primary);
 
-  font-size:
-    10px;
+  font-size: 10px;
 
-  font-weight:
-    750;
+  font-weight: 800;
 
-  cursor:
-    pointer;
+  cursor: pointer;
 
   transition:
-    all .2s ease;
+    transform .2s ease,
+    background .2s ease,
+    color .2s ease,
+    box-shadow .2s ease;
 }
 
 
 .receipt-button:hover {
 
+  transform: translateY(-1px);
+
   background:
-    var(--ci-primary);
+    linear-gradient(
+      135deg,
+      #2563eb,
+      #1d4ed8
+    );
 
-  color:
-    #ffffff;
-
-  border-color:
-    var(--ci-primary);
+  color: #ffffff;
 
   box-shadow:
-    0 5px 14px rgba(37,99,235,.15);
+    0 7px 17px rgba(37, 99, 235, .17);
 }
 
 
 /* ============================================================
-   EMPTY HISTORY
+   41. EMPTY HISTORY
 ============================================================ */
 
 .empty-history-card {
 
-  padding:
-    48px 20px;
+  padding: 50px 20px;
 
-  text-align:
-    center;
+  text-align: center;
 }
 
 
 .empty-icon {
 
-  width:
-    60px;
+  width: 62px;
+  height: 62px;
 
-  height:
-    60px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 
-  display:
-    flex;
+  margin: 0 auto 16px;
 
-  align-items:
-    center;
-
-  justify-content:
-    center;
-
-  margin:
-    0 auto 16px;
-
-  border-radius:
-    17px;
+  border-radius: 18px;
 
   background:
-    #eff6ff;
+    linear-gradient(
+      135deg,
+      #eff6ff,
+      #e8f2ff
+    );
 
-  color:
-    #7da2d4;
+  color: #7da2d4;
 
-  font-size:
-    23px;
+  font-size: 23px;
+
+  border: 1px solid #dbeafe;
 }
 
 
 .empty-history-card h3 {
 
-  margin:
-    0;
+  margin: 0;
 
-  color:
-    var(--ci-dark);
+  color: var(--ci-dark);
 
-  font-size:
-    17px;
+  font-size: 17px;
+
+  font-weight: 800;
 }
 
 
 .empty-history-card p {
 
-  margin:
-    7px 0 0;
+  margin: 7px 0 0;
 
-  color:
-    var(--ci-muted);
+  color: var(--ci-muted);
 
-  font-size:
-    12px;
+  font-size: 12px;
 }
 
 
 /* ============================================================
-   RESPONSIVE — 1250px
+   42. LOAN COMMAND SECTION
+============================================================ */
+
+.loan-command-section {
+
+  margin-top: 24px;
+
+  padding: 24px;
+
+  border-radius: 22px;
+
+  background:
+    linear-gradient(
+      145deg,
+      #ffffff 0%,
+      #f8fbff 55%,
+      #eef6ff 100%
+    );
+
+  border: 1px solid #dbe7f5;
+
+  box-shadow:
+    0 18px 45px rgba(15, 23, 42, .065);
+}
+
+
+.loan-command-header {
+
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  gap: 20px;
+
+  margin-bottom: 22px;
+}
+
+
+.loan-command-title {
+
+  min-width: 0;
+
+  display: flex;
+  align-items: center;
+
+  gap: 14px;
+}
+
+
+.loan-command-icon {
+
+  width: 50px;
+  height: 50px;
+
+  flex: 0 0 50px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  border-radius: 15px;
+
+  background:
+    linear-gradient(
+      135deg,
+      #2563eb,
+      #3b82f6
+    );
+
+  color: #ffffff;
+
+  font-size: 18px;
+
+  box-shadow:
+    0 10px 22px rgba(37, 99, 235, .18);
+}
+
+
+.loan-command-title h2 {
+
+  margin: 4px 0;
+
+  color: var(--ci-dark);
+
+  font-size: 21px;
+
+  font-weight: 850;
+
+  letter-spacing: -.03em;
+}
+
+
+.loan-command-title p {
+
+  margin: 0;
+
+  color: var(--ci-muted);
+
+  font-size: 11px;
+
+  line-height: 1.5;
+}
+
+
+/* ============================================================
+   43. DECISION STATUS PILL
+============================================================ */
+
+.decision-status-pill {
+
+  display: inline-flex;
+  align-items: center;
+
+  gap: 8px;
+
+  padding: 9px 13px;
+
+  border-radius: 999px;
+
+  font-size: 9px;
+
+  font-weight: 850;
+
+  letter-spacing: .07em;
+
+  text-transform: uppercase;
+
+  white-space: nowrap;
+}
+
+
+.decision-status-dot {
+
+  width: 7px;
+  height: 7px;
+
+  border-radius: 50%;
+
+  background: currentColor;
+}
+
+
+.decision-status-pending {
+
+  color: #b45309;
+
+  background: #fffbeb;
+
+  border: 1px solid #f7d889;
+}
+
+
+.decision-status-approved {
+
+  color: #047857;
+
+  background: #ecfdf5;
+
+  border: 1px solid #a7f3d0;
+}
+
+
+.decision-status-rejected {
+
+  color: #b91c1c;
+
+  background: #fef2f2;
+
+  border: 1px solid #fecaca;
+}
+
+
+.decision-status-active {
+
+  color: #0369a1;
+
+  background: #eff6ff;
+
+  border: 1px solid #bae6fd;
+}
+
+
+.decision-status-completed {
+
+  color: #475569;
+
+  background: #f8fafc;
+
+  border: 1px solid #cbd5e1;
+}
+
+
+/* ============================================================
+   44. LOAN STAGE REPORT
+============================================================ */
+
+.loan-stage-report {
+
+  padding: 22px;
+
+  border-radius: 18px;
+
+  background: #ffffff;
+
+  border: 1px solid #e1eaf4;
+
+  box-shadow:
+    0 8px 24px rgba(15, 23, 42, .045);
+}
+
+
+.stage-report-header {
+
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  gap: 15px;
+
+  margin-bottom: 24px;
+}
+
+
+.stage-eyebrow {
+
+  display: block;
+
+  color: var(--ci-primary);
+
+  font-size: 9px;
+  font-weight: 850;
+
+  letter-spacing: .15em;
+
+  text-transform: uppercase;
+}
+
+
+.stage-report-header h3 {
+
+  margin: 4px 0 0;
+
+  color: var(--ci-dark);
+
+  font-size: 17px;
+
+  font-weight: 850;
+
+  letter-spacing: -.025em;
+}
+
+
+.stage-reference {
+
+  flex: 0 0 auto;
+
+  padding: 7px 10px;
+
+  border-radius: 8px;
+
+  background: #f1f5f9;
+
+  color: #64748b;
+
+  border: 1px solid #e2e8f0;
+
+  font-family: monospace;
+
+  font-size: 10px;
+
+  font-weight: 750;
+}
+
+
+/* ============================================================
+   45. STAGE TRACK
+============================================================ */
+
+.loan-stage-track {
+
+  width: 100%;
+
+  display: flex;
+  align-items: center;
+}
+
+
+.loan-stage-item {
+
+  position: relative;
+
+  min-width: 0;
+
+  display: flex;
+  align-items: center;
+
+  gap: 9px;
+
+  flex: 1;
+}
+
+
+.stage-node {
+
+  width: 39px;
+  height: 39px;
+
+  flex: 0 0 39px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  border-radius: 12px;
+
+  background: #f1f5f9;
+
+  color: #94a3b8;
+
+  border: 1px solid #dce4ed;
+
+  font-size: 12px;
+}
+
+
+.loan-stage-item.stage-complete .stage-node {
+
+  color: #ffffff;
+
+  background:
+    linear-gradient(
+      135deg,
+      #2563eb,
+      #3b82f6
+    );
+
+  border-color: #2563eb;
+
+  box-shadow:
+    0 7px 16px rgba(37, 99, 235, .17);
+}
+
+
+.loan-stage-item.stage-current .stage-node {
+
+  color: #ffffff;
+
+  background:
+    linear-gradient(
+      135deg,
+      #0891b2,
+      #06b6d4
+    );
+
+  border-color: #0891b2;
+
+  box-shadow:
+    0 0 0 5px rgba(8, 145, 178, .08),
+    0 8px 18px rgba(8, 145, 178, .15);
+}
+
+
+.stage-content {
+
+  min-width: 0;
+}
+
+
+.stage-content strong {
+
+  display: block;
+
+  color: var(--ci-dark);
+
+  font-size: 11px;
+
+  font-weight: 800;
+
+  white-space: nowrap;
+}
+
+
+.stage-content span {
+
+  display: block;
+
+  margin-top: 3px;
+
+  color: var(--ci-muted);
+
+  font-size: 9px;
+
+  white-space: nowrap;
+
+  overflow: hidden;
+
+  text-overflow: ellipsis;
+}
+
+
+.stage-line {
+
+  height: 2px;
+
+  flex: 0 0 30px;
+
+  margin: 0 7px;
+
+  background: #e2e8f0;
+
+  border-radius: 999px;
+}
+
+
+.stage-line.active {
+
+  background:
+    linear-gradient(
+      90deg,
+      #2563eb,
+      #60a5fa
+    );
+}
+
+
+/* ============================================================
+   46. STAGE SUMMARY
+============================================================ */
+
+.stage-summary {
+
+  display: flex;
+  align-items: center;
+
+  gap: 13px;
+
+  margin-top: 20px;
+
+  padding: 15px 17px;
+
+  border-radius: 14px;
+
+  background: #f8fafc;
+
+  border: 1px solid #e2e8f0;
+}
+
+
+.stage-summary-icon {
+
+  width: 40px;
+  height: 40px;
+
+  flex: 0 0 40px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  border-radius: 11px;
+
+  background: #ffffff;
+
+  border: 1px solid #dbe3ec;
+
+  font-size: 15px;
+}
+
+
+.stage-summary-content {
+
+  min-width: 0;
+}
+
+
+.stage-summary-content > span {
+
+  display: block;
+
+  color: #94a3b8;
+
+  font-size: 9px;
+  font-weight: 850;
+
+  letter-spacing: .1em;
+}
+
+
+.stage-summary-content > strong {
+
+  display: block;
+
+  margin-top: 3px;
+
+  font-size: 13px;
+
+  font-weight: 850;
+}
+
+
+.stage-summary-content p {
+
+  margin: 4px 0 0;
+
+  color: var(--ci-muted);
+
+  font-size: 10px;
+
+  line-height: 1.45;
+}
+
+
+/* ============================================================
+   47. STAGE SUMMARY STATES
+============================================================ */
+
+.stage-summary-pending {
+  background: #fffbeb;
+  border-color: #fde68a;
+}
+
+.stage-summary-pending .stage-summary-icon {
+  color: #d97706;
+  background: #fff7d6;
+  border-color: #fcd34d;
+}
+
+.stage-summary-pending strong {
+  color: #92400e;
+}
+
+
+.stage-summary-approved {
+  background: #f0fdf7;
+  border-color: #a7f3d0;
+}
+
+.stage-summary-approved .stage-summary-icon {
+  color: #059669;
+  background: #dcfce7;
+  border-color: #86efac;
+}
+
+.stage-summary-approved strong {
+  color: #047857;
+}
+
+
+.stage-summary-rejected {
+  background: #fff7f7;
+  border-color: #fecaca;
+}
+
+.stage-summary-rejected .stage-summary-icon {
+  color: #dc2626;
+  background: #fee2e2;
+  border-color: #fca5a5;
+}
+
+.stage-summary-rejected strong {
+  color: #b91c1c;
+}
+
+
+.stage-summary-active {
+  background: #eff6ff;
+  border-color: #bfdbfe;
+}
+
+.stage-summary-active .stage-summary-icon {
+  color: #2563eb;
+  background: #dbeafe;
+  border-color: #93c5fd;
+}
+
+.stage-summary-active strong {
+  color: #1d4ed8;
+}
+
+
+.stage-summary-completed {
+  background: #f8fafc;
+  border-color: #cbd5e1;
+}
+
+.stage-summary-completed .stage-summary-icon {
+  color: #475569;
+  background: #f1f5f9;
+}
+
+.stage-summary-completed strong {
+  color: #334155;
+}
+
+
+/* ============================================================
+   48. DECISION COMMAND GRID
+============================================================ */
+
+.decision-command-grid {
+
+  display: grid;
+
+  grid-template-columns:
+    repeat(2, minmax(0, 1fr));
+
+  gap: 14px;
+
+  margin-top: 16px;
+}
+
+
+.decision-command-card {
+
+  position: relative;
+
+  min-width: 0;
+
+  width: 100%;
+
+  display: flex;
+  align-items: center;
+
+  gap: 14px;
+
+  padding: 17px;
+
+  border-radius: 16px;
+
+  text-align: left;
+
+  cursor: pointer;
+
+  overflow: hidden;
+
+  transition:
+    transform .22s ease,
+    box-shadow .22s ease,
+    border-color .22s ease;
+}
+
+
+.decision-command-card:hover {
+
+  transform: translateY(-2px);
+}
+
+
+.decision-approve {
+
+  background:
+    linear-gradient(
+      135deg,
+      #ecfdf5,
+      #ffffff
+    );
+
+  border: 1px solid #a7f3d0;
+
+  box-shadow:
+    0 9px 25px rgba(5, 150, 105, .08);
+
+  color: #047857;
+}
+
+
+.decision-reject {
+
+  background:
+    linear-gradient(
+      135deg,
+      #fff1f2,
+      #ffffff
+    );
+
+  border: 1px solid #fecaca;
+
+  box-shadow:
+    0 9px 25px rgba(220, 38, 38, .07);
+
+  color: #b91c1c;
+}
+
+
+.decision-command-icon {
+
+  width: 46px;
+  height: 46px;
+
+  flex: 0 0 46px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  border-radius: 13px;
+
+  font-size: 16px;
+
+  background: #ffffff;
+
+  border: 1px solid currentColor;
+}
+
+
+.decision-command-content {
+
+  position: relative;
+  z-index: 2;
+
+  min-width: 0;
+
+  flex: 1;
+}
+
+
+.decision-command-label {
+
+  display: block;
+
+  margin-bottom: 4px;
+
+  font-size: 8px;
+
+  font-weight: 850;
+
+  letter-spacing: .13em;
+
+  opacity: .72;
+}
+
+
+.decision-command-content strong {
+
+  display: block;
+
+  color: var(--ci-dark);
+
+  font-size: 14px;
+
+  font-weight: 850;
+}
+
+
+.decision-command-content small {
+
+  display: block;
+
+  margin-top: 4px;
+
+  color: var(--ci-muted);
+
+  font-size: 10px;
+
+  line-height: 1.45;
+}
+
+
+.decision-command-arrow {
+
+  width: 30px;
+  height: 30px;
+
+  flex: 0 0 30px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  border-radius: 9px;
+
+  background: rgba(255,255,255,.85);
+
+  font-size: 10px;
+}
+
+
+/* ============================================================
+   49. RECORDED DECISION
+============================================================ */
+
+.recorded-decision-card {
+
+  display: flex;
+  align-items: center;
+
+  gap: 14px;
+
+  margin-top: 16px;
+
+  padding: 17px;
+
+  border-radius: 15px;
+
+  border: 1px solid #e2e8f0;
+
+  background: #f8fafc;
+}
+
+
+.recorded-decision-icon {
+
+  width: 45px;
+  height: 45px;
+
+  flex: 0 0 45px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  border-radius: 13px;
+
+  background: #ffffff;
+
+  font-size: 17px;
+}
+
+
+.recorded-decision-content {
+
+  min-width: 0;
+}
+
+
+.recorded-decision-content > span {
+
+  display: block;
+
+  font-size: 8px;
+  font-weight: 850;
+
+  letter-spacing: .12em;
+}
+
+
+.recorded-decision-content strong {
+
+  display: block;
+
+  margin-top: 3px;
+
+  color: var(--ci-dark);
+
+  font-size: 14px;
+
+  font-weight: 850;
+}
+
+
+.recorded-decision-content p {
+
+  margin: 4px 0 0;
+
+  color: var(--ci-muted);
+
+  font-size: 10px;
+
+  line-height: 1.45;
+}
+
+
+.recorded-approved {
+  background: #f0fdf7;
+  border-color: #a7f3d0;
+}
+
+.recorded-approved .recorded-decision-icon,
+.recorded-approved .recorded-decision-content > span {
+  color: #059669;
+}
+
+
+.recorded-rejected {
+  background: #fff7f7;
+  border-color: #fecaca;
+}
+
+.recorded-rejected .recorded-decision-icon,
+.recorded-rejected .recorded-decision-content > span {
+  color: #dc2626;
+}
+
+
+.recorded-active {
+  background: #eff6ff;
+  border-color: #bfdbfe;
+}
+
+.recorded-active .recorded-decision-icon,
+.recorded-active .recorded-decision-content > span {
+  color: #2563eb;
+}
+
+
+.recorded-completed {
+  background: #f8fafc;
+  border-color: #cbd5e1;
+}
+
+.recorded-completed .recorded-decision-icon,
+.recorded-completed .recorded-decision-content > span {
+  color: #475569;
+}
+
+
+/* ============================================================
+   50. FOCUS STATES
+============================================================ */
+
+button:focus-visible,
+.receipt-button:focus-visible,
+.command-action:focus-visible {
+
+  outline:
+    3px solid rgba(37, 99, 235, .22);
+
+  outline-offset: 3px;
+}
+
+
+/* ============================================================
+   51. LARGE DESKTOP
 ============================================================ */
 
 @media (max-width: 1250px) {
@@ -2621,7 +3915,6 @@
       320px;
   }
 
-
   .intel-grid,
   .loan-information-grid {
 
@@ -2629,40 +3922,43 @@
       repeat(3, minmax(0, 1fr));
   }
 
+  .financial-snapshot {
 
-  .snapshot-card {
-
-    padding: 16px;
+    grid-template-columns:
+      repeat(2, minmax(0, 1fr));
   }
 
+  .customer-hero-card {
 
-  .snapshot-content > strong {
+    gap: 18px;
 
-    font-size: 17px;
+    padding: 25px;
   }
 
+  .customer-status-area {
+
+    padding-left: 12px;
+  }
+
+  .hero-decision-button {
+
+    width: 96px;
+    min-width: 96px;
+  }
 }
 
 
 /* ============================================================
-   RESPONSIVE — 1050px
+   52. TABLET / NARROW DESKTOP
 ============================================================ */
 
 @media (max-width: 1050px) {
-
-  .financial-snapshot {
-
-    grid-template-columns:
-      repeat(2, 1fr);
-  }
-
 
   .ci-layout {
 
     grid-template-columns:
       1fr;
   }
-
 
   .ci-sidebar {
 
@@ -2671,15 +3967,39 @@
     grid-template-columns:
       repeat(2, minmax(0, 1fr));
 
-    align-items:
-      start;
+    align-items: start;
   }
 
+  .customer-hero-card {
+
+    grid-template-columns:
+      1fr;
+  }
+
+  .customer-status-area {
+
+    width: 100%;
+
+    justify-content: flex-start;
+
+    padding:
+      15px 0 0;
+
+    border-left: 0;
+
+    border-top:
+      1px solid #e6edf6;
+  }
+
+  .status-summary {
+
+    align-items: flex-start;
+  }
 }
 
 
 /* ============================================================
-   RESPONSIVE — 760px
+   53. TABLET
 ============================================================ */
 
 @media (max-width: 760px) {
@@ -2690,82 +4010,67 @@
       22px 0 28px;
   }
 
-
   .ci-breadcrumb {
 
-    align-items:
-      flex-start;
+    align-items: flex-start;
   }
-
 
   .loan-reference {
 
-    display:
-      none;
+    display: none;
   }
 
-
   .customer-hero-card {
-
-    flex-direction:
-      column;
-
-    align-items:
-      flex-start;
 
     padding:
       22px;
   }
 
+  .customer-identity {
+
+    align-items: flex-start;
+  }
 
   .customer-status-area {
 
-    text-align:
-      left;
-  }
+    flex-wrap: wrap;
 
+    align-items: center;
+  }
 
   .financial-snapshot {
 
     grid-template-columns:
-      1fr 1fr;
+      repeat(2, minmax(0, 1fr));
 
     gap: 11px;
   }
-
 
   .snapshot-card {
 
     min-height: 105px;
 
-    padding: 15px;
+    padding: 14px;
 
-    gap: 11px;
+    gap: 10px;
   }
-
 
   .snapshot-icon {
 
     width: 40px;
     height: 40px;
 
+    flex-basis: 40px;
+
     border-radius: 11px;
 
     font-size: 14px;
   }
 
-
   .snapshot-content > strong {
 
     font-size: 16px;
   }
-
-
-  .snapshot-content small {
-
-    font-size: 9px;
-  }
-
 
   .intel-grid,
   .loan-information-grid {
@@ -2774,69 +4079,116 @@
       repeat(2, minmax(0, 1fr));
   }
 
-
   .ci-sidebar {
 
     grid-template-columns:
       1fr;
   }
 
+  .loan-command-header {
+
+    align-items: flex-start;
+
+    flex-direction: column;
+  }
+
+  .decision-status-pill {
+
+    align-self: flex-start;
+  }
+
+  .loan-stage-track {
+
+    overflow-x: auto;
+
+    padding-bottom: 8px;
+  }
+
+  .loan-stage-item {
+
+    min-width: 155px;
+
+    flex: 0 0 155px;
+  }
+
+  .stage-line {
+
+    flex: 0 0 25px;
+  }
 }
 
 
 /* ============================================================
-   RESPONSIVE — 520px
+   54. MOBILE
 ============================================================ */
 
-@media (max-width: 520px) {
+@media (max-width: 600px) {
 
   .customer-identity {
 
-    align-items:
-      flex-start;
-
-    flex-direction:
-      column;
+    gap: 13px;
   }
 
+  .profile-image-wrapper,
+  .profile-image,
+  .profile-placeholder {
+
+    width: 68px;
+    height: 68px;
+  }
+
+  .profile-image-wrapper {
+
+    flex-basis: 68px;
+  }
+
+  .profile-placeholder {
+
+    font-size: 22px;
+  }
 
   .customer-identity-content h2 {
 
-    font-size:
-      25px;
+    font-size: 24px;
   }
 
+  .customer-status-area {
 
-  .customer-identifiers {
+    align-items: stretch;
 
-    flex-direction:
-      column;
-
-    align-items:
-      flex-start;
+    flex-direction: column;
   }
 
+  .status-summary {
+
+    align-items: flex-start;
+  }
+
+  .hero-decision-actions {
+
+    width: 100%;
+  }
+
+  .hero-decision-button {
+
+    flex: 1;
+
+    width: auto;
+    min-width: 0;
+  }
+
+  .hero-decision-record {
+
+    width: 100%;
+
+    max-width: none;
+  }
 
   .financial-snapshot {
 
     grid-template-columns:
       1fr;
   }
-
-
-  .snapshot-card {
-
-    min-height:
-      98px;
-  }
-
-
-  .snapshot-content > strong {
-
-    font-size:
-      18px;
-  }
-
 
   .intel-grid,
   .loan-information-grid {
@@ -2845,62 +4197,223 @@
       1fr;
   }
 
-
   .premium-card {
 
-    padding:
-      19px;
+    padding: 19px;
   }
 
+  .loan-command-section {
 
-  .card-header-premium h3,
-  .officer-header h3,
-  .risk-header h3 {
+    padding: 17px;
 
-    font-size:
-      17px;
+    border-radius: 17px;
   }
 
+  .loan-command-title {
+
+    align-items: flex-start;
+  }
+
+  .loan-command-icon {
+
+    width: 43px;
+    height: 43px;
+
+    flex-basis: 43px;
+  }
+
+  .loan-command-title h2 {
+
+    font-size: 18px;
+  }
+
+  .loan-stage-report {
+
+    padding: 16px;
+  }
+
+  .decision-command-grid {
+
+    grid-template-columns:
+      1fr;
+  }
+
+  .decision-record-meta {
+
+    grid-template-columns:
+      1fr;
+  }
 
   .premium-repayment-table {
 
-    min-width:
-      800px;
+    min-width: 800px;
   }
 
+  .premium-card.repayment-card {
+
+    overflow-x: auto;
+  }
 }
 
 
 /* ============================================================
-   ACCESSIBILITY / TOUCH
+   55. VERY SMALL MOBILE
+============================================================ */
+
+@media (max-width: 480px) {
+
+  .customer-hero-card {
+
+    padding: 18px;
+  }
+
+  .customer-identity {
+
+    flex-direction: column;
+
+    align-items: flex-start;
+  }
+
+  .customer-identifiers {
+
+    flex-direction: column;
+
+    align-items: stretch;
+  }
+
+  .customer-identifiers span {
+
+    width: 100%;
+  }
+
+  .hero-decision-actions {
+
+    display: grid;
+
+    grid-template-columns:
+      1fr 1fr;
+  }
+
+  .hero-decision-button {
+
+    width: 100%;
+
+    min-height: 42px;
+
+    padding: 5px 7px;
+  }
+
+  .hero-decision-icon {
+
+    width: 27px;
+    height: 27px;
+
+    flex-basis: 27px;
+  }
+
+  .hero-decision-content strong {
+
+    font-size: 8.5px;
+  }
+
+  .hero-decision-content small {
+
+    display: none;
+  }
+
+  .decision-record-header {
+
+    align-items: flex-start;
+
+    flex-direction: column;
+  }
+
+  .decision-record {
+
+    padding: 16px;
+  }
+
+  .decision-command-card {
+
+    padding: 15px;
+  }
+
+  .decision-command-icon {
+
+    width: 42px;
+    height: 42px;
+
+    flex-basis: 42px;
+  }
+
+  .decision-command-content strong {
+
+    font-size: 13px;
+  }
+
+  .stage-report-header {
+
+    align-items: flex-start;
+
+    flex-direction: column;
+  }
+}
+
+
+/* ============================================================
+   56. TOUCH DEVICES
 ============================================================ */
 
 @media (hover: none) {
 
   .snapshot-card:hover,
   .intel-box:hover,
-  .command-action:hover {
+  .command-action:hover,
+  .customer-identifiers span:hover,
+  .customer-hero-card:hover {
 
     transform: none;
 
-    box-shadow:
-      inherit;
+    box-shadow: inherit;
   }
 
+  .hero-decision-button:hover,
+  .receipt-button:hover {
+
+    transform: none;
+  }
 }
 
 
-button {
+/* ============================================================
+   57. REDUCED MOTION
+============================================================ */
 
-  font-family: inherit;
+@media (prefers-reduced-motion: reduce) {
+
+  *,
+  *::before,
+  *::after {
+
+    scroll-behavior: auto !important;
+
+    transition: none !important;
+
+    animation: none !important;
+  }
 }
 
 
-button:focus-visible {
+/* ============================================================
+   58. SELECTION
+============================================================ */
 
-  outline:
-    3px solid rgba(37,99,235,.22);
+::selection {
 
-  outline-offset:
-    2px;
+  background:
+    rgba(37, 99, 235, .16);
+
+  color:
+    var(--ci-dark);
 }
+

@@ -29,10 +29,10 @@ export class AuthGuard implements CanActivate {
     }
 
 
-    const role = (user.role || '')
-  .toString()
-  .toUpperCase()
-  .replace('ROLE_', '');
+          const role = (user.role || '')
+          .toString()
+          .toUpperCase()
+          .replace('ROLE_', '');
 
 
     // 3. Role check

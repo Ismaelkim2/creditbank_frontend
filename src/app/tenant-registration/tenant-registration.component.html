@@ -1,0 +1,797 @@
+
+<div class="tr-page container-fluid py-4">
+
+  <!-- PAGE HEADING -->
+  <div class="tr-page-heading d-flex flex-wrap justify-content-between align-items-center mb-4">
+    <div>
+      <div class="tr-eyebrow">
+        <i class="fas fa-building me-2"></i>
+        PROPERTY MANAGEMENT
+      </div>
+
+      <h2 class="tr-title">
+        {{ isEditMode ? 'Edit Tenant' : 'Register Tenant' }}
+      </h2>
+
+      <p class="tr-subtitle mb-0">
+        {{ isEditMode
+          ? 'Update tenant identification, contact information and profile photograph.'
+          : 'Create a tenant profile and securely maintain their identification and contact details.' }}
+      </p>
+    </div>
+
+    <button
+      type="button"
+      class="btn tr-back-btn mt-3 mt-md-0"
+      [disabled]="isSubmitting || isLoadingTenant"
+      (click)="goToDashboard()">
+
+      <i class="fas fa-arrow-left me-2"></i>
+      Back to Dashboard
+    </button>
+  </div>
+
+  <!-- LOADING TENANT -->
+  <div
+    *ngIf="isLoadingTenant"
+    class="alert alert-info d-flex align-items-center"
+    role="status"
+    aria-live="polite">
+
+    <span class="spinner-border spinner-border-sm me-3"></span>
+    Loading tenant information. Please wait...
+  </div>
+
+  <!-- SUCCESS FEEDBACK -->
+  <div
+    *ngIf="successMessage"
+    class="alert tr-alert-success d-flex align-items-start"
+    role="status"
+    aria-live="polite">
+
+    <i class="fas fa-check-circle me-3 mt-1"></i>
+
+    <div class="flex-grow-1">
+      <strong>
+        {{ isEditMode ? 'Tenant updated successfully' : 'Tenant registered successfully' }}
+      </strong>
+
+      <div>{{ successMessage }}</div>
+    </div>
+
+    <button
+      type="button"
+      class="btn-close"
+      aria-label="Dismiss success message"
+      (click)="successMessage = ''; registeredTenant = null">
+    </button>
+  </div>
+
+  <!-- ERROR FEEDBACK -->
+  <div
+    *ngIf="errorMessage"
+    class="alert tr-alert-error d-flex align-items-start"
+    role="alert"
+    aria-live="assertive">
+
+    <i class="fas fa-exclamation-circle me-3 mt-1"></i>
+
+    <div class="flex-grow-1">
+      <strong>Unable to complete the request</strong>
+      <div>{{ errorMessage }}</div>
+    </div>
+
+    <button
+      type="button"
+      class="btn-close"
+      aria-label="Dismiss error message"
+      (click)="errorMessage = ''">
+    </button>
+  </div>
+
+  <div class="row g-4">
+
+    <!-- MAIN REGISTRATION FORM -->
+    <div class="col-12 col-xl-8">
+
+      <div class="tr-card">
+
+        <!-- CARD HEADER -->
+        <div class="tr-card-header">
+          <div class="tr-header-icon">
+            <i class="fas fa-user-plus"></i>
+          </div>
+
+          <div>
+            <h5 class="mb-1">Tenant Information</h5>
+
+            <p class="mb-0">
+              Complete all mandatory fields marked with an asterisk (*).
+            </p>
+          </div>
+        </div>
+
+        <form
+          [formGroup]="tenantForm"
+          (ngSubmit)="submitTenant()"
+          novalidate
+          autocomplete="off">
+
+          <!-- VALIDATION SUMMARY -->
+          <div
+            *ngIf="submitted && tenantForm.invalid"
+            class="alert alert-warning mx-3 mt-3"
+            role="alert">
+
+            <div class="d-flex align-items-start">
+              <i class="fas fa-exclamation-triangle me-2 mt-1"></i>
+
+              <div>
+                <strong>Some information requires your attention.</strong>
+
+                <p class="mb-0 small">
+                  Review the highlighted fields and correct all validation errors before submitting.
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <!-- SECTION 01: PERSONAL AND IDENTIFICATION -->
+          <section class="tr-section">
+
+            <div class="tr-section-heading">
+              <span class="tr-section-number">01</span>
+
+              <div>
+                <h6>Personal & Identification Details</h6>
+
+                <p>
+                  Enter the tenant's official identification information.
+                </p>
+              </div>
+            </div>
+
+            <div class="row g-3">
+
+              <!-- FULL NAME -->
+              <div class="col-12">
+
+                <label for="fullName" class="form-label">
+                  Full Name
+                  <span class="tr-required">*</span>
+                </label>
+
+                <input
+                  id="fullName"
+                  type="text"
+                  class="form-control tr-input"
+                  formControlName="fullName"
+                  maxlength="120"
+                  minlength="5"
+                  autocomplete="name"
+                  placeholder="e.g. John Kamau Mwangi"
+                  spellcheck="false"
+                  autocapitalize="words"
+                  [class.is-invalid]="isInvalid('fullName')"
+                  [attr.aria-invalid]="isInvalid('fullName')"
+                  aria-describedby="fullNameHelp fullNameError">
+
+                <small id="fullNameHelp" class="tr-help">
+                  Enter at least two names. Letters, spaces, apostrophes and hyphens are permitted.
+                </small>
+
+                <div
+                  id="fullNameError"
+                  class="invalid-feedback"
+                  *ngIf="isInvalid('fullName')">
+
+                  {{ fieldError('fullName') }}
+                </div>
+
+              </div>
+
+              <!-- IDENTIFICATION TYPE -->
+              <div class="col-12 col-md-5">
+
+                <label for="identificationType" class="form-label">
+                  Identification Type
+                  <span class="tr-required">*</span>
+                </label>
+
+                <select
+                  id="identificationType"
+                  class="form-select tr-input"
+                  formControlName="identificationType"
+                  [class.is-invalid]="isInvalid('identificationType')"
+                  [attr.aria-invalid]="isInvalid('identificationType')"
+                  aria-describedby="identificationTypeError">
+
+                  <option value="" disabled>
+                    Select identification type
+                  </option>
+
+                  <option
+                    *ngFor="let item of identificationTypes"
+                    [value]="item.value">
+
+                    {{ item.label }}
+                  </option>
+
+                </select>
+
+                <div
+                  id="identificationTypeError"
+                  class="invalid-feedback"
+                  *ngIf="isInvalid('identificationType')">
+
+                  {{ fieldError('identificationType') }}
+                </div>
+
+              </div>
+
+              <!-- IDENTIFICATION NUMBER -->
+              <div class="col-12 col-md-7">
+
+                <label for="identificationNumber" class="form-label">
+                  Identification Number
+                  <span class="tr-required">*</span>
+                </label>
+
+                <!-- NATIONAL ID: NUMBERS ONLY -->
+                <input
+                  *ngIf="tenantForm.get('identificationType')?.value === 'NATIONAL_ID'"
+                  id="identificationNumber"
+                  type="text"
+                  class="form-control tr-input"
+                  formControlName="identificationNumber"
+                  inputmode="numeric"
+                  pattern="[0-9]*"
+                  maxlength="9"
+                  minlength="8"
+                  autocomplete="off"
+                  placeholder="Enter 8 or 9 digit National ID"
+                  (input)="onDigitsOnly($event, 9)"
+                  [class.is-invalid]="isInvalid('identificationNumber')"
+                  [attr.aria-invalid]="isInvalid('identificationNumber')"
+                  aria-describedby="identificationHelp identificationError">
+
+                <!-- PASSPORT: ALPHANUMERIC -->
+                <input
+                  *ngIf="tenantForm.get('identificationType')?.value === 'PASSPORT'"
+                  id="identificationNumber"
+                  type="text"
+                  class="form-control tr-input text-uppercase"
+                  formControlName="identificationNumber"
+                  maxlength="40"
+                  minlength="5"
+                  autocomplete="off"
+                  autocapitalize="characters"
+                  spellcheck="false"
+                  placeholder="Enter passport number"
+                  (input)="onPassportInput($event)"
+                  [class.is-invalid]="isInvalid('identificationNumber')"
+                  [attr.aria-invalid]="isInvalid('identificationNumber')"
+                  aria-describedby="identificationHelp identificationError">
+
+                <small id="identificationHelp" class="tr-help">
+                  <ng-container
+                    *ngIf="tenantForm.get('identificationType')?.value === 'NATIONAL_ID'; else passportHelp">
+
+                    National ID must contain exactly 8 or 9 digits. Letters and special characters are not allowed.
+                  </ng-container>
+
+                  <ng-template #passportHelp>
+                    Passport numbers must contain 5–40 letters, numbers or hyphens.
+                  </ng-template>
+                </small>
+
+                <div
+                  id="identificationError"
+                  class="invalid-feedback"
+                  *ngIf="isInvalid('identificationNumber')">
+
+                  {{ fieldError('identificationNumber') }}
+                </div>
+
+                <small class="tr-help d-block mt-1">
+                  Duplicate identification numbers are checked by the backend for the authenticated owner's account.
+                </small>
+
+              </div>
+
+            </div>
+          </section>
+
+          <div class="tr-divider"></div>
+
+          <!-- SECTION 02: TENANT PHOTOGRAPH -->
+          <section class="tr-section">
+
+            <div class="tr-section-heading">
+              <span class="tr-section-number">02</span>
+
+              <div>
+                <h6>Tenant Photograph</h6>
+
+                <p>
+                  Upload an optional photograph for tenant identification.
+                </p>
+              </div>
+            </div>
+
+            <div class="tr-photo-upload">
+
+              <!-- IMAGE PREVIEW -->
+              <div class="tr-photo-preview">
+
+                <img
+                  *ngIf="tenantImagePreviewUrl"
+                  [src]="tenantImagePreviewUrl"
+                  alt="Tenant photograph preview">
+
+                <div
+                  *ngIf="!tenantImagePreviewUrl"
+                  class="tr-photo-placeholder">
+
+                  <i class="fas fa-user"></i>
+
+                  <span>No photograph selected</span>
+                </div>
+
+                <button
+                  *ngIf="tenantImagePreviewUrl"
+                  type="button"
+                  class="tr-photo-remove"
+                  (click)="removeTenantImage(tenantImageInput)"
+                  [disabled]="isSubmitting"
+                  aria-label="Remove selected photograph">
+
+                  <i class="fas fa-times"></i>
+                </button>
+
+              </div>
+
+              <!-- IMAGE UPLOAD -->
+              <div class="tr-photo-controls">
+
+                <label for="tenantImageInput" class="form-label">
+                  {{ isEditMode ? 'Change Photograph' : 'Upload Photograph' }}
+                </label>
+
+                <input
+                  #tenantImageInput
+                  id="tenantImageInput"
+                  type="file"
+                  class="form-control tr-input"
+                  accept=".jpg,.jpeg,.png,.webp,image/jpeg,image/png,image/webp"
+                  [disabled]="isSubmitting || isLoadingTenant"
+                  (change)="onTenantImageSelected($event)">
+
+                <small class="tr-help">
+                  Accepted formats: JPG, JPEG, PNG and WEBP. Maximum size: 5 MB.
+                  Photograph is optional.
+                </small>
+
+                <div
+                  *ngIf="tenantImageError"
+                  class="text-danger small mt-2"
+                  role="alert">
+
+                  <i class="fas fa-exclamation-circle me-1"></i>
+                  {{ tenantImageError }}
+                </div>
+
+              </div>
+
+            </div>
+          </section>
+
+          <div class="tr-divider"></div>
+
+          <!-- SECTION 03: CONTACT DETAILS -->
+          <section class="tr-section">
+
+            <div class="tr-section-heading">
+              <span class="tr-section-number">03</span>
+
+              <div>
+                <h6>Contact Details</h6>
+
+                <p>
+                  Provide the tenant's current contact information.
+                </p>
+              </div>
+            </div>
+
+            <div class="row g-3">
+
+              <!-- TENANT PHONE -->
+              <div class="col-12 col-md-6">
+
+                <label for="phoneNumber" class="form-label">
+                  Phone Number
+                  <span class="tr-required">*</span>
+                </label>
+
+                <input
+                  id="phoneNumber"
+                  type="text"
+                  class="form-control tr-input"
+                  formControlName="phoneNumber"
+                  inputmode="numeric"
+                  pattern="[0-9]*"
+                  maxlength="10"
+                  minlength="10"
+                  autocomplete="tel-national"
+                  placeholder="e.g. 0712345678"
+                  (input)="onDigitsOnly($event, 10)"
+                  [class.is-invalid]="isInvalid('phoneNumber')"
+                  [attr.aria-invalid]="isInvalid('phoneNumber')"
+                  aria-describedby="phoneHelp phoneError">
+
+                <small id="phoneHelp" class="tr-help">
+                  Enter a 10-digit Kenyan mobile number beginning with 07 or 01.
+                  Numbers only.
+                </small>
+
+                <div
+                  id="phoneError"
+                  class="invalid-feedback"
+                  *ngIf="isInvalid('phoneNumber')">
+
+                  {{ fieldError('phoneNumber') }}
+                </div>
+
+              </div>
+
+              <!-- EMAIL -->
+              <div class="col-12 col-md-6">
+
+                <label for="email" class="form-label">
+                  Email Address
+                </label>
+
+                <input
+                  id="email"
+                  type="email"
+                  class="form-control tr-input"
+                  formControlName="email"
+                  maxlength="254"
+                  autocomplete="email"
+                  placeholder="tenant@example.com"
+                  spellcheck="false"
+                  autocapitalize="off"
+                  [class.is-invalid]="isInvalid('email')"
+                  [attr.aria-invalid]="isInvalid('email')"
+                  aria-describedby="emailHelp emailError">
+
+                <small id="emailHelp" class="tr-help">
+                  Optional. Enter a valid email address if available.
+                </small>
+
+                <div
+                  id="emailError"
+                  class="invalid-feedback"
+                  *ngIf="isInvalid('email')">
+
+                  {{ fieldError('email') }}
+                </div>
+
+              </div>
+
+              <!-- ADDRESS -->
+              <div class="col-12">
+
+                <label for="address" class="form-label">
+                  Residential Address
+                </label>
+
+                <textarea
+                  id="address"
+                  class="form-control tr-input"
+                  formControlName="address"
+                  maxlength="250"
+                  rows="2"
+                  placeholder="Enter the tenant's current residential address"
+                  [class.is-invalid]="isInvalid('address')"
+                  [attr.aria-invalid]="isInvalid('address')"
+                  aria-describedby="addressError">
+                </textarea>
+
+                <div
+                  id="addressError"
+                  class="invalid-feedback"
+                  *ngIf="isInvalid('address')">
+
+                  {{ fieldError('address') }}
+                </div>
+
+              </div>
+
+            </div>
+          </section>
+
+          <div class="tr-divider"></div>
+
+          <!-- SECTION 04: EMERGENCY CONTACT -->
+          <section class="tr-section">
+
+            <div class="tr-section-heading">
+              <span class="tr-section-number">04</span>
+
+              <div>
+                <h6>Emergency Contact</h6>
+
+                <p>
+                  Provide someone who can be contacted if an emergency arises.
+                </p>
+              </div>
+            </div>
+
+            <div class="row g-3">
+
+              <!-- EMERGENCY CONTACT NAME -->
+              <div class="col-12 col-md-6">
+
+                <label for="emergencyContactName" class="form-label">
+                  Contact Person's Full Name
+                  <span class="tr-required">*</span>
+                </label>
+
+                <input
+                  id="emergencyContactName"
+                  type="text"
+                  class="form-control tr-input"
+                  formControlName="emergencyContactName"
+                  maxlength="120"
+                  minlength="5"
+                  autocomplete="off"
+                  autocapitalize="words"
+                  placeholder="e.g. Mary Wanjiku Kamau"
+                  [class.is-invalid]="isInvalid('emergencyContactName')"
+                  [attr.aria-invalid]="isInvalid('emergencyContactName')"
+                  aria-describedby="emergencyNameHelp emergencyNameError">
+
+                <small id="emergencyNameHelp" class="tr-help">
+                  Enter at least two names.
+                </small>
+
+                <div
+                  id="emergencyNameError"
+                  class="invalid-feedback"
+                  *ngIf="isInvalid('emergencyContactName')">
+
+                  {{ fieldError('emergencyContactName') }}
+                </div>
+
+              </div>
+
+              <!-- EMERGENCY CONTACT PHONE -->
+              <div class="col-12 col-md-6">
+
+                <label for="emergencyContactPhone" class="form-label">
+                  Contact Person's Phone
+                  <span class="tr-required">*</span>
+                </label>
+
+                <input
+                  id="emergencyContactPhone"
+                  type="text"
+                  class="form-control tr-input"
+                  formControlName="emergencyContactPhone"
+                  inputmode="numeric"
+                  pattern="[0-9]*"
+                  maxlength="10"
+                  minlength="10"
+                  autocomplete="off"
+                  placeholder="e.g. 0712345678"
+                  (input)="onDigitsOnly($event, 10)"
+                  [class.is-invalid]="isInvalid('emergencyContactPhone')"
+                  [attr.aria-invalid]="isInvalid('emergencyContactPhone')"
+                  aria-describedby="emergencyPhoneHelp emergencyPhoneError">
+
+                <small id="emergencyPhoneHelp" class="tr-help">
+                  Enter a 10-digit Kenyan mobile number beginning with 07 or 01.
+                  Numbers only.
+                </small>
+
+                <div
+                  id="emergencyPhoneError"
+                  class="invalid-feedback"
+                  *ngIf="isInvalid('emergencyContactPhone')">
+
+                  {{ fieldError('emergencyContactPhone') }}
+                </div>
+
+              </div>
+
+            </div>
+          </section>
+
+          <div class="tr-divider"></div>
+
+          <!-- SECTION 05: ADDITIONAL NOTES -->
+          <section class="tr-section">
+
+            <div class="tr-section-heading">
+              <span class="tr-section-number">05</span>
+
+              <div>
+                <h6>Additional Notes</h6>
+
+                <p>
+                  Record relevant tenant information where necessary.
+                </p>
+              </div>
+            </div>
+
+            <label for="notes" class="form-label">
+              Additional Notes
+            </label>
+
+            <textarea
+              id="notes"
+              class="form-control tr-input"
+              formControlName="notes"
+              maxlength="2000"
+              rows="4"
+              placeholder="Enter any relevant notes..."
+              [class.is-invalid]="isInvalid('notes')"
+              [attr.aria-invalid]="isInvalid('notes')"
+              aria-describedby="notesHelp notesError">
+            </textarea>
+
+            <div
+              id="notesError"
+              class="invalid-feedback"
+              *ngIf="isInvalid('notes')">
+
+              {{ fieldError('notes') }}
+            </div>
+
+            <small id="notesHelp" class="tr-help">
+              Maximum 2,000 characters. Avoid storing unnecessary sensitive information.
+            </small>
+
+          </section>
+
+          <!-- FORM ACTIONS -->
+          <div class="tr-form-footer">
+
+            <button
+              type="button"
+              class="btn tr-reset-btn"
+              [disabled]="isSubmitting || isLoadingTenant"
+              (click)="resetForm()">
+
+              <i class="fas fa-undo me-2"></i>
+              {{ isEditMode ? 'Cancel Editing' : 'Clear Form' }}
+            </button>
+
+            <button
+              type="submit"
+              class="btn tr-submit-btn"
+              [disabled]="isSubmitting || isLoadingTenant || tenantForm.disabled">
+
+              <span
+                *ngIf="isSubmitting"
+                class="spinner-border spinner-border-sm me-2"
+                aria-hidden="true">
+              </span>
+
+              <i
+                *ngIf="!isSubmitting"
+                class="fas me-2"
+                [ngClass]="isEditMode ? 'fa-save' : 'fa-user-check'">
+              </i>
+
+              {{
+                isSubmitting
+                  ? (isEditMode ? 'Updating Tenant...' : 'Registering Tenant...')
+                  : (isEditMode ? 'Update Tenant' : 'Register Tenant')
+              }}
+
+            </button>
+
+          </div>
+
+        </form>
+      </div>
+    </div>
+
+    <!-- INFORMATION SIDEBAR -->
+    <div class="col-12 col-xl-4">
+
+      <div class="tr-side-card">
+
+        <div class="tr-side-icon">
+          <i class="fas fa-shield-alt"></i>
+        </div>
+
+        <h5>Secure Tenant Records</h5>
+
+        <p>
+          Tenant records are associated with the authenticated account.
+          The system does not require you to enter an owner ID manually.
+        </p>
+
+        <!-- IDENTIFICATION -->
+        <div class="tr-info-item">
+          <i class="fas fa-id-card"></i>
+
+          <div>
+            <strong>Identification validation</strong>
+
+            <span>
+              National IDs must contain 8 or 9 digits. Passport numbers
+              follow their separate validation rules.
+            </span>
+          </div>
+        </div>
+
+        <!-- CONTACT -->
+        <div class="tr-info-item">
+          <i class="fas fa-phone-alt"></i>
+
+          <div>
+            <strong>Contact information</strong>
+
+            <span>
+              Kenyan mobile numbers are validated and normalized before storage.
+            </span>
+          </div>
+        </div>
+
+        <!-- EMERGENCY CONTACT -->
+        <div class="tr-info-item">
+          <i class="fas fa-user-shield"></i>
+
+          <div>
+            <strong>Emergency contact</strong>
+
+            <span>
+              A valid emergency contact name and mobile number are required.
+            </span>
+          </div>
+        </div>
+
+        <!-- DUPLICATE PROTECTION -->
+        <div class="tr-info-item">
+          <i class="fas fa-database"></i>
+
+          <div>
+            <strong>Duplicate protection</strong>
+
+            <span>
+              The backend checks identification details against existing
+              records belonging to the authenticated owner.
+            </span>
+          </div>
+        </div>
+
+        <!-- IMAGE -->
+        <div class="tr-info-item">
+          <i class="fas fa-camera"></i>
+
+          <div>
+            <strong>Profile photograph</strong>
+
+            <span>
+              Photograph upload is optional and restricted to supported image formats.
+            </span>
+          </div>
+        </div>
+
+        <!-- INFORMATION NOTE -->
+        <div class="tr-side-note">
+          <i class="fas fa-info-circle me-2"></i>
+
+          Registering a tenant creates a tenant profile. It does not,
+          by itself, create a lease, assign a unit or record a rent payment.
+        </div>
+
+      </div>
+    </div>
+
+  </div>
+</div>

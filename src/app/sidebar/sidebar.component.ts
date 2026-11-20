@@ -5,70 +5,98 @@ import { Router } from '@angular/router';
 @Component({
   selector: 'app-sidebar',
   templateUrl: './sidebar.component.html',
-styleUrls: ['./sidebar.component.css'] 
+  styleUrls: ['./sidebar.component.css']
 })
-export class SidebarComponent implements OnInit  {
-role: string = '';
-isCollapsed: boolean = false;
+export class SidebarComponent implements OnInit {
 
+  role = '';
+  isCollapsed = false;
 
- constructor(private authService: AuthService,
+  @Input() isMobileSidebarActive = false;
+
+  constructor(
+    private authService: AuthService,
     private router: Router
- ) {}
+  ) {}
 
- ngOnInit(): void {
-    this.role = this.authService.getRole();
+  ngOnInit(): void {
+    this.refreshRole();
   }
 
-    toggleSidebar() {
+  /**
+   * Read and normalize the authenticated user's role.
+   * Supports ADMIN and ROLE_ADMIN formats.
+   */
+  private normalizeRole(value: string | null | undefined): string {
+    return (value ?? '')
+      .trim()
+      .replace(/^ROLE_/i, '')
+      .toUpperCase();
+  }
+
+  private refreshRole(): void {
+    this.role = this.normalizeRole(this.authService.getRole());
+  }
+
+  get isTenantAgent(): boolean {
+    return this.role === 'TENANT_AGENT';
+  }
+
+  get isAdmin(): boolean {
+    return this.role === 'ADMIN';
+  }
+
+  get isCreditUser(): boolean {
+    return this.role === 'ADMIN' ||
+           this.role === 'DATA_MANAGER';
+  }
+
+  get dashboardRoute(): string {
+    return this.isTenantAgent
+      ? '/app/tenant-agent-dashboard'
+      : '/app/dashboard';
+  }
+
+  toggleSidebar(): void {
     this.isCollapsed = !this.isCollapsed;
   }
 
-  @Input() isMobileSidebarActive: boolean = false;
+  closeSidebar(): void {
+    this.isMobileSidebarActive = false;
+  }
 
-  toggleSidebarMobile() {
-  this.isMobileSidebarActive = !this.isMobileSidebarActive;
-}
+  toggleSidebarMobile(): void {
+    this.isMobileSidebarActive = !this.isMobileSidebarActive;
+  }
 
+  goToAdminApprovals(): void {
+    if (this.isAdmin) {
+      this.router.navigate(['/app/admin-approvals']);
+    }
+  }
 
-goToAdminApprovals() {
-  this.router.navigate(['/app/admin-approvals']);
-}
-
-
-closeSidebar() {
-  this.isMobileSidebarActive = false; // only closes overlay on click
-}
-
-     /** ✅ Navigate to the statement page */
   viewStatement(): void {
-    if (this.role === 'ADMIN') {
-      // Admin goes to the statement query page (no userId specified)
+    if (this.isAdmin) {
       this.router.navigate(['/app/statement']);
-    } else {
-      // Applicant goes to their own statement
-      const nationalId = this.authService.getNationalId();
-      this.router.navigate(['/app/statement'], { queryParams: { userId: nationalId } });
+      return;
     }
+
+    const nationalId = this.authService.getNationalId();
+
+    this.router.navigate(['/app/statement'], {
+      queryParams: { userId: nationalId }
+    });
   }
 
-   management(): void {
-    if (this.role === 'ADMIN') {
-      // Admin goes to the statement query page (no userId specified)
+  management(): void {
+    if (this.isAdmin) {
       this.router.navigate(['/app/management']);
-    } else {
-      // Applicant goes to their own statement
-      const nationalId = this.authService.getNationalId();
-      this.router.navigate(['/app/management'], { queryParams: { userId: nationalId } });
     }
   }
-
 
   logout(): void {
-  localStorage.clear(); 
-  sessionStorage.clear();
-  this.router.navigate(['/app/login']);
-}
-
-
+    localStorage.clear();
+    sessionStorage.clear();
+    this.router.navigate(['/app/login']);
+  }
 }

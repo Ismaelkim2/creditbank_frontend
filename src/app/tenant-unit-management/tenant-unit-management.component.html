@@ -1,0 +1,802 @@
+
+<div class="unit-management container-fluid py-4">
+
+  <!-- PAGE HEADER -->
+  <div class="page-heading d-flex flex-column flex-lg-row justify-content-between align-items-lg-center gap-3 mb-4">
+    <div>
+      <div class="section-eyebrow">
+        <i class="fa-solid fa-building me-2"></i>
+        PROPERTY OPERATIONS
+      </div>
+      <h2 class="page-title mb-1">Unit Management</h2>
+      <p class="page-subtitle mb-0">
+        Create rental units, manage availability and prepare properties for tenant assignment.
+      </p>
+    </div>
+
+    <button
+      type="button"
+      class="btn btn-primary create-unit-btn"
+      [disabled]="!selectedPropertyId || savingUnit"
+      (click)="startCreate()">
+      <i class="fa-solid fa-plus me-2"></i>
+      Register New Unit
+    </button>
+  </div>
+
+  <!-- PAGE ERROR -->
+  <div *ngIf="pageError" class="alert alert-danger d-flex align-items-start gap-2" role="alert">
+    <i class="fa-solid fa-circle-exclamation mt-1"></i>
+    <div class="flex-grow-1">{{ pageError }}</div>
+    <button type="button" class="btn-close" aria-label="Dismiss" (click)="pageError = ''"></button>
+  </div>
+
+  <!-- SUCCESS MESSAGE -->
+  <div *ngIf="successMessage" class="alert alert-success d-flex align-items-start gap-2" role="status">
+    <i class="fa-solid fa-circle-check mt-1"></i>
+    <div class="flex-grow-1">{{ successMessage }}</div>
+    <button type="button" class="btn-close" aria-label="Dismiss" (click)="successMessage = ''"></button>
+  </div>
+
+  <!-- PROPERTY SELECTOR -->
+  <section class="property-selector-card mb-4">
+    <div class="row align-items-center g-3">
+      <div class="col-12 col-lg-5">
+        <div class="d-flex align-items-center gap-3">
+          <div class="property-icon">
+            <i class="fa-solid fa-city"></i>
+          </div>
+          <div>
+            <h5 class="mb-1">Select Property</h5>
+            <p class="text-muted small mb-0">
+              Units are managed separately for each property.
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-12 col-lg-7">
+        <label for="propertySelect" class="form-label fw-semibold">
+          Registered property
+        </label>
+
+        <select
+          id="propertySelect"
+          class="form-select form-select-lg"
+          [value]="selectedPropertyId ?? ''"
+          [disabled]="loadingProperties || properties.length === 0"
+          (change)="selectProperty($any($event.target).value)">
+
+          <option value="" disabled>Select a property</option>
+
+          <option *ngFor="let property of properties" [value]="property.id">
+            {{ property.name }}
+            <ng-container *ngIf="property.propertyCode">
+              — {{ property.propertyCode }}
+            </ng-container>
+          </option>
+        </select>
+
+        <div *ngIf="selectedProperty" class="selected-property-meta mt-2">
+          <span *ngIf="selectedProperty.town">
+            <i class="fa-solid fa-location-dot me-1"></i>
+            {{ selectedProperty.town }}
+          </span>
+          <span *ngIf="selectedProperty.county">
+            {{ selectedProperty.county }}
+          </span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  
+<!-- SELECTED PROPERTY OVERVIEW -->
+<section
+  *ngIf="selectedProperty && !loadingProperties"
+  class="selected-property-overview mb-4">
+
+  <div class="selected-property-image">
+    <img
+      *ngIf="selectedProperty.imageUrl && !selectedPropertyImageError"
+      [src]="getSelectedPropertyImageUrl(selectedProperty.imageUrl)"
+      [alt]="selectedProperty.name || 'Selected property'"
+      class="selected-property-photo"
+      (error)="onSelectedPropertyImageError()">
+
+    <div
+      *ngIf="!selectedProperty.imageUrl || selectedPropertyImageError"
+      class="selected-property-image-placeholder">
+      <i class="fa-solid fa-building"></i>
+      <span>Property photograph unavailable</span>
+      <small>Upload an image in Property Registration to display it here.</small>
+    </div>
+
+    <span class="selected-property-image-label">
+      <i class="fa-solid fa-image me-1"></i>
+      SELECTED PROPERTY
+    </span>
+  </div>
+
+  <div class="selected-property-information">
+    <div class="selected-property-heading">
+      <div>
+        <span class="selected-property-eyebrow">
+          CURRENT PROPERTY
+        </span>
+
+        <h4>{{ selectedProperty.name || 'Unnamed property' }}</h4>
+
+        <p class="selected-property-location">
+          <i class="fa-solid fa-location-dot me-1"></i>
+          {{ selectedProperty.address || selectedProperty.town || 'Location not provided' }}
+          <ng-container *ngIf="selectedProperty.county">
+            , {{ selectedProperty.county }}
+          </ng-container>
+        </p>
+      </div>
+
+      <span class="selected-property-code"
+            *ngIf="selectedProperty.propertyCode">
+        <i class="fa-solid fa-hashtag me-1"></i>
+        {{ selectedProperty.propertyCode }}
+      </span>
+    </div>
+
+    <div class="selected-property-divider"></div>
+
+    <div class="selected-property-facts">
+      <div class="property-fact">
+        <span>Property type</span>
+        <strong>{{ selectedProperty.propertyType || 'Not specified' }}</strong>
+      </div>
+
+      <div class="property-fact">
+        <span>Town</span>
+        <strong>{{ selectedProperty.town || 'Not specified' }}</strong>
+      </div>
+
+      <div class="property-fact">
+        <span>County</span>
+        <strong>{{ selectedProperty.county || 'Not specified' }}</strong>
+      </div>
+    </div>
+
+    <div class="selected-property-management-note">
+      <i class="fa-solid fa-circle-info"></i>
+      <span>
+        You are currently managing rental units belonging to
+        <strong>{{ selectedProperty.name }}</strong>.
+      </span>
+    </div>
+  </div>
+</section>
+
+
+  <!-- PROPERTY LOADING -->
+  <div *ngIf="loadingProperties" class="state-card mb-4">
+    <div class="spinner-border spinner-border-sm text-primary me-2" role="status"></div>
+    Loading registered properties...
+  </div>
+
+  <!-- NO PROPERTY -->
+  <div *ngIf="!loadingProperties && properties.length === 0 && !pageError" class="empty-state mb-4">
+    <div class="empty-state-icon">
+      <i class="fa-solid fa-building-circle-exclamation"></i>
+    </div>
+    <h5>No registered properties found</h5>
+    <p class="text-muted mb-3">
+      Register a property before adding units to it.
+    </p>
+    <a routerLink="/app/tenant/properties/register" class="btn btn-primary">
+      <i class="fa-solid fa-plus me-2"></i>
+      Register Property
+    </a>
+  </div>
+
+  <ng-container *ngIf="selectedPropertyId">
+
+    <!-- KPI CARDS -->
+    <div class="row g-3 mb-4">
+      <div class="col-12 col-sm-6 col-xl-3">
+        <div class="metric-card">
+          <div class="metric-icon metric-blue">
+            <i class="fa-solid fa-door-closed"></i>
+          </div>
+          <div>
+            <div class="metric-label">Total Units</div>
+            <div class="metric-value">{{ units.length }}</div>
+            <div class="metric-note">Registered units</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-12 col-sm-6 col-xl-3">
+        <div class="metric-card">
+          <div class="metric-icon metric-green">
+            <i class="fa-solid fa-door-open"></i>
+          </div>
+          <div>
+            <div class="metric-label">Vacant Units</div>
+            <div class="metric-value">{{ vacantCount }}</div>
+            <div class="metric-note">Available for leasing</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-12 col-sm-6 col-xl-3">
+        <div class="metric-card">
+          <div class="metric-icon metric-purple">
+            <i class="fa-solid fa-users"></i>
+          </div>
+          <div>
+            <div class="metric-label">Occupied Units</div>
+            <div class="metric-value">{{ occupiedCount }}</div>
+            <div class="metric-note">Currently occupied</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-12 col-sm-6 col-xl-3">
+        <div class="metric-card">
+          <div class="metric-icon metric-amber">
+            <i class="fa-solid fa-screwdriver-wrench"></i>
+          </div>
+          <div>
+            <div class="metric-label">Maintenance</div>
+            <div class="metric-value">{{ maintenanceCount }}</div>
+            <div class="metric-note">Under maintenance</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- UNIT FORM -->
+    <section class="content-card mb-4" id="unit-form">
+      <div class="content-card-header">
+        <div>
+          <h5 class="mb-1">
+            <i class="fa-solid me-2 text-primary"
+               [ngClass]="editingUnitId ? 'fa-pen-to-square' : 'fa-circle-plus'"></i>
+            {{ editingUnitId ? 'Edit Unit Details' : 'Register a Unit' }}
+          </h5>
+          <p class="text-muted small mb-0">
+            Property: {{ selectedProperty?.name }}
+          </p>
+        </div>
+
+        <button
+          *ngIf="editingUnitId"
+          type="button"
+          class="btn btn-outline-secondary btn-sm"
+          (click)="cancelEdit()">
+          <i class="fa-solid fa-xmark me-1"></i>
+          Cancel Edit
+        </button>
+      </div>
+
+      <div class="content-card-body">
+        <div *ngIf="formError" class="alert alert-danger" role="alert">
+          <i class="fa-solid fa-circle-exclamation me-2"></i>
+          {{ formError }}
+        </div>
+
+        <form [formGroup]="unitForm" (ngSubmit)="submitUnit()" novalidate>
+
+          <div class="form-section-title">Unit Information</div>
+
+          <div class="row g-3">
+            <div class="col-12 col-md-4">
+              <label for="unitNumber" class="form-label">
+                Unit Number <span class="text-danger">*</span>
+              </label>
+              <input
+                id="unitNumber"
+                type="text"
+                class="form-control"
+                formControlName="unitNumber"
+                maxlength="40"
+                placeholder="e.g. A-01, Flat 12"
+                [class.is-invalid]="isInvalid('unitNumber')">
+
+              <div class="invalid-feedback" *ngIf="isInvalid('unitNumber')">
+                Enter a unit number (maximum 40 characters).
+              </div>
+            </div>
+
+            <div class="col-12 col-md-4">
+              <label for="unitType" class="form-label">Unit Type</label>
+              <select id="unitType" class="form-select" formControlName="unitType">
+                <option value="">Select unit type</option>
+                <option value="BEDSITTER">Bedsitter</option>
+                <option value="STUDIO">Studio</option>
+                <option value="ONE_BEDROOM">One Bedroom</option>
+                <option value="TWO_BEDROOM">Two Bedroom</option>
+                <option value="THREE_BEDROOM">Three Bedroom</option>
+                <option value="FOUR_BEDROOM">Four Bedroom</option>
+                <option value="SHOP">Shop</option>
+                <option value="OFFICE">Office</option>
+                <option value="WAREHOUSE">Warehouse</option>
+                <option value="OTHER">Other</option>
+              </select>
+              <div class="form-text">
+                You can use a different unit type if your backend accepts free text.
+              </div>
+            </div>
+
+            <div class="col-12 col-md-4">
+              <label for="floor" class="form-label">Floor / Level</label>
+              <input
+                id="floor"
+                type="text"
+                class="form-control"
+                formControlName="floor"
+                maxlength="100"
+                placeholder="e.g. Ground Floor">
+            </div>
+
+            <div class="col-12 col-md-6">
+              <label for="monthlyRent" class="form-label">
+                Monthly Rent (KES) <span class="text-danger">*</span>
+              </label>
+              <div class="input-group">
+                <span class="input-group-text">KES</span>
+                <input
+                  id="monthlyRent"
+                  type="number"
+                  min="0.01"
+                  step="0.01"
+                  class="form-control"
+                  formControlName="monthlyRent"
+                  placeholder="0.00"
+                  [class.is-invalid]="isInvalid('monthlyRent')">
+              </div>
+              <div class="field-error"
+                   *ngIf="isInvalid('monthlyRent')">
+                Enter a monthly rent greater than zero.
+              </div>
+            </div>
+
+            <div class="col-12 col-md-6">
+              <label for="depositAmount" class="form-label">
+                Security Deposit (KES) <span class="text-danger">*</span>
+              </label>
+              <div class="input-group">
+                <span class="input-group-text">KES</span>
+                <input
+                  id="depositAmount"
+                  type="number"
+                  min="0"
+                  step="0.01"
+                  class="form-control"
+                  formControlName="depositAmount"
+                  placeholder="0.00"
+                  [class.is-invalid]="isInvalid('depositAmount')">
+              </div>
+              <div class="field-error"
+                   *ngIf="isInvalid('depositAmount')">
+                Deposit must be zero or greater.
+              </div>
+            </div>
+
+            
+<!-- OPTIONAL UNIT PHOTOGRAPH -->
+<div class="col-12">
+  <div class="unit-photo-section">
+
+    <div class="unit-photo-heading">
+      <div>
+        <label for="unitImage" class="form-label fw-semibold mb-1">
+          <i class="fa-solid fa-camera text-primary me-2"></i>
+          Unit Photograph
+          <span class="text-muted fw-normal">(Optional)</span>
+        </label>
+
+        <p class="text-muted small mb-0">
+          Upload a photograph of the actual rental unit, such as its interior,
+          living room, bedroom or shop space.
+        </p>
+      </div>
+
+      <span class="optional-photo-label">OPTIONAL</span>
+    </div>
+
+    <div class="unit-photo-upload-area">
+
+      <!-- IMAGE PREVIEW -->
+      <div
+        *ngIf="unitImagePreviewUrl || currentUnitImageUrl"
+        class="unit-photo-preview">
+
+    <img
+  [src]="unitImagePreviewUrl || (currentUnitImageUrl ? getUnitImageUrl(currentUnitImageUrl) : '')"
+  alt="Unit photograph preview"
+  class="unit-photo-preview-image"
+  (error)="unitImageError = 'Unable to load the current unit photograph.'">
+
+        <div class="unit-photo-preview-overlay">
+          <span>
+            <i class="fa-solid fa-image me-1"></i>
+            {{ selectedUnitImage ? 'New photograph selected' : 'Current photograph' }}
+          </span>
+        </div>
+
+        <button
+          type="button"
+          class="remove-unit-photo"
+          (click)="removeUnitImage()"
+          [disabled]="savingUnit"
+          aria-label="Remove unit photograph"
+          title="Remove photograph">
+          <i class="fa-solid fa-xmark"></i>
+        </button>
+      </div>
+
+      <!-- UPLOAD CONTROL -->
+      <label
+        *ngIf="!unitImagePreviewUrl"
+        for="unitImage"
+        class="unit-photo-dropzone">
+
+        <div class="unit-photo-upload-icon">
+          <i class="fa-solid fa-cloud-arrow-up"></i>
+        </div>
+
+        <strong>Upload unit photograph</strong>
+
+        <span>Click to browse your device</span>
+
+        <small>JPG, JPEG, PNG or WEBP · Maximum 5 MB</small>
+      </label>
+
+      <input
+        id="unitImage"
+        type="file"
+        class="d-none"
+        accept=".jpg,.jpeg,.png,.webp,image/jpeg,image/png,image/webp"
+        (change)="onUnitImageSelected($event)"
+        [disabled]="savingUnit">
+
+      <div *ngIf="unitImageError" class="text-danger small mt-2">
+        <i class="fa-solid fa-circle-exclamation me-1"></i>
+        {{ unitImageError }}
+      </div>
+
+      <div class="form-text mt-2">
+        You can register a unit without a photograph. Adding one helps
+        identify individual units when managing multiple rental properties.
+      </div>
+    </div>
+
+  </div>
+</div>
+
+
+            <div class="col-12">
+              <label for="description" class="form-label">Description / Notes</label>
+              <textarea
+                id="description"
+                class="form-control"
+                formControlName="description"
+                rows="3"
+                maxlength="5000"
+                placeholder="Optional details about the unit, amenities or condition."></textarea>
+              <div class="form-text">Maximum 5,000 characters.</div>
+            </div>
+          </div>
+
+          <div class="form-actions d-flex flex-column flex-sm-row justify-content-end gap-2 mt-4">
+            <button
+              type="button"
+              class="btn btn-light border"
+              [disabled]="savingUnit"
+              (click)="startCreate()">
+              Clear Form
+            </button>
+
+            <button
+              type="submit"
+              class="btn btn-primary px-4"
+              [disabled]="savingUnit || !selectedPropertyId">
+              <span
+                *ngIf="savingUnit"
+                class="spinner-border spinner-border-sm me-2"
+                role="status"></span>
+              <i *ngIf="!savingUnit"
+                 class="fa-solid fa-floppy-disk me-2"></i>
+              {{ savingUnit ? 'Saving...' : (editingUnitId ? 'Save Changes' : 'Register Unit') }}
+            </button>
+          </div>
+        </form>
+      </div>
+    </section>
+
+    <!-- UNIT REGISTER -->
+    <section class="content-card">
+      <div class="content-card-header units-list-header">
+        <div>
+          <h5 class="mb-1">Registered Units</h5>
+          <p class="text-muted small mb-0">
+            View availability, rental amounts and unit details.
+          </p>
+        </div>
+        <span class="record-count">{{ filteredUnits.length }} shown</span>
+      </div>
+
+     
+<div class="filter-toolbar">
+  <div class="row g-3 align-items-end">
+
+    <!-- SEARCH UNITS -->
+    <div class="col-12 col-lg-7">
+      <label for="unitSearch" class="form-label small fw-semibold">
+        Search units
+      </label>
+
+      <div class="input-group unit-search-group">
+        <span class="input-group-text search-addon">
+          <i class="fa-solid fa-magnifying-glass"
+             aria-hidden="true"></i>
+        </span>
+
+        <input
+          id="unitSearch"
+          type="search"
+          class="form-control"
+          [(ngModel)]="searchTerm"
+          [ngModelOptions]="{ standalone: true }"
+          placeholder="Search by unit number, floor, type or status"
+          aria-label="Search units">
+      </div>
+    </div>
+
+    <!-- STATUS FILTER -->
+    <div class="col-8 col-lg-3">
+      <label for="statusFilter" class="form-label small fw-semibold">
+        Status
+      </label>
+
+      <select
+        id="statusFilter"
+        class="form-select"
+        [(ngModel)]="statusFilter"
+        [ngModelOptions]="{ standalone: true }">
+
+        <option value="ALL">All statuses</option>
+        <option value="VACANT">Vacant</option>
+        <option value="OCCUPIED">Occupied</option>
+        <option value="MAINTENANCE">Maintenance</option>
+        <option value="INACTIVE">Inactive</option>
+      </select>
+    </div>
+
+    <!-- RESET FILTERS -->
+    <div class="col-4 col-lg-2 d-flex align-items-end">
+      <button
+        type="button"
+        class="btn btn-outline-secondary w-100"
+        (click)="resetFilters()"
+        title="Reset filters">
+
+        <i class="fa-solid fa-rotate-left me-lg-1"></i>
+        <span class="d-none d-lg-inline">Reset</span>
+      </button>
+    </div>
+
+  </div>
+</div>
+
+  
+
+      <div *ngIf="loadingUnits" class="state-card">
+        <span class="spinner-border spinner-border-sm text-primary me-2" role="status"></span>
+        Loading units...
+      </div>
+
+      <div *ngIf="!loadingUnits && units.length === 0" class="empty-state">
+        <div class="empty-state-icon">
+          <i class="fa-solid fa-door-closed"></i>
+        </div>
+        <h5>No units registered yet</h5>
+        <p class="text-muted mb-3">
+          Add the first unit to {{ selectedProperty?.name }}.
+        </p>
+        <button type="button" class="btn btn-primary" (click)="startCreate()">
+          <i class="fa-solid fa-plus me-2"></i>
+          Add First Unit
+        </button>
+      </div>
+
+      <div
+        *ngIf="!loadingUnits && units.length > 0 && filteredUnits.length === 0"
+        class="empty-state">
+        <div class="empty-state-icon">
+          <i class="fa-solid fa-filter-circle-xmark"></i>
+        </div>
+        <h5>No matching units</h5>
+        <p class="text-muted mb-3">Try changing your search or status filter.</p>
+        <button type="button" class="btn btn-outline-primary" (click)="resetFilters()">
+          Clear Filters
+        </button>
+      </div>
+
+   
+<!-- DESKTOP TABLE -->
+<div
+  class="table-responsive d-none d-lg-block"
+  *ngIf="!loadingUnits && filteredUnits.length > 0">
+
+  <table class="table unit-table align-middle mb-0">
+
+    <thead>
+      <tr>
+        <th class="unit-photo-column">Photograph</th>
+        <th>Unit</th>
+        <th>Type / Floor</th>
+        <th>Monthly Rent</th>
+        <th>Deposit</th>
+        <th>Status</th>
+        <th class="text-end">Actions</th>
+      </tr>
+    </thead>
+
+    <tbody>
+      <tr *ngFor="let unit of filteredUnits; trackBy: trackByUnit">
+
+   <!-- UNIT PHOTOGRAPH -->
+<td>
+  <div class="unit-table-photo">
+
+    <img
+      *ngIf="unit.imageUrl && !hasUnitImageError(unit.id)"
+      [src]="getUnitImageUrl(unit.imageUrl)"
+      [alt]="'Photograph of unit ' + unit.unitNumber"
+      loading="lazy"
+      (error)="onUnitTableImageError($event, unit.id)">
+
+    <div
+      *ngIf="!unit.imageUrl || hasUnitImageError(unit.id)"
+      class="unit-table-photo-placeholder">
+      <i class="fa-solid fa-door-open"></i>
+      <span *ngIf="hasUnitImageError(unit.id)">Image unavailable</span>
+    </div>
+
+  </div>
+</td>
+
+        <!-- UNIT DETAILS -->
+        <td>
+          <div class="unit-number">{{ unit.unitNumber }}</div>
+          <div class="unit-description">
+            {{ unit.description || 'No description provided' }}
+          </div>
+        </td>
+
+        <!-- TYPE / FLOOR -->
+        <td>
+          <div class="fw-semibold">
+            {{ unit.unitType || 'Not specified' }}
+          </div>
+          <div class="text-muted small">
+            {{ unit.floor || 'Floor not specified' }}
+          </div>
+        </td>
+
+        <!-- MONTHLY RENT -->
+        <td class="money-value">
+          {{ unit.monthlyRent | currency:'KES':'symbol':'1.2-2' }}
+        </td>
+
+        <!-- DEPOSIT -->
+        <td class="money-value">
+          {{ unit.depositAmount | currency:'KES':'symbol':'1.2-2' }}
+        </td>
+
+        <!-- STATUS -->
+        <td>
+          <span
+            class="status-pill"
+            [ngClass]="statusClass(unit.status)">
+            {{ formatStatus(unit.status) }}
+          </span>
+        </td>
+
+        <!-- ACTIONS -->
+        <td>
+          <div class="d-flex justify-content-end gap-2">
+
+            <button
+              type="button"
+              class="btn btn-sm btn-outline-primary"
+              (click)="startEdit(unit)"
+              [disabled]="savingUnit || changingStatusId !== null"
+              title="Edit unit">
+              <i class="fa-solid fa-pen"></i>
+            </button>
+
+            <select
+              class="form-select form-select-sm status-select"
+              aria-label="Change unit status"
+              [value]="unit.status"
+              [disabled]="changingStatusId === unit.id || savingUnit"
+              (change)="changeStatus(unit, $any($event.target).value)">
+
+              <option
+                *ngFor="let status of statuses"
+                [value]="status">
+                {{ formatStatus(status) }}
+              </option>
+
+            </select>
+          </div>
+        </td>
+
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+
+      <!-- MOBILE UNIT CARDS -->
+      <div class="mobile-unit-list d-lg-none"
+           *ngIf="!loadingUnits && filteredUnits.length > 0">
+        <article class="mobile-unit-card"
+                 *ngFor="let unit of filteredUnits; trackBy: trackByUnit">
+          <div class="d-flex justify-content-between align-items-start gap-3">
+            <div>
+              <div class="unit-number">{{ unit.unitNumber }}</div>
+              <div class="text-muted small">
+                {{ unit.unitType || 'Type not specified' }}
+                <span *ngIf="unit.floor"> · {{ unit.floor }}</span>
+              </div>
+            </div>
+            <span class="status-pill" [ngClass]="statusClass(unit.status)">
+              {{ formatStatus(unit.status) }}
+            </span>
+          </div>
+
+          <div class="mobile-unit-finances mt-3">
+            <div>
+              <span>Monthly Rent</span>
+              <strong>{{ unit.monthlyRent | currency:'KES':'symbol':'1.2-2' }}</strong>
+            </div>
+            <div>
+              <span>Deposit</span>
+              <strong>{{ unit.depositAmount | currency:'KES':'symbol':'1.2-2' }}</strong>
+            </div>
+          </div>
+
+          <p class="mobile-description mt-3 mb-3">
+            {{ unit.description || 'No additional description.' }}
+          </p>
+
+          <div class="mobile-unit-actions">
+            <button
+              type="button"
+              class="btn btn-outline-primary btn-sm"
+              (click)="startEdit(unit)"
+              [disabled]="savingUnit || changingStatusId !== null">
+              <i class="fa-solid fa-pen me-1"></i>
+              Edit
+            </button>
+
+            <select
+              class="form-select form-select-sm"
+              aria-label="Change unit status"
+              [value]="unit.status"
+              [disabled]="changingStatusId === unit.id || savingUnit"
+              (change)="changeStatus(unit, $any($event.target).value)">
+              <option *ngFor="let status of statuses" [value]="status">
+                {{ formatStatus(status) }}
+              </option>
+            </select>
+          </div>
+        </article>
+      </div>
+
+      <div class="list-footer" *ngIf="!loadingUnits && units.length > 0">
+        Showing {{ filteredUnits.length }} of {{ units.length }} units
+      </div>
+    </section>
+  </ng-container>
+</div>

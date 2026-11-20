@@ -1,1996 +1,2665 @@
-<!--=========================================================
-ENTERPRISE VALIDATION ERROR
-==========================================================-->
+<div class="loan-application-page">
 
-<div
-    *ngIf="submitError"
-    class="enterprise-error-banner w--50 animate__animated animate__fadeInDown">
+  <!-- =========================================================
+       APPLICATION PROGRESS
+  ========================================================== -->
 
-    <div class="enterprise-error-accent"></div>
+<section
+  class="application-progress-card"
+  *ngIf="submissionComplete !== true">
 
-    <div class="enterprise-error-body">
+    <div class="progress-heading">
 
-        <div class="enterprise-error-message">
+      <div>
 
-            <i class="fas fa-circle-exclamation"></i>
+        <span class="section-eyebrow">
+          APPLICATION JOURNEY
+        </span>
 
-            <span>{{ submitError }}</span>
+        <h2>
+          Complete your loan application
+        </h2>
 
-        </div>
+        <p>
+          Follow each step carefully. Your information will be
+          verified before your application is submitted.
+        </p>
+
+      </div>
+
+      <div class="progress-counter">
+
+        <strong>
+          {{ currentStep }}
+        </strong>
+
+        <span>
+          / {{ totalSteps }}
+        </span>
+
+      </div>
 
     </div>
 
-    <button
-        type="button"
-        class="enterprise-error-close"
-        aria-label="Close"
-        (click)="submitError=''">
 
-        <i class="fas fa-times"></i>
+    <!-- =======================================================
+         STEPPER
+    ======================================================== -->
 
-    </button>
+    <div class="premium-stepper">
 
-</div>
+      <!-- STEP 1 -->
+      <div
+        class="premium-step"
+        [class.active]="currentStep === 1"
+        [class.completed]="currentStep > 1">
 
+        <div class="step-circle">
 
-<div class="enterprise-dashboard">
+          <i
+            *ngIf="currentStep > 1"
+            class="fas fa-check">
+          </i>
 
-    <div class="dashboard-card">
-
-        <div class="dashboard-item">
-
-            <div class="dashboard-icon primary">
-
-                <i class="fas fa-tasks"></i>
-
-            </div>
-
-            <div class="dashboard-content">
-
-                <span class="dashboard-label">
-
-                    Application Progress
-
-                </span>
-
-                <h4>
-
-                    {{ ((currentStep/totalSteps)*100) | number:'1.0-0' }}%
-
-                </h4>
-
-                <small>
-
-                    Step {{currentStep}} of {{totalSteps}}
-
-                </small>
-
-            </div>
+          <span *ngIf="currentStep <= 1">
+            01
+          </span>
 
         </div>
 
-        <div class="dashboard-divider"></div>
-
-        <div class="dashboard-item">
-
-            <div class="dashboard-icon success">
-
-                <i class="fas fa-user-check"></i>
-
-            </div>
-
-            <div class="dashboard-content">
-
-                <span class="dashboard-label">
-
-                    Customer Verification
-
-                </span>
-
-                <h4>
-
-                    {{accountLoaded ? 'Verified' : 'Pending'}}
-
-                </h4>
-
-                <small>
-
-                    Identity Verification
-
-                </small>
-
-            </div>
-
-        </div>
-
-        <div class="dashboard-divider"></div>
-
-        <div class="dashboard-item">
-
-            <div class="dashboard-icon warning">
-
-                <i class="fas fa-wallet"></i>
-
-            </div>
-
-            <div class="dashboard-content">
-
-                <span class="dashboard-label">
-
-                    Eligible Limit
-
-                </span>
-
-                <h4>
-
-                    KES {{ eligibleLimit | number }}
-
-                </h4>
-
-                <small>
-
-                    Lending Capacity
-
-                </small>
-
-            </div>
-
-        </div>
-
-        <div class="dashboard-divider"></div>
-
-        <div class="dashboard-item">
-
-            <div class="dashboard-icon danger">
-
-                <i class="fas fa-chart-line"></i>
-
-            </div>
-
-            <div class="dashboard-content">
-
-                <span class="dashboard-label">
-
-                    Risk Rating
-
-                </span>
-
-                <h4>
-
-                    {{ eligibleLimit>0 ? 'LOW' : 'N/A' }}
-
-                </h4>
-
-                <small>
-
-                    AI Assessment
-
-                </small>
-
-            </div>
-
-        </div>
-
-        <div class="dashboard-divider"></div>
-
-        <div class="dashboard-item">
-
-            <div class="dashboard-icon info">
-
-                <i class="fas fa-stopwatch"></i>
-
-            </div>
-
-            <div class="dashboard-content">
-
-                <span class="dashboard-label">
-
-                    Processing SLA
-
-                </span>
-
-                <h4>
-
-                    < 3 Min
-
-                </h4>
-
-                <small>
-
-                    Average Completion
-
-                </small>
-
-            </div>
-
-        </div>
-
-    </div>
-
-</div>
-
-
-
-<!--=========================================================
-ENTERPRISE SUCCESS BANNER
-==========================================================-->
-
-<div
-    *ngIf="submitSuccess"
-    class="enterprise-success-banner animate__animated animate__fadeInDown">
-
-    <div class="enterprise-success-accent"></div>
-
-    <div class="enterprise-success-body">
-
-        <div class="enterprise-success-message">
-
-            <i class="fas fa-circle-check"></i>
-
-            <span>{{ submitSuccess }}</span>
-
-        </div>
-
-    </div>
-
-    <button
-        type="button"
-        class="enterprise-success-close"
-        (click)="submitSuccess=''">
-
-        <i class="fas fa-times"></i>
-
-    </button>
-
-</div>
-
-
-<!-- ==========================================================
-     CUSTOMER IDENTITY VERIFICATION
-========================================================== -->
-<form [formGroup]="loanForm">
-<div
-    class="container py-2"
-    *ngIf="!identityVerified">
-
-    <div class="row justify-content-center">
-
-        <div class="col-lg-7">
-
-            <div class="card shadow-lg border-0">
-
-                <div class="card-body p-5">
-
-                    <div class="text-center mb-4">
-
-                        <i
-                            class="fas fa-id-card fa-4x text-primary mb-3">
-                        </i>
-
-                        <h2 class="fw-bold">
-
-                            Verify Customer Identity
-
-                        </h2>
-
-                        <p class="text-muted">
-
-                            Enter your National ID Number to securely
-                            retrieve your customer profile before
-                            proceeding with the loan application.
-
-                        </p>
-
-                    </div>
-
-<div class="row">
-
-    <!-- Document Type -->
-
-    <div class="col-md-4">
-
-        <label class="form-label fw-semibold">
-
-            Identification Type
-            <span class="text-danger">*</span>
-
-        </label>
-
-        <select
-            class="form-select"
-            formControlName="idType"
-            (change)="onIdTypeChanged()">
-
-            <option value="NATIONAL_ID">
-                National ID
-            </option>
-
-            <option value="MAISHA_CARD">
-                Maisha Card
-            </option>
-
-        </select>
-
-    </div>
-
-    <!-- ID Number -->
-
-    <div class="col-md-8">
-
-        <label class="form-label fw-semibold">
-
-            Identification Number
-            <span class="text-danger">*</span>
-
-        </label>
-
-        <div class="input-group">
-
-            <span class="input-group-text">
-
-                <i class="fas fa-id-card"></i>
-
-            </span>
-
-            <input
-                type="text"
-                class="form-control text-end"
-                formControlName="nationalId"
-                [attr.maxlength]="selectedIdLength"
-                inputmode="numeric"
-                autocomplete="off"
-                spellcheck="false"
-                placeholder="{{idPlaceholder}}"
-                (keypress)="allowOnlyNumbers($event)"
-                (input)="onIdInput($event)"
-                (keyup.enter)="verifyIdentity()">
-
-        </div>
-
-        <small class="text-muted">
-
-            {{ selectedIdLength }} digits required.
-
-        </small>
-
-    </div>
-
-</div>
-
-                    <div
-                        *ngIf="submitError"
-                        class="alert alert-danger">
-
-                        {{ submitError }}
-
-                    </div>
-
-                    <div
-    class="text-danger mt-2"
-    *ngIf="
-        loanForm.get('nationalId')?.invalid &&
-        loanForm.get('nationalId')?.touched">
-
-    <small>
-
-        National ID must contain exactly
-        <strong>8 digits</strong> or
-        Maisha Card Number must contain
-        <strong>9 digits</strong>.
-
-    </small>
-
-</div>
-
-                    <button
-                        class="btn btn-primary btn-lg w-100"
-                        (click)="verifyIdentity()"
-                        [disabled]="isFetchingAccount">
-
-                        <span *ngIf="!isFetchingAccount">
-
-                            Verify & Continue
-
-                        </span>
-
-                        <span *ngIf="isFetchingAccount">
-
-                            <span
-                                class="spinner-border spinner-border-sm me-2">
-                            </span>
-
-                            Verifying...
-
-                        </span>
-
-                    </button>
-
-                    <hr class="my-4">
-
-                    <div class="row text-center">
-
-                        <div class="col">
-
-                            <i class="fas fa-user-check text-success"></i>
-
-                            <small class="d-block">
-
-                                KYC Validation
-
-                            </small>
-
-                        </div>
-
-                        <div class="col">
-
-                            <i class="fas fa-shield-alt text-success"></i>
-
-                            <small class="d-block">
-
-                                Identity Verification
-
-                            </small>
-
-                        </div>
-
-                        <div class="col">
-
-                            <i class="fas fa-wallet text-success"></i>
-
-                            <small class="d-block">
-
-                                Eligibility Check
-
-                            </small>
-
-                        </div>
-
-                    </div>
-
-                </div>
-
-            </div>
-
-        </div>
-
-    </div>
-
-</div>
-</form>
-
-
-<div class="loan-application-page container-fluid py-1" *ngIf="identityVerified">
-
-  <div class="row g-4">
-
-    <!-- ==========================================================
-         LEFT CONTENT
-    =========================================================== -->
-
-    <div class="col-xl-12">
-
-      <!-- ======================================================
-           ELIGIBILITY PANEL
-      ======================================================= -->
-
-      <div class="card enterprise-card">
-
-        <div class="card-header">
-
-          <div class="section-title">
-
-            <i class="fas fa-shield-alt"></i>
-
-            Eligibility Verification
-
-          </div>
-
-        </div>
-
-        <div class="card-body d-flex">
-
-          <div
-            *ngFor="let step of eligibilitySteps"
-            class="eligibility-item">
-
-            <div class="eligibility-icon">
-
-              <span
-                *ngIf="step.done"
-                class="text-success">
-
-                <i class="fas fa-check-circle"></i>
-
-              </span>
-
-              <span *ngIf="step.loading">
-
-                <div
-                  class="spinner-border spinner-border-sm text-primary">
-                </div>
-
-              </span>
-
-              <span
-                *ngIf="!step.done && !step.loading"
-                class="text-secondary">
-
-                <i class="far fa-circle"></i>
-
-              </span>
-
-            </div>
-
-            <div class="eligibility-content">
-
-              <div class="eligibility-title">
-
-                {{ step.label }}
-
-              </div>
-
-            </div>
-
-          </div>
+        <div class="step-content">
+
+          <strong>
+            Customer
+          </strong>
+
+          <small>
+            Verification
+          </small>
 
         </div>
 
       </div>
 
-      <!-- ======================================================
-           LOAN APPLICATION CARD
-      ======================================================= -->
 
-      <div class="card enterprise-card">
+      <div class="step-line"></div>
 
-<div class="card-header">
 
-<div class="d-flex justify-content-between align-items-center">
+      <!-- STEP 2 -->
+      <div
+        class="premium-step"
+        [class.active]="currentStep === 2"
+        [class.completed]="currentStep > 2">
 
-<div>
+        <div class="step-circle">
 
-<h4>
+          <i
+            *ngIf="currentStep > 2"
+            class="fas fa-check">
+          </i>
 
-<i class="fas fa-file-signature me-2"></i>
+          <span *ngIf="currentStep <= 2">
+            02
+          </span>
 
-Loan Application Form
+        </div>
 
-</h4>
+        <div class="step-content">
 
-<small>
+          <strong>
+            Financials
+          </strong>
 
-Customer & Loan Information
+          <small>
+            Profile
+          </small>
 
-</small>
+        </div>
 
-</div>
+      </div>
 
-<div >
 
-<strong>Step {{currentStep}} of {{totalSteps}}</strong>
+      <div class="step-line"></div>
 
-</div>
 
+      <!-- STEP 3 -->
+      <div
+        class="premium-step"
+        [class.active]="currentStep === 3"
+        [class.completed]="currentStep > 3">
 
+        <div class="step-circle">
 
-<span class="badge bg-primary">
+          <i
+            *ngIf="currentStep > 3"
+            class="fas fa-check">
+          </i>
 
-New Application
+          <span *ngIf="currentStep <= 3">
+            03
+          </span>
 
-</span>
+        </div>
 
-</div>
+        <div class="step-content">
 
-</div>
+          <strong>
+            Loan
+          </strong>
 
-        <div class="card-body">
+          <small>
+            Request
+          </small>
 
-          <form
-            [formGroup]="loanForm"
-            autocomplete="off">
+        </div>
 
+      </div>
 
 
+      <div class="step-line"></div>
 
-            <!-- ===========================================
-                 CUSTOMER INFORMATION
-            ============================================ -->
 
-            <div class="form-section"  *ngIf="currentStep === 1">
+      <!-- STEP 4 -->
+      <div
+        class="premium-step"
+        [class.active]="currentStep === 4">
 
-              <div class="section-header">
+        <div class="step-circle">
 
-                <i class="fas fa-user-circle"></i>
+          <span>
+            04
+          </span>
 
-                Customer Information
+        </div>
 
-              </div>
+        <div class="step-content">
 
-              <div class="row g-4">
+          <strong>
+            Review
+          </strong>
 
-                <!-- National ID -->
+          <small>
+            Submit
+          </small>
 
-                <div class="col-md-6">
+        </div>
 
-                  <label class="form-label">
+      </div>
 
-                    National ID
+    </div>
 
-                    <span class="text-danger">*</span>
 
-                  </label>
+    <!-- PROGRESS BAR -->
 
-                  <div class="input-group">
+    <div class="progress-track">
 
-                    <span class="input-group-text">
+      <div
+        class="progress-fill"
+        [style.width.%]="(currentStep / totalSteps) * 100">
+      </div>
 
-                      <i class="fas fa-id-card"></i>
+    </div>
 
-                    </span>
+  </section>
 
-                    <input
-                      type="text"
-                      class="form-control"
-                      formControlName="nationalId"
-                      placeholder="Enter National ID Number"
-                      (keyup)="onNationalIdInput()">
 
-                  </div>
+  <!-- =========================================================
+       GLOBAL SUCCESS MESSAGE
+  ========================================================== -->
 
-                  <div
-                    *ngIf="isFetchingAccount"
-                    class="verification-loading mt-2">
+<div
+  class="premium-alert success-alert"
+  *ngIf="submitSuccess && !submissionComplete">
 
-                    <div
-                      class="spinner-border spinner-border-sm text-primary me-2">
-                    </div>
+    <div class="alert-icon">
+      <i class="fas fa-check-circle"></i>
+    </div>
 
-                    Verifying customer information...
+    <div class="alert-content">
 
-                  </div>
+      <strong>
+        Success
+      </strong>
 
-                </div>
+      <span>
+        {{ submitSuccess }}
+      </span>
 
-                <!-- Full Name -->
-
-                <div class="col-md-6">
-
-                  <label class="form-label">
-
-                    Customer Name
-
-                  </label>
-
-                  <div class="input-group">
-
-                    <span class="input-group-text">
-
-                      <i class="fas fa-user"></i>
-
-                    </span>
-
-                    <input
-                      type="text"
-                      class="form-control"
-                      formControlName="fullName"
-                      placeholder="Customer Name">
-
-                  </div>
-
-                </div>
-
-                <!-- Phone -->
-
-                <div class="col-md-6">
-
-                  <label class="form-label">
-
-                    Mobile Number
-
-                  </label>
-
-                  <div class="input-group">
-
-                    <span class="input-group-text">
-
-                      <i class="fas fa-phone-alt"></i>
-
-                    </span>
-
-                    <input
-                      type="text"
-                      class="form-control"
-                      formControlName="phoneNumber"
-                      placeholder="+2547XXXXXXXX">
-
-                  </div>
-
-                </div>
-
-                <!-- Location -->
-
-                <div class="col-md-6">
-
-                  <label class="form-label">
-
-                    Residential Location
-
-                  </label>
-
-                  <div class="input-group">
-
-                    <span class="input-group-text">
-
-                      <i class="fas fa-map-marker-alt"></i>
-
-                    </span>
-
-                    <input
-                      type="text"
-                      class="form-control"
-                      formControlName="location"
-                      placeholder="Town / County">
-
-                  </div>
-
-                </div>
-
-              </div>
-
-
-
-          <div class="d-lg-flex">
-
-                <!-- Monthly Income -->
-
-                <div class="col-md-6">
-
-                  <label class="form-label">
-
-                    Monthly Income (KES)
-
-                    <span class="text-danger">*</span>
-
-                  </label>
-
-                  <div class="input-group">
-
-                    <span class="input-group-text">
-
-                      <i class="fas fa-wallet"></i>
-
-                    </span>
-
-                    <input
-                      type="number"
-                      class="form-control"
-                      formControlName="monthlyIncome"
-                      placeholder="Enter Monthly Income">
-
-                  </div>
-
-                  <small class="text-muted">
-                    Gross monthly income before deductions.
-                  </small>
-
-                </div>
-
-                <!-- Monthly Expenses -->
-
-                <div class="col-md-6">
-
-                  <label class="form-label">
-
-                    Monthly Expenses (KES)
-
-                    <span class="text-danger">*</span>
-
-                  </label>
-
-                  <div class="input-group">
-
-                    <span class="input-group-text">
-
-                      <i class="fas fa-money-bill-wave"></i>
-
-                    </span>
-
-                    <input
-                      type="number"
-                      class="form-control"
-                      formControlName="monthlyExpenses"
-                      placeholder="Enter Monthly Expenses">
-
-                  </div>
-
-                  <small class="text-muted">
-                    Total recurring monthly obligations.
-                  </small>
-
-                </div>
-                </div>
-
-                 <button
-        type="button"
-        class="btn btn-primary mt-2"
-        (click)="nextStep()">
-
-        Continue
-
-        <i class="fas fa-arrow-right ms-2"></i>
-
-    </button>
-
-              </div>
-
-
-   
-
-
-            <!-- </div> -->
-
-            <!-- ===========================================================
-                 LOAN DETAILS
-            ============================================================ -->
-
-            <div class="form-section mt-0"  *ngIf="currentStep === 2">
-
-              <div class="section-header">
-
-                <i class="fas fa-hand-holding-usd me-2"></i>
-
-                Loan Request Details
-
-              </div>
-
-              <div class="row g-4 mb-4">
-
-                <!-- Requested Amount -->
-
-                <div class="col-md-6">
-
-                  <label class="form-label">
-
-                    Requested Loan Amount
-
-                    <span class="text-danger">*</span>
-
-                  </label>
-
-                  <div class="input-group">
-
-                    <span class="input-group-text">
-
-                      KES
-
-                    </span>
-
-                    <input
-                      type="number"
-                      class="form-control"
-                      formControlName="amount"
-                      min="1"
-                      placeholder="Loan Amount"
-                      (input)="calculatePreview()">
-
-                  </div>
-
-                  <small class="text-muted">
-
-                    Amount requested by the applicant.
-
-                  </small>
-
-                </div>
-
-                <!-- Loan Duration -->
-
-                <div class="col-md-6">
-
-                  <label class="form-label">
-
-                    Repayment Period
-
-                  </label>
-
-                  <div class="input-group">
-
-                    <span class="input-group-text">
-
-                      <i class="fas fa-calendar-alt"></i>
-
-                    </span>
-
-                    <input
-                      type="text"
-                      class="form-control"
-                      [value]="calculateDurationMonths() + ' Months'"
-                      disabled>
-
-                  </div>
-
-                </div>
-
-                <!-- Due Date -->
-
-                <div class="col-md-6">
-
-                  <label class="form-label">
-
-                   Loan Due Date
-
-                  </label>
-
-                  <div class="input-group">
-
-                    <span class="input-group-text">
-
-                      <i class="fas fa-calendar-check"></i>
-
-                    </span>
-
-                    <input
-                      type="text"
-                      class="form-control"
-                      [value]="calculatedDueDate | date:'mediumDate'"
-                      readonly>
-
-                  </div>
-
-                </div>
-
-                <!-- Application Date -->
-
-                <div class="col-md-6">
-
-                  <label class="form-label">
-
-                    Application Date
-
-                  </label>
-
-                  <div class="input-group">
-
-                    <span class="input-group-text">
-
-                      <i class="fas fa-calendar-day"></i>
-
-                    </span>
-
-                    <input
-                      type="date"
-                      class="form-control"
-                      formControlName="applicationDate">
-
-                  </div>
-
-                </div>
-
-              </div>
-
-               <button
-        type="button"
-        class="btn btn-outline-secondary"
-        (click)="previousStep()">
-
-        <i class="fas fa-arrow-left me-2"></i>
-
-        Previous
-
-    </button>
+    </div>
 
     <button
-        type="button"
-        class="btn btn-primary ms-1"
-        (click)="nextStep()">
+      type="button"
+      class="alert-close"
+      (click)="submitSuccess = null">
 
-        Continue
-
-        <i class="fas fa-arrow-right ms-2"></i>
+      <i class="fas fa-times"></i>
 
     </button>
 
-            </div>
-
-            <!-- ===========================================================
-                 SUPPORTING DOCUMENTS
-            ============================================================ -->
-
-            <div class="form-section mt-5"  *ngIf="currentStep === 3">
-
-              <div class="section-header">
-
-                <i class="fas fa-file-upload me-2"></i>
-
-                Supporting Documentation
-
-              </div>
-
-              <div class="row">
-
-                <div class="col-12">
-
-                  <div class="upload-card">
-
-                    <div class="row align-items-center">
-
-                      <div class="col-lg-8">
-
-                        <h6 class="mb-2">
-
-                          Upload Supporting Document
-
-                        </h6>
-
-                        <p class="text-muted mb-0">
-
-                          Attach a supporting document such as a national ID copy,
-                          payslip, bank statement, or any document required for
-                          loan processing.
-
-                        </p>
-
-                      </div>
-
-                      <div class="col-lg-4">
-
-                        <input
-                          type="file"
-                          accept="image/*,.pdf"
-                          class="form-control"
-                          (change)="onImageSelected($event)">
-
-                      </div>
-
-                    </div>
-
-                  </div>
-
-                </div>
-
-              </div>
+  </div>
 
 
-  <div class="d-flex justify-content-between align-items-center mt-4">
+  <!-- =========================================================
+       GLOBAL ERROR MESSAGE
+  ========================================================== -->
+
+  <div
+    class="premium-alert error-alert"
+    *ngIf="submitError">
+
+    <div class="alert-icon">
+      <i class="fas fa-exclamation-triangle"></i>
+    </div>
+
+    <div class="alert-content">
+
+      <strong>
+        Action required
+      </strong>
+
+      <span>
+        {{ submitError }}
+      </span>
+
+    </div>
 
     <button
-        type="button"
-        class="btn btn-outline-secondary"
-        (click)="previousStep()">
+      type="button"
+      class="alert-close"
+      (click)="submitError = null">
 
-        <i class="fas fa-arrow-left me-2"></i>
-
-        Previous
+      <i class="fas fa-times"></i>
 
     </button>
 
-    <button
-        type="button"
-        class="btn btn-primary"
-        (click)="nextStep()">
-
-        Continue
-
-        <i class="fas fa-arrow-right ms-2"></i>
-
-    </button>
-
-</div>
-
-            </div>
+  </div>
 
 
+  <!-- =========================================================
+       MAIN FORM
+  ========================================================== -->
 
-            <!-- ==========================================================
-     STEP 4 : REVIEW & SUBMIT
-========================================================== -->
+<form
+  *ngIf="submissionComplete !== true"
+  [formGroup]="loanForm"
+  class="loan-main-form"
+  (ngSubmit)="submitLoan()"
+  novalidate>
 
-<div #reviewSection class="form-section" *ngIf="currentStep === 4">
 
-    <!-- ===========================================
-         PAGE HEADER
-    ============================================ -->
+    <!-- =======================================================
+         STEP 1 — CUSTOMER VERIFICATION
+    ======================================================== -->
 
-    <div class="section-header d-flex justify-content-between align-items-center">
+    <section
+      class="application-section"
+      *ngIf="currentStep === 1">
 
-        <div>
+      <div class="section-header">
 
-            <i class="fas fa-clipboard-check me-2"></i>
+        <div class="section-number">
+          01
+        </div>
 
-            Review & Submit Application
+        <div class="section-title">
 
-            <div class="text-muted small mt-1">
+          <span>
+            CUSTOMER VERIFICATION
+          </span>
 
-                Carefully review the information below before submitting your loan application.
+          <h2>
+            Let's verify your identity
+          </h2>
 
-            </div>
+          <p>
+            Enter your identification details to securely retrieve
+            your customer profile.
+          </p>
 
         </div>
 
-        <span class="badge bg-success px-3 py-2">
+        <div class="section-status">
 
-            Final Step
+          <span
+            *ngIf="identityVerified"
+            class="status-pill verified">
 
-        </span>
+            <i class="fas fa-check-circle"></i>
+            VERIFIED
 
-    </div>
+          </span>
 
+          <span
+            *ngIf="!identityVerified"
+            class="status-pill pending">
 
-    <!-- ===========================================
-         CUSTOMER INFORMATION
-    ============================================ -->
+            <i class="fas fa-shield-alt"></i>
+            VERIFICATION REQUIRED
 
-    <div class="card border-0 shadow-sm mt-4 review-card">
-
-        <div class="card-header bg-light">
-
-            <div class="d-flex justify-content-between align-items-center">
-
-                <h5 class="mb-0">
-
-                    <i class="fas fa-user-circle text-primary me-2"></i>
-
-                    Customer Information
-
-                </h5>
-
-                <button
-                        type="button"
-                        class="btn btn-outline-primary btn-sm"
-                        (click)="currentStep = 1">
-
-                    <i class="fas fa-pen me-1"></i>
-
-                    Edit
-
-                </button>
-
-            </div>
+          </span>
 
         </div>
 
-        <div class="card-body">
+      </div>
 
-            <div class="row g-4">
 
-                <div class="col-md-6">
+      <div class="section-body">
 
-                    <label class="review-label">
-
-                        Customer Name
-
-                    </label>
-
-                    <div class="review-value">
-
-                        {{ loanForm.getRawValue().fullName || '-' }}
-
-                    </div>
-
-                </div>
-
-                <div class="col-md-6">
-
-                    <label class="review-label">
-
-                        National ID
-
-                    </label>
-
-                    <div class="review-value">
-
-                        {{ loanForm.getRawValue().nationalId || '-' }}
-
-                    </div>
-
-                </div>
-
-                <div class="col-md-6">
-
-                    <label class="review-label">
-
-                        Mobile Number
-
-                    </label>
-
-                    <div class="review-value">
-
-                        {{ loanForm.getRawValue().phoneNumber || '-' }}
-
-                    </div>
-
-                </div>
-
-                <div class="col-md-6">
-
-                    <label class="review-label">
-
-                        Residential Location
-
-                    </label>
-
-                    <div class="review-value">
-
-                        {{ loanForm.getRawValue().location || '-' }}
-
-                    </div>
-
-                </div>
-
-                <div class="col-md-6">
-
-                    <label class="review-label">
-
-                        Monthly Income
-
-                    </label>
-
-                    <div class="review-value text-success fw-bold">
-
-                        KES {{ loanForm.getRawValue().monthlyIncome | number }}
-
-                    </div>
-
-                </div>
-
-                <div class="col-md-6">
-
-                    <label class="review-label">
-
-                        Monthly Expenses
-
-                    </label>
-
-                    <div class="review-value">
-
-                        KES {{ loanForm.getRawValue().monthlyExpenses | number }}
-
-                    </div>
-
-                </div>
-
-            </div>
-
-        </div>
-
-    </div>
-
-
-    <!-- ===========================================
-         LOAN DETAILS
-    ============================================ -->
-
-    <div class="card border-0 shadow-sm mt-4 review-card">
-
-        <div class="card-header bg-light">
-
-            <div class="d-flex justify-content-between align-items-center">
-
-                <h5 class="mb-0">
-
-                    <i class="fas fa-wallet text-success me-2"></i>
-
-                    Loan Request Summary
-
-                </h5>
-
-                <button
-                        type="button"
-                        class="btn btn-outline-primary btn-sm"
-                        (click)="currentStep = 2">
-
-                    <i class="fas fa-pen me-1"></i>
-
-                    Edit
-
-                </button>
-
-            </div>
-
-        </div>
-
-        <div class="card-body">
-
-            <div class="row g-4">
-
-                <div class="col-md-4">
-
-                    <label class="review-label">
-
-                        Requested Amount
-
-                    </label>
-
-                    <div class="review-value">
-
-                        KES {{ loanForm.getRawValue().amount | number }}
-
-                    </div>
-
-                </div>
-
-                <div class="col-md-4">
-
-                    <label class="review-label">
-
-                        Eligible Limit
-
-                    </label>
-
-                    <div class="review-value text-success">
-
-                        KES {{ eligibleLimit | number }}
-
-                    </div>
-
-                </div>
-
-                <div class="col-md-4">
-
-                    <label class="review-label">
-
-                        Interest
-
-                    </label>
-
-                    <div class="review-value">
-
-                        KES {{ estimatedInterest | number }}
-
-                    </div>
-
-                </div>
-
-                <div class="col-md-4">
-
-                    <label class="review-label">
-
-                        Repayment Period
-
-                    </label>
-
-                    <div class="review-value">
-
-                        {{ calculateDurationMonths() }} Months
-
-                    </div>
-
-                </div>
-
-                <div class="col-md-4">
-
-                    <label class="review-label">
-
-                        Completion Date
-
-                    </label>
-
-                    <div class="review-value">
-
-                        {{ calculatedDueDate | date:'mediumDate' }}
-
-                    </div>
-
-                </div>
-
-                <div class="col-md-4">
-
-                    <label class="review-label">
-
-                        Total Repayable
-
-                    </label>
-
-                    <div class="review-value text-primary fw-bold">
-
-                        KES {{ totalRepayable | number }}
-
-                    </div>
-
-                </div>
-
-            </div>
-
-        </div>
-
-    </div>
-
-
-    <!-- ===========================================
-         DOCUMENTS
-    ============================================ -->
-
-    <div class="card border-0 shadow-sm mt-4 review-card">
-
-        <div class="card-header bg-light">
-
-            <div class="d-flex justify-content-between align-items-center">
-
-                <h5 class="mb-0">
-
-                    <i class="fas fa-file-alt text-warning me-2"></i>
-
-                    Supporting Documents
-
-                </h5>
-
-                <button
-                        type="button"
-                        class="btn btn-outline-primary btn-sm"
-                        (click)="currentStep = 3">
-
-                    <i class="fas fa-upload me-1"></i>
-
-                    Replace
-
-                </button>
-
-            </div>
-
-        </div>
-
-        <div class="card-body">
-
-            <div class="d-flex align-items-center">
-
-                <i class="fas fa-check-circle text-success fa-2x me-3"></i>
-
-                <div>
-
-                    <h6 class="mb-1">
-
-                        Supporting document uploaded successfully.
-
-                    </h6>
-
-                    <small class="text-muted">
-
-                        Your uploaded document will be verified during loan assessment.
-
-                    </small>
-
-                </div>
-
-            </div>
-
-        </div>
-
-    </div>
-
-
-    <!-- ===========================================
-         CUSTOMER DECLARATION
-    ============================================ -->
-
-    <div class="card border-0 shadow-sm mt-4">
-
-        <div class="card-header bg-light">
-
-            <h5 class="mb-0">
-
-                <i class="fas fa-gavel text-danger me-2"></i>
-
-                Customer Declaration & Consent
-
-            </h5>
-
-        </div>
-
-       <div class="card-body">
-
-    <!-- Information Banner -->
-
-    <div class="alert alert-light border mb-4">
-
+        <!-- IDENTIFICATION TYPE -->
         <div class="d-flex">
+        <div class="form-field me-2">
 
-            <div class="me-3">
+          <label class="premium-label">
 
-                <i class="fas fa-shield-alt fa-2x text-primary"></i>
+            Identification Type
 
-            </div>
+            <span class="required-star">*</span>
 
-            <div>
+          </label>
 
-                <h6 class="fw-bold mb-2">
+          <div class="input-group premium-input-group">
 
-                    Declaration & Customer Consent
+            <span class="input-group-text">
+              <i class="fas fa-id-card"></i>
+            </span>
 
-                </h6>
+            <select
+              class="form-select"
+              formControlName="idType"
+              (change)="onIdTypeChanged()">
 
-                <p class="text-muted mb-0">
+              <option value="NATIONAL_ID">
+                National ID
+              </option>
 
-                    Before submitting your application, please review the Bank's
-                    lending policies and confirm your acceptance by selecting the
-                    declaration below.
+              <option value="MAISHA_CARD">
+                Maisha Card
+              </option>
 
-                </p>
+              <option value="REGISTRATION_NUMBER">
+                Registration Number
+              </option>
 
-            </div>
+            </select>
+
+          </div>
+
+          <small class="field-help">
+            Select the identification type registered on the account.
+          </small>
 
         </div>
 
-    </div>
+
+        <!-- IDENTIFICATION NUMBER -->
+
+        <div class="form-field">
+
+          <label class="premium-label">
+
+            {{
+              loanForm.get('idType')?.value === 'NATIONAL_ID'
+                ? 'National ID'
+                : loanForm.get('idType')?.value === 'MAISHA_CARD'
+                  ? 'Maisha Card Number'
+                  : 'Registration Number'
+            }}
+
+            <span class="required-star">*</span>
+
+          </label>
 
 
-    <!-- Single Declaration -->
+          <div
+            class="identity-input-wrapper"
+            [class.verified]="identityVerified">
 
-   <div
-    class="form-check enterprise-declaration"
-    [class.border-danger]="!loanForm.get('agreeTerms')?.value"
-    [class.bg-light]="!loanForm.get('agreeTerms')?.value"
-    style="padding:20px;border-radius:10px;border:2px solid transparent;">
+            <div class="identity-input-icon">
 
-        <input
-            class="form-check-input mt-1"
-            type="checkbox"
-            formControlName="agreeTerms"
-            id="agreeTerms">
+              <i
+                *ngIf="!isFetchingAccount && !identityVerified"
+                class="fas fa-search">
+              </i>
 
-        <label
-            class="form-check-label"
-            for="agreeTerms">
+              <i
+                *ngIf="isFetchingAccount"
+                class="fas fa-spinner fa-spin">
+              </i>
 
-            <strong>I hereby declare that:</strong>
+              <i
+                *ngIf="identityVerified"
+                class="fas fa-check-circle">
+              </i>
 
-            the information provided in this application is true,
-            complete and accurate to the best of my knowledge;
-
-            I authorize the Bank to verify my information where
-            necessary, including credit reference bureau enquiries;
-
-            and I have read, understood and agree to the
-
-            <a href="/policies/loan-terms"
-               target="_blank"
-               class="fw-semibold text-decoration-none">
-                Loan Terms & Conditions
-            </a>,
-
-            <a href="/policies/privacy-policy"
-               target="_blank"
-               class="fw-semibold text-decoration-none">
-                Privacy Policy
-            </a>
-
-            and
-
-            <a href="/policies/lending-policy"
-               target="_blank"
-               class="fw-semibold text-decoration-none">
-                Lending Policy
-            </a>.
-
-        </label>
-
-    </div>
-
-    <div
-    class="text-danger small mt-2"
-    *ngIf="
-        loanForm.get('agreeTerms')?.invalid &&
-        loanForm.get('agreeTerms')?.touched">
-
-    <i class="fas fa-exclamation-circle me-1"></i>
-
-    Please read the Bank Policies and tick the declaration before submitting your application.
-
-</div>
+            </div>
 
 
-    <!-- Footer Note -->
-
-    <div class="small text-muted mt-4">
-
-        <i class="fas fa-lock me-2 text-success"></i>
-
-        Your information is encrypted and securely processed in accordance
-        with applicable banking regulations and data protection requirements.
-
-    </div>
-
-</div>
-
-    </div>
+            <input
+              type="text"
+              class="identity-input"
+              formControlName="identificationNumber"
+               [placeholder]="animatedIdPlaceholder"
+              autocomplete="off"
+              (input)="onIdInput($event)"
+              (keyup.enter)="verifyIdentity()">
 
 
-  <!-- ===========================================
-     ACTION BAR
-=========================================== -->
-
-<div class="card border-0 shadow-sm mt-4">
-
-    <div class="card-body">
-
-        <div class="d-flex flex-wrap justify-content-between align-items-center gap-2">
-
-            <!-- Previous -->
             <button
-                type="button"
-                class="btn btn-outline-secondary"
-                (click)="previousStep()"
-                [disabled]="isSubmitting || submitInProgress">
+              type="button"
+              class="verify-button"
+              [disabled]="
+                isFetchingAccount ||
+                !loanForm.get('identificationNumber')?.value
+              "
+              (click)="verifyIdentity()">
 
-                <i class="fas fa-arrow-left me-2"></i>
-                Previous
+              <i
+                *ngIf="!isFetchingAccount"
+                class="fas fa-shield-alt me-2">
+              </i>
+
+              <i
+                *ngIf="isFetchingAccount"
+                class="fas fa-spinner fa-spin me-2">
+              </i>
+
+              {{
+                isFetchingAccount
+                  ? 'Verifying...'
+                  : 'Verify Customer'
+              }}
 
             </button>
 
-            <div class="d-flex flex-wrap gap-2">
+          </div>
 
-                <!-- Save Draft -->
-                <button
-                    type="button"
-                    class="btn btn-outline-primary"
-                    (click)="saveDraft()"
-                    [disabled]="isSubmitting || submitInProgress">
 
-                    <i class="fas fa-save me-2"></i>
-                    Save Draft
+          <small class="field-help">
 
-                </button>
+            <i class="fas fa-lock me-1"></i>
 
-                <!-- Clear -->
-                <button
-                    type="reset"
-                    class="btn btn-outline-danger"
-                    [disabled]="isSubmitting || submitInProgress">
+            Your identification information is securely verified
+            against your customer account.
 
-                    <i class="fas fa-trash-alt me-2"></i>
-                    Clear Form
+          </small>
 
-                </button>
 
-                <!-- Submit -->
-                <button
-                    type="button"
-                    class="btn btn-primary px-5"
-                    (click)="submitLoan()"
-                    [disabled]="submitInProgress || isSubmitting || isAssessing">
+          <!-- FIELD ERROR -->
 
-                    <!-- Normal State -->
-                    <ng-container *ngIf="!submitInProgress && !isSubmitting && !isAssessing">
+          <div
+            class="field-error"
+            *ngIf="
+              loanForm.get('identificationNumber')?.invalid &&
+              loanForm.get('identificationNumber')?.touched
+            ">
 
-                        <i class="fas fa-paper-plane me-2"></i>
-                        Submit Application
+            <i class="fas fa-exclamation-circle"></i>
 
-                    </ng-container>
+            Please enter a valid identification number.
 
-                    <!-- Eligibility Assessment -->
-                    <ng-container *ngIf="isAssessing">
-
-                        <span
-                            class="spinner-border spinner-border-sm me-2"
-                            role="status"
-                            aria-hidden="true">
-                        </span>
-
-                        Running Assessment...
-
-                    </ng-container>
-
-                    <!-- Submission -->
-                    <ng-container *ngIf="isSubmitting || submitInProgress">
-
-                        <span
-                            class="spinner-border spinner-border-sm me-2"
-                            role="status"
-                            aria-hidden="true">
-                        </span>
-
-                        Submitting...
-
-                    </ng-container>
-
-                </button>
-
-            </div>
+          </div>
 
         </div>
 
-        <!-- Policy Reminder -->
+        </div>
+
+
+        <!-- VERIFICATION LOADING -->
+
         <div
-            class="alert alert-warning d-flex align-items-start mt-4 mb-0"
-            *ngIf="!loanForm.get('agreeTerms')?.value">
+          class="verification-loader"
+          *ngIf="isFetchingAccount">
 
-            <i class="fas fa-exclamation-triangle text-warning fa-lg me-3 mt-1"></i>
-
-            <div>
-
-                <strong>Before submitting your application</strong>
-
-                <p class="mb-1 mt-1">
-                    Please review the Bank's
-                    <strong>Loan Terms &amp; Conditions</strong>,
-                    <strong>Privacy Policy</strong>,
-                    and
-                    <strong>Lending Policy</strong>,
-                    then tick the
-                    <strong>Customer Declaration &amp; Consent</strong>
-                    checkbox before submitting.
-                </p>
-
-                <small class="text-muted">
-                    Your application cannot be submitted until the declaration is accepted.
-                </small>
-
-            </div>
-
-        </div>
-
-    </div>
-
-</div>
-
-</div>
-
-    </form>
-
-        </div>
-
-      </div>
-
-    </div>
-
-    <!-- ==========================================================
-         RIGHT SIDEBAR
-    =========================================================== -->
-
-  
-
-  </div>
-
-  <!-- Continue with Phase 1D -->
-
-    <!-- ==========================================================
-       ENTERPRISE PROCESSING PANEL
-  =========================================================== -->
-
-  <div
-    *ngIf="isSubmitting"
-    class="processing-overlay mt-4">
-
-    <div class="card enterprise-card border-0">
-
-      <div class="card-body p-4">
-
-        <div class="d-flex align-items-center mb-4">
-
-          <div class="processing-spinner me-4">
-
-            <div
-              class="spinner-border text-primary"
-              role="status">
-            </div>
-
+          <div class="loader-spinner">
+            <i class="fas fa-spinner fa-spin"></i>
           </div>
 
           <div>
 
-            <h4 class="mb-2">
+            <strong>
+              Verifying customer...
+            </strong>
 
-              Processing Loan Application
-
-            </h4>
-
-            <p class="text-muted mb-0">
-
-              Please wait while your application is securely processed.
-              Do not refresh or close this page.
-
-            </p>
-
-          </div>
-
-        </div>
-
-        <div class="processing-timeline">
-
-          <div class="timeline-item completed">
-
-            <i class="fas fa-check-circle text-success"></i>
-
-            Customer Verification Completed
-
-          </div>
-
-          <div class="timeline-item completed">
-
-            <i class="fas fa-check-circle text-success"></i>
-
-            Eligibility Assessment Completed
-
-          </div>
-
-          <div class="timeline-item active">
-
-            <div
-              class="spinner-border spinner-border-sm text-primary me-2">
-            </div>
-
-            Uploading Application
-
-          </div>
-
-          <div class="timeline-item">
-
-            <i class="far fa-circle text-secondary"></i>
-
-            Credit Evaluation
-
-          </div>
-
-          <div class="timeline-item">
-
-            <i class="far fa-circle text-secondary"></i>
-
-            Approval Workflow
-
-          </div>
-
-        </div>
-
-        <div class="progress mt-4">
-
-          <div
-            class="progress-bar progress-bar-striped progress-bar-animated"
-            style="width:75%">
-
-          </div>
-
-        </div>
-
-      </div>
-
-    </div>
-
-  </div>
-
-  <!-- ==========================================================
-       ELIGIBILITY ASSESSMENT PANEL
-  =========================================================== -->
-
-  <div
-    *ngIf="isAssessing"
-    class="assessment-panel mt-4">
-
-    <div class="card enterprise-card border-0">
-
-      <div class="card-body">
-
-        <div class="d-flex align-items-center">
-
-          <div
-            class="spinner-border text-info me-3">
-          </div>
-
-          <div>
-
-            <h5 class="mb-1">
-
-              Running Eligibility Assessment
-
-            </h5>
-
-            <small class="text-muted">
-
-              Analysing customer profile, affordability,
-              repayment capacity and lending policy compliance.
-
+            <small>
+              Securely checking your account information.
             </small>
 
           </div>
 
         </div>
 
+
+        <!-- VERIFIED CUSTOMER -->
+
+        <div
+          class="verified-customer-card"
+          *ngIf="accountLoaded && accountData">
+
+          <div class="verified-card-header">
+
+            <div class="verified-icon">
+              <i class="fas fa-user-check"></i>
+            </div>
+
+            <div>
+
+              <span>
+                VERIFIED CUSTOMER
+              </span>
+
+              <strong>
+                {{
+                  accountData.fullName ||
+                  loanForm.get('fullName')?.value ||
+                  '-'
+                }}
+              </strong>
+
+            </div>
+
+            <div class="verified-badge">
+
+              <i class="fas fa-check"></i>
+              VERIFIED
+
+            </div>
+
+          </div>
+
+
+          <div class="customer-details-grid">
+
+            <div class="customer-detail">
+
+              <span>
+                <i class="fas fa-id-card"></i>
+                Identification
+              </span>
+
+              <strong>
+                {{
+                  loanForm.get('identificationNumber')?.value || '-'
+                }}
+              </strong>
+
+            </div>
+
+
+            <div class="customer-detail">
+
+              <span>
+                <i class="fas fa-phone"></i>
+                Phone
+              </span>
+
+              <strong>
+                {{
+                  accountData.phoneNumber ||
+                  loanForm.get('phoneNumber')?.value ||
+                  '-'
+                }}
+              </strong>
+
+            </div>
+
+
+            <div class="customer-detail">
+
+              <span>
+                <i class="fas fa-map-marker-alt"></i>
+                Location
+              </span>
+
+              <strong>
+                {{
+                  accountData.city || '-'
+                }},
+                {{
+                  accountData.county || '-'
+                }}
+              </strong>
+
+            </div>
+
+
+            <div class="customer-detail">
+
+              <span>
+                <i class="fas fa-wallet"></i>
+                Monthly Income
+              </span>
+
+              <strong>
+                KES
+                {{
+                  loanForm.get('monthlyIncome')?.value || 0
+                  | number:'1.0-0'
+                }}
+              </strong>
+
+            </div>
+
+          </div>
+
+
+          <div class="verified-security-note">
+
+            <i class="fas fa-lock"></i>
+
+            Customer information was securely retrieved from the
+            account profile and cannot be manually altered here.
+
+          </div>
+
+        </div>
+
+      </div>
+
+
+      <!-- STEP ACTION -->
+
+      <div class="section-footer">
+
+        <div class="footer-hint">
+
+          <i class="fas fa-shield-alt"></i>
+
+          Identity verification is required before continuing.
+
+        </div>
+
+        <button
+          type="button"
+          class="primary-action"
+          [disabled]="!identityVerified"
+          (click)="nextStep()">
+
+          Continue to Financial Profile
+
+          <i class="fas fa-arrow-right"></i>
+
+        </button>
+
+      </div>
+
+    </section>
+
+
+    <!-- =======================================================
+         STEP 2 — FINANCIAL PROFILE
+    ======================================================== -->
+
+    <section
+      class="application-section"
+      *ngIf="currentStep === 2">
+
+
+      <div class="section-body">
+
+
+   <!-- ===================================================
+     REQUESTED LOAN AMOUNT
+==================================================== -->
+
+<div class="loan-request-amount-card">
+
+  <div class="loan-request-header">
+
+    <!-- <div class="loan-request-icon">
+      <i class="fas fa-money-bill-wave"></i>
+    </div> -->
+
+        <div class="section-number">
+          02
+        </div>
+
+    <div class="loan-request-heading">
+
+      <span>
+       FINANCIAL PROFILE || LOAN REQUEST
+      </span>
+
+      <h3>
+        How much would you like to borrow?
+      </h3>
+
+      <p>
+        Enter the amount you would like to request based on
+        your current financial position.
+      </p>
+
+    </div>
+
+    <div class="required-badge">
+      <i class="fas fa-asterisk"></i>
+      REQUIRED
+    </div>
+
+  </div>
+
+<!-- =========================================================
+     PREMIUM LOAN AMOUNT + ELIGIBILITY
+========================================================= -->
+
+<div class="loan-request-input-area">
+
+  <!-- =======================================================
+       LEFT — LOAN AMOUNT
+  ======================================================== -->
+
+  <div class="loan-request-main">
+
+<!-- FIELD HEADER -->
+<div class="loan-field-header">
+
+  <div class="loan-field-title">
+
+    <div class="loan-field-icon">
+      <i class="fas fa-money-bill-wave"></i>
+    </div>
+
+    <div class="loan-field-heading">
+
+      <label
+        for="step2LoanAmount"
+        class="premium-label">
+
+        Requested Loan Amount
+
+        <span class="required-star">*</span>
+
+      </label>
+
+      <small class="loan-field-hint">
+        Enter the amount you would like to borrow
+      </small>
+
+    </div>
+
+  </div>
+
+  <div class="loan-field-badge">
+    <i class="fas fa-shield-alt"></i>
+    Secure Request
+  </div>
+
+</div>
+
+
+<!-- AMOUNT INPUT -->
+<div class="loan-amount-input-wrapper">
+
+  <!-- CURRENCY -->
+  <div class="loan-currency-prefix">
+
+    <span class="currency-label">
+      KES
+    </span>
+
+    <span class="currency-divider"></span>
+
+  </div>
+
+
+<!-- INPUT -->
+<input
+  id="step2LoanAmount"
+  type="text"
+  class="loan-request-input text-success"
+  formControlName="amount"
+  inputmode="decimal"
+  placeholder="20,000.00"
+  autocomplete="off"
+  (input)="onLoanAmountInput($event)"
+  (blur)="formatLoanAmount()"
+/>
+
+
+  <!-- END ICON -->
+  <div class="loan-input-end-icon text-success">
+    <i class="fas fa-coins"></i>
+  </div>
+
+</div>
+
+
+<!-- REQUIRED ERROR -->
+<div
+  class="field-error"
+  *ngIf="
+    loanForm.get('amount')?.touched &&
+    loanForm.get('amount')?.hasError('required')
+  ">
+
+  <i class="fas fa-exclamation-circle"></i>
+
+  <span>
+    Please enter the amount you want to borrow.
+  </span>
+
+</div>
+
+
+<!-- MINIMUM ERROR -->
+<div
+  class="field-error"
+  *ngIf="
+    loanForm.get('amount')?.touched &&
+    loanForm.get('amount')?.hasError('min')
+  ">
+
+  <i class="fas fa-exclamation-circle"></i>
+
+  <span>
+    Loan amount must be greater than zero.
+  </span>
+
+</div>
+
+  </div>
+
+  <!-- =======================================================
+       RIGHT — ELIGIBILITY INTELLIGENCE
+  ======================================================== -->
+
+  <div class="loan-request-limit">
+
+<!-- ELIGIBILITY HEADER -->
+<div class="loan-limit-top">
+
+  <div class="loan-limit-info">
+
+    <div class="loan-limit-icon">
+      <i class="fas fa-chart-line"></i>
+    </div>
+
+    <div class="loan-limit-copy">
+
+      <span class="loan-limit-label">
+        Preliminary Eligible Limit
+      </span>
+
+      <small>
+        Based on your current credit profile
+      </small>
+
+    </div>
+
+  </div>
+
+
+  <!-- ELIGIBLE AMOUNT -->
+  <div class="loan-limit-amount">
+
+<strong class="currency-value">
+  <span class="currency-code">KES</span>
+  {{ (eligibleLimit || 0) | number:'1.2-2' }}
+</strong>
+
+  </div>
+
+</div>
+
+
+<!-- UTILIZATION -->
+<div
+  class="loan-limit-progress"
+  *ngIf="
+    loanForm.get('amount')?.value &&
+    eligibleLimit
+  ">
+
+  <div class="loan-limit-progress-header">
+
+    <span>
+      Credit limit utilization
+    </span>
+
+    <strong>
+      {{ getLoanLimitProgress() | number:'1.0-0' }}%
+    </strong>
+
+  </div>
+
+
+  <div class="loan-limit-progress-track">
+
+    <div
+      class="loan-limit-progress-fill"
+      [class.danger]="exceedsLimit"
+      [style.width.%]="getLoanLimitProgress()">
+    </div>
+
+  </div>
+
+</div>
+
+
+<!-- WITHIN LIMIT -->
+<div
+  class="loan-limit-status"
+  *ngIf="
+    loanForm.get('amount')?.value &&
+    !exceedsLimit
+  ">
+
+  <span class="loan-status-icon success">
+    <i class="fas fa-check"></i>
+  </span>
+
+  <span>
+    Requested amount is within your eligible limit
+  </span>
+
+</div>
+
+
+<!-- EXCEEDS LIMIT -->
+<div
+  class="loan-limit-status danger"
+  *ngIf="exceedsLimit">
+
+  <span class="loan-status-icon danger-icon">
+    <i class="fas fa-exclamation"></i>
+  </span>
+
+  <span>
+    Requested amount exceeds your eligible limit
+  </span>
+
+</div>
+
+  </div>
+
+</div>
+
+
+
+  <!-- GUIDANCE -->
+
+  <div class="loan-request-guidance">
+
+    <i class="fas fa-lightbulb text-warning"></i>
+
+    <div>
+
+      <strong>
+        Borrow responsibly
+      </strong>
+
+      <span>
+        Your requested amount will be assessed against your
+        income, expenses, existing obligations and credit profile.
+      </span>
+
+    </div>
+
+  </div>
+
+</div>
+
+      </div>
+
+
+      <div class="section-footer">
+
+        <button
+          type="button"
+          class="secondary-action"
+          (click)="previousStep()">
+
+          <i class="fas fa-arrow-left"></i>
+
+          Back
+
+        </button>
+
+        <button
+          type="button"
+          class="primary-action"
+          (click)="nextStep()">
+
+          Continue to Loan Request
+
+          <i class="fas fa-arrow-right"></i>
+
+        </button>
+
+      </div>
+
+    </section>
+
+
+    <!-- =======================================================
+         STEP 3 — LOAN REQUEST
+    ======================================================== -->
+
+    <section
+      class="application-section"
+      *ngIf="currentStep === 3">
+
+      <div class="section-header">
+
+        <div class="section-number">
+          03
+        </div>
+
+        <div class="section-title">
+
+          <span>
+            LOAN REQUEST
+          </span>
+
+          <h2>
+            Tell us how much you need
+          </h2>
+
+          <p>
+            Enter the amount you would like to borrow and review
+            your estimated repayment details.
+          </p>
+
+        </div>
+
+      </div>
+
+
+      <div class="section-body">
+
+        <!-- ===================================================
+             REQUESTED AMOUNT
+        ==================================================== -->
+
+        <div class="loan-amount-card">
+
+          <div class="amount-card-top">
+
+            <div>
+
+              <span class="amount-eyebrow">
+                LOAN AMOUNT
+              </span>
+
+              <h3>
+                How much would you like to borrow?
+              </h3>
+
+              <p>
+                Enter the exact amount you are requesting.
+              </p>
+
+            </div>
+
+            <span class="required-badge">
+
+              <i class="fas fa-asterisk"></i>
+              REQUIRED
+
+            </span>
+
+          </div>
+
+
+          <div class="amount-input-container">
+
+            <span class="currency-prefix">
+              KES
+            </span>
+
+            <input
+              id="loanAmount"
+              type="number"
+              class="amount-input"
+              formControlName="amount"
+              min="1"
+              step="1"
+              inputmode="numeric"
+              placeholder="Enter amount e.g. 50,000"
+              (input)="calculatePreview()">
+
+          </div>
+
+
+          <div
+            class="amount-validation"
+            *ngIf="loanForm.get('amount')?.touched">
+
+            <div
+              *ngIf="loanForm.get('amount')?.hasError('required')">
+
+              <i class="fas fa-exclamation-circle"></i>
+
+              Please enter the amount you want to borrow.
+
+            </div>
+
+            <div
+              *ngIf="loanForm.get('amount')?.hasError('min')">
+
+              <i class="fas fa-exclamation-circle"></i>
+
+              Loan amount must be greater than zero.
+
+            </div>
+
+          </div>
+
+
+          <!-- LIMIT -->
+
+          <div class="amount-limit-strip">
+
+            <div>
+
+              <span>
+                Your eligible limit
+              </span>
+
+              <strong>
+                KES
+                {{
+                  eligibleLimit || 0
+                  | number:'1.0-0'
+                }}
+              </strong>
+
+            </div>
+
+            <div class="limit-divider"></div>
+
+            <div
+              *ngIf="!exceedsLimit"
+              class="limit-ok">
+
+              <i class="fas fa-check-circle"></i>
+
+              <span>
+                Within eligible limit
+              </span>
+
+            </div>
+
+            <div
+              *ngIf="exceedsLimit"
+              class="limit-danger">
+
+              <i class="fas fa-exclamation-triangle"></i>
+
+              <span>
+                Amount exceeds eligible limit
+              </span>
+
+            </div>
+
+          </div>
+
+        </div>
+
+
+        <!-- ===================================================
+             LOAN DETAILS
+        ==================================================== -->
+
+        <div class="loan-details-grid">
+
+          <!-- REPAYMENT PERIOD -->
+
+          <div class="calculated-field-card">
+
+            <div class="calculated-icon">
+              <i class="fas fa-calendar-alt"></i>
+            </div>
+
+            <div>
+
+              <span>
+                REPAYMENT PERIOD
+              </span>
+
+              <strong>
+                {{ calculateDurationMonths() }}
+                Months
+              </strong>
+
+              <small>
+                System calculated
+              </small>
+
+            </div>
+
+            <i class="fas fa-lock calculated-lock"></i>
+
+          </div>
+
+
+          <!-- DUE DATE -->
+
+          <div class="calculated-field-card">
+
+            <div class="calculated-icon">
+              <i class="fas fa-calendar-check"></i>
+            </div>
+
+            <div>
+
+              <span>
+                LOAN DUE DATE
+              </span>
+
+              <strong>
+                {{ calculatedDueDate | date:'mediumDate' }}
+              </strong>
+
+              <small>
+                Automatically calculated
+              </small>
+
+            </div>
+
+            <i class="fas fa-lock calculated-lock"></i>
+
+          </div>
+
+
+          <!-- APPLICATION DATE -->
+
+          <div class="calculated-field-card editable-date-card">
+
+            <div class="calculated-icon">
+              <i class="fas fa-calendar-day"></i>
+            </div>
+
+            <div class="date-field-content">
+
+              <span>
+                APPLICATION DATE
+              </span>
+
+              <input
+                type="date"
+                class="premium-date-input"
+                formControlName="applicationDate">
+
+              <small>
+                Date of application
+              </small>
+
+            </div>
+
+          </div>
+
+
+          <!-- INTEREST RATE -->
+
+          <div class="calculated-field-card">
+
+            <div class="calculated-icon">
+              <i class="fas fa-percent"></i>
+            </div>
+
+            <div>
+
+              <span>
+                ESTIMATED INTEREST
+              </span>
+
+              <strong>
+                {{
+                  calculateInterestRate() * 100
+                  | number:'1.0-2'
+                }}%
+              </strong>
+
+              <small>
+                Applicable rate
+              </small>
+
+            </div>
+
+            <i class="fas fa-calculator calculated-lock"></i>
+
+          </div>
+
+        </div>
+
+
+        <!-- ===================================================
+             REPAYMENT PREVIEW
+        ==================================================== -->
+
+        <div class="repayment-preview-card">
+
+          <div class="preview-header">
+
+            <div class="preview-icon">
+              <i class="fas fa-chart-pie"></i>
+            </div>
+
+            <div>
+
+              <span>
+                REPAYMENT ESTIMATE
+              </span>
+
+              <h3>
+                Understand your expected repayment
+              </h3>
+
+            </div>
+
+          </div>
+
+
+          <div class="repayment-main">
+
+            <div class="monthly-repayment">
+
+              <span>
+                ESTIMATED MONTHLY REPAYMENT
+              </span>
+
+              <strong>
+                KES
+                {{
+                  estimatedMonthlyRepayment || 0
+                  | number:'1.0-0'
+                }}
+              </strong>
+
+            </div>
+
+
+            <div class="repayment-breakdown">
+
+              <div>
+
+                <span>
+                  Requested amount
+                </span>
+
+                <strong>
+                  KES
+                  {{
+                    loanForm.get('amount')?.value || 0
+                    | number:'1.0-0'
+                  }}
+                </strong>
+
+              </div>
+
+
+              <div>
+
+                <span>
+                  Estimated interest
+                </span>
+
+                <strong>
+                  KES
+                  {{
+                    estimatedInterest || 0
+                    | number:'1.0-0'
+                  }}
+                </strong>
+
+              </div>
+
+
+              <div>
+
+                <span>
+                  Total repayment
+                </span>
+
+                <strong>
+                  KES
+                  {{
+                    totalRepayable || 0
+                    | number:'1.0-0'
+                  }}
+                </strong>
+
+              </div>
+
+            </div>
+
+          </div>
+
+
+          <div class="preview-disclaimer">
+
+            <i class="fas fa-info-circle"></i>
+
+            This is an estimate for planning purposes. Final loan
+            terms are subject to the completed credit assessment
+            and approval process.
+
+          </div>
+
+        </div>
+
+      </div>
+
+
+      <div class="section-footer">
+
+        <button
+          type="button"
+          class="secondary-action"
+          (click)="previousStep()">
+
+          <i class="fas fa-arrow-left"></i>
+
+          Back
+
+        </button>
+
+
+        <button
+          type="button"
+          class="primary-action"
+          [disabled]="
+            !loanForm.get('amount')?.valid ||
+            exceedsLimit
+          "
+          (click)="nextStep()">
+
+          Review Eligibility
+
+          <i class="fas fa-arrow-right"></i>
+
+        </button>
+
+      </div>
+
+    </section>
+
+
+<!-- =======================================================
+     STEP 4 — REVIEW & CREDIT INTELLIGENCE
+======================================================== -->
+
+<section
+  class="application-section"
+  *ngIf="currentStep === 4"
+  #reviewSection>
+
+
+  <!-- =====================================================
+       SECTION HEADER
+  ====================================================== -->
+
+  <div class="section-header">
+
+    <div class="section-number">
+      04
+    </div>
+
+
+    <div class="section-title">
+
+      <span>
+        FINAL REVIEW
+      </span>
+
+      <h2>
+        Review your application
+      </h2>
+
+      <p>
+        Confirm your information and complete the credit
+        assessment before submitting your application.
+      </p>
+
+    </div>
+
+
+    <div class="section-status">
+
+      <span class="status-pill review">
+
+        <i class="fas fa-file-alt"></i>
+
+        READY FOR REVIEW
+
+      </span>
+
+    </div>
+
+  </div>
+
+
+  <!-- =====================================================
+       STEP 4 CONTENT
+  ====================================================== -->
+
+  <div class="step4-content">
+
+
+    <!-- ===================================================
+         TOP REVIEW CARDS
+         01 CUSTOMER
+         02 FINANCIAL
+         03 LOAN
+    ==================================================== -->
+
+    <div class="step4-review-cards">
+
+
+      <!-- =================================================
+           01 — CUSTOMER INFORMATION
+      ================================================== -->
+
+      <div class="review-card customer-review-card">
+
+
+        <!-- CARD HEADER -->
+
+        <div class="review-card-header">
+
+          <div class="review-title-icon">
+
+            <i class="fas fa-user"></i>
+
+          </div>
+
+
+          <div class="review-card-title">
+
+            <span>
+              01
+            </span>
+
+            <h3>
+              Customer Information
+            </h3>
+
+          </div>
+
+
+          <div class="review-status">
+
+            <i class="fas fa-check-circle"></i>
+
+            Verified
+
+          </div>
+
+        </div>
+
+
+        <!-- CARD CONTENT -->
+
+        <div class="review-grid">
+
+
+          <!-- FULL NAME -->
+
+          <div class="review-item">
+
+            <span>
+              Full Name
+            </span>
+
+            <strong>
+              {{ loanForm.get('fullName')?.value || '-' }}
+            </strong>
+
+          </div>
+
+
+          <!-- IDENTIFICATION -->
+
+          <div class="review-item">
+
+            <span>
+              Identification
+            </span>
+
+            <strong>
+              {{
+                loanForm.get('identificationNumber')?.value || '-'
+              }}
+            </strong>
+
+          </div>
+
+
+          <!-- PHONE -->
+
+          <div class="review-item">
+
+            <span>
+              Phone Number
+            </span>
+
+            <strong>
+              {{ loanForm.get('phoneNumber')?.value || '-' }}
+            </strong>
+
+          </div>
+
+
+          <!-- LOCATION -->
+
+          <div class="review-item">
+
+            <span>
+              Location
+            </span>
+
+            <strong>
+              {{ loanForm.get('location')?.value || '-' }}
+            </strong>
+
+          </div>
+
+        </div>
+
+      </div>
+
+
+
+      <!-- =================================================
+           02 — FINANCIAL PROFILE
+      ================================================== -->
+
+      <div class="review-card financial-review-card">
+
+
+        <!-- CARD HEADER -->
+
+        <div class="review-card-header">
+
+          <div class="review-title-icon financial">
+
+            <i class="fas fa-wallet"></i>
+
+          </div>
+
+
+          <div class="review-card-title">
+
+            <span>
+              02
+            </span>
+
+            <h3>
+              Financial Profile
+            </h3>
+
+          </div>
+
+        </div>
+
+
+        <!-- CARD CONTENT -->
+
+        <div class="loan-review-highlight">
+
+
+          <!-- MONTHLY INCOME -->
+
+          <div class="review-item">
+
+            <span>
+              Monthly Income
+            </span>
+
+            <strong>
+
+              KES
+
+              {{
+                loanForm.get('monthlyIncome')?.value || 0
+                | number:'1.0-0'
+              }}
+
+            </strong>
+
+          </div>
+
+
+
+          <!-- REQUESTED AMOUNT -->
+
+          <div>
+
+            <span>
+              REQUESTED AMOUNT
+            </span>
+
+            <strong>
+
+              KES
+
+              {{
+                loanForm.get('amount')?.value || 0
+                | number:'1.0-0'
+              }}
+
+            </strong>
+
+          </div>
+
+
+          <!-- DISPOSABLE INCOME -->
+
+          <div class="review-item">
+
+            <span>
+              Disposable Income
+            </span>
+
+            <strong class="text-positive">
+
+              KES
+
+              {{
+                (
+                  (loanForm.get('monthlyIncome')?.value || 0)
+                  -
+                  (loanForm.get('monthlyExpenses')?.value || 0)
+                )
+                | number:'1.0-0'
+              }}
+
+            </strong>
+
+          </div>
+
+
+        <!-- MONTHLY REPAYMENT -->
+
+          <div>
+
+            <span>
+              MONTHLY REPAYMENT
+            </span>
+
+            <strong>
+
+              KES
+
+              {{
+                estimatedMonthlyRepayment || 0
+                | number:'1.0-0'
+              }}
+
+            </strong>
+
+          </div>
+
+        </div>
+
+      </div>
+
+
+
+      <!-- =================================================
+           03 — LOAN REQUEST
+      ================================================== -->
+
+      <div class="review-card loan-review-card">
+
+
+        <!-- CARD HEADER -->
+
+        <div class="review-card-header">
+
+          <div class="review-title-icon loan">
+
+            <i class="fas fa-money-bill-wave"></i>
+
+          </div>
+
+
+          <div class="review-card-title">
+
+            <span>
+              03
+            </span>
+
+            <h3>
+              Loan Request
+            </h3>
+
+          </div>
+
+        </div>
+
+
+        <!-- =================================================
+             LOAN DETAILS
+        ================================================== -->
+
+        <div class="review-grid">
+
+
+          <!-- REPAYMENT PERIOD -->
+
+          <div class="review-item">
+
+            <span>
+              Repayment Period
+            </span>
+
+            <strong>
+              {{ calculateDurationMonths() }} Months
+            </strong>
+
+          </div>
+
+
+          <!-- INTEREST -->
+
+          <div class="review-item">
+
+            <span>
+              Interest
+            </span>
+
+            <strong>
+
+              KES
+
+              {{
+                estimatedInterest || 0
+                | number:'1.0-0'
+              }}
+
+            </strong>
+
+          </div>
+
+
+          <!-- TOTAL REPAYMENT -->
+
+          <div class="review-item">
+
+            <span>
+              Total Repayment
+            </span>
+
+            <strong>
+
+              KES
+
+              {{
+                totalRepayable || 0
+                | number:'1.0-0'
+              }}
+
+            </strong>
+
+          </div>
+
+
+          <!-- DUE DATE -->
+
+          <div class="review-item">
+
+            <span>
+              Due Date
+            </span>
+
+            <strong>
+              {{ calculatedDueDate | date:'mediumDate' }}
+            </strong>
+
+          </div>
+
+        </div>
+
+      </div>
+
+    </div>
+
+
+
+    <!-- =====================================================
+         OTHER STEP 4 FEATURES
+         THESE APPEAR BELOW THE THREE REVIEW CARDS
+    ====================================================== -->
+
+    <div class="step4-features">
+
+
+      <!-- =================================================
+           CREDIT INTELLIGENCE
+      ================================================== -->
+
+      <div class="intelligence-card">
+
+
+        <!-- INTELLIGENCE HEADER -->
+
+        <div class="intelligence-header">
+
+
+          <div class="intelligence-icon">
+
+            <i class="fas fa-brain"></i>
+
+          </div>
+
+
+          <div>
+
+            <span>
+              CREDIT INTELLIGENCE
+            </span>
+
+            <h3>
+              Automated Eligibility Assessment
+            </h3>
+
+            <p>
+              Your application is evaluated using your verified
+              account and financial information.
+            </p>
+
+          </div>
+
+        </div>
+
+
+
+        <!-- =================================================
+             ANALYSIS LOADING
+        ================================================== -->
+
+        <div
+          class="intelligence-loading"
+          *ngIf="isAssessing">
+
+          <i class="fas fa-spinner fa-spin"></i>
+
+
+          <div>
+
+            <strong>
+              Analysing your application...
+            </strong>
+
+            <small>
+              Please wait while the credit assessment is completed.
+            </small>
+
+          </div>
+
+        </div>
+
+
+
+        <!-- =================================================
+             CREDIT INTELLIGENCE RESULTS
+        ================================================== -->
+
+  <div
+  class="intelligence-results"
+  *ngIf="submitLoanPreview && !isAssessing">
+
+  <!-- =====================================================
+       ASSESSMENT COMPLETED
+  ====================================================== -->
+
+  <div class="assessment-complete-banner">
+
+    <div class="assessment-complete-icon">
+
+      <i class="fas fa-check-circle"></i>
+
+    </div>
+
+    <div>
+
+      <strong>
+        Credit Assessment Completed
+      </strong>
+
+      <span>
+        Your application has been evaluated using the
+        available customer, financial and credit information.
+      </span>
+
+    </div>
+
+  </div>
+
+
+  <!-- =====================================================
+       RISK SCORE
+  ====================================================== -->
+
+  <div class="intelligence-result">
+
+    <span>
+      <i class="fas fa-chart-line"></i>
+      Risk Score
+    </span>
+
+    <strong>
+      {{
+        submitLoanPreview.riskScore ?? 0
+      }}
+    </strong>
+
+  </div>
+
+
+  <!-- =====================================================
+       PREDICTIVE RISK
+  ====================================================== -->
+
+  <div class="intelligence-result">
+
+    <span>
+      <i class="fas fa-shield-alt"></i>
+      Risk Category
+    </span>
+
+    <strong>
+      {{
+        submitLoanPreview.predictiveRisk ||
+        'NOT AVAILABLE'
+      }}
+    </strong>
+
+  </div>
+
+
+  <!-- =====================================================
+       ELIGIBLE AMOUNT
+  ====================================================== -->
+
+  <div class="intelligence-result">
+
+    <span>
+      <i class="fas fa-money-bill-wave"></i>
+      Eligible Amount
+    </span>
+
+    <strong>
+
+      KES
+      {{
+        submitLoanPreview.eligibleAmount || 0
+        | number:'1.0-0'
+      }}
+
+    </strong>
+
+  </div>
+
+
+  <!-- =====================================================
+       RECOMMENDATION
+  ====================================================== -->
+
+  <div
+    class="intelligence-result recommendation-result">
+
+    <span>
+      <i class="fas fa-gavel"></i>
+      Recommendation
+    </span>
+
+    <strong>
+      {{
+        submitLoanPreview.recommendation ||
+        'NOT AVAILABLE'
+      }}
+    </strong>
+
+  </div>
+
+
+  <!-- =====================================================
+       ADDITIONAL INTELLIGENCE
+  ====================================================== -->
+
+  <div
+    class="intelligence-result"
+    *ngIf="submitLoanPreview.behavioralScore !== undefined">
+
+    <span>
+      <i class="fas fa-user-chart"></i>
+      Behavioral Score
+    </span>
+
+    <strong>
+      {{ submitLoanPreview.behavioralScore }}
+    </strong>
+
+  </div>
+
+
+  <div
+    class="intelligence-result"
+    *ngIf="submitLoanPreview.kycScore !== undefined">
+
+    <span>
+      <i class="fas fa-id-card"></i>
+      KYC Score
+    </span>
+
+    <strong>
+      {{ submitLoanPreview.kycScore }}
+    </strong>
+
+  </div>
+
+
+  <div
+    class="intelligence-result"
+    *ngIf="submitLoanPreview.daysPastDue !== undefined">
+
+    <span>
+      <i class="fas fa-calendar-times"></i>
+      Days Past Due
+    </span>
+
+    <strong>
+      {{ submitLoanPreview.daysPastDue }}
+    </strong>
+
+  </div>
+
+
+  <div
+    class="intelligence-result"
+    *ngIf="submitLoanPreview.completedLoans !== undefined">
+
+    <span>
+      <i class="fas fa-history"></i>
+      Completed Loans
+    </span>
+
+    <strong>
+      {{ submitLoanPreview.completedLoans }}
+    </strong>
+
+  </div>
+
+</div>
+
+
+
+        <!-- =================================================
+             RUN CREDIT ASSESSMENT
+        ================================================== -->
+
+<button
+  type="button"
+  class="analysis-button"
+  [disabled]="isAssessing"
+  (click)="assessLoanEligibility()">
+
+  <i
+    class="fas"
+    [ngClass]="
+      isAssessing
+        ? 'fa-spinner fa-spin'
+        : 'fa-brain'
+    ">
+  </i>
+
+  {{
+    isAssessing
+      ? 'Analysing Application...'
+      : submitLoanPreview
+        ? 'Re-run Credit Assessment'
+        : 'Run Credit Assessment'
+  }}
+
+</button>
+
+      </div>
+
+
+
+      <!-- =================================================
+           FINAL DECLARATION
+      ================================================== -->
+
+      <div class="declaration-card">
+
+
+        <!-- DECLARATION HEADER -->
+
+        <div class="declaration-header">
+
+
+          <div class="declaration-icon">
+
+            <i class="fas fa-file-signature"></i>
+
+          </div>
+
+
+          <div>
+
+            <span>
+              FINAL DECLARATION
+            </span>
+
+            <h3>
+              Confirm before submitting
+            </h3>
+
+          </div>
+
+        </div>
+
+
+
+        <!-- DECLARATION CHECKBOX -->
+
+        <div class="declaration-check">
+
+
+          <input
+            id="agreeTerms"
+            type="checkbox"
+            class="form-check-input"
+            formControlName="agreeTerms">
+
+
+          <label for="agreeTerms">
+
+            I confirm that the information provided in this
+            application is accurate and complete. I understand
+            that the information may be used for credit assessment
+            and loan processing in accordance with the applicable
+            terms, privacy policy and lending policy.
+
+          </label>
+
+        </div>
+
+
+
+        <!-- DECLARATION ERROR -->
+
+        <div
+          class="declaration-error"
+          *ngIf="
+            loanForm.get('agreeTerms')?.touched &&
+            loanForm.get('agreeTerms')?.invalid
+          ">
+
+          <i class="fas fa-exclamation-circle"></i>
+
+          Please confirm the declaration before submitting.
+
+        </div>
+
+      </div>
+
+    </div>
+
+
+
+    <!-- =====================================================
+         FINAL ACTIONS
+    ====================================================== -->
+
+    <div class="section-footer final-footer">
+
+
+      <!-- BACK -->
+
+      <button
+        type="button"
+        class="secondary-action"
+        (click)="previousStep()">
+
+        <i class="fas fa-arrow-left"></i>
+
+        Back
+
+      </button>
+
+
+
+      <!-- FINAL ACTIONS -->
+
+      <div class="final-actions">
+
+
+        <!-- SAVE DRAFT -->
+
+        <button
+          type="button"
+          class="draft-action"
+          [disabled]="isSubmitting"
+          (click)="saveDraft()">
+
+          <i class="fas fa-save"></i>
+
+          Save Draft
+
+        </button>
+
+
+
+        <!-- SUBMIT -->
+
+        <button
+          type="submit"
+          class="submit-action"
+          [disabled]="
+            isSubmitting ||
+            submitInProgress ||
+            isAssessing ||
+            exceedsLimit ||
+            loanForm.invalid
+          ">
+
+
+          <!-- NORMAL STATE -->
+
+          <span *ngIf="!isSubmitting">
+
+            <i class="fas fa-paper-plane"></i>
+
+            Submit Loan Application
+
+          </span>
+
+
+          <!-- SUBMITTING STATE -->
+
+          <span *ngIf="isSubmitting">
+
+            <i class="fas fa-spinner fa-spin"></i>
+
+            Submitting Application...
+
+          </span>
+
+        </button>
+
       </div>
 
     </div>
 
   </div>
 
-  <!-- ==========================================================
-       SUCCESS PANEL
-  =========================================================== -->
+</section>
 
-  <div
-    *ngIf="submissionComplete"
-    class="success-section mt-4">
+  </form>
 
-    <div class="card enterprise-card border-0">
+  <!-- =========================================================
+     CREDITBANK — LOAN SUBMISSION SUCCESS REPORT
+========================================================= -->
 
-      <div class="card-body text-center py-5">
+<!-- =========================================================
+     CREDITBANK — LOAN SUBMISSION SUCCESS REPORT
+========================================================= -->
 
-        <div class="success-icon mb-4">
+<section
+  class="loan-success-report"
+  *ngIf="submissionComplete === true && submittedLoan">
+
+  <!-- =======================================================
+       FIXED APPLICATION NAVIGATION
+       These elements are intentionally outside normal document
+       flow so they do NOT create a large empty area above the
+       report.
+  ======================================================== -->
+
+  <app-sidebar
+    class="success-sidebar">
+  </app-sidebar>
+
+  <app-top-nav
+    class="success-top-nav">
+  </app-top-nav>
+
+
+  <!-- =======================================================
+       SUCCESS REPORT CONTENT
+  ======================================================== -->
+
+  <main class="success-report-shell">
+
+    <!-- =====================================================
+         SUCCESS HEADER
+    ====================================================== -->
+
+    <header class="success-report-header">
+
+      <div class="success-header-main">
+
+        <div class="success-check-mark">
+          <i class="fas fa-check"></i>
+        </div>
+
+        <div class="success-header-copy">
+
+          <span class="success-eyebrow">
+            CREDITBANK
+            <span class="success-dot">•</span>
+            APPLICATION RECEIVED
+          </span>
+
+          <h1>
+            Loan Application Submitted
+          </h1>
+
+          <p>
+            Your application has been successfully received and
+            recorded in the CreditBank lending platform.
+          </p>
+
+        </div>
+
+      </div>
+
+
+      <!-- APPLICATION STATUS -->
+
+      <div class="success-header-status">
+
+        <span class="success-status-label">
+          APPLICATION STATUS
+        </span>
+
+        <span class="success-status-badge">
 
           <i class="fas fa-check-circle"></i>
 
+          {{ submittedLoanStatus || 'SUBMITTED' }}
+
+        </span>
+
+      </div>
+
+    </header>
+
+
+
+    <!-- =====================================================
+         APPLICATION REFERENCE
+    ====================================================== -->
+
+    <div class="application-reference-bar">
+
+      <div class="reference-left">
+
+        <div class="reference-icon">
+          <i class="fas fa-file-invoice"></i>
         </div>
 
-        <h2 class="mb-3">
+        <div class="reference-copy">
 
-          Application Successfully Submitted
+          <span>
+            APPLICATION REFERENCE
+          </span>
 
-        </h2>
+          <strong>
+            {{ submittedApplicationNumber || 'Generating...' }}
+          </strong>
 
-        <p class="text-muted mx-auto"
-           style="max-width:700px;">
+        </div>
 
-          Your loan application has been securely received by the
-          Enterprise Loan Management System.
+      </div>
 
-          Our Credit Operations Team will review your application and
-          communicate the outcome through your registered contact details.
 
-        </p>
+      <div class="reference-right">
 
-        <div class="row mt-5">
+        <span>
+          Keep this reference for future tracking.
+        </span>
 
-          <div class="col-md-4">
+        <button
+          type="button"
+          class="copy-reference-button"
+          *ngIf="submittedApplicationNumber"
+          (click)="copyApplicationReference()">
 
-            <div class="summary-box">
+          <i class="fas fa-copy"></i>
 
-              <i class="fas fa-file-alt"></i>
+          Copy
 
-              <h6 class="mt-3">
+        </button>
 
-                Application Received
+      </div>
 
-              </h6>
+    </div>
 
-              <small>
 
-                Successfully captured in the lending platform.
 
-              </small>
+    <!-- =====================================================
+         EXECUTIVE SUMMARY
+    ====================================================== -->
 
-            </div>
+    <div class="success-summary-grid">
 
-          </div>
+      <!-- ===================================================
+           REQUESTED AMOUNT
+      ==================================================== -->
 
-          <div class="col-md-4">
+      <div class="success-summary-card amount-summary">
 
-            <div class="summary-box">
+        <div class="summary-icon">
+          <i class="fas fa-money-bill-wave"></i>
+        </div>
 
-              <i class="fas fa-user-check"></i>
+        <div class="summary-content">
 
-              <h6 class="mt-3">
+          <span>
+            REQUESTED AMOUNT
+          </span>
 
-                Under Review
+          <strong>
+            KES
+            {{
+              (
+                submittedLoan?.amount ??
+                loanForm.get('amount')?.value ??
+                0
+              ) | number:'1.2-2'
+            }}
+          </strong>
 
-              </h6>
+        </div>
 
-              <small>
+      </div>
 
-                Credit officers are reviewing your application.
 
-              </small>
 
-            </div>
+      <!-- ===================================================
+           MONTHLY REPAYMENT
+      ==================================================== -->
 
-          </div>
+      <div class="success-summary-card repayment-summary">
 
-          <div class="col-md-4">
+        <div class="summary-icon">
+          <i class="fas fa-calendar-check"></i>
+        </div>
 
-            <div class="summary-box">
+        <div class="summary-content">
 
-              <i class="fas fa-bell"></i>
+          <span>
+            EST. MONTHLY REPAYMENT
+          </span>
 
-              <h6 class="mt-3">
+          <strong>
+            KES
+            {{
+              (
+                submittedLoan?.monthlyRepayment ??
+                estimatedMonthlyRepayment ??
+                0
+              ) | number:'1.2-2'
+            }}
+          </strong>
 
-                Notification
+        </div>
 
-              </h6>
+      </div>
 
-              <small>
 
-                You'll receive SMS and email updates.
 
-              </small>
+      <!-- ===================================================
+           ELIGIBLE AMOUNT
+      ==================================================== -->
 
-            </div>
+      <div class="success-summary-card eligibility-summary">
 
-          </div>
+        <div class="summary-icon">
+          <i class="fas fa-chart-line"></i>
+        </div>
+
+        <div class="summary-content">
+
+          <span>
+            ELIGIBLE AMOUNT
+          </span>
+
+          <strong>
+            KES
+            {{
+              (
+                submitLoanPreview?.eligibleAmount ??
+                submittedLoan?.eligibleAmount ??
+                0
+              ) | number:'1.2-2'
+            }}
+          </strong>
+
+        </div>
+
+      </div>
+
+
+
+      <!-- ===================================================
+           CREDIT RISK
+      ==================================================== -->
+
+      <div class="success-summary-card risk-summary">
+
+        <div class="summary-icon">
+          <i class="fas fa-shield-alt"></i>
+        </div>
+
+        <div class="summary-content">
+
+          <span>
+            CREDIT RISK
+          </span>
+
+          <strong>
+            {{
+              submitLoanPreview?.predictiveRisk ||
+              submittedLoan?.predictiveRisk ||
+              'PENDING'
+            }}
+          </strong>
 
         </div>
 
@@ -1998,6 +2667,722 @@ New Application
 
     </div>
 
-  </div>
+
+
+    <!-- =====================================================
+         MAIN REPORT GRID
+    ====================================================== -->
+
+    <div class="success-report-content">
+
+      <!-- ===================================================
+           CUSTOMER INFORMATION
+      ==================================================== -->
+
+      <article class="success-detail-card">
+
+        <div class="detail-card-header">
+
+          <div class="detail-card-heading">
+
+            <div class="detail-card-icon customer">
+              <i class="fas fa-user"></i>
+            </div>
+
+            <div>
+
+              <span>
+                CUSTOMER
+              </span>
+
+              <h3>
+                Applicant Information
+              </h3>
+
+            </div>
+
+          </div>
+
+
+          <span class="detail-card-status success">
+
+            <i class="fas fa-check"></i>
+
+            Verified
+
+          </span>
+
+        </div>
+
+
+        <div class="detail-card-body">
+
+          <!-- FULL NAME -->
+
+          <div class="report-detail">
+
+            <span>
+              Full Name
+            </span>
+
+            <strong>
+              {{
+                submittedLoan?.applicantName ||
+                submittedLoan?.fullName ||
+                loanForm.get('fullName')?.value ||
+                '-'
+              }}
+            </strong>
+
+          </div>
+
+
+          <!-- IDENTIFICATION -->
+
+          <div class="report-detail">
+
+            <span>
+              Identification
+            </span>
+
+            <strong>
+              {{
+                submittedLoan?.idNo ||
+                submittedLoan?.identificationNumber ||
+                loanForm.get('identificationNumber')?.value ||
+                '-'
+              }}
+            </strong>
+
+          </div>
+
+
+          <!-- PHONE -->
+
+          <div class="report-detail">
+
+            <span>
+              Phone Number
+            </span>
+
+            <strong>
+              {{
+                submittedLoan?.phoneNumber ||
+                loanForm.get('phoneNumber')?.value ||
+                '-'
+              }}
+            </strong>
+
+          </div>
+
+
+          <!-- LOCATION -->
+
+          <div class="report-detail">
+
+            <span>
+              Location
+            </span>
+
+            <strong>
+              {{
+                submittedLoan?.location ||
+                loanForm.get('location')?.value ||
+                '-'
+              }}
+            </strong>
+
+          </div>
+
+        </div>
+
+      </article>
+
+
+
+      <!-- ===================================================
+           LOAN APPLICATION DETAILS
+      ==================================================== -->
+
+      <article class="success-detail-card">
+
+        <div class="detail-card-header">
+
+          <div class="detail-card-heading">
+
+            <div class="detail-card-icon loan">
+              <i class="fas fa-money-bill-wave"></i>
+            </div>
+
+            <div>
+
+              <span>
+                LOAN REQUEST
+              </span>
+
+              <h3>
+                Application Details
+              </h3>
+
+            </div>
+
+          </div>
+
+        </div>
+
+
+        <div class="detail-card-body">
+
+          <!-- REQUESTED AMOUNT -->
+
+          <div class="report-detail">
+
+            <span>
+              Requested Amount
+            </span>
+
+            <strong class="report-money">
+
+              KES
+              {{
+                (
+                  submittedLoan?.amount ??
+                  loanForm.get('amount')?.value ??
+                  0
+                ) | number:'1.2-2'
+              }}
+
+            </strong>
+
+          </div>
+
+
+          <!-- REPAYMENT PERIOD -->
+
+          <div class="report-detail">
+
+            <span>
+              Repayment Period
+            </span>
+
+            <strong>
+
+              {{
+                submittedLoan?.duration ||
+                (calculateDurationMonths() + ' months')
+              }}
+
+            </strong>
+
+          </div>
+
+
+          <!-- INTEREST RATE -->
+
+          <div class="report-detail">
+
+            <span>
+              Interest Rate
+            </span>
+
+            <strong>
+
+              {{
+                submittedLoan?.interestRate !== undefined &&
+                submittedLoan?.interestRate !== null
+                  ? (submittedLoan.interestRate | number:'1.0-2') + '%'
+                  : ((calculateInterestRate() * 100) | number:'1.0-2') + '%'
+              }}
+
+            </strong>
+
+          </div>
+
+
+          <!-- DUE DATE -->
+
+          <div class="report-detail">
+
+            <span>
+              Due Date
+            </span>
+
+            <strong>
+
+              {{
+                submittedLoan?.dueDate
+                  ? (submittedLoan.dueDate | date:'mediumDate')
+                  : (
+                      calculatedDueDate
+                        ? (calculatedDueDate | date:'mediumDate')
+                        : '-'
+                    )
+              }}
+
+            </strong>
+
+          </div>
+
+        </div>
+
+      </article>
+
+
+
+      <!-- ===================================================
+           CREDIT INTELLIGENCE
+      ==================================================== -->
+
+      <article
+        class="success-detail-card intelligence-detail-card">
+
+        <div class="detail-card-header">
+
+          <div class="detail-card-heading">
+
+            <div class="detail-card-icon intelligence">
+              <i class="fas fa-brain"></i>
+            </div>
+
+            <div>
+
+              <span>
+                CREDIT INTELLIGENCE
+              </span>
+
+              <h3>
+                Assessment Summary
+              </h3>
+
+            </div>
+
+          </div>
+
+        </div>
+
+
+        <div class="detail-card-body">
+
+          <!-- RISK SCORE -->
+
+          <div class="report-detail">
+
+            <span>
+              Risk Score
+            </span>
+
+            <strong>
+
+              {{
+                submitLoanPreview?.riskScore ??
+                submittedLoan?.riskScore ??
+                0
+              }}
+
+            </strong>
+
+          </div>
+
+
+          <!-- RISK CATEGORY -->
+
+          <div class="report-detail">
+
+            <span>
+              Risk Category
+            </span>
+
+            <strong>
+
+              {{
+                submitLoanPreview?.predictiveRisk ||
+                submittedLoan?.predictiveRisk ||
+                'NOT AVAILABLE'
+              }}
+
+            </strong>
+
+          </div>
+
+
+          <!-- RECOMMENDATION -->
+
+          <div class="report-detail">
+
+            <span>
+              Recommendation
+            </span>
+
+            <strong class="recommendation-value">
+
+              {{
+                submitLoanPreview?.recommendation ||
+                submittedLoan?.recommendation ||
+                'SUBMITTED FOR PROCESSING'
+              }}
+
+            </strong>
+
+          </div>
+
+
+          <!-- ELIGIBLE AMOUNT -->
+
+          <div class="report-detail">
+
+            <span>
+              Eligible Amount
+            </span>
+
+            <strong class="report-money">
+
+              KES
+              {{
+                (
+                  submitLoanPreview?.eligibleAmount ??
+                  submittedLoan?.eligibleAmount ??
+                  0
+                ) | number:'1.2-2'
+              }}
+
+            </strong>
+
+          </div>
+
+        </div>
+
+      </article>
+
+
+
+      <!-- ===================================================
+           REPAYMENT INFORMATION
+      ==================================================== -->
+
+      <article
+        class="success-detail-card repayment-detail-card">
+
+        <div class="detail-card-header">
+
+          <div class="detail-card-heading">
+
+            <div class="detail-card-icon repayment">
+              <i class="fas fa-chart-line"></i>
+            </div>
+
+            <div>
+
+              <span>
+                REPAYMENT
+              </span>
+
+              <h3>
+                Estimated Repayment
+              </h3>
+
+            </div>
+
+          </div>
+
+        </div>
+
+
+        <!-- PRIMARY REPAYMENT -->
+
+        <div class="repayment-primary">
+
+          <span>
+            ESTIMATED MONTHLY REPAYMENT
+          </span>
+
+          <strong>
+
+            KES
+            {{
+              (
+                submittedLoan?.monthlyRepayment ??
+                estimatedMonthlyRepayment ??
+                0
+              ) | number:'1.2-2'
+            }}
+
+          </strong>
+
+        </div>
+
+
+        <!-- REPAYMENT MINI GRID -->
+
+        <div class="repayment-mini-grid">
+
+          <!-- INTEREST -->
+
+          <div>
+
+            <span>
+              Interest
+            </span>
+
+            <strong>
+
+              KES
+              {{
+                (estimatedInterest ?? 0) | number:'1.2-2'
+              }}
+
+            </strong>
+
+          </div>
+
+
+          <!-- TOTAL REPAYMENT -->
+
+          <div>
+
+            <span>
+              Total Repayment
+            </span>
+
+            <strong>
+
+              KES
+              {{
+                (totalRepayable ?? 0) | number:'1.2-2'
+              }}
+
+            </strong>
+
+          </div>
+
+        </div>
+
+      </article>
+
+    </div>
+
+
+
+    <!-- =====================================================
+         NEXT STEPS
+    ====================================================== -->
+
+    <section class="success-next-steps">
+
+      <div class="next-step-icon">
+
+        <i class="fas fa-info"></i>
+
+      </div>
+
+
+      <div class="next-step-content">
+
+        <span>
+          NEXT STEPS
+        </span>
+
+        <strong>
+          Your application is now in the CreditBank workflow
+        </strong>
+
+        <p>
+          Your application has been recorded successfully.
+          Use the application reference above when tracking
+          your application or making enquiries.
+        </p>
+
+      </div>
+
+    </section>
+
+
+
+    <!-- =====================================================
+         RECEIPT ACTION PANEL
+    ====================================================== -->
+
+    <section class="receipt-action-panel">
+
+      <div class="receipt-panel-content">
+
+        <div class="receipt-panel-icon">
+
+          <i class="fas fa-receipt"></i>
+
+        </div>
+
+
+        <div>
+
+          <span>
+            APPLICATION RECEIPT
+          </span>
+
+          <h3>
+            Keep a copy of your submission
+          </h3>
+
+          <p>
+            Generate the official CreditBank application receipt
+            for your records.
+          </p>
+
+        </div>
+
+      </div>
+
+
+      <div class="receipt-actions">
+
+        <!-- PULL RECEIPT -->
+
+        <button
+          type="button"
+          class="receipt-primary-button"
+          [disabled]="receiptGenerating"
+          (click)="pullLoanReceipt()">
+
+          <i
+            class="fas"
+            [ngClass]="
+              receiptGenerating
+                ? 'fa-spinner fa-spin'
+                : 'fa-file-pdf'
+            ">
+          </i>
+
+          {{
+            receiptGenerating
+              ? 'Preparing Receipt...'
+              : 'Pull Receipt'
+          }}
+
+        </button>
+
+
+        <!-- PRINT -->
+
+        <button
+          type="button"
+          class="receipt-secondary-button"
+          (click)="printLoanReceipt()">
+
+          <i class="fas fa-print"></i>
+
+          Print
+
+        </button>
+
+      </div>
+
+    </section>
+
+
+
+    <!-- =====================================================
+         FINAL ACTIONS
+    ====================================================== -->
+
+    <section class="success-final-actions">
+
+      <!-- VIEW LOANS -->
+
+      <button
+        type="button"
+        class="secondary-action"
+        (click)="goToLoans()">
+
+        <i class="fas fa-list"></i>
+
+        View My Loans
+
+      </button>
+
+
+      <!-- NEW APPLICATION -->
+
+      <button
+        type="button"
+        class="primary-action"
+        (click)="startNewLoanApplication()">
+
+        <i class="fas fa-plus"></i>
+
+        New Loan Application
+
+      </button>
+
+    </section>
+
+  </main>
+
+</section>
+
+
+
+
+  <!-- =========================================================
+       TRUST FOOTER
+  ========================================================== -->
+
+  <section class="application-trust-footer">
+
+    <div class="trust-item">
+
+      <i class="fas fa-shield-alt"></i>
+
+      <div>
+
+        <strong>
+          Secure
+        </strong>
+
+        <span>
+          Your information is protected.
+        </span>
+
+      </div>
+
+    </div>
+
+
+    <div class="trust-item">
+
+      <i class="fas fa-lock"></i>
+
+      <div>
+
+        <strong>
+          Confidential
+        </strong>
+
+        <span>
+          Your financial data remains private.
+        </span>
+
+      </div>
+
+    </div>
+
+
+    <div class="trust-item">
+
+      <i class="fas fa-chart-line"></i>
+
+      <div>
+
+        <strong>
+          Intelligent
+        </strong>
+
+        <span>
+          Data-driven credit assessment.
+        </span>
+
+      </div>
+
+    </div>
+
+  </section>
 
 </div>

@@ -1,0 +1,1176 @@
+<div class="reminders-page container-fluid py-4">
+
+  <!-- =====================================================
+       PAGE HEADER
+  ====================================================== -->
+  <section class="page-heading d-flex flex-wrap
+                  justify-content-between align-items-center
+                  gap-3 mb-4">
+
+    <div class="page-heading-content">
+
+      <div class="eyebrow">
+        <i class="bi bi-bell-fill me-2"></i>
+        RENTAL OPERATIONS
+      </div>
+
+      <h1 class="page-title">Tenant Reminders</h1>
+
+      <p class="page-subtitle mb-0">
+        Automate rent follow-ups, monitor reminder activity and manage tenant communications.
+      </p>
+
+    </div>
+
+
+    <a
+  routerLink="/app/tenant/calendar"
+  class="btn smart-calendar-btn">
+
+  <span class="calendar-btn-icon">
+    <i class="bi bi-calendar2-week-fill"></i>
+  </span>
+
+  <span class="calendar-btn-text">
+    <strong>Smart Calendar</strong>
+    <small>View schedules & reminders</small>
+  </span>
+
+  <i class="bi bi-arrow-up-right calendar-btn-arrow"></i>
+
+</a>
+
+    <button
+      type="button"
+      class="btn btn-outline-primary refresh-btn"
+      [disabled]="loading || previewLoading || generating"
+      (click)="refresh()">
+
+      <i class="bi bi-arrow-clockwise me-2"
+         [class.spin-icon]="loading || previewLoading"></i>
+
+      Refresh
+
+    </button>
+
+  </section>
+
+
+  <!-- =====================================================
+       FEEDBACK MESSAGES
+  ====================================================== -->
+  <div
+    *ngIf="successMessage"
+    class="alert feedback-alert feedback-success"
+    role="status">
+
+    <i class="bi bi-check-circle-fill"></i>
+
+    <span>{{ successMessage }}</span>
+
+    <button
+      type="button"
+      class="btn-close ms-auto"
+      aria-label="Dismiss"
+      (click)="successMessage = ''">
+    </button>
+
+  </div>
+
+  <div
+    *ngIf="errorMessage"
+    class="alert feedback-alert feedback-danger"
+    role="alert">
+
+    <i class="bi bi-exclamation-triangle-fill"></i>
+
+    <span>{{ errorMessage }}</span>
+
+    <button
+      type="button"
+      class="btn-close ms-auto"
+      aria-label="Dismiss"
+      (click)="errorMessage = ''">
+    </button>
+
+  </div>
+
+
+  <!-- =====================================================
+       OPERATIONAL SUMMARY
+  ====================================================== -->
+  <section class="reminder-metrics mb-4">
+
+    <div class="row g-3">
+
+      <!-- ELIGIBLE TENANTS -->
+      <div class="col-12 col-sm-6 col-xl-3">
+        <div class="metric-card">
+
+          <div class="metric-top">
+            <div class="metric-icon metric-blue">
+              <i class="bi bi-people-fill"></i>
+            </div>
+
+            <span class="metric-context">AUTOMATION</span>
+          </div>
+
+          <div class="metric-label">Eligible tenants</div>
+
+          <div class="metric-value">
+            {{ eligibleCount }}
+          </div>
+
+          <div class="metric-note">
+            Based on current rent criteria
+          </div>
+
+        </div>
+      </div>
+
+
+      <!-- PENDING -->
+      <div class="col-12 col-sm-6 col-xl-3">
+        <div class="metric-card">
+
+          <div class="metric-top">
+            <div class="metric-icon metric-amber">
+              <i class="bi bi-clock-history"></i>
+            </div>
+
+            <span class="metric-context">ACTION REQUIRED</span>
+          </div>
+
+          <div class="metric-label">Pending reminders</div>
+
+          <div class="metric-value">
+            {{ pendingCount }}
+          </div>
+
+          <div class="metric-note">
+            Pending and scheduled on this page
+          </div>
+
+        </div>
+      </div>
+
+
+      <!-- FAILED -->
+      <div class="col-12 col-sm-6 col-xl-3">
+        <div class="metric-card">
+
+          <div class="metric-top">
+            <div class="metric-icon metric-red">
+              <i class="bi bi-exclamation-circle-fill"></i>
+            </div>
+
+            <span class="metric-context">ATTENTION</span>
+          </div>
+
+          <div class="metric-label">Failed reminders</div>
+
+          <div class="metric-value">
+            {{ failedCount }}
+          </div>
+
+          <div class="metric-note">
+            Failed records on this page
+          </div>
+
+        </div>
+      </div>
+
+
+      <!-- TOTAL RECORDS -->
+      <div class="col-12 col-sm-6 col-xl-3">
+        <div class="metric-card">
+
+          <div class="metric-top">
+            <div class="metric-icon metric-green">
+              <i class="bi bi-journal-check"></i>
+            </div>
+
+            <span class="metric-context">ALL RECORDS</span>
+          </div>
+
+          <div class="metric-label">Total reminder records</div>
+
+          <div class="metric-value">
+            {{ totalElements }}
+          </div>
+
+          <div class="metric-note">
+            Across all available pages
+          </div>
+
+        </div>
+      </div>
+
+    </div>
+
+  </section>
+
+
+  <!-- =====================================================
+       AUTOMATED RENT REMINDERS
+  ====================================================== -->
+  <section class="automation-card mb-4">
+
+    <!-- AUTOMATION HEADER -->
+    <div class="automation-header">
+
+      <div class="automation-heading-main">
+
+        <div class="automation-icon">
+          <i class="bi bi-magic"></i>
+        </div>
+
+        <div class="automation-heading-text">
+
+          <div class="automation-title-row">
+            <h2>Automated rent reminders</h2>
+
+            <span class="automation-status">
+              <i class="bi bi-check-circle-fill"></i>
+              Ready to configure
+            </span>
+          </div>
+
+          <p>
+            Identify qualifying rent charges and generate reminders
+            automatically using your configured criteria.
+          </p>
+
+        </div>
+
+      </div>
+
+      <div class="automation-header-tag">
+        <i class="bi bi-lightning-charge-fill"></i>
+        SMART AUTOMATION
+      </div>
+
+    </div>
+
+
+    <!-- AUTOMATION BODY -->
+    <div class="automation-body">
+
+      <div class="automation-section-label">
+        <i class="bi bi-sliders2"></i>
+        REMINDER CONFIGURATION
+      </div>
+
+      <div class="row g-3 align-items-end">
+
+        <!-- RENT CATEGORY -->
+        <div class="col-12 col-md-6 col-xl-4">
+
+          <label for="category" class="form-label">
+            Rent category
+          </label>
+
+          <select
+            id="category"
+            class="form-select"
+            [(ngModel)]="category"
+            (ngModelChange)="onCriteriaChange()">
+
+            <option
+              *ngFor="let item of categories"
+              [ngValue]="item.value">
+
+              {{ item.label }}
+
+            </option>
+
+          </select>
+
+          <small class="field-hint">
+            {{
+              category === 'ALL'
+                ? 'All qualifying rent categories.'
+                : category === 'DUE_SOON'
+                  ? 'Upcoming rent due dates.'
+                  : category === 'DUE_TODAY'
+                    ? 'Rent charges due today.'
+                    : 'Outstanding rent past its due date.'
+            }}
+          </small>
+
+        </div>
+
+
+        <!-- DAYS AHEAD -->
+        <div class="col-12 col-md-6 col-xl-2">
+
+          <label for="daysAhead" class="form-label">
+            Days ahead
+          </label>
+
+          <input
+            id="daysAhead"
+            type="number"
+            class="form-control"
+            min="1"
+            max="60"
+            [(ngModel)]="daysAhead"
+            (ngModelChange)="onCriteriaChange()"
+            [disabled]="category === 'DUE_TODAY' || category === 'OVERDUE'">
+
+          <small class="field-hint">
+            Between 1 and 60 days
+          </small>
+
+        </div>
+
+
+        <!-- CHANNEL -->
+        <div class="col-12 col-md-6 col-xl-3">
+
+          <label for="channel" class="form-label">
+            Reminder channel
+          </label>
+
+          <select
+            id="channel"
+            class="form-select"
+            [(ngModel)]="channel">
+
+            <option value="IN_APP">
+              In-app notification
+            </option>
+
+            <option value="SMS">
+              SMS (delivery not integrated)
+            </option>
+
+            <option value="EMAIL">
+              Email (delivery not integrated)
+            </option>
+
+          </select>
+
+          <small class="field-hint">
+            SMS and email currently create records only.
+          </small>
+
+        </div>
+
+
+        <!-- ACTIONS -->
+        <div class="col-12 col-md-6 col-xl-3">
+
+          <label class="form-label automation-action-label">
+            Automation actions
+          </label>
+
+          <div class="automation-actions">
+
+            <button
+              type="button"
+              class="btn btn-outline-primary preview-btn"
+              [disabled]="previewLoading || generating"
+              (click)="previewEligible()">
+
+              <span
+                *ngIf="previewLoading"
+                class="spinner-border spinner-border-sm me-2">
+              </span>
+
+              <i
+                *ngIf="!previewLoading"
+                class="bi bi-eye me-2">
+              </i>
+
+              Preview
+
+            </button>
+
+            <button
+              type="button"
+              class="btn btn-primary generate-btn"
+              [disabled]="generating || previewLoading || eligibleCount === 0"
+              (click)="generateAutomatically()">
+
+              <span
+                *ngIf="generating"
+                class="spinner-border spinner-border-sm me-2">
+              </span>
+
+              <i
+                *ngIf="!generating"
+                class="bi bi-lightning-charge-fill me-2">
+              </i>
+
+              Generate
+
+            </button>
+
+          </div>
+
+        </div>
+
+      </div>
+
+
+      <!-- AUTOMATION EXPLANATION -->
+      <div class="automation-note">
+
+        <i class="bi bi-info-circle-fill"></i>
+
+        <div>
+          <strong>How automation works</strong>
+
+          <p>
+            Eligibility is calculated using outstanding rent and available
+            posted-payment credit. Generation is idempotent per charge and
+            category, so existing reminders may be skipped instead of duplicated.
+          </p>
+        </div>
+
+      </div>
+
+    </div>
+
+  </section>
+
+
+  <!-- =====================================================
+       ELIGIBLE RENT CHARGES
+  ====================================================== -->
+  <section class="content-card mb-4">
+
+    <div class="section-heading">
+
+      <div>
+        <div class="section-eyebrow">
+          AUTOMATION PREVIEW
+        </div>
+
+        <h2>
+          <i class="bi bi-people-fill"></i>
+          Eligible rent charges
+        </h2>
+
+        <p>
+          Review qualifying rent charges before generating reminders.
+        </p>
+      </div>
+
+      <div class="section-heading-meta">
+
+        <span class="result-count">
+          <i class="bi bi-list-check"></i>
+          {{ candidates.length }}
+          charge{{ candidates.length === 1 ? '' : 's' }}
+        </span>
+
+      </div>
+
+    </div>
+
+
+    <!-- PREVIEW LOADING -->
+    <div *ngIf="previewLoading" class="loading-state">
+
+      <span class="spinner-border spinner-border-sm text-primary"></span>
+
+      <span>Checking eligible rent charges...</span>
+
+    </div>
+
+
+    <!-- EMPTY PREVIEW -->
+    <div
+      *ngIf="!previewLoading && candidates.length === 0"
+      class="empty-state">
+
+      <div class="empty-state-icon">
+        <i class="bi bi-check2-circle"></i>
+      </div>
+
+      <h3>No eligible charges found</h3>
+
+      <p>
+        There are currently no qualifying rent charges for the selected
+        category and date window.
+      </p>
+
+      <button
+        type="button"
+        class="btn btn-outline-primary btn-sm"
+        (click)="previewEligible()"
+        [disabled]="previewLoading">
+
+        <i class="bi bi-arrow-clockwise me-2"></i>
+        Refresh preview
+
+      </button>
+
+    </div>
+
+
+    <!-- PREVIEW TABLE -->
+    <div
+      *ngIf="!previewLoading && candidates.length > 0"
+      class="table-responsive">
+
+      <table class="table enterprise-table align-middle mb-0">
+
+        <thead>
+          <tr>
+            <th>Tenant / Lease</th>
+            <th>Contact details</th>
+            <th>Due date</th>
+            <th>Category</th>
+            <th class="text-end">Outstanding</th>
+          </tr>
+        </thead>
+
+        <tbody>
+
+          <tr *ngFor="let candidate of candidates">
+
+            <td>
+              <div class="tenant-name">
+                {{ candidate.tenantName || ('Tenant #' + candidate.tenantId) }}
+              </div>
+
+              <div class="table-subtext">
+                Lease #{{ candidate.leaseId }}
+
+                <span *ngIf="candidate.chargeId">
+                  · Charge #{{ candidate.chargeId }}
+                </span>
+              </div>
+            </td>
+
+
+            <td>
+              <div class="contact-primary">
+                <i class="bi bi-telephone"></i>
+                {{ candidate.phoneNumber || 'No phone recorded' }}
+              </div>
+
+              <div class="table-subtext">
+                {{ candidate.email || 'No email recorded' }}
+              </div>
+            </td>
+
+
+            <td>
+              <span class="date-cell">
+                <i class="bi bi-calendar3"></i>
+                {{ formatDate(candidate.dueDate) }}
+              </span>
+            </td>
+
+
+            <td>
+              <span
+                class="category-chip"
+                [class.category-overdue]="candidate.category === 'OVERDUE'">
+
+                {{ candidate.category.replace('_', ' ') }}
+
+              </span>
+            </td>
+
+
+            <td class="text-end amount-cell">
+              {{ formatMoney(candidate.outstandingAmount) }}
+            </td>
+
+          </tr>
+
+        </tbody>
+
+
+        <tfoot>
+          <tr>
+
+            <td colspan="4" class="text-end">
+              Previewed outstanding total
+            </td>
+
+            <td class="text-end amount-cell">
+              {{ formatMoney(candidateOutstandingTotal) }}
+            </td>
+
+          </tr>
+        </tfoot>
+
+      </table>
+
+    </div>
+
+  </section>
+
+
+  <!-- =====================================================
+       REMINDER HISTORY
+  ====================================================== -->
+  <section class="content-card reminder-history-card">
+
+    <div class="section-heading reminders-list-heading">
+
+      <div>
+        <div class="section-eyebrow">
+          COMMUNICATION MANAGEMENT
+        </div>
+
+        <h2>
+          <i class="bi bi-clock-history"></i>
+          Reminder history
+        </h2>
+
+        <p>
+          Track reminder records, delivery outcomes and tenant follow-up actions.
+        </p>
+      </div>
+
+      <span class="history-total">
+        {{ totalElements }} total records
+      </span>
+
+    </div>
+
+
+    <!-- SEARCH AND FILTER TOOLBAR -->
+    <div class="table-toolbar">
+
+      <div class="search-box">
+
+        <i class="bi bi-search"></i>
+
+        <input
+          type="search"
+          class="form-control"
+          placeholder="Search tenant, reminder, type or status..."
+          [(ngModel)]="searchTerm">
+
+        <button
+          *ngIf="searchTerm"
+          type="button"
+          class="search-clear"
+          aria-label="Clear search"
+          (click)="searchTerm = ''">
+
+          <i class="bi bi-x-circle-fill"></i>
+
+        </button>
+
+      </div>
+
+
+      <div class="filter-control">
+
+        <i class="bi bi-funnel"></i>
+
+        <select
+          class="form-select status-filter"
+          [(ngModel)]="statusFilter"
+          aria-label="Filter reminders by status">
+
+          <option value="ALL">All statuses</option>
+          <option value="PENDING">Pending</option>
+          <option value="SCHEDULED">Scheduled</option>
+          <option value="PROCESSING">Processing</option>
+          <option value="SENT">Sent</option>
+          <option value="DELIVERED">Delivered</option>
+          <option value="FAILED">Failed</option>
+          <option value="CANCELLED">Cancelled</option>
+          <option value="FOLLOWED_UP">Followed up</option>
+
+        </select>
+
+      </div>
+
+    </div>
+
+
+    <!-- HISTORY LOADING -->
+    <div *ngIf="loading" class="loading-state">
+
+      <span class="spinner-border spinner-border-sm text-primary"></span>
+
+      <span>Loading reminder history...</span>
+
+    </div>
+
+
+    <!-- NO RECORDS -->
+    <div
+      *ngIf="!loading && filteredReminders.length === 0"
+      class="empty-state">
+
+      <div class="empty-state-icon">
+        <i class="bi bi-inbox"></i>
+      </div>
+
+      <h3>No reminders found</h3>
+
+      <p>
+        {{
+          searchTerm || statusFilter !== 'ALL'
+            ? 'Try changing your search or status filter.'
+            : 'No reminder records are available yet.'
+        }}
+      </p>
+
+      <button
+        *ngIf="searchTerm || statusFilter !== 'ALL'"
+        type="button"
+        class="btn btn-outline-primary btn-sm"
+        (click)="searchTerm = ''; statusFilter = 'ALL'">
+
+        <i class="bi bi-arrow-counterclockwise me-2"></i>
+        Clear filters
+
+      </button>
+
+    </div>
+
+
+    <!-- HISTORY TABLE -->
+    <div
+      *ngIf="!loading && filteredReminders.length > 0"
+      class="table-responsive history-table-wrapper">
+
+      <table class="table enterprise-table align-middle mb-0">
+
+        <thead>
+          <tr>
+            <th>Reminder details</th>
+            <th>Tenant</th>
+            <th>Due date</th>
+            <th>Amount</th>
+            <th>Channel</th>
+            <th>Status</th>
+            <th>Attempts</th>
+            <th class="text-end communication-actions-heading">
+  Actions
+</th>
+          </tr>
+        </thead>
+
+
+        <tbody>
+
+          <tr
+            *ngFor="let reminder of filteredReminders; trackBy: trackByReminderId">
+
+            <!-- REMINDER -->
+            <td class="reminder-cell">
+
+              <div class="tenant-name">
+                {{ reminder.title }}
+              </div>
+
+              <div class="table-subtext">
+                {{ reminder.type.replace('_', ' ') }}
+              </div>
+
+              <div
+                *ngIf="reminder.lastError"
+                class="error-hint"
+                [title]="reminder.lastError">
+
+                <i class="bi bi-exclamation-circle"></i>
+                Latest delivery error
+
+              </div>
+
+            </td>
+
+
+            <!-- TENANT -->
+            <td>
+
+              <div class="tenant-name">
+                {{ reminder.tenantName || ('Tenant #' + (reminder.tenantId ?? '—')) }}
+              </div>
+
+              <div class="table-subtext">
+                {{ reminder.tenantPhone || 'Contact unavailable' }}
+              </div>
+
+            </td>
+
+
+            <!-- DATE -->
+            <td>
+              <span class="date-cell">
+                <i class="bi bi-calendar3"></i>
+                {{ formatDate(reminder.dueDate) }}
+              </span>
+            </td>
+
+
+            <!-- AMOUNT -->
+            <td class="amount-cell">
+              {{ formatMoney(reminder.amount) }}
+            </td>
+
+
+            <!-- CHANNEL -->
+            <td>
+
+              <span class="channel-chip">
+
+                <i
+                  class="bi"
+                  [ngClass]="{
+                    'bi-app-indicator': reminder.channel === 'IN_APP',
+                    'bi-chat-dots': reminder.channel === 'SMS',
+                    'bi-envelope': reminder.channel === 'EMAIL'
+                  }">
+                </i>
+
+                {{ reminder.channel }}
+
+              </span>
+
+            </td>
+
+
+            <!-- STATUS -->
+            <td>
+
+              <span
+                class="status-chip"
+                [ngClass]="statusClass(reminder.status)">
+
+                <span class="status-dot"></span>
+
+                {{ reminder.status.replace('_', ' ') }}
+
+              </span>
+
+            </td>
+
+
+            <!-- ATTEMPTS -->
+            <td>
+              <span class="attempt-count">
+                {{ reminder.attemptCount ?? reminder.attempts ?? 0 }}
+              </span>
+            </td>
+
+<!-- COMMUNICATION ACTIONS -->
+<td class="text-end communication-action-cell">
+
+  <div class="communication-action-group">
+
+    <!-- VIEW DETAILS -->
+    <button
+      type="button"
+      class="communication-action-btn action-view"
+      title="View reminder details"
+      aria-label="View reminder details"
+      (click)="viewReminderDetails(reminder)">
+
+      <i class="bi bi-eye"></i>
+    </button>
+
+    <!-- RETRY FAILED REMINDER -->
+    <button
+      *ngIf="reminder.status === 'FAILED'"
+      type="button"
+      class="communication-action-btn action-retry"
+      title="Retry failed reminder"
+      aria-label="Retry reminder"
+      [disabled]="actionId !== null"
+      (click)="retryReminder(reminder)">
+
+      <i class="bi bi-arrow-repeat"></i>
+    </button>
+
+    <!-- MARK FOLLOWED UP -->
+    <button
+      *ngIf="
+        reminder.status === 'SENT' ||
+        reminder.status === 'DELIVERED' ||
+        reminder.status === 'FAILED'
+      "
+      type="button"
+      class="communication-action-btn action-followup"
+      title="Mark as followed up"
+      aria-label="Mark as followed up"
+      [disabled]="actionId !== null"
+      (click)="markFollowedUp(reminder)">
+
+      <i class="bi bi-check2-circle"></i>
+    </button>
+
+    <!-- CANCEL REMINDER -->
+    <button
+      *ngIf="
+        reminder.status !== 'CANCELLED' &&
+        reminder.status !== 'FOLLOWED_UP' &&
+        reminder.status !== 'SENT' &&
+        reminder.status !== 'DELIVERED' &&
+        reminder.status !== 'PROCESSING'
+      "
+      type="button"
+      class="communication-action-btn action-cancel"
+      title="Cancel reminder"
+      aria-label="Cancel reminder"
+      [disabled]="actionId !== null"
+      (click)="cancelReminder(reminder)">
+
+      <i class="bi bi-x-circle"></i>
+    </button>
+
+    <!-- OPEN CALENDAR -->
+    <a
+      routerLink="/app/tenant/calendar"
+      class="communication-action-btn action-calendar"
+      title="Open tenant calendar"
+      aria-label="Open tenant calendar">
+
+      <i class="bi bi-calendar-event"></i>
+    </a>
+
+    <!-- ACTION LOADING -->
+    <span
+      *ngIf="actionId === reminder.id"
+      class="spinner-border spinner-border-sm text-primary"
+      role="status">
+    </span>
+
+  </div>
+
+</td>
+
+          </tr>
+
+        </tbody>
+
+      </table>
+
+    </div>
+
+
+    <!-- PAGINATION -->
+    <div class="pagination-bar">
+
+      <div class="pagination-info">
+
+        Showing
+
+        <strong>
+          {{ totalElements === 0 ? 0 : page * pageSize + 1 }}–{{
+            Math.min((page + 1) * pageSize, totalElements)
+          }}
+        </strong>
+
+        of {{ totalElements }} records
+
+      </div>
+
+
+      <div class="pagination-controls">
+
+        <select
+          class="form-select form-select-sm page-size-select"
+          [ngModel]="pageSize"
+          (ngModelChange)="changePageSize(+$event)"
+          aria-label="Select page size">
+
+          <option [ngValue]="10">10 per page</option>
+          <option [ngValue]="20">20 per page</option>
+          <option [ngValue]="50">50 per page</option>
+
+        </select>
+
+
+        <button
+          type="button"
+          class="btn btn-outline-secondary btn-sm pagination-btn"
+          [disabled]="page <= 0 || loading"
+          (click)="changePage(page - 1)"
+          aria-label="Previous page">
+
+          <i class="bi bi-chevron-left"></i>
+
+        </button>
+
+
+        <span class="page-number">
+          {{ totalPages === 0 ? 0 : page + 1 }}
+          <span>/</span>
+          {{ totalPages }}
+        </span>
+
+
+        <button
+          type="button"
+          class="btn btn-outline-secondary btn-sm pagination-btn"
+          [disabled]="page + 1 >= totalPages || loading"
+          (click)="changePage(page + 1)"
+          aria-label="Next page">
+
+          <i class="bi bi-chevron-right"></i>
+
+        </button>
+
+      </div>
+
+    </div>
+
+    <!-- REMINDER DETAILS MODAL -->
+<div
+  class="communication-modal-backdrop"
+  *ngIf="selectedReminder"
+  (click)="closeReminderDetails()">
+
+  <div
+    class="communication-details-modal"
+    role="dialog"
+    aria-modal="true"
+    aria-labelledby="reminderDetailsTitle"
+    (click)="$event.stopPropagation()">
+
+    <div class="communication-modal-header">
+
+      <div>
+        <div class="section-eyebrow">COMMUNICATION RECORD</div>
+        <h3 id="reminderDetailsTitle">Reminder details</h3>
+      </div>
+
+      <button
+        type="button"
+        class="modal-close-btn"
+        aria-label="Close"
+        (click)="closeReminderDetails()">
+
+        <i class="bi bi-x-lg"></i>
+
+      </button>
+
+    </div>
+
+    <div class="communication-modal-body">
+
+      <div class="detail-status-row">
+
+        <span
+          class="status-chip"
+          [ngClass]="statusClass(selectedReminder.status)">
+
+          <span class="status-dot"></span>
+          {{ selectedReminder.status.replace('_', ' ') }}
+
+        </span>
+
+        <span class="channel-chip">
+          {{ selectedReminder.channel }}
+        </span>
+
+      </div>
+
+      <div class="detail-block">
+        <label>Reminder title</label>
+        <div class="detail-value">
+          {{ selectedReminder.title }}
+        </div>
+      </div>
+
+      <div class="detail-block">
+        <label>Communication message</label>
+        <div class="detail-message">
+          {{ selectedReminder.message || 'No message recorded.' }}
+        </div>
+      </div>
+
+      <div class="detail-grid">
+
+        <div class="detail-block">
+          <label>Tenant</label>
+          <div class="detail-value">
+            {{ selectedReminder.tenantName || ('Tenant #' + (selectedReminder.tenantId ?? '—')) }}
+          </div>
+        </div>
+
+        <div class="detail-block">
+          <label>Contact number</label>
+          <div class="detail-value">
+            {{ selectedReminder.tenantPhone || 'Not available' }}
+          </div>
+        </div>
+
+        <div class="detail-block">
+          <label>Due date</label>
+          <div class="detail-value">
+            {{ formatDate(selectedReminder.dueDate) }}
+          </div>
+        </div>
+
+        <div class="detail-block">
+          <label>Amount</label>
+          <div class="detail-value">
+            {{ formatMoney(selectedReminder.amount) }}
+          </div>
+        </div>
+
+        <div class="detail-block">
+          <label>Reminder type</label>
+          <div class="detail-value">
+            {{ selectedReminder.type.replace('_', ' ') }}
+          </div>
+        </div>
+
+        <div class="detail-block">
+          <label>Delivery attempts</label>
+          <div class="detail-value">
+            {{ selectedReminder.attemptCount ?? selectedReminder.attempts ?? 0 }}
+          </div>
+        </div>
+
+      </div>
+
+      <div
+        class="detail-error"
+        *ngIf="selectedReminder.lastError">
+
+        <i class="bi bi-exclamation-triangle-fill"></i>
+
+        <div>
+          <strong>Latest delivery error</strong>
+          <p>{{ selectedReminder.lastError }}</p>
+        </div>
+
+      </div>
+
+    </div>
+
+    <div class="communication-modal-footer">
+
+      <button
+        type="button"
+        class="btn btn-outline-secondary btn-sm"
+        (click)="closeReminderDetails()">
+        Close
+      </button>
+
+      <a
+        routerLink="/app/tenant/calendar"
+        class="btn btn-primary btn-sm"
+        (click)="closeReminderDetails()">
+
+        <i class="bi bi-calendar3 me-2"></i>
+        Open Calendar
+
+      </a>
+
+    </div>
+
+  </div>
+
+</div>
+
+  </section>
+
+</div>

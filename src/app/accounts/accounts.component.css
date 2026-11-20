@@ -1132,3 +1132,2514 @@ background:linear-gradient(135deg,#64748b,#475569);
 .modal-content {
     max-height: 94vh;
 }
+
+
+/* ============================================================
+   ENTERPRISE CUSTOMER DOCUMENT VAULT
+   ============================================================ */
+
+.document-vault {
+    position: relative;
+    width: 100%;
+    margin-top: 1.5rem;
+    overflow: hidden;
+
+    background: #ffffff;
+
+    border: 1px solid #e7ebf2;
+    border-radius: 24px;
+
+    box-shadow:
+        0 10px 35px rgba(15, 23, 42, 0.06),
+        0 2px 8px rgba(15, 23, 42, 0.03);
+}
+
+
+/* ============================================================
+   HEADER
+   ============================================================ */
+
+.document-vault-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    gap: 24px;
+
+    padding: 26px 30px;
+
+    background:
+        linear-gradient(
+            135deg,
+            #ffffff 0%,
+            #f8faff 100%
+        );
+
+    border-bottom: 1px solid #edf0f5;
+}
+
+
+.document-vault-heading {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+}
+
+
+.document-vault-icon {
+    width: 54px;
+    height: 54px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    flex-shrink: 0;
+
+    border-radius: 16px;
+
+    color: #2563eb;
+
+    background:
+        linear-gradient(
+            145deg,
+            #eff6ff,
+            #dbeafe
+        );
+
+    border: 1px solid #dbeafe;
+
+    box-shadow:
+        0 6px 18px rgba(37, 99, 235, 0.12);
+}
+
+
+.document-vault-icon i {
+    font-size: 1.45rem;
+}
+
+
+.document-eyebrow {
+    margin-bottom: 4px;
+
+    color: #64748b;
+
+    font-size: 10px;
+    font-weight: 800;
+
+    letter-spacing: 1.4px;
+}
+
+
+.document-vault-title {
+    margin: 0;
+
+    color: #0f172a;
+
+    font-size: 20px;
+    font-weight: 800;
+
+    letter-spacing: -0.35px;
+}
+
+
+.document-vault-subtitle {
+    margin: 5px 0 0;
+
+    color: #64748b;
+
+    font-size: 13px;
+}
+
+
+/* ============================================================
+   DOCUMENT COUNT
+   ============================================================ */
+
+.document-count {
+    min-width: 92px;
+
+    padding: 10px 16px;
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+
+    border-radius: 14px;
+
+    background: #f8fafc;
+
+    border: 1px solid #e2e8f0;
+}
+
+
+.document-count-number {
+    color: #1d4ed8;
+
+    font-size: 22px;
+    font-weight: 800;
+
+    line-height: 1;
+}
+
+
+.document-count-label {
+    margin-top: 4px;
+
+    color: #64748b;
+
+    font-size: 11px;
+    font-weight: 700;
+}
+
+
+/* ============================================================
+   SUMMARY STRIP
+   ============================================================ */
+
+.document-summary {
+    display: grid;
+
+    grid-template-columns:
+        repeat(4, minmax(0, 1fr));
+
+    gap: 1px;
+
+    background: #edf1f6;
+
+    border-bottom: 1px solid #edf1f6;
+}
+
+
+.document-summary-item {
+    display: flex;
+    align-items: center;
+
+    gap: 12px;
+
+    padding: 17px 22px;
+
+    background: #ffffff;
+}
+
+
+.summary-icon {
+    width: 40px;
+    height: 40px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    flex-shrink: 0;
+
+    border-radius: 12px;
+
+    font-size: 16px;
+}
+
+
+.summary-icon.total {
+    color: #2563eb;
+    background: #eff6ff;
+}
+
+
+.summary-icon.verified {
+    color: #059669;
+    background: #ecfdf5;
+}
+
+
+.summary-icon.pending {
+    color: #d97706;
+    background: #fffbeb;
+}
+
+
+.summary-icon.compliance {
+    color: #7c3aed;
+    background: #f5f3ff;
+}
+
+
+.summary-label {
+    display: block;
+
+    margin-bottom: 2px;
+
+    color: #64748b;
+
+    font-size: 11px;
+    font-weight: 600;
+}
+
+
+.document-summary-item strong {
+    display: block;
+
+    color: #0f172a;
+
+    font-size: 17px;
+    font-weight: 800;
+}
+
+
+/* ============================================================
+   BODY
+   ============================================================ */
+
+.document-vault-body {
+    padding: 28px 30px 32px;
+}
+
+
+/* ============================================================
+   DOCUMENT GRID
+   ============================================================ */
+
+.document-grid {
+    display: grid;
+
+    grid-template-columns:
+        repeat(
+            auto-fit,
+            minmax(280px, 1fr)
+        );
+
+    gap: 20px;
+}
+
+
+/* ============================================================
+   DOCUMENT CARD
+   ============================================================ */
+
+.enterprise-document-card {
+    position: relative;
+
+    display: flex;
+    flex-direction: column;
+
+    min-width: 0;
+
+    overflow: hidden;
+
+    background: #ffffff;
+
+    border: 1px solid #e6eaf0;
+
+    border-radius: 19px;
+
+    transition:
+        transform 0.25s ease,
+        box-shadow 0.25s ease,
+        border-color 0.25s ease;
+}
+
+
+.enterprise-document-card:hover {
+    transform: translateY(-5px);
+
+    border-color: #cbd5e1;
+
+    box-shadow:
+        0 18px 42px rgba(15, 23, 42, 0.10),
+        0 4px 12px rgba(15, 23, 42, 0.04);
+}
+
+
+/* ============================================================
+   TOP BAR
+   ============================================================ */
+
+.document-card-top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    gap: 10px;
+
+    padding: 13px 15px;
+
+    background: #fafbfc;
+
+    border-bottom: 1px solid #edf0f4;
+}
+
+
+.document-number {
+    color: #94a3b8;
+
+    font-size: 10px;
+    font-weight: 800;
+
+    letter-spacing: 1px;
+}
+
+
+.document-status {
+    display: inline-flex;
+    align-items: center;
+
+    gap: 5px;
+
+    padding: 5px 9px;
+
+    border-radius: 999px;
+
+    font-size: 10px;
+    font-weight: 700;
+}
+
+
+.status-verified {
+    color: #047857;
+
+    background: #ecfdf5;
+
+    border: 1px solid #bbf7d0;
+}
+
+
+.status-pending {
+    color: #b45309;
+
+    background: #fffbeb;
+
+    border: 1px solid #fde68a;
+}
+
+
+/* ============================================================
+   DOCUMENT PREVIEW
+   ============================================================ */
+
+.document-preview {
+    position: relative;
+
+    height: 145px;
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+
+    overflow: hidden;
+}
+
+
+/* ============================================================
+   LIVE IMAGE DOCUMENT PREVIEW
+   ============================================================ */
+
+.document-image-preview {
+
+    position: relative;
+
+    width: 100%;
+    height: 100%;
+
+    overflow: hidden;
+
+    cursor: pointer;
+
+    background:
+        linear-gradient(
+            135deg,
+            #f8fafc,
+            #eef2f7
+        );
+}
+
+
+/* ============================================================
+   ACTUAL IMAGE
+   ============================================================ */
+
+.document-preview-image {
+
+    width: 100%;
+    height: 100%;
+
+    display: block;
+
+    object-fit: cover;
+
+    object-position: center;
+
+    transition:
+        transform 0.45s ease,
+        filter 0.35s ease;
+}
+
+
+/* ============================================================
+   IMAGE HOVER
+   ============================================================ */
+
+.document-image-preview:hover
+.document-preview-image {
+
+    transform: scale(1.06);
+
+    filter:
+        brightness(0.72);
+}
+
+
+/* ============================================================
+   IMAGE OVERLAY
+   ============================================================ */
+
+.document-image-overlay {
+
+    position: absolute;
+
+    inset: 0;
+
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+
+    padding: 20px;
+
+    background:
+        linear-gradient(
+            180deg,
+            rgba(15, 23, 42, 0.08),
+            rgba(15, 23, 42, 0.55)
+        );
+
+    opacity: 0;
+
+    transition:
+        opacity 0.3s ease;
+}
+
+
+.document-image-preview:hover
+.document-image-overlay {
+
+    opacity: 1;
+}
+
+
+/* ============================================================
+   INSPECT ACTION
+   ============================================================ */
+
+.image-preview-action {
+
+    display: inline-flex;
+
+    align-items: center;
+
+    gap: 8px;
+
+    padding: 9px 13px;
+
+    border-radius: 999px;
+
+    color: #ffffff;
+
+    background:
+        rgba(255, 255, 255, 0.16);
+
+    border:
+        1px solid
+        rgba(255, 255, 255, 0.35);
+
+    backdrop-filter: blur(10px);
+
+    -webkit-backdrop-filter: blur(10px);
+
+    font-size: 11px;
+
+    font-weight: 800;
+
+    box-shadow:
+        0 8px 25px
+        rgba(0, 0, 0, 0.18);
+}
+
+
+.image-preview-action-icon {
+
+    width: 26px;
+    height: 26px;
+
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 50%;
+
+    background: rgba(255,255,255,0.18);
+}
+
+
+.image-preview-action-icon i {
+
+    font-size: 12px;
+}
+
+
+/* ============================================================
+   IMAGE TYPE BADGE
+   ============================================================ */
+
+.document-image-type {
+
+    position: absolute;
+
+    right: 12px;
+    bottom: 12px;
+
+    z-index: 5;
+
+    padding: 5px 9px;
+
+    border-radius: 7px;
+
+    color: #ffffff;
+
+    background:
+        rgba(15, 23, 42, 0.72);
+
+    border:
+        1px solid
+        rgba(255, 255, 255, 0.20);
+
+    backdrop-filter: blur(8px);
+
+    -webkit-backdrop-filter: blur(8px);
+
+    font-size: 9px;
+
+    font-weight: 900;
+
+    letter-spacing: 1px;
+}
+
+
+/* ============================================================
+   IMAGE FALLBACK
+   ============================================================ */
+
+.document-image-fallback {
+
+    position: absolute;
+
+    inset: 0;
+
+    align-items: center;
+
+    justify-content: center;
+
+    flex-direction: column;
+
+    gap: 8px;
+
+    color: #64748b;
+
+    background:
+        linear-gradient(
+            135deg,
+            #f8fafc,
+            #eef2f7
+        );
+}
+
+
+.document-image-fallback i {
+
+    font-size: 42px;
+}
+
+
+.document-image-fallback span {
+
+    font-size: 10px;
+
+    font-weight: 700;
+}
+
+
+.enterprise-document-card {
+
+    position: relative;
+
+    display: flex;
+    flex-direction: column;
+
+    min-width: 0;
+
+    overflow: hidden;
+
+    background: #ffffff;
+
+    border: 1px solid #e5eaf1;
+
+    border-radius: 20px;
+
+    box-shadow:
+        0 3px 10px rgba(15, 23, 42, 0.035);
+
+    transition:
+        transform 0.25s ease,
+        box-shadow 0.25s ease,
+        border-color 0.25s ease;
+}
+
+
+.enterprise-document-card:hover {
+
+    transform: translateY(-5px);
+
+    border-color: #bfdbfe;
+
+    box-shadow:
+        0 22px 45px rgba(15, 23, 42, 0.11),
+        0 6px 15px rgba(37, 99, 235, 0.06);
+}
+
+
+.document-preview-glow {
+    position: absolute;
+
+    width: 150px;
+    height: 150px;
+
+    border-radius: 50%;
+
+    filter: blur(25px);
+
+    opacity: 0.5;
+}
+
+
+.document-main-icon {
+    position: relative;
+    z-index: 2;
+
+    font-size: 50px;
+
+    line-height: 1;
+
+    filter:
+        drop-shadow(
+            0 8px 12px rgba(15, 23, 42, 0.12)
+        );
+}
+
+
+.document-file-type {
+    position: relative;
+    z-index: 2;
+
+    margin-top: 9px;
+
+    padding: 4px 9px;
+
+    border-radius: 6px;
+
+    font-size: 9px;
+    font-weight: 900;
+
+    letter-spacing: 1px;
+}
+
+
+/* ============================================================
+   PDF
+   ============================================================ */
+
+.preview-pdf {
+    background:
+        linear-gradient(
+            135deg,
+            #fff7f7,
+            #fff1f2
+        );
+}
+
+
+.preview-pdf .document-preview-glow {
+    background: #fecdd3;
+}
+
+
+.preview-pdf .document-main-icon {
+    color: #dc2626;
+}
+
+
+.preview-pdf .document-file-type {
+    color: #b91c1c;
+    background: #fee2e2;
+}
+
+
+/* ============================================================
+   IMAGE
+   ============================================================ */
+
+.preview-image {
+    background:
+        linear-gradient(
+            135deg,
+            #f0fdf4,
+            #ecfdf5
+        );
+}
+
+
+.preview-image .document-preview-glow {
+    background: #bbf7d0;
+}
+
+
+.preview-image .document-main-icon {
+    color: #059669;
+}
+
+
+.preview-image .document-file-type {
+    color: #047857;
+    background: #d1fae5;
+}
+
+
+/* ============================================================
+   WORD
+   ============================================================ */
+
+.preview-word {
+    background:
+        linear-gradient(
+            135deg,
+            #eff6ff,
+            #eef2ff
+        );
+}
+
+
+.preview-word .document-preview-glow {
+    background: #bfdbfe;
+}
+
+
+.preview-word .document-main-icon {
+    color: #2563eb;
+}
+
+
+.preview-word .document-file-type {
+    color: #1d4ed8;
+    background: #dbeafe;
+}
+
+
+/* ============================================================
+   GENERAL FILE
+   ============================================================ */
+
+.preview-file {
+    background:
+        linear-gradient(
+            135deg,
+            #f8fafc,
+            #f1f5f9
+        );
+}
+
+
+.preview-file .document-preview-glow {
+    background: #cbd5e1;
+}
+
+
+.preview-file .document-main-icon {
+    color: #475569;
+}
+
+
+.preview-file .document-file-type {
+    color: #475569;
+    background: #e2e8f0;
+}
+
+
+/* ============================================================
+   DOCUMENT INFORMATION
+   ============================================================ */
+
+.document-information {
+    padding: 18px 18px 14px;
+}
+
+
+.document-type-label {
+    margin-bottom: 5px;
+
+    color: #2563eb;
+
+    font-size: 10px;
+    font-weight: 800;
+
+    text-transform: uppercase;
+
+    letter-spacing: 0.7px;
+}
+
+
+.document-name {
+    display: -webkit-box;
+
+    margin: 0;
+
+    color: #0f172a;
+
+    font-size: 14px;
+    font-weight: 750;
+
+    line-height: 1.45;
+
+    overflow: hidden;
+
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+}
+
+
+.document-meta {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+
+    gap: 12px;
+
+    margin-top: 12px;
+
+    color: #64748b;
+
+    font-size: 10px;
+    font-weight: 600;
+}
+
+
+.document-meta span {
+    display: inline-flex;
+    align-items: center;
+
+    gap: 5px;
+}
+
+
+.document-meta i {
+    color: #94a3b8;
+
+    font-size: 11px;
+}
+
+
+/* ============================================================
+   ACTIONS
+   ============================================================ */
+
+.document-actions {
+    display: flex;
+
+    gap: 8px;
+
+    margin-top: auto;
+
+    padding: 0 18px 18px;
+}
+
+
+.document-view-button {
+    flex: 1;
+
+    min-width: 0;
+
+    display: flex;
+    align-items: center;
+
+    gap: 10px;
+
+    padding: 10px 12px;
+
+    border: 0;
+
+    border-radius: 12px;
+
+    color: #ffffff;
+
+    background:
+        linear-gradient(
+            135deg,
+            #2563eb,
+            #1d4ed8
+        );
+
+    box-shadow:
+        0 6px 14px rgba(37, 99, 235, 0.20);
+
+    cursor: pointer;
+
+    text-align: left;
+
+    transition:
+        transform 0.2s ease,
+        box-shadow 0.2s ease;
+}
+
+
+.document-view-button:hover {
+    transform: translateY(-1px);
+
+    box-shadow:
+        0 9px 20px rgba(37, 99, 235, 0.28);
+}
+
+
+.view-button-icon {
+    width: 31px;
+    height: 31px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    flex-shrink: 0;
+
+    border-radius: 9px;
+
+    background: rgba(255, 255, 255, 0.16);
+}
+
+
+.view-button-icon i {
+    font-size: 13px;
+}
+
+
+.view-button-content {
+    min-width: 0;
+
+    display: flex;
+    flex-direction: column;
+}
+
+
+.view-button-content strong {
+    font-size: 11px;
+    font-weight: 800;
+}
+
+
+.view-button-content small {
+    margin-top: 1px;
+
+    color: rgba(255, 255, 255, 0.72);
+
+    font-size: 9px;
+}
+
+
+.view-arrow {
+    margin-left: auto;
+
+    font-size: 13px;
+
+    opacity: 0.8;
+}
+
+
+.document-download-button {
+    width: 44px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    border: 1px solid #dbe2ea;
+
+    border-radius: 12px;
+
+    color: #475569;
+
+    background: #ffffff;
+
+    cursor: pointer;
+
+    transition:
+        background 0.2s ease,
+        color 0.2s ease,
+        border-color 0.2s ease;
+}
+
+
+.document-download-button:hover {
+    color: #2563eb;
+
+    background: #eff6ff;
+
+    border-color: #bfdbfe;
+}
+
+
+/* ============================================================
+   EMPTY STATE
+   ============================================================ */
+
+.document-empty-state {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+
+    min-height: 300px;
+
+    padding: 40px;
+
+    text-align: center;
+
+    border: 1px dashed #d7dee8;
+
+    border-radius: 18px;
+
+    background:
+        linear-gradient(
+            180deg,
+            #fafcff,
+            #ffffff
+        );
+}
+
+
+.empty-document-icon {
+    width: 72px;
+    height: 72px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 20px;
+
+    color: #64748b;
+
+    background: #f1f5f9;
+
+    font-size: 30px;
+}
+
+
+.document-empty-state h5 {
+    margin-top: 18px;
+
+    margin-bottom: 7px;
+
+    color: #1e293b;
+
+    font-size: 16px;
+    font-weight: 800;
+}
+
+
+.document-empty-state p {
+    max-width: 430px;
+
+    margin: 0;
+
+    color: #64748b;
+
+    font-size: 13px;
+
+    line-height: 1.6;
+}
+
+
+/* ============================================================
+   RESPONSIVE
+   ============================================================ */
+
+@media (max-width: 991px) {
+
+    .document-summary {
+        grid-template-columns:
+            repeat(2, minmax(0, 1fr));
+    }
+
+}
+
+
+@media (max-width: 767px) {
+
+    .document-vault-header {
+        align-items: flex-start;
+
+        padding: 22px 20px;
+    }
+
+
+    .document-vault-heading {
+        align-items: flex-start;
+    }
+
+
+    .document-count {
+        min-width: 72px;
+    }
+
+
+    .document-vault-subtitle {
+        display: none;
+    }
+
+
+    .document-vault-body {
+        padding: 20px;
+    }
+
+
+    .document-grid {
+        grid-template-columns: 1fr;
+    }
+
+}
+
+
+@media (max-width: 575px) {
+
+    .document-vault-header {
+        flex-direction: column;
+    }
+
+
+    .document-count {
+        width: 100%;
+
+        flex-direction: row;
+
+        justify-content: center;
+
+        gap: 7px;
+    }
+
+
+    .document-summary {
+        grid-template-columns: 1fr 1fr;
+    }
+
+
+    .document-summary-item {
+        padding: 14px;
+    }
+
+
+    .summary-icon {
+        width: 34px;
+        height: 34px;
+    }
+
+}
+
+
+
+/* ============================================================
+   CREDIBANK — ENTERPRISE CUSTOMER ACCOUNT CERTIFICATE
+   A4 PORTRAIT • ONE PAGE • PRINT SAFE
+============================================================ */
+
+.certificate-modal {
+    position: fixed;
+    inset: 0;
+    z-index: 99999;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    padding: 18px;
+
+    font-family:
+        "Inter",
+        "Segoe UI",
+        Arial,
+        sans-serif;
+}
+
+
+/* ============================================================
+   BACKDROP
+============================================================ */
+
+.certificate-backdrop {
+    position: absolute;
+    inset: 0;
+
+    background: rgba(3, 12, 28, .84);
+
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+}
+
+
+/* ============================================================
+   DIALOG
+============================================================ */
+
+.certificate-dialog {
+    position: relative;
+    z-index: 2;
+
+    width: min(1250px, 96vw);
+    height: min(94vh, 920px);
+
+    display: flex;
+    flex-direction: column;
+
+    overflow: hidden;
+
+    border-radius: 18px;
+
+    background: #edf2f7;
+
+    box-shadow:
+        0 35px 90px rgba(0, 0, 0, .45),
+        0 10px 30px rgba(0, 0, 0, .18);
+
+    animation: certificateDialogIn .25s ease-out;
+}
+
+
+@keyframes certificateDialogIn {
+
+    from {
+        opacity: 0;
+        transform: translateY(15px) scale(.985);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+
+/* ============================================================
+   MODAL HEADER
+============================================================ */
+
+.certificate-modal-header {
+    flex: 0 0 62px;
+
+    padding: 9px 18px;
+
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    color: #ffffff;
+
+    background:
+        linear-gradient(
+            135deg,
+            #06152f,
+            #0b2e69 58%,
+            #1552a5
+        );
+}
+
+
+.certificate-modal-heading {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+
+.certificate-modal-icon {
+    width: 38px;
+    height: 38px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 10px;
+
+    color: #ffffff;
+
+    background: rgba(255,255,255,.10);
+
+    border: 1px solid rgba(255,255,255,.18);
+
+    font-size: 17px;
+}
+
+
+.certificate-modal-title {
+    font-size: 14px;
+    font-weight: 800;
+}
+
+
+.certificate-modal-subtitle {
+    margin-top: 2px;
+
+    color: rgba(255,255,255,.60);
+
+    font-size: 9px;
+}
+
+
+.certificate-close-btn {
+    width: 35px;
+    height: 35px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    border: 1px solid rgba(255,255,255,.14);
+    border-radius: 9px;
+
+    color: #ffffff;
+
+    background: rgba(255,255,255,.07);
+
+    cursor: pointer;
+
+    transition: .2s ease;
+}
+
+
+.certificate-close-btn:hover {
+    background: rgba(255,255,255,.18);
+
+    transform: rotate(90deg);
+}
+
+
+/* ============================================================
+   PREVIEW AREA
+============================================================ */
+
+.certificate-preview-area {
+    flex: 1;
+    min-height: 0;
+
+    overflow: auto;
+
+    padding: 18px;
+
+    background:
+        radial-gradient(
+            circle at 10% 10%,
+            rgba(37,99,235,.10),
+            transparent 30%
+        ),
+        radial-gradient(
+            circle at 90% 90%,
+            rgba(15,118,110,.06),
+            transparent 30%
+        ),
+        #e8edf4;
+}
+
+
+/* ============================================================
+   A4 DOCUMENT
+   EXACT PHYSICAL SIZE
+============================================================ */
+
+.customer-certificate {
+
+    position: relative;
+
+    width: 210mm;
+    height: 297mm;
+
+    margin: 0 auto;
+
+    padding:
+        12mm
+        14mm
+        9mm;
+
+    box-sizing: border-box;
+
+    overflow: hidden;
+
+    color: #172033;
+
+    background:
+        linear-gradient(
+            135deg,
+            #ffffff 0%,
+            #fbfdff 62%,
+            #f5f8fc 100%
+        );
+
+    border: 1px solid #d7e0eb;
+
+    box-shadow:
+        0 22px 55px rgba(15,23,42,.20),
+        0 5px 15px rgba(15,23,42,.08);
+}
+
+
+/* ============================================================
+   TOP ACCENT
+============================================================ */
+
+.certificate-accent-top {
+    position: absolute;
+
+    top: 0;
+    left: 0;
+    right: 0;
+
+    height: 4px;
+
+    background:
+        linear-gradient(
+            90deg,
+            #082d6b,
+            #2563eb,
+            #0f766e
+        );
+}
+
+
+/* ============================================================
+   WATERMARK
+============================================================ */
+
+.certificate-watermark {
+    position: absolute;
+
+    top: 47%;
+    left: 50%;
+
+    transform:
+        translate(-50%, -50%)
+        rotate(-18deg);
+
+    font-size: 68px;
+    font-weight: 900;
+
+    letter-spacing: 7px;
+
+    white-space: nowrap;
+
+    color: rgba(15,61,145,.025);
+
+    pointer-events: none;
+}
+
+
+/* ============================================================
+   HEADER
+============================================================ */
+
+.certificate-header {
+    position: relative;
+    z-index: 2;
+
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    padding-bottom: 9px;
+
+    border-bottom: 1px solid #e2e8f0;
+}
+
+
+.certificate-brand {
+    display: flex;
+    align-items: center;
+    gap: 9px;
+}
+
+
+.certificate-logo {
+    width: 42px;
+    height: 42px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 10px;
+
+    color: #ffffff;
+
+    background:
+        linear-gradient(
+            135deg,
+            #092e70,
+            #2563eb
+        );
+
+    font-size: 18px;
+
+    box-shadow:
+        0 6px 14px rgba(37,99,235,.20);
+}
+
+
+.certificate-bank-name {
+    color: #092e70;
+
+    font-size: 17px;
+    font-weight: 900;
+
+    letter-spacing: 1px;
+}
+
+
+.certificate-bank-subtitle {
+    margin-top: 1px;
+
+    color: #64748b;
+
+    font-size: 6.5px;
+    font-weight: 800;
+
+    letter-spacing: 1.4px;
+}
+
+
+.certificate-reference {
+    text-align: right;
+}
+
+
+.certificate-reference span {
+    display: block;
+
+    color: #94a3b8;
+
+    font-size: 6px;
+    font-weight: 800;
+
+    letter-spacing: 1.1px;
+}
+
+
+.certificate-reference strong {
+    display: block;
+
+    margin-top: 3px;
+
+    color: #172033;
+
+    font-size: 9px;
+    font-weight: 900;
+
+    letter-spacing: .4px;
+}
+
+
+/* ============================================================
+   TITLE
+============================================================ */
+
+.certificate-title-section {
+    position: relative;
+    z-index: 2;
+
+    margin: 14px 0 11px;
+
+    text-align: center;
+}
+
+
+.certificate-eyebrow {
+    color: #2563eb;
+
+    font-size: 6px;
+    font-weight: 900;
+
+    letter-spacing: 1.6px;
+}
+
+
+.certificate-title-section h1 {
+    margin: 4px 0 0;
+
+    color: #092e70;
+
+    font-size: 20px;
+    font-weight: 900;
+
+    line-height: 1.1;
+
+    letter-spacing: 1.3px;
+}
+
+
+.certificate-title-section h1 span {
+    color: #2563eb;
+}
+
+
+.certificate-title-line {
+    width: 38px;
+    height: 2px;
+
+    margin: 6px auto;
+
+    border-radius: 20px;
+
+    background:
+        linear-gradient(
+            90deg,
+            #092e70,
+            #2563eb
+        );
+}
+
+
+.certificate-title-section p {
+    margin: 0;
+
+    color: #64748b;
+
+    font-size: 7px;
+}
+
+
+/* ============================================================
+   CUSTOMER HERO
+============================================================ */
+
+.certificate-customer {
+    position: relative;
+    z-index: 2;
+
+    display: flex;
+    align-items: center;
+
+    gap: 11px;
+
+    min-height: 54px;
+
+    padding: 8px 11px;
+
+    box-sizing: border-box;
+
+    border: 1px solid #dbe4ef;
+
+    border-radius: 9px;
+
+    background:
+        linear-gradient(
+            135deg,
+            #f8fbff,
+            #eef5ff
+        );
+}
+
+
+.certificate-customer-seal {
+    width: 36px;
+    height: 36px;
+
+    flex-shrink: 0;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 50%;
+
+    color: #2563eb;
+
+    background: #ffffff;
+
+    border: 1px solid #dbeafe;
+
+    box-shadow:
+        0 3px 10px rgba(37,99,235,.10);
+
+    font-size: 14px;
+}
+
+
+.certificate-customer-label {
+    color: #64748b;
+
+    font-size: 6px;
+    font-weight: 900;
+
+    letter-spacing: 1.1px;
+}
+
+
+.certificate-customer-name {
+    margin-top: 2px;
+
+    color: #172033;
+
+    font-size: 13px;
+    font-weight: 900;
+}
+
+
+.certificate-category {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+
+    margin-top: 2px;
+
+    padding: 2px 6px;
+
+    border-radius: 20px;
+
+    color: #1d4ed8;
+    background: #e8f0ff;
+
+    font-size: 6px;
+    font-weight: 800;
+
+    letter-spacing: .4px;
+}
+
+
+.certificate-verified {
+    margin-left: auto;
+
+    display: flex;
+    align-items: center;
+    gap: 4px;
+
+    color: #047857;
+
+    font-size: 6px;
+    font-weight: 900;
+
+    letter-spacing: .7px;
+}
+
+
+/* ============================================================
+   INFORMATION
+============================================================ */
+
+.certificate-information-section {
+    position: relative;
+    z-index: 2;
+
+    margin-top: 10px;
+}
+
+
+.certificate-section-heading {
+    display: flex;
+    align-items: center;
+
+    gap: 6px;
+
+    margin-bottom: 6px;
+}
+
+
+.certificate-section-heading span {
+    height: 1px;
+
+    flex: 1;
+
+    background: #e2e8f0;
+}
+
+
+.certificate-section-heading strong {
+    color: #64748b;
+
+    font-size: 6px;
+    font-weight: 900;
+
+    letter-spacing: 1.2px;
+
+    white-space: nowrap;
+}
+
+
+.certificate-information {
+    display: grid;
+
+    grid-template-columns:
+        repeat(2, minmax(0, 1fr));
+
+    gap: 6px;
+}
+
+
+.certificate-information-item {
+    display: flex;
+    align-items: center;
+
+    gap: 8px;
+
+    min-height: 42px;
+
+    padding: 7px 8px;
+
+    box-sizing: border-box;
+
+    border: 1px solid #e2e8f0;
+
+    border-radius: 6px;
+
+    background: #ffffff;
+}
+
+
+.certificate-information-icon {
+    width: 24px;
+    height: 24px;
+
+    flex-shrink: 0;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 6px;
+
+    color: #2563eb;
+
+    background: #eff6ff;
+
+    font-size: 10px;
+}
+
+
+.certificate-information-item label {
+    display: block;
+
+    margin-bottom: 1px;
+
+    color: #94a3b8;
+
+    font-size: 5.5px;
+    font-weight: 800;
+
+    text-transform: uppercase;
+
+    letter-spacing: .7px;
+}
+
+
+.certificate-information-item strong {
+    display: block;
+
+    color: #172033;
+
+    font-size: 8px;
+    font-weight: 800;
+}
+
+
+/* ============================================================
+   STATUS
+============================================================ */
+
+.certificate-status {
+    display: inline-flex !important;
+
+    align-items: center;
+
+    gap: 4px;
+
+    padding: 2px 5px;
+
+    border-radius: 20px;
+
+    font-size: 5.5px !important;
+    font-weight: 900 !important;
+
+    text-transform: uppercase;
+}
+
+
+.status-dot {
+    width: 4px;
+    height: 4px;
+
+    border-radius: 50%;
+
+    background: currentColor;
+}
+
+
+.certificate-status-active {
+    color: #166534 !important;
+    background: #dcfce7;
+}
+
+
+.certificate-status-dormant {
+    color: #92400e !important;
+    background: #fef3c7;
+}
+
+
+.certificate-status-closed {
+    color: #991b1b !important;
+    background: #fee2e2;
+}
+
+
+.certificate-status-default {
+    color: #475569 !important;
+    background: #e2e8f0;
+}
+
+
+/* ============================================================
+   DECLARATION
+============================================================ */
+
+.certificate-declaration {
+    position: relative;
+    z-index: 2;
+
+    display: flex;
+
+    gap: 8px;
+
+    margin-top: 10px;
+
+    padding: 8px 9px;
+
+    border-left: 3px solid #2563eb;
+
+    background: #f8fafc;
+}
+
+
+.certificate-declaration-icon {
+    flex-shrink: 0;
+
+    color: #2563eb;
+
+    font-size: 12px;
+}
+
+
+.certificate-declaration strong {
+    display: block;
+
+    margin-bottom: 2px;
+
+    color: #1d4ed8;
+
+    font-size: 6px;
+    font-weight: 900;
+
+    letter-spacing: .8px;
+}
+
+
+.certificate-declaration p {
+    margin: 0;
+
+    color: #64748b;
+
+    font-size: 6.5px;
+
+    line-height: 1.35;
+}
+
+
+/* ============================================================
+   FOOTER
+============================================================ */
+
+.certificate-footer {
+    position: relative;
+    z-index: 2;
+
+    display: grid;
+
+    grid-template-columns:
+        1fr 75px 1fr;
+
+    align-items: end;
+
+    gap: 10px;
+
+    margin-top: 10px;
+
+    padding-top: 9px;
+
+    border-top: 1px solid #e2e8f0;
+}
+
+
+/* ============================================================
+   SIGNATURE
+============================================================ */
+
+.certificate-signature {
+    width: 125px;
+}
+
+
+.signature-line {
+    height: 14px;
+
+    margin-bottom: 3px;
+
+    border-bottom: 1px solid #334155;
+}
+
+
+.certificate-signature strong {
+    display: block;
+
+    color: #334155;
+
+    font-size: 6px;
+    font-weight: 900;
+
+    letter-spacing: .7px;
+}
+
+
+.certificate-signature span {
+    display: block;
+
+    margin-top: 1px;
+
+    color: #94a3b8;
+
+    font-size: 5.5px;
+}
+
+
+/* ============================================================
+   OFFICIAL SEAL
+============================================================ */
+
+.certificate-seal {
+    display: flex;
+
+    justify-content: center;
+}
+
+
+.seal-inner {
+    width: 51px;
+    height: 51px;
+
+    display: flex;
+    flex-direction: column;
+
+    align-items: center;
+    justify-content: center;
+
+    border: 2px solid #2563eb;
+
+    border-radius: 50%;
+
+    color: #1d4ed8;
+
+    background: #eff6ff;
+
+    box-shadow:
+        inset 0 0 0 3px #ffffff,
+        inset 0 0 0 4px #bfdbfe;
+}
+
+
+.seal-inner i {
+    font-size: 11px;
+}
+
+
+.seal-inner strong {
+    margin-top: 1px;
+
+    font-size: 5px;
+
+    letter-spacing: .4px;
+}
+
+
+.seal-inner small {
+    margin-top: 1px;
+
+    font-size: 3.5px;
+    font-weight: 900;
+
+    letter-spacing: .8px;
+}
+
+
+/* ============================================================
+   ISSUED
+============================================================ */
+
+.certificate-issued {
+    text-align: right;
+
+    line-height: 1.55;
+}
+
+
+.certificate-issued div {
+    margin-bottom: 2px;
+}
+
+
+.certificate-issued span {
+    display: inline-block;
+
+    margin-right: 5px;
+
+    color: #94a3b8;
+
+    font-size: 5px;
+    font-weight: 900;
+
+    letter-spacing: .6px;
+}
+
+
+.certificate-issued strong {
+    color: #334155;
+
+    font-size: 5.8px;
+}
+
+
+/* ============================================================
+   SECURITY FOOTER
+============================================================ */
+
+.certificate-security-line {
+    position: relative;
+    z-index: 2;
+
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    margin-top: 7px;
+
+    padding-top: 5px;
+
+    border-top: 1px dashed #cbd5e1;
+
+    color: #94a3b8;
+
+    font-size: 4.5px;
+    font-weight: 800;
+
+    letter-spacing: .7px;
+}
+
+
+/* ============================================================
+   ACTION BAR
+============================================================ */
+
+.certificate-actions {
+    flex: 0 0 58px;
+
+    padding: 8px 18px;
+
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    gap: 15px;
+
+    background: #ffffff;
+
+    border-top: 1px solid #e2e8f0;
+}
+
+
+.certificate-action-info {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+
+    color: #64748b;
+
+    font-size: 9px;
+}
+
+
+.certificate-action-info i {
+    color: #2563eb;
+}
+
+
+.certificate-action-buttons {
+    display: flex;
+
+    gap: 7px;
+}
+
+
+.certificate-btn {
+    height: 35px;
+
+    padding: 0 14px;
+
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    gap: 6px;
+
+    border-radius: 8px;
+
+    font-size: 10px;
+    font-weight: 800;
+
+    cursor: pointer;
+
+    transition: .2s ease;
+}
+
+
+.certificate-btn-secondary {
+    color: #334155;
+
+    background: #f1f5f9;
+
+    border: 1px solid #e2e8f0;
+}
+
+
+.certificate-btn-secondary:hover {
+    background: #e2e8f0;
+}
+
+
+.certificate-btn-primary {
+    color: #ffffff;
+
+    border: 0;
+
+    background:
+        linear-gradient(
+            135deg,
+            #0b3277,
+            #2563eb
+        );
+
+    box-shadow:
+        0 5px 14px rgba(37,99,235,.22);
+}
+
+
+.certificate-btn-primary:hover {
+    transform: translateY(-1px);
+
+    box-shadow:
+        0 8px 20px rgba(37,99,235,.30);
+}
+
+
+/* ============================================================
+   RESPONSIVE
+============================================================ */
+
+@media (max-width: 900px) {
+
+    .certificate-preview-area {
+        padding: 12px;
+    }
+
+}
+
+
+@media (max-width: 650px) {
+
+    .certificate-modal {
+        padding: 0;
+    }
+
+    .certificate-dialog {
+        width: 100%;
+        height: 100%;
+        max-height: 100vh;
+
+        border-radius: 0;
+    }
+
+    .certificate-preview-area {
+        padding: 10px;
+    }
+
+    .certificate-action-info {
+        display: none;
+    }
+
+    .certificate-actions {
+        justify-content: center;
+    }
+
+    .certificate-action-buttons {
+        width: 100%;
+    }
+
+    .certificate-btn {
+        flex: 1;
+    }
+}
+
+
+/* ============================================================
+   PRINT
+   GUARANTEED SINGLE A4 PAGE
+============================================================ */
+
+@media print {
+
+    @page {
+        size: A4 portrait;
+        margin: 0;
+    }
+
+
+    html,
+    body {
+        width: 210mm !important;
+        height: 297mm !important;
+
+        margin: 0 !important;
+        padding: 0 !important;
+
+        overflow: hidden !important;
+
+        background: #ffffff !important;
+    }
+
+
+    body * {
+        visibility: hidden;
+    }
+
+
+    .certificate-modal,
+    .certificate-modal * {
+        visibility: visible;
+    }
+
+
+    .certificate-modal {
+        position: absolute !important;
+
+        top: 0 !important;
+        left: 0 !important;
+
+        width: 210mm !important;
+        height: 297mm !important;
+
+        padding: 0 !important;
+
+        margin: 0 !important;
+
+        display: block !important;
+    }
+
+
+    .certificate-backdrop,
+    .certificate-modal-header,
+    .certificate-actions,
+    .no-print {
+        display: none !important;
+    }
+
+
+    .certificate-dialog {
+        position: absolute !important;
+
+        top: 0 !important;
+        left: 0 !important;
+
+        width: 210mm !important;
+        height: 297mm !important;
+
+        max-height: none !important;
+
+        margin: 0 !important;
+        padding: 0 !important;
+
+        display: block !important;
+
+        overflow: hidden !important;
+
+        border: 0 !important;
+        border-radius: 0 !important;
+
+        box-shadow: none !important;
+
+        background: #ffffff !important;
+    }
+
+
+    .certificate-preview-area {
+        width: 210mm !important;
+        height: 297mm !important;
+
+        margin: 0 !important;
+        padding: 0 !important;
+
+        overflow: hidden !important;
+
+        background: #ffffff !important;
+    }
+
+
+    .customer-certificate {
+        position: relative !important;
+
+        width: 210mm !important;
+        height: 297mm !important;
+
+        min-height: 297mm !important;
+        max-height: 297mm !important;
+
+        margin: 0 !important;
+
+        padding:
+            12mm
+            14mm
+            9mm !important;
+
+        box-sizing: border-box !important;
+
+        overflow: hidden !important;
+
+        border: 0 !important;
+
+        box-shadow: none !important;
+
+        page-break-before: avoid !important;
+        page-break-after: avoid !important;
+        page-break-inside: avoid !important;
+
+        break-before: avoid !important;
+        break-after: avoid !important;
+        break-inside: avoid !important;
+    }
+}

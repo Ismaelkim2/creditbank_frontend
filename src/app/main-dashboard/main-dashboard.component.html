@@ -1,1155 +1,538 @@
 <div class="cc-dashboard">
 
-<!-- =========================================================
-     EXECUTIVE KPI INTELLIGENCE
-========================================================= -->
-
-<section class="cc-kpi-grid">
-
-    <!-- =====================================================
-         1. CREDIT PORTFOLIO + GROWTH TREND
-    ====================================================== -->
-
-    <article class="cc-kpi-card cc-portfolio-card">
-
-        <!-- HEADER -->
-
-        <div class="cc-kpi-top">
-
-            <div class="cc-kpi-icon cc-icon-blue">
-                <i class="fas fa-wallet"></i>
-            </div>
-
-            <div class="cc-kpi-heading">
-
-                <span class="cc-kpi-label">
-                    Credit Portfolio
-                </span>
-
-                <span class="cc-kpi-subtitle">
-                    Total managed credit exposure
-                </span>
-
-            </div>
-
-        </div>
-
-
-        <!-- TOTAL PORTFOLIO -->
-
-        <div class="cc-kpi-value">
-
-            <span class="cc-currency">
-                KES
-            </span>
-
-            {{ totalLoansAmount | number:'1.2-2' }}
-
-        </div>
-
-
-        <!-- STATUS -->
-
-        <div class="cc-kpi-footer">
-
-            <span class="cc-positive">
-                <i class="fas fa-arrow-trend-up"></i>
-                Healthy Growth
-            </span>
-
-            <span>
-                Portfolio
-            </span>
-
-        </div>
-
-
-        <!-- DIVIDER -->
-
-        <div class="cc-kpi-divider"></div>
-
-
-        <!-- PORTFOLIO GROWTH -->
-
-        <div class="cc-growth-section">
-
-            <div class="cc-growth-header">
-
-                <div>
-
-                    <span class="cc-growth-title">
-                        Portfolio Growth
-                    </span>
-
-                    <span class="cc-growth-subtitle">
-                        Monthly trend
-                    </span>
-
-                </div>
-
-                <span class="cc-growth-badge">
-                    <i class="fas fa-chart-line"></i>
-                    TREND
-                </span>
-
-            </div>
-
-
-            <!-- MINI BAR / TREND -->
-
-            <div class="cc-growth-chart">
-
-                <div
-                    class="cc-growth-bar"
-                    *ngFor="let month of portfolioGrowth">
-
-                    <div
-                        class="cc-growth-fill"
-                        [style.height.%]="month.percentage">
-                    </div>
-
-                    <span class="cc-growth-month">
-                        {{ month.label }}
-                    </span>
-
-                </div>
-
-            </div>
-
-
-            <!-- GROWTH INSIGHT -->
-
-            <div class="cc-growth-insight">
-
-                <i class="fas fa-arrow-trend-up"></i>
-
-                <span>
-                    Portfolio performance over recent months
-                </span>
-
-            </div>
-
-        </div>
-
-    </article>
-
-
-    <!-- =====================================================
-         3. COLLECTION + OUTSTANDING
-    ====================================================== -->
-
-    <article class="cc-kpi-card cc-collection-card">
-
-        <!-- COLLECTION HEADER -->
-
-        <div class="cc-kpi-top">
-
-            <div class="cc-kpi-icon cc-icon-green">
-                <i class="fas fa-hand-holding-dollar"></i>
-            </div>
-
-            <div class="cc-kpi-heading">
-
-                <span class="cc-kpi-label">
-                    Total Collection
-                </span>
-
-                <span class="cc-kpi-subtitle">
-                    Cumulative repayments received
-                </span>
-
-            </div>
-
-        </div>
-
-
-        <!-- COLLECTION VALUE -->
-
-        <div class="cc-kpi-value">
-
-            <ng-container *ngIf="!loadingRepaid">
-
-                <span class="cc-currency">
-                    KES
-                </span>
-
-                {{ repaymentStats.totalRepaid | number:'1.2-2' }}
-
-            </ng-container>
-
-
-            <span
-                *ngIf="loadingRepaid"
-                class="cc-kpi-loading">
-
-                <i class="fas fa-spinner fa-spin"></i>
-
-            </span>
-
-        </div>
-
-
-        <div class="cc-kpi-footer">
-
-            <span class="cc-positive">
-
-                <i class="fas fa-arrow-trend-up"></i>
-
-                Strong
-
-            </span>
-
-            <span>
-                Repaid
-            </span>
-
-        </div>
-
-
-        <!-- DIVIDER -->
-
-        <div class="cc-kpi-divider"></div>
-
-
-        <!-- OUTSTANDING -->
-
-        <div class="cc-secondary-kpi">
-
-            <div class="cc-secondary-kpi-header">
-
-                <div class="cc-secondary-icon cc-icon-orange">
-
-                    <i class="fas fa-chart-line"></i>
-
-                </div>
-
-                <div class="cc-secondary-heading">
-
-                    <span class="cc-secondary-label">
-                        Outstanding
-                    </span>
-
-                    <span class="cc-secondary-description">
-                        Current credit exposure
-                    </span>
-
-                </div>
-
-            </div>
-
-
-            <div class="cc-secondary-value">
-
-                <ng-container *ngIf="!loadingOutstanding">
-
-                    <span class="cc-secondary-currency">
-                        KES
-                    </span>
-
-                    {{ repaymentStats.outstanding | number:'1.2-2' }}
-
-                </ng-container>
-
-
-                <span
-                    *ngIf="loadingOutstanding"
-                    class="cc-kpi-loading">
-
-                    <i class="fas fa-spinner fa-spin"></i>
-
-                </span>
-
-            </div>
-
-
-            <div class="cc-secondary-footer">
-
-                <span class="cc-warning">
-
-                    <i class="fas fa-triangle-exclamation"></i>
-
-                    Monitor
-
-                </span>
-
-                <span>
-                    Credit Exposure
-                </span>
-
-            </div>
-
-        </div>
-
-
-        <!-- COLLECTION / OUTSTANDING RATIO -->
-<!-- 
-        <div class="cc-collection-insight">
-
-            <div class="cc-collection-insight-icon">
-
-                <i class="fas fa-scale-balanced"></i>
-
-            </div>
-
-            <div>
-
-                <span class="cc-insight-label">
-                    Collection Position
-                </span>
-
-                <span class="cc-insight-text">
-                    Collections versus current outstanding exposure
-                </span>
-
-            </div>
-
-        </div> -->
-
-    </article>
-
-
-    <!-- =====================================================
-         4. PAR 30 DAYS + CREDIT RISK INTELLIGENCE
-    ====================================================== -->
-
-    <article class="cc-kpi-card cc-risk-card">
-
-        <!-- HEADER -->
-
-        <div class="cc-risk-header">
-
-            <div class="cc-risk-title">
-
-                <div class="cc-kpi-icon cc-icon-orange">
-
-                    <i class="fas fa-shield-halved"></i>
-
-                </div>
-
-                <div>
-
-                    <span class="cc-kpi-label">
-                        PAR 30 DAYS
-                    </span>
-
-                    <span class="cc-risk-subtitle">
-                        Portfolio at Risk
-                    </span>
-
-                </div>
-
-            </div>
-
-
-            <span class="cc-par-live">
-
-                <span class="cc-live-dot"></span>
-
-                LIVE
-
-            </span>
-
-        </div>
-
-
-        <!-- PAR VALUE -->
-
-        <div class="cc-risk-main">
-
-            <div class="cc-par-value">
-
-                {{ portfolioMetrics.par30 | number:'1.1-1' }}%
-
-            </div>
-
-
-            <div
-                class="cc-par-status"
-                [class.cc-par-healthy]="portfolioMetrics.par30 <= 5"
-                [class.cc-par-watch]="portfolioMetrics.par30 > 5 && portfolioMetrics.par30 <= 10"
-                [class.cc-par-critical]="portfolioMetrics.par30 > 10">
-
-                <i
-                    class="fas"
-                    [ngClass]="{
-                        'fa-circle-check': portfolioMetrics.par30 <= 5,
-                        'fa-eye': portfolioMetrics.par30 > 5 && portfolioMetrics.par30 <= 10,
-                        'fa-triangle-exclamation': portfolioMetrics.par30 > 10
-                    }">
-                </i>
-
-                <span>
-
-                    {{ portfolioMetrics.par30 <= 5
-                        ? 'Healthy'
-                        : portfolioMetrics.par30 <= 10
-                        ? 'Watch'
-                        : 'Critical' }}
-
-                </span>
-
-            </div>
-
-        </div>
-
-
-        <!-- RISK METRICS -->
-
-        <div class="cc-risk-metrics">
-
-            <div class="cc-risk-metric">
-
-                <span>
-                    At Risk
-                </span>
-
-                <strong>
-
-                    KES
-                    {{
-                        (
-                            totalLoansAmount *
-                            (portfolioMetrics.par30 / 100)
-                        ) | number:'1.0-0'
-                    }}
-
-                </strong>
-
-            </div>
-
-
-            <div class="cc-risk-metric">
-
-                <span>
-                    NPL
-                </span>
-
-                <strong>
-
-                    {{ portfolioMetrics.npl | number:'1.1-1' }}%
-
-                </strong>
-
-            </div>
-
-        </div>
-
-
-        <!-- RISK INSIGHT -->
-
-        <div class="cc-risk-insight">
-
-            <div class="cc-insight-icon">
-
-                <i
-                    class="fas"
-                    [ngClass]="{
-                        'fa-circle-check': portfolioMetrics.par30 <= 5,
-                        'fa-eye': portfolioMetrics.par30 > 5 && portfolioMetrics.par30 <= 10,
-                        'fa-triangle-exclamation': portfolioMetrics.par30 > 10
-                    }">
-                </i>
-
-            </div>
-
-
-            <div class="cc-insight-content">
-
-                <span class="cc-insight-label text-danger">
-                    Risk Insight
-                </span>
-
-                <span class="cc-insight-text">
-
-                    {{
-                        portfolioMetrics.par30 <= 5
-                            ? 'Portfolio risk remains within a healthy range.'
-                            : portfolioMetrics.par30 <= 10
-                            ? 'Portfolio requires close monitoring and collection attention.'
-                            : 'Elevated portfolio risk requires immediate management attention.'
-                    }}
-
-                </span>
-
-            </div>
-
-        </div>
-
-
-        <!-- FOOTER -->
-
-        <div class="cc-par-period">
-
-            <i class="fas fa-clock"></i>
-
-            <span>
-                Live portfolio intelligence
-            </span>
-
-        </div>
-
-    </article>
-
-
-    <!-- =====================================================
-     2. CUSTOMER ACCOUNTS — LIVE ACCOUNT INTELLIGENCE
-====================================================== -->
-
-<article class="cc-kpi-card cc-customers-card">
-
-    <!-- HEADER -->
-
-    <div class="cc-kpi-top">
-
-        <div class="cc-kpi-icon cc-icon-cyan">
-
-            <i class="fas fa-users"></i>
-
-        </div>
-
-        <div class="cc-kpi-heading">
-
-            <span class="cc-kpi-label">
-                Customer Accounts
-            </span>
-
-            <span class="cc-kpi-subtitle">
-                Live account portfolio
-            </span>
-
-        </div>
-
-    </div>
-
-
-    <!-- TOTAL ACCOUNTS -->
-
-    <div class="cc-kpi-value">
-
-        <ng-container *ngIf="!loadingAccounts">
-
-            {{ totalAccounts | number }}
-
-        </ng-container>
-
-
-        <span
-            *ngIf="loadingAccounts"
-            class="cc-kpi-loading">
-
-            <i class="fas fa-spinner fa-spin"></i>
-
-        </span>
-
-    </div>
-
-
-    <!-- ACCOUNT STATUS -->
-
-    <div class="cc-kpi-footer">
-
-        <span class="cc-positive">
-
-            <i class="fas fa-circle-check"></i>
-
-            Live Data
-
-        </span>
-
-        <span>
-            Accounts
-        </span>
-
-    </div>
-
-
-    <!-- DIVIDER -->
-
-    <div class="cc-kpi-divider"></div>
-
-
-    <!-- ACCOUNT STATUS -->
-
-    <div class="cc-account-status">
-
-
-        <!-- ACTIVE -->
-
-        <div class="cc-account-status-item">
-
-            <div
-                class="cc-account-status-icon cc-status-active">
-
-                <i class="fas fa-circle-check"></i>
-
-            </div>
-
-            <div class="cc-account-status-content">
-
-                <span class="cc-account-status-label">
-                    Active
-                </span>
-
-                <strong>
-                    {{ activeAccounts | number }}
-                </strong>
-
-                <small>
-                    {{ activeAccountPercentage | number:'1.0-1' }}%
-                </small>
-
-            </div>
-
-        </div>
-
-
-        <!-- DORMANT -->
-
-        <div class="cc-account-status-item">
-
-            <div
-                class="cc-account-status-icon cc-status-dormant">
-
-                <i class="fas fa-moon"></i>
-
-            </div>
-
-            <div class="cc-account-status-content">
-
-                <span class="cc-account-status-label">
-                    Dormant
-                </span>
-
-                <strong>
-                    {{ dormantAccounts | number }}
-                </strong>
-
-                <small>
-                    {{ dormantAccountPercentage | number:'1.0-1' }}%
-                </small>
-
-            </div>
-
-        </div>
-
-
-        <!-- CLOSED -->
-
-        <div class="cc-account-status-item">
-
-            <div
-                class="cc-account-status-icon cc-status-closed">
-
-                <i class="fas fa-lock"></i>
-
-            </div>
-
-            <div class="cc-account-status-content">
-
-                <span class="cc-account-status-label">
-                    Closed
-                </span>
-
-                <strong>
-                    {{ closedAccounts | number }}
-                </strong>
-
-                <small>
-                    {{ closedAccountPercentage | number:'1.0-1' }}%
-                </small>
-
-            </div>
-
-        </div>
-
-    </div>
-
-
-    <!-- LIVE STATUS -->
-
-    <div class="cc-customer-insight">
-
-        <i class="fas fa-satellite-dish"></i>
-
-        <span>
-
-            Live account position ·
-            {{ accountsLastUpdated }}
-
-        </span>
-
-    </div>
-
-</article>
-
-
-</section>
-
-<!-- =========================================================
-     ENTERPRISE MANAGEMENT WORKSPACES
-========================================================= -->
-
-<section class="cc-enterprise-workspaces">
-
-    <!-- =====================================================
-         WORKSPACE 01 — CREDIT & LENDING
-    ====================================================== -->
-
-    <article class="cc-workspace cc-workspace-credit">
-
-        <!-- WORKSPACE HEADER -->
-
-        <div class="cc-workspace-header">
-
-            <div class="cc-workspace-brand">
-
-                <div class="cc-workspace-icon cc-workspace-blue">
-                    <i class="fas fa-chart-line"></i>
-                </div>
-
-                <div class="cc-workspace-title">
-
-                    <span class="cc-workspace-eyebrow">
-                        CREDIT & LENDING
-                    </span>
-
-                    <h2>
-                        Lending Intelligence
-                    </h2>
-
-                    <p>
-                        Manage the complete credit lifecycle,
-                        from application and assessment to
-                        approval, disbursement and recovery.
-                    </p>
-
-                </div>
-
-            </div>
-
-            <button
-                type="button"
-                routerLink="/app/loans"
-                class="cc-workspace-primary-action">
-
-                Open Lending Centre
-
-                <i class="fas fa-arrow-right"></i>
-
-            </button>
-
-        </div>
-
-
-        <!-- WORKFLOW -->
-
-        <div class="cc-workspace-content">
-
-            <!-- APPLICATIONS -->
-
-            <div
-                class="cc-workflow-row"
-                routerLink="/app/loans">
-
-                <div class="cc-workflow-number">
-                    01
-                </div>
-
-                <div class="cc-workflow-icon cc-blue-icon">
-                    <i class="fas fa-file-circle-plus"></i>
-                </div>
-
-                <div class="cc-workflow-main">
-
-                    <div class="cc-workflow-heading">
-
-                        <strong>
-                            Loan Applications
-                        </strong>
-
-                        <span class="cc-workflow-status">
-                            <i class="fas fa-circle"></i>
-                            Processing
-                        </span>
-
-                    </div>
-
-                    <p>
-                        Review incoming applications,
-                        verify customer information and
-                        manage the lending pipeline.
-                    </p>
-
-                </div>
-
-                <div class="cc-workflow-action">
-
-                    <span>
-                        Manage
-                    </span>
-
-                    <i class="fas fa-chevron-right"></i>
-
-                </div>
-
-            </div>
-
-
-            <!-- CREDIT ASSESSMENT -->
-
-            <div
-                class="cc-workflow-row"
-                routerLink="/app/loans">
-
-                <div class="cc-workflow-number">
-                    02
-                </div>
-
-                <div class="cc-workflow-icon cc-indigo-icon">
-                    <i class="fas fa-shield-halved"></i>
-                </div>
-
-                <div class="cc-workflow-main">
-
-                    <div class="cc-workflow-heading">
-
-                        <strong>
-                            Credit Intelligence
-                        </strong>
-
-                        <span class="cc-workflow-status cc-status-intelligence">
-                            <i class="fas fa-wand-magic-sparkles"></i>
-                            AI Assisted
-                        </span>
-
-                    </div>
-
-                    <p>
-                        Analyse borrower eligibility,
-                        affordability, behavioural risk,
-                        KYC quality and credit exposure.
-                    </p>
-
-                </div>
-
-                <div class="cc-workflow-action">
-
-                    <span>
-                        Assess
-                    </span>
-
-                    <i class="fas fa-chevron-right"></i>
-
-                </div>
-
-            </div>
-
-
-            <!-- COLLECTIONS -->
-
-            <div
-                class="cc-workflow-row"
-                routerLink="/app/loans">
-
-                <div class="cc-workflow-number">
-                    04
-                </div>
-
-                <div class="cc-workflow-icon cc-red-icon">
-                    <i class="fas fa-clock-rotate-left"></i>
-                </div>
-
-                <div class="cc-workflow-main">
-
-                    <div class="cc-workflow-heading">
-
-                        <strong>
-                            Arrears & Collections
-                        </strong>
-
-                        <span class="cc-workflow-status cc-status-warning">
-                            <i class="fas fa-triangle-exclamation"></i>
-                            Attention
-                        </span>
-
-                    </div>
-
-                    <p>
-                        Monitor overdue facilities,
-                        repayment performance, recovery
-                        activity and portfolio quality.
-                    </p>
-
-                </div>
-
-                <div class="cc-workflow-action">
-
-                    <span>
-                        Monitor
-                    </span>
-
-                    <i class="fas fa-chevron-right"></i>
-
-                </div>
-
-            </div>
-
-        </div>
-
-    </article>
-
-
-
-    <!-- =====================================================
-         WORKSPACE 02 — CUSTOMER & PORTFOLIO
-    ====================================================== -->
-
-    <article class="cc-workspace cc-workspace-customer">
-
-        <!-- WORKSPACE HEADER -->
-
-        <div class="cc-workspace-header">
-
-            <div class="cc-workspace-brand">
-
-                <div class="cc-workspace-icon cc-workspace-purple">
-                    <i class="fas fa-building-columns"></i>
-                </div>
-
-                <div class="cc-workspace-title">
-
-                    <span class="cc-workspace-eyebrow cc-purple-eyebrow">
-                        CUSTOMER & PORTFOLIO
-                    </span>
-
-                    <h2>
-                        Customer Operations
-                    </h2>
-
-                    <p>
-                        Manage customer relationships,
-                        account lifecycle, portfolio visibility
-                        and institutional reporting.
-                    </p>
-
-                </div>
-
-            </div>
-
-            <button
-                type="button"
-                routerLink="/app/accounts"
-                class="cc-workspace-primary-action cc-purple-action">
-
-                Open Customer Centre
-
-                <i class="fas fa-arrow-right"></i>
-
-            </button>
-
-        </div>
-
-
-        <!-- WORKFLOW -->
-
-        <div class="cc-workspace-content">
-
-            <!-- CUSTOMER ONBOARDING -->
-
-            <div
-                class="cc-workflow-row"
-                routerLink="/app/accountsopening">
-
-                <div class="cc-workflow-number">
-                    01
-                </div>
-
-                <div class="cc-workflow-icon cc-purple-icon">
-                    <i class="fas fa-user-plus"></i>
-                </div>
-
-                <div class="cc-workflow-main">
-
-                    <div class="cc-workflow-heading">
-
-                        <strong>
-                            Customer Onboarding
-                        </strong>
-
-                        <span class="cc-workflow-status cc-status-active">
-                            <i class="fas fa-circle-check"></i>
-                            Ready
-                        </span>
-
-                    </div>
-
-                    <p>
-                        Register individuals, groups,
-                        companies and institutions while
-                        maintaining complete KYC information.
-                    </p>
-
-                </div>
-
-                <div class="cc-workflow-action">
-
-                    <span>
-                        Onboard
-                    </span>
-
-                    <i class="fas fa-chevron-right"></i>
-
-                </div>
-
-            </div>
-
-
-            <!-- ACCOUNT MANAGEMENT -->
-
-            <div
-                class="cc-workflow-row"
-                routerLink="/app/accounts">
-
-                <div class="cc-workflow-number">
-                    02
-                </div>
-
-                <div class="cc-workflow-icon cc-violet-icon">
+    <!-- =========================================================
+         EXECUTIVE KPI INTELLIGENCE
+    ========================================================== -->
+    <section class="cc-kpi-grid">
+
+        <!-- =====================================================
+             1. CREDIT PORTFOLIO
+        ====================================================== -->
+        <article class="cc-kpi-card cc-portfolio-card">
+
+            <!-- HEADER -->
+            <div class="cc-kpi-top">
+                <div class="cc-kpi-icon cc-icon-blue">
                     <i class="fas fa-wallet"></i>
                 </div>
 
-                <div class="cc-workflow-main">
-
-                    <div class="cc-workflow-heading">
-
-                        <strong>
-                            Account Management
-                        </strong>
-
-                        <span class="cc-workflow-status cc-status-active">
-                            <i class="fas fa-circle-check"></i>
-                            Live
-                        </span>
-
-                    </div>
-
-                    <p>
-                        Manage account activity, balances,
-                        customer profiles, account status
-                        and servicing requirements.
-                    </p>
-
-                </div>
-
-                <div class="cc-workflow-action">
-
-                    <span>
-                        Manage
+                <div class="cc-kpi-heading">
+                    <span class="cc-kpi-label">
+                        Credit Portfolio
                     </span>
 
-                    <i class="fas fa-chevron-right"></i>
+                    <span class="cc-kpi-subtitle">
+                        Total managed credit exposure
+                    </span>
+                </div>
+            </div>
 
+            <!-- TOTAL PORTFOLIO -->
+            <div class="cc-kpi-value">
+                KES {{ totalLoansAmount | number:'1.2-2' }}
+            </div>
+
+            <!-- STATUS / ACTION -->
+            <div class="cc-kpi-footer">
+                <span class="cc-positive">
+                    <i class="fas fa-arrow-trend-up"></i>
+                    Healthy Growth
+                </span>
+
+                <button
+                    type="button"
+                    routerLink="/app/loanApplication"
+                    class="cc-workspace-primary-action">
+
+                    <i class="fas fa-hand-holding-dollar"></i>
+                    Borrow
+                    <i class="fas fa-arrow-right"></i>
+                </button>
+            </div>
+
+            <div class="cc-kpi-divider"></div>
+
+            <!-- PORTFOLIO PERFORMANCE -->
+            <div class="cc-growth-section">
+
+                <div class="cc-growth-header">
+                    <div>
+                        <span class="cc-growth-title">
+                            Credit Portfolio
+                        </span>
+
+                        <span class="cc-growth-subtitle">
+                            Monthly lending &amp; collection performance
+                        </span>
+                    </div>
+
+                    <span class="cc-growth-badge cc-live-badge">
+                        <span class="cc-live-dot"></span>
+                        LIVE
+                    </span>
+                </div>
+
+                <div class="cc-portfolio-chart-legend">
+                    <span>
+                        <i class="fas fa-square cc-legend-disbursed"></i>
+                        Disbursed
+                    </span>
+
+                    <span>
+                        <i class="fas fa-square cc-legend-collected"></i>
+                        Collected
+                    </span>
+
+                    <span>
+                        <i class="fas fa-square cc-legend-outstanding"></i>
+                        Outstanding
+                    </span>
                 </div>
 
             </div>
 
-            <!-- REPORTING -->
+        </article>
 
-            <div
-                class="cc-workflow-row"
-                routerLink="/app/reports">
 
-                <div class="cc-workflow-number">
-                    04
+        <!-- =====================================================
+             2. COLLECTIONS & OUTSTANDING
+        ====================================================== -->
+        <article class="cc-kpi-card cc-collection-card">
+
+            <!-- HEADER -->
+            <div class="cc-kpi-top">
+                <div class="cc-kpi-icon cc-icon-green">
+                    <i class="fas fa-hand-holding-dollar"></i>
                 </div>
 
-                <div class="cc-workflow-icon cc-gold-icon">
+                <div class="cc-kpi-heading">
+                    <span class="cc-kpi-label">
+                        Collections
+                    </span>
+
+                    <span class="cc-kpi-subtitle">
+                        Cumulative repayments received
+                    </span>
+                </div>
+            </div>
+
+            <!-- COLLECTION VALUE -->
+            <div class="cc-kpi-value">
+
+                <ng-container *ngIf="!loadingRepaid">
+                    KES {{ repaymentStats.totalRepaid | number:'1.2-2' }}
+
+                    <span class="cc-positive">
+                        <i class="fas fa-arrow-trend-up"></i>
+                        Strong
+                    </span>
+                </ng-container>
+
+                <span
+                    *ngIf="loadingRepaid"
+                    class="cc-kpi-loading">
+
+                    <i class="fas fa-spinner fa-spin"></i>
+                </span>
+
+            </div>
+
+            <!-- ACTIONS -->
+            <div class="cc-kpi-footer">
+
+                <button
+                    type="button"
+                    routerLink="/app/accounts"
+                    class="cc-workspace-primary-action">
+
+                    <i class="fas fa-user-plus"></i>
+                    Customers
+                </button>
+
+                <button
+                    type="button"
+                    routerLink="/app/reports"
+                    class="cc-workspace-primary-action">
+
                     <i class="fas fa-chart-column"></i>
-                </div>
+                    Reports
+                </button>
 
-                <div class="cc-workflow-main">
+            </div>
 
-                    <div class="cc-workflow-heading">
+            <div class="cc-kpi-divider"></div>
 
-                        <strong>
-                            Reports & Analytics
-                        </strong>
+            <!-- OUTSTANDING -->
+            <div class="cc-secondary-kpi">
 
-                        <span class="cc-workflow-status cc-status-secure">
-                            <i class="fas fa-file-shield"></i>
-                            Controlled
-                        </span>
+                <div class="cc-secondary-kpi-header">
 
+                    <div class="cc-secondary-icon cc-icon-orange">
+                        <i class="fas fa-chart-line"></i>
                     </div>
 
-                    <p>
-                        Generate management reports,
-                        financial analysis, portfolio insights
-                        and operational intelligence.
-                    </p>
+                    <div class="cc-secondary-heading">
+                        <span class="cc-secondary-label">
+                            Outstanding
+                        </span>
+
+                        <span class="cc-secondary-description">
+                            Current credit exposure
+                        </span>
+                    </div>
 
                 </div>
 
-                <div class="cc-workflow-action">
+                <div class="cc-secondary-value">
 
-                    <span>
-                        Reports
+                    <ng-container *ngIf="!loadingOutstanding">
+                        KES {{ repaymentStats.outstanding | number:'1.2-2' }}
+                    </ng-container>
+
+                    <span
+                        *ngIf="loadingOutstanding"
+                        class="cc-kpi-loading">
+
+                        <i class="fas fa-spinner fa-spin"></i>
                     </span>
-
-                    <i class="fas fa-chevron-right"></i>
 
                 </div>
 
             </div>
 
-        </div>
+        </article>
 
-    </article>
 
-</section>
+        <!-- =====================================================
+             3. CUSTOMER ACCOUNTS
+        ====================================================== -->
+        <article class="cc-kpi-card cc-customers-card">
 
+            <!-- HEADER -->
+            <div class="cc-kpi-top">
+
+                <div class="cc-kpi-icon cc-icon-cyan">
+                    <i class="fas fa-users"></i>
+                </div>
+
+                <div class="cc-kpi-heading">
+
+                    <span class="cc-kpi-label">
+                        Cst. Accounts
+                    </span>
+
+                    <span class="cc-kpi-subtitle">
+                        Live account portfolio
+                    </span>
+
+                </div>
+
+            </div>
+
+            <!-- TOTAL ACCOUNTS -->
+            <div class="cc-kpi-value">
+
+                <ng-container *ngIf="!loadingAccounts">
+                    {{ totalAccounts | number }} Accounts
+                </ng-container>
+
+                <span
+                    *ngIf="loadingAccounts"
+                    class="cc-kpi-loading">
+
+                    <i class="fas fa-spinner fa-spin"></i>
+                </span>
+
+            </div>
+
+            <!-- ACTIONS -->
+            <div class="cc-kpi-footer">
+
+                <button
+                    type="button"
+                    routerLink="/app/accountsopening"
+                    class="cc-workspace-primary-action">
+
+                    <i class="fas fa-file-circle-plus"></i>
+                    Open Account
+                </button>
+
+                <button
+                    type="button"
+                    routerLink="/app/accounts"
+                    class="cc-workspace-primary-action">
+
+                    <i class="fas fa-users"></i>
+                    Accounts
+                </button>
+
+            </div>
+
+            <div class="cc-kpi-divider"></div>
+
+            <!-- ACCOUNT STATUS -->
+            <div class="cc-account-status">
+
+                <!-- ACTIVE -->
+                <div class="cc-account-status-item">
+
+                    <div class="cc-account-status-content">
+
+                        <span class="cc-account-status-label text-success">
+                            Active
+                        </span>
+
+                        <strong>
+                            {{ activeAccounts | number }}
+                        </strong>
+
+                        <small>
+                            {{ activeAccountPercentage | number:'1.0-1' }}%
+                        </small>
+
+                    </div>
+
+                </div>
+
+
+                <!-- DORMANT -->
+                <div class="cc-account-status-item">
+
+                    <div class="cc-account-status-content">
+
+                        <span class="cc-account-status-label text-warning">
+                            Dormant
+                        </span>
+
+                        <strong>
+                            {{ dormantAccounts | number }}
+                        </strong>
+
+                        <small>
+                            {{ dormantAccountPercentage | number:'1.0-1' }}%
+                        </small>
+
+                    </div>
+
+                </div>
+
+
+                <!-- CLOSED -->
+                <div class="cc-account-status-item">
+
+                    <div class="cc-account-status-content">
+
+                        <span class="cc-account-status-label text-danger">
+                            Closed
+                        </span>
+
+                        <strong>
+                            {{ closedAccounts | number }}
+                        </strong>
+
+                        <small>
+                            {{ closedAccountPercentage | number:'1.0-1' }}%
+                        </small>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </article>
+
+
+        <!-- =====================================================
+             4. PAR 30 DAYS & CREDIT RISK
+        ====================================================== -->
+        <article class="cc-kpi-card cc-risk-card">
+
+            <!-- HEADER -->
+            <div class="cc-risk-header">
+
+                <div class="cc-risk-title">
+
+                    <div class="cc-kpi-icon cc-icon-orange">
+                        <i class="fas fa-shield-halved"></i>
+                    </div>
+
+                    <div>
+
+                        <span class="cc-kpi-label">
+                            PAR 30 DAYS
+                        </span>
+
+                        <span class="cc-risk-subtitle">
+                            Portfolio at Risk
+                        </span>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <!-- PAR VALUE -->
+            <div class="cc-risk-main">
+
+                <div class="cc-par-value">
+                    {{ portfolioMetrics.par30 | number:'1.1-1' }}%
+                </div>
+
+                <div
+                    class="cc-par-status"
+                    [class.cc-par-healthy]="portfolioMetrics.par30 <= 5"
+                    [class.cc-par-watch]="portfolioMetrics.par30 > 5 && portfolioMetrics.par30 <= 10"
+                    [class.cc-par-critical]="portfolioMetrics.par30 > 10">
+
+                    <i
+                        class="fas"
+                        [ngClass]="{
+                            'fa-circle-check': portfolioMetrics.par30 <= 5,
+                            'fa-eye': portfolioMetrics.par30 > 5 && portfolioMetrics.par30 <= 10,
+                            'fa-triangle-exclamation': portfolioMetrics.par30 > 10
+                        }">
+                    </i>
+
+                    <span>
+                        {{
+                            portfolioMetrics.par30 <= 5
+                                ? 'Healthy'
+                                : portfolioMetrics.par30 <= 10
+                                ? 'Watch'
+                                : 'Critical'
+                        }}
+                    </span>
+
+                </div>
+
+            </div>
+
+
+            <div class="cc-kpi-divider"></div>
+
+
+            <!-- RISK METRICS -->
+            <div class="cc-risk-metrics">
+
+                <div class="cc-risk-metric">
+
+                    <span>
+                        At Risk
+                    </span>
+
+                    <strong>
+                        KES
+                        {{
+                            (
+                                totalLoansAmount *
+                                (portfolioMetrics.par30 / 100)
+                            ) | number:'1.0-0'
+                        }}
+                    </strong>
+
+                </div>
+
+                <div class="cc-risk-metric">
+
+                    <button
+                        type="button"
+                        routerLink="/app/loans"
+                        class="cc-workspace-primary-action bg-danger">
+
+                        <i class="fas fa-clock-rotate-left"></i>
+                        Arrears
+
+                    </button>
+
+                </div>
+
+            </div>
+
+
+            <!-- RISK INSIGHT -->
+            <div class="cc-risk-insight">
+
+                <div class="cc-insight-icon">
+
+                    <i
+                        class="fas"
+                        [ngClass]="{
+                            'fa-circle-check': portfolioMetrics.par30 <= 5,
+                            'fa-eye': portfolioMetrics.par30 > 5 && portfolioMetrics.par30 <= 10,
+                            'fa-triangle-exclamation': portfolioMetrics.par30 > 10
+                        }">
+                    </i>
+
+                </div>
+
+                <div class="cc-insight-content">
+
+                    <span class="cc-insight-label text-danger">
+                        Risk Insight
+                    </span>
+
+                    <span class="cc-insight-text">
+
+                        {{
+                            portfolioMetrics.par30 <= 5
+                                ? 'Portfolio risk remains within a healthy range.'
+                                : portfolioMetrics.par30 <= 10
+                                ? 'Portfolio requires close monitoring and collection attention.'
+                                : 'Elevated portfolio risk requires immediate management attention.'
+                        }}
+
+                    </span>
+
+                </div>
+
+            </div>
+
+        </article>
+
+    </section>
 
 
     <!-- =========================================================
          PORTFOLIO HEALTH
     ========================================================== -->
-
     <section class="cc-portfolio-section">
 
+        <!-- SECTION HEADER -->
         <div class="cc-section-heading">
 
             <div>
 
-                <span class="cc-section-label">
-                    PORTFOLIO INTELLIGENCE
-                </span>
-
-                <h2>Credit Portfolio Health</h2>
-
+         <h2 class="text-primary mt-0 mb-0">
+                    Credit Portfolio Health
+                </h2>
             </div>
 
-
             <span class="cc-live-data">
-
                 <i class="fas fa-sync"></i>
-
                 Live data
-
             </span>
 
         </div>
 
 
+        <!-- HEALTH GRID -->
         <div class="cc-health-grid">
 
-
+            <!-- PERFORMING -->
             <div class="cc-health-item">
 
                 <div class="cc-health-title">
 
-                    <span>Performing</span>
+                    <span>
+                        Performing
+                    </span>
 
-                    <strong>72%</strong>
+                    <strong>
+                        {{ portfolioHealthPercentages.performing | number:'1.0-1' }}%
+                    </strong>
 
                 </div>
 
@@ -1157,25 +540,31 @@
 
                     <div
                         class="cc-health-fill cc-health-success"
-                        style="width:72%">
+                        [style.width.%]="portfolioHealthPercentages.performing">
                     </div>
 
                 </div>
 
                 <small>
-                    Healthy repayment behaviour
+                    Healthy repayment behaviour ·
+                    KES {{ portfolioHealthAmounts.performing | number:'1.0-0' }}
                 </small>
 
             </div>
 
 
+            <!-- WATCHLIST -->
             <div class="cc-health-item">
 
                 <div class="cc-health-title">
 
-                    <span>Watchlist</span>
+                    <span>
+                        Watchlist
+                    </span>
 
-                    <strong>14%</strong>
+                    <strong>
+                        {{ portfolioHealthPercentages.watchlist | number:'1.0-1' }}%
+                    </strong>
 
                 </div>
 
@@ -1183,25 +572,31 @@
 
                     <div
                         class="cc-health-fill cc-health-warning"
-                        style="width:14%">
+                        [style.width.%]="portfolioHealthPercentages.watchlist">
                     </div>
 
                 </div>
 
                 <small>
-                    Requires closer monitoring
+                    Requires closer monitoring ·
+                    KES {{ portfolioHealthAmounts.watchlist | number:'1.0-0' }}
                 </small>
 
             </div>
 
 
+            <!-- ARREARS -->
             <div class="cc-health-item">
 
                 <div class="cc-health-title">
 
-                    <span>Arrears</span>
+                    <span>
+                        Arrears
+                    </span>
 
-                    <strong>9%</strong>
+                    <strong>
+                        {{ portfolioHealthPercentages.arrears | number:'1.0-1' }}%
+                    </strong>
 
                 </div>
 
@@ -1209,25 +604,31 @@
 
                     <div
                         class="cc-health-fill cc-health-orange"
-                        style="width:9%">
+                        [style.width.%]="portfolioHealthPercentages.arrears">
                     </div>
 
                 </div>
 
                 <small>
-                    Payment delays detected
+                    Payment delays detected ·
+                    KES {{ portfolioHealthAmounts.arrears | number:'1.0-0' }}
                 </small>
 
             </div>
 
 
+            <!-- DEFAULT -->
             <div class="cc-health-item">
 
                 <div class="cc-health-title">
 
-                    <span>Default</span>
+                    <span>
+                        Default
+                    </span>
 
-                    <strong>5%</strong>
+                    <strong>
+                        {{ portfolioHealthPercentages.default | number:'1.0-1' }}%
+                    </strong>
 
                 </div>
 
@@ -1235,14 +636,171 @@
 
                     <div
                         class="cc-health-fill cc-health-danger"
-                        style="width:5%">
+                        [style.width.%]="portfolioHealthPercentages.default">
                     </div>
 
                 </div>
 
                 <small>
-                    Immediate attention required
+                    Immediate attention required ·
+                    KES {{ portfolioHealthAmounts.default | number:'1.0-0' }}
                 </small>
+
+            </div>
+
+        </div>
+
+
+        <!-- =====================================================
+             MONTHLY PORTFOLIO PERFORMANCE
+        ====================================================== -->
+        <div class="cc-growth-section">
+
+            <!-- HEADER -->
+            <div class="cc-growth-header">
+
+                <div>
+
+                    <span class="cc-growth-title">
+                        Credit Portfolio
+                    </span>
+
+                    <span class="cc-growth-subtitle">
+                        Monthly lending &amp; collection performance
+                    </span>
+
+                </div>
+
+                <span class="cc-growth-badge cc-live-badge">
+                    <span class="cc-live-dot"></span>
+                    LIVE
+                </span>
+
+            </div>
+
+
+            <!-- CHART LEGEND -->
+            <div class="cc-portfolio-chart-legend">
+
+                <span>
+                    <i class="fas fa-square cc-legend-disbursed"></i>
+                    Disbursed
+                </span>
+
+                <span>
+                    <i class="fas fa-square cc-legend-collected"></i>
+                    Collected
+                </span>
+
+                <span>
+                    <i class="fas fa-square cc-legend-outstanding"></i>
+                    Outstanding
+                </span>
+
+            </div>
+
+
+            <!-- MONTHLY CHART -->
+            <div
+                class="cc-monthly-portfolio-chart"
+                *ngIf="monthlyPortfolio.length > 0">
+
+                <div
+                    class="cc-month-column"
+                    *ngFor="let month of monthlyPortfolio">
+
+                    <!-- VALUE TOOLTIP -->
+                    <div class="cc-month-tooltip">
+
+                        <strong>
+                            {{ month.label }}
+                        </strong>
+
+                        <span>
+                            Disbursed:
+                            KES {{ month.disbursed | number:'1.0-0' }}
+                        </span>
+
+                        <span>
+                            Collected:
+                            KES {{ month.collected | number:'1.0-0' }}
+                        </span>
+
+                        <span>
+                            Outstanding:
+                            KES {{ month.outstanding | number:'1.0-0' }}
+                        </span>
+
+                        <span>
+                            Facilities:
+                            {{ month.facilities | number }}
+                        </span>
+
+                    </div>
+
+
+                    <!-- BARS -->
+                    <div class="cc-month-bars">
+
+                        <div
+                            class="cc-month-bar cc-bar-disbursed"
+                            [style.height.%]="getMonthlyBarHeight(month.disbursed)"
+                            title="Disbursed">
+                        </div>
+
+                        <div
+                            class="cc-month-bar cc-bar-collected"
+                            [style.height.%]="getMonthlyBarHeight(month.collected)"
+                            title="Collected">
+                        </div>
+
+                        <div
+                            class="cc-month-bar cc-bar-outstanding"
+                            [style.height.%]="getMonthlyBarHeight(month.outstanding)"
+                            title="Outstanding">
+                        </div>
+
+                    </div>
+
+
+                    <!-- MONTH -->
+                    <span class="cc-growth-month">
+                        {{ month.label }}
+                    </span>
+
+
+                    <!-- FACILITY COUNT -->
+                    <small class="cc-month-facilities">
+                        {{ month.facilities }}
+                    </small>
+
+                </div>
+
+            </div>
+
+
+            <!-- NO DATA -->
+            <div
+                *ngIf="monthlyPortfolio.length === 0"
+                class="cc-no-portfolio-data">
+
+                <i class="fas fa-chart-column"></i>
+
+                <span>
+                    No monthly portfolio data available
+                </span>
+
+            </div>
+
+
+            <!-- LIVE INSIGHT -->
+            <div class="cc-growth-insight">
+
+                <i class="fas fa-chart-line"></i>
+
+                <span>
+                    {{ portfolioMonthlyInsight }}
+                </span>
 
             </div>
 
@@ -1251,32 +809,195 @@
     </section>
 
 
+ <!-- =========================================================
+     CREDIT RISK & DECISION INTELLIGENCE
+========================================================== -->
+<div class="cc-intelligence-header">
+
+    <!-- SECTION TITLE -->
+    <div class="cc-intelligence-heading">
+
+        <div class="cc-intelligence-title-row">
+
+            <span class="cc-intelligence-icon">
+                <i class="fas fa-brain"></i>
+            </span>
+
+            <div>
+                <span class="cc-section-label fs-5">
+                    Credit Risk &amp; Decision Intelligence
+                </span>
+
+            </div>
+
+        </div>
+
+        <span class="cc-intelligence-description">
+            Live portfolio risk segmentation and decision intelligence
+        </span>
+
+    </div>
+
+
+    <!-- RISK FILTERS -->
+    <div class="cc-risk-filters fw-bold">
+
+        <!-- PERFORMING -->
+        <button
+            type="button"
+            class="cc-risk-filter cc-filter-performing"
+            [class.active]="selectedRiskFilter === 'PERFORMING'"
+            (click)="setRiskFilter('PERFORMING')">
+
+            <i class="fas fa-circle-check"></i>
+
+            <span class="cc-filter-name">
+                Performing
+            </span>
+
+            <strong>
+                {{ portfolioHealthStats.performing }}
+            </strong>
+
+        </button>
+
+
+        <!-- WATCHLIST -->
+        <button
+            type="button"
+            class="cc-risk-filter cc-filter-watchlist"
+            [class.active]="selectedRiskFilter === 'WATCHLIST'"
+            (click)="setRiskFilter('WATCHLIST')">
+
+            <i class="fas fa-eye"></i>
+
+            <span class="cc-filter-name">
+                Watchlist
+            </span>
+
+            <strong>
+                {{ portfolioHealthStats.watchlist }}
+            </strong>
+
+        </button>
+
+
+        <!-- ARREARS -->
+        <button
+            type="button"
+            class="cc-risk-filter cc-filter-arrears"
+            [class.active]="selectedRiskFilter === 'ARREARS'"
+            (click)="setRiskFilter('ARREARS')">
+
+            <i class="fas fa-clock"></i>
+
+            <span class="cc-filter-name">
+                Arrears
+            </span>
+
+            <strong>
+                {{ portfolioHealthStats.arrears }}
+            </strong>
+
+        </button>
+
+
+        <!-- DEFAULT -->
+        <button
+            type="button"
+            class="cc-risk-filter cc-filter-default"
+            [class.active]="selectedRiskFilter === 'DEFAULT'"
+            (click)="setRiskFilter('DEFAULT')">
+
+            <i class="fas fa-triangle-exclamation"></i>
+
+            <span class="cc-filter-name">
+                Default
+            </span>
+
+            <strong>
+                {{ portfolioHealthStats.default }}
+            </strong>
+
+        </button>
+
+
+        <!-- ALL -->
+        <button
+            type="button"
+            class="cc-risk-filter cc-filter-all"
+            [class.active]="selectedRiskFilter === 'ALL'"
+            (click)="setRiskFilter('ALL')">
+
+            <i class="fas fa-layer-group"></i>
+
+            <span class="cc-filter-name">
+                All
+            </span>
+
+            <strong>
+                {{ intelligentLoans.length }}
+            </strong>
+
+        </button>
+
+    </div>
+
+</div>
+
 
     <!-- =========================================================
-         CREDICORE AI HEADER
+         CREDIT INTELLIGENCE TABLE
     ========================================================== -->
+    <section class="cc-ai-table-card">
+
+        <!-- ACTIVE RISK FILTER -->
+        <div class="cc-active-risk-filter">
+
+            <div class="cc-active-filter-left">
+
+                <i class="fas fa-filter"></i>
+
+                <span>
+                    Viewing
+                </span>
+
+                <strong>
+                    {{
+                        selectedRiskFilter === 'ALL'
+                            ? 'All Credit Facilities'
+                            : selectedRiskFilter
+                    }}
+                </strong>
+
+            </div>
 
 
-        <div class="cc-intelligence-content">
+            <div class="cc-active-filter-right">
 
+                <span>
+                    {{ filteredIntelligentLoans.length }}
+                    {{
+                        filteredIntelligentLoans.length === 1
+                            ? 'facility'
+                            : 'facilities'
+                    }}
+                </span>
 
-            <h2 class="text-primary">
-                Credit Risk & Decision Intelligence
-            </h2>
+                <span class="cc-filter-separator">
+                    |
+                </span>
+
+                <span>
+                    Live portfolio data
+                </span>
+
+            </div>
 
         </div>
 
 
-
-
-
-    <!-- =========================================================
-         AI TABLE
-    ========================================================== -->
-
-    <section class="cc-ai-table-card">
-
-
+        <!-- LOADING STATE -->
         <div
             *ngIf="loadingAiTable"
             class="cc-ai-loader">
@@ -1292,7 +1013,7 @@
                 </strong>
 
                 <span>
-                    AI engine is processing risk indicators...
+                    Engine is processing risk indicators...
                 </span>
 
             </div>
@@ -1300,36 +1021,79 @@
         </div>
 
 
-
+        <!-- TABLE -->
         <div
             *ngIf="!loadingAiTable"
             class="cc-table-wrapper">
 
             <table class="cc-premium-table">
+<thead>
+    <tr>
 
-                <thead>
+        <th>
+            <span class="cc-table-header">
+                <i class="fas fa-user-tie"></i>
+                <span>Borrower</span>
+            </span>
+        </th>
 
-                    <tr>
+        <th>
+            <span class="cc-table-header">
+                <i class="fas fa-sack-dollar"></i>
+                <span>Facility</span>
+            </span>
+        </th>
 
-                        <th>Borrower</th>
-                        <th>Facility</th>
-                        <th>Risk Score</th>
-                        <th>PAR</th>
-                        <th>Status</th>
-                        <th>Fraud</th>
-                        <th>Prediction</th>
-                        <th>Recommendation</th>
+        <th>
+            <span class="cc-table-header">
+                <i class="fas fa-file-invoice"></i>
+                <span>Loan Ref No.</span>
+            </span>
+        </th>
 
-                    </tr>
+        <th>
+            <span class="cc-table-header">
+                <i class="fas fa-gauge-high"></i>
+                <span>Risk Score</span>
+            </span>
+        </th>
 
-                </thead>
+        <th>
+            <span class="cc-table-header">
+                <i class="fas fa-chart-line"></i>
+                <span>PAR</span>
+            </span>
+        </th>
 
+        <th>
+            <span class="cc-table-header">
+                <i class="fas fa-shield-halved"></i>
+                <span>Fraud</span>
+            </span>
+        </th>
+
+        <th>
+            <span class="cc-table-header">
+                <i class="fas fa-brain"></i>
+                <span>Prediction</span>
+            </span>
+        </th>
+
+        <th>
+            <span class="cc-table-header">
+                <i class="fas fa-route"></i>
+                <span>Recommendation</span>
+            </span>
+        </th>
+
+    </tr>
+</thead>
 
                 <tbody>
 
                     <tr
                         *ngFor="
-                            let loan of intelligentLoans;
+                            let loan of filteredIntelligentLoans;
                             trackBy: trackByLoan
                         "
                         class="cc-credit-row"
@@ -1339,9 +1103,7 @@
                             )
                         ">
 
-
                         <!-- BORROWER -->
-
                         <td>
 
                             <div class="cc-borrower">
@@ -1363,7 +1125,7 @@
                                     </strong>
 
                                     <small>
-                                        AI verified customer
+                                        Verified customer
                                     </small>
 
                                 </div>
@@ -1374,18 +1136,61 @@
 
 
                         <!-- FACILITY -->
-
                         <td>
 
-                            <strong>
-                                KES {{ loan.amount | number:'1.2-2' }}
-                            </strong>
+                            <div class="cc-facility">
+
+                                <strong class="cc-facility-total">
+                                    KES {{ getTotalFacilityAmount(loan) | number:'1.2-2' }}
+                                </strong>
+
+                                <div class="cc-facility-meta">
+
+                                    <span
+                                        class="cc-loan-status"
+                                        [ngClass]="getLoanStatusClass(loan)">
+
+                                        <i
+                                            class="fa"
+                                            [ngClass]="getLoanStatusIcon(loan)">
+                                        </i>
+
+                                        {{ getLoanStatusLabel(loan) }}
+
+                                    </span>
+
+                                    <span class="cc-due-date">
+
+                                        <i class="fa fa-calendar-alt"></i>
+
+                                        {{ getLoanDueDate(loan) }}
+
+                                    </span>
+
+                                </div>
+
+                            </div>
 
                         </td>
 
 
-                        <!-- RISK -->
+                        <!-- LOAN REFERENCE -->
+                        <td>
 
+                            <div class="cc-loan-reference">
+
+                                <i class="fas fa-file-invoice"></i>
+
+                                <span>
+                                    {{ loan.applicationNumber || 'N/A' }}
+                                </span>
+
+                            </div>
+
+                        </td>
+
+
+                        <!-- RISK SCORE -->
                         <td>
 
                             <div class="cc-risk-score">
@@ -1413,7 +1218,6 @@
 
 
                         <!-- PAR -->
-
                         <td>
 
                             <span class="cc-soft-badge cc-badge-blue">
@@ -1423,35 +1227,23 @@
                         </td>
 
 
-                        <!-- STATUS -->
-
-                        <td>
-
-                            <span class="cc-status-badge">
-                                {{ loan.status }}
-                            </span>
-
-                        </td>
-
-
                         <!-- FRAUD -->
-
                         <td>
 
                             <span
                                 class="cc-soft-badge"
                                 [ngClass]="
                                     loan.fraudFlag
-                                    ? 'cc-badge-red'
-                                    : 'cc-badge-green'
+                                        ? 'cc-badge-red'
+                                        : 'cc-badge-green'
                                 ">
 
                                 <i
                                     class="fas"
                                     [ngClass]="
                                         loan.fraudFlag
-                                        ? 'fa-flag'
-                                        : 'fa-circle-check'
+                                            ? 'fa-flag'
+                                            : 'fa-circle-check'
                                     ">
                                 </i>
 
@@ -1463,13 +1255,11 @@
 
 
                         <!-- PREDICTION -->
-
                         <td>
 
                             <span
                                 class="cc-soft-badge"
                                 [ngClass]="{
-
                                     'cc-badge-green':
                                         loan.predictiveRisk === 'LOW',
 
@@ -1478,7 +1268,6 @@
 
                                     'cc-badge-red':
                                         loan.predictiveRisk === 'HIGH'
-
                                 }">
 
                                 {{ loan.predictiveRisk }}
@@ -1489,13 +1278,11 @@
 
 
                         <!-- RECOMMENDATION -->
-
                         <td class="cc-recommendation-cell">
 
                             <span
                                 class="cc-recommendation"
                                 [ngClass]="{
-
                                     'cc-recommendation-approve':
                                         loan.recommendation === 'AUTO APPROVE' ||
                                         loan.recommendation === 'VIP PRIORITY APPROVAL',
@@ -1508,7 +1295,6 @@
                                     'cc-recommendation-reject':
                                         loan.recommendation === 'DECLINE APPLICATION' ||
                                         loan.recommendation === 'BLOCK & INVESTIGATE'
-
                                 }">
 
                                 {{ loan.recommendation || 'PENDING REVIEW' }}
@@ -1516,12 +1302,10 @@
                             </span>
 
                             <small>
-
                                 {{
                                     loan.aiReason ||
-                                    'Awaiting AI analysis'
+                                    'Awaiting Credicore analysis'
                                 }}
-
                             </small>
 
                         </td>

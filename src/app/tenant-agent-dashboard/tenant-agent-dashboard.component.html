@@ -1,0 +1,1747 @@
+<div class="tenant-dashboard container-fluid py-2"
+     [class.printing-statement]="printingStatement">
+
+
+
+  <!-- =========================================================
+       DASHBOARD ERROR
+  ========================================================== -->
+  <div
+    class="alert alert-danger dashboard-alert d-flex align-items-start"
+    *ngIf="errorMessage"
+    role="alert">
+
+    <i class="fa-solid fa-circle-exclamation me-3 mt-1"></i>
+
+    <div class="flex-grow-1">
+      <strong>Dashboard unavailable</strong>
+      <div>{{ errorMessage }}</div>
+
+      <button
+        type="button"
+        class="btn btn-sm btn-outline-danger mt-2"
+        (click)="loadDashboard()"
+        [disabled]="loading">
+        Try again
+      </button>
+    </div>
+  </div>
+
+  <!-- =========================================================
+       INITIAL LOADING STATE
+  ========================================================== -->
+  <div class="loading-panel" *ngIf="loading && !dashboard">
+
+    <div class="spinner-border text-primary mb-3" role="status">
+      <span class="visually-hidden">Loading...</span>
+    </div>
+
+    <h6>Loading your dashboard</h6>
+
+    <p class="text-muted mb-0">
+      Retrieving the latest property and rent information.
+    </p>
+  </div>
+
+  <!-- =========================================================
+       DASHBOARD CONTENT
+  ========================================================== -->
+  <ng-container *ngIf="dashboard as data">
+
+    <div
+  class="tenant-dashboard-layout"
+  [class.quick-actions-collapsed]="!quickActionsExpanded"
+  [class.quick-actions-expanded]="quickActionsExpanded">
+
+      <!-- =====================================================
+           MAIN DASHBOARD CONTENT
+      ====================================================== -->
+      <main class="dashboard-main">
+
+
+  
+        <!-- ===================================================
+             TENANT ACCOUNTS & FINANCIAL POSITION
+        ==================================================== -->
+        <section class="tenant-accounts-section">
+
+ 
+<div class="section-heading tenant-account-heading mb-3">
+
+  <!-- LEFT: SECTION TITLE -->
+  <div class="tenant-heading-title">
+    <div class="fs-5 fw-bold text-primary">
+      <i class="fa-solid fa-chart-line me-2"></i>
+      PROPERTY MANAGEMENT
+    </div>
+
+    <h5 class="mb-1">
+      <i class="fa-solid fa-wallet text-primary me-2"></i>
+      Tenant Accounts &amp; Balances
+    </h5>
+
+    <p class="text-muted small mb-0">
+      Review tenant balances, arrears and advance rent credits.
+    </p>
+  </div>
+
+  <!-- CENTRE: TODAY'S REMINDERS -->
+  <div class="today-reminders-section">
+    <div class="today-reminder-content">
+
+      <div class="today-date-heading">
+        <span class="today-label">
+          <i class="fa-regular fa-calendar-check"></i>
+          Today
+        </span>
+
+        <span class="today-date">
+          {{ today | date:'EEEE, d MMMM y' }}
+        </span>
+      </div>
+
+      <div class="today-events-bottom">
+
+        <div
+          class="today-events-list"
+          *ngIf="!todayEventsLoading &&
+                 !todayEventsError &&
+                 todayEvents.length > 0">
+
+          <span
+            class="today-event-item"
+            *ngFor="let event of todayEvents"
+            [title]="event.message || event.title">
+
+            <i class="fa-regular fa-bell"></i>
+            <span class="today-event-title">{{ event.title }}</span>
+          </span>
+        </div>
+
+        <div
+          class="no-reminders-message"
+          *ngIf="!todayEventsLoading &&
+                 !todayEventsError &&
+                 todayEvents.length === 0">
+
+          <i class="fa-regular fa-calendar"></i>
+          <span>There are no reminders for <strong>Today</strong>.</span>
+        </div>
+
+        <div
+          class="today-loading-message"
+          *ngIf="todayEventsLoading">
+
+          <span class="spinner-border spinner-border-sm"
+                role="status"
+                aria-label="Loading"></span>
+          <span>Loading today's reminders...</span>
+        </div>
+
+        <div
+          class="today-error-message"
+          *ngIf="todayEventsError">
+
+          <i class="fa-solid fa-circle-exclamation"></i>
+          <span>{{ todayEventsError }}</span>
+        </div>
+
+        <a
+          routerLink="/app/tenant/calendar"
+          class="view-all-reminders">
+          View all
+          <i class="fa-solid fa-arrow-right"></i>
+        </a>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- RIGHT: ACTION BUTTONS -->
+  <div class="tenant-header-actions">
+
+    <button
+      type="button"
+      class="btn btn-primary btn-sm add-property-btn"
+      routerLink="/app/tenant/properties/register">
+
+      <i class="fa-solid fa-plus"></i>
+      <span>Add Property</span>
+    </button>
+
+    <!-- PORTFOLIO ACTIVITY BUTTON -->
+<button
+  type="button"
+  class="btn portfolio-activity-btn"
+  routerLink="/app/tenant/portfolio-activity"
+  title="View portfolio activity and operational insights">
+
+  <span class="portfolio-activity-icon">
+    <i class="fa-solid fa-chart-line"></i>
+  </span>
+
+  <span class="portfolio-activity-text">
+    Portfolio Activity
+  </span>
+
+  <i class="fa-solid fa-arrow-up-right-from-square portfolio-activity-arrow"></i>
+</button>
+
+    <button
+      type="button"
+      class="btn btn-outline-primary btn-sm refresh-accounts-btn"
+      (click)="loadTenantAccounts()"
+      [disabled]="accountLoading">
+
+      <i class="fa-solid fa-rotate me-2"
+         [class.fa-spin]="accountLoading"></i>
+      Refresh Accounts
+    </button>
+
+  </div>
+
+</div>
+
+
+
+<!-- =====================================================
+     TENANT ACCOUNT BALANCE OVERVIEW
+     ENTERPRISE FINANCIAL KPI CARDS
+====================================================== -->
+
+<div class="row row-cols-2 row-cols-md-3 row-cols-xl-5 g-3 mb-2 tenant-account-kpi-row">
+
+  <!-- TOTAL CHARGED -->
+  <div class="col">
+    <div class="account-kpi account-kpi-charged h-100">
+
+      <div class="account-kpi-top">
+        <div class="account-kpi-heading">
+          <span class="account-kpi-icon">
+            <i class="fa-solid fa-coins"></i>
+          </span>
+          <span class="account-kpi-label">Total Charged</span>
+        </div>
+
+        <span class="account-kpi-indicator" title="Total rent billed">
+          <i class="fa-solid fa-arrow-trend-up"></i>
+        </span>
+      </div>
+
+      <div class="account-kpi-content">
+        <strong class="account-kpi-value">
+          {{ accountTotals.charged | currency:'KES ':'code':'1.2-2' }}
+        </strong>
+
+        <small class="account-kpi-description">
+          Total rent billed
+        </small>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- VALID PAYMENTS -->
+  <div class="col">
+    <div class="account-kpi account-kpi-payments h-100">
+
+      <div class="account-kpi-top">
+        <div class="account-kpi-heading">
+          <span class="account-kpi-icon">
+            <i class="fa-solid fa-hand-holding-dollar"></i>
+          </span>
+          <span class="account-kpi-label">Valid Payments</span>
+        </div>
+
+        <span class="account-kpi-indicator" title="Confirmed payments">
+          <i class="fa-solid fa-check"></i>
+        </span>
+      </div>
+
+      <div class="account-kpi-content">
+        <strong class="account-kpi-value">
+          {{ accountTotals.payments | currency:'KES ':'code':'1.2-2' }}
+        </strong>
+
+        <small class="account-kpi-description">
+          Confirmed payments
+        </small>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- OUTSTANDING -->
+  <div class="col">
+    <div class="account-kpi account-kpi-outstanding h-100">
+
+      <div class="account-kpi-top">
+        <div class="account-kpi-heading">
+          <span class="account-kpi-icon">
+            <i class="fa-solid fa-wallet"></i>
+          </span>
+          <span class="account-kpi-label">Outstanding</span>
+        </div>
+
+        <span class="account-kpi-indicator" title="Unpaid balance">
+          <i class="fa-solid fa-clock"></i>
+        </span>
+      </div>
+
+      <div class="account-kpi-content">
+        <strong class="account-kpi-value">
+          {{ accountTotals.outstanding | currency:'KES ':'code':'1.2-2' }}
+        </strong>
+
+        <small class="account-kpi-description">
+          Unpaid rent balance
+        </small>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- OVERDUE ARREARS -->
+  <div class="col">
+    <div class="account-kpi account-kpi-arrears h-100">
+
+      <div class="account-kpi-top">
+        <div class="account-kpi-heading">
+          <span class="account-kpi-icon">
+            <i class="fa-solid fa-triangle-exclamation"></i>
+          </span>
+          <span class="account-kpi-label">Overdue Arrears</span>
+        </div>
+
+        <span class="account-kpi-indicator" title="Past-due balance">
+          <i class="fa-solid fa-exclamation"></i>
+        </span>
+      </div>
+
+      <div class="account-kpi-content">
+        <strong class="account-kpi-value">
+          {{ accountTotals.arrears | currency:'KES ':'code':'1.2-2' }}
+        </strong>
+
+        <small class="account-kpi-description">
+          Past-due rent balance
+        </small>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- AVAILABLE ADVANCE CREDIT -->
+  <div class="col">
+    <div class="account-kpi account-kpi-credit h-100">
+
+      <div class="account-kpi-top">
+        <div class="account-kpi-heading">
+          <span class="account-kpi-icon">
+            <i class="fa-solid fa-piggy-bank"></i>
+          </span>
+          <span class="account-kpi-label">Advance Credit</span>
+        </div>
+
+        <span class="account-kpi-indicator" title="Available future rent credit">
+          <i class="fa-solid fa-arrow-up"></i>
+        </span>
+      </div>
+
+      <div class="account-kpi-content">
+        <strong class="account-kpi-value">
+          {{ accountTotals.credit | currency:'KES ':'code':'1.2-2' }}
+        </strong>
+
+        <small class="account-kpi-description">
+          Available for future rent
+        </small>
+      </div>
+
+    </div>
+  </div>
+
+</div>
+
+
+<!-- =========================================================
+     RENT COLLECTION & OCCUPANCY PERFORMANCE
+========================================================== -->
+<!-- RENT COLLECTION & OCCUPANCY INSIGHTS -->
+<section class="dashboard-insights mb-4">
+
+  <div class="insights-heading mb-3">
+    <div>
+      <h5 class="insights-eyebrow mb-1 text-primary">Performance Overview</h5>
+      <p class="text-muted small mb-0">
+        Monitor rent collection, occupancy and property performance.
+      </p>
+    </div>
+
+    <span class="insights-period">
+      <i class="fa-regular fa-calendar me-2"></i>
+      Current month
+    </span>
+  </div>
+
+
+<div class="row g-3">
+
+  <!-- =====================================================
+       RENT COLLECTION INTELLIGENCE
+  ====================================================== -->
+  <div class="col-12 col-xl-6">
+    <article class="insight-card rent-collection-card h-100">
+
+      <!-- HEADER -->
+      <div class="insight-card-heading">
+        <div class="insight-title-group">
+          <span class="insight-icon insight-icon-green">
+            <i class="fa-solid fa-file-invoice-dollar"></i>
+          </span>
+
+          <div>
+            <h6>Rent Collection</h6>
+            <p>Financial performance</p>
+          </div>
+        </div>
+
+        
+      <!-- COMPACT DATE FILTER -->
+      <div class="rent-date-filter">
+
+        <div class="date-range-fields">
+
+          <div class="date-range-field">
+            <label for="dashboardDateFrom">From</label>
+            <input
+              id="dashboardDateFrom"
+              type="date"
+              class="form-control"
+              [(ngModel)]="dashboardDateFrom"
+              [max]="dashboardDateTo || null">
+          </div>
+
+          <div class="date-range-field">
+            <label for="dashboardDateTo">To</label>
+            <input
+              id="dashboardDateTo"
+              type="date"
+              class="form-control"
+              [(ngModel)]="dashboardDateTo"
+              [min]="dashboardDateFrom || null">
+          </div>
+
+          <button
+            type="button"
+            class="date-range-apply"
+            (click)="applyDashboardDateRange()"
+            [disabled]="
+              !dashboardDateFrom ||
+              !dashboardDateTo ||
+              dashboardDateFrom > dashboardDateTo
+            ">
+            <i class="fa-solid fa-filter me-1"></i>
+            Apply
+          </button>
+
+        </div>
+
+        <div
+          *ngIf="dateRangeError"
+          class="date-range-error"
+          role="alert">
+          <i class="fa-solid fa-circle-exclamation me-1"></i>
+          {{ dateRangeError }}
+        </div>
+
+      </div>
+
+        <span class="insight-tag insight-tag-green">
+          <i class="fa-solid fa-chart-pie me-1"></i>
+          Financial
+        </span>
+      </div>
+
+      <!-- CHART AND FINANCIAL RECORDS -->
+      <div class="rent-chart-container">
+
+        <!-- DONUT GRAPH -->
+        <div class="rent-chart-visual">
+
+          <div
+            class="rent-donut-chart"
+            [style.background]="getRentCollectionGradient()"
+            role="img"
+            aria-label="Rent collection composition">
+
+            <div class="rent-donut-hole">
+  <span class="rent-chart-center-label">Total Charged</span>
+
+  <strong>
+    {{ formatCompactCurrency(dashboard?.rentChargedThisMonth) }}
+  </strong>
+
+  <span class="rent-chart-center-caption">
+    Rent charged
+  </span>
+</div>
+
+          </div>
+
+          <div class="rent-chart-caption">
+            <i class="fa-solid fa-chart-pie"></i>
+            Collection composition
+          </div>
+
+        </div>
+
+        <!-- FINANCIAL RECORDS -->
+        <div class="rent-chart-records">
+
+          <div class="rent-records-heading">
+            <strong>Financial records</strong>
+            <span>Selected period</span>
+          </div>
+
+          <div class="rent-record-row">
+            <div class="rent-record-information">
+              <span class="rent-record-indicator rent-indicator-blue">
+                <i class="fa-solid fa-file-invoice"></i>
+              </span>
+              <div>
+                <strong>Rent charged</strong>
+                <small>Total expected rent</small>
+              </div>
+            </div>
+
+            <strong class="rent-record-amount rent-amount-blue">
+              {{ dashboard?.rentChargedThisMonth |
+                 currency:'KES ':'symbol':'1.2-2' }}
+            </strong>
+          </div>
+
+          <div class="rent-record-row">
+            <div class="rent-record-information">
+              <span class="rent-record-indicator rent-indicator-green">
+                <i class="fa-solid fa-circle-check"></i>
+              </span>
+              <div>
+                <strong>Rent collected</strong>
+                <small>Successfully received</small>
+              </div>
+            </div>
+
+            <strong class="rent-record-amount rent-amount-green">
+              {{ dashboard?.rentCollectedThisMonth |
+                 currency:'KES ':'symbol':'1.2-2' }}
+            </strong>
+          </div>
+
+          <div class="rent-record-row">
+            <div class="rent-record-information">
+              <span class="rent-record-indicator rent-indicator-amber">
+                <i class="fa-solid fa-clock"></i>
+              </span>
+              <div>
+                <strong>Outstanding rent</strong>
+                <small>Unpaid rent balance</small>
+              </div>
+            </div>
+
+            <strong class="rent-record-amount rent-amount-amber">
+              {{ dashboard?.outstandingRent |
+                 currency:'KES ':'symbol':'1.2-2' }}
+            </strong>
+          </div>
+
+          <div class="rent-record-row">
+            <div class="rent-record-information">
+              <span class="rent-record-indicator rent-indicator-red">
+                <i class="fa-solid fa-triangle-exclamation"></i>
+              </span>
+              <div>
+                <strong>Overdue arrears</strong>
+                <small>Past-due unpaid rent</small>
+              </div>
+            </div>
+
+            <strong class="rent-record-amount rent-amount-red">
+              {{ dashboard?.overdueArrears |
+                 currency:'KES ':'symbol':'1.2-2' }}
+            </strong>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- COLLECTION PROGRESS -->
+      <div class="rent-collection-progress">
+
+        <div class="rent-progress-heading">
+          <div>
+            <strong>Collection performance</strong>
+            <small>Payments received against rent charged</small>
+          </div>
+
+          <strong class="rent-progress-rate">
+            {{ getRentCollectionRate() | number:'1.1-1' }}%
+          </strong>
+        </div>
+
+        <div
+          class="rent-progress-track"
+          role="progressbar"
+          [attr.aria-valuenow]="clampPercent(getRentCollectionRate())"
+          aria-valuemin="0"
+          aria-valuemax="100">
+
+          <div
+            class="rent-progress-fill"
+            [style.width.%]="clampPercent(getRentCollectionRate())">
+          </div>
+        </div>
+
+      </div>
+
+      <!-- FOOTER -->
+      <div class="rent-insight-footer">
+
+        <span class="rent-active-leases">
+          <i class="fa-solid fa-building-user"></i>
+          <strong>{{ dashboard?.activeLeases || 0 }}</strong>
+          Active leases
+        </span>
+
+        <span
+          class="rent-collection-status"
+          [class.status-success]="getRentCollectionRate() >= 100"
+          [class.status-warning]="
+            getRentCollectionRate() > 0 &&
+            getRentCollectionRate() < 100
+          "
+          [class.status-neutral]="getRentCollectionRate() <= 0">
+
+          <i
+            class="fa-solid"
+            [ngClass]="
+              getRentCollectionRate() >= 100
+                ? 'fa-circle-check'
+                : getRentCollectionRate() > 0
+                  ? 'fa-chart-line'
+                  : 'fa-circle-info'
+            ">
+          </i>
+
+          {{
+            getRentCollectionRate() >= 100
+              ? 'Target reached'
+              : getRentCollectionRate() > 0
+                ? 'Collection in progress'
+                : 'Awaiting collections'
+          }}
+        </span>
+
+      </div>
+
+    </article>
+  </div>
+
+
+ 
+<!-- =====================================================
+     PROPERTY OCCUPANCY INTELLIGENCE
+====================================================== -->
+
+<div class="col-12 col-xl-6">
+
+  <article class="insight-card occupancy-intelligence-card h-100">
+
+    <!-- HEADER -->
+    <div class="insight-card-heading">
+
+      <div class="insight-title-group">
+
+        <span class="insight-icon insight-icon-blue">
+          <i class="fa-solid fa-building"></i>
+        </span>
+
+        <div>
+          <h6>Property Occupancy</h6>
+          <p>Portfolio utilization and unit availability</p>
+        </div>
+
+      </div>
+
+      <span class="insight-tag insight-tag-blue">
+        <i class="fa-solid fa-chart-pie me-1"></i>
+        Portfolio
+      </span>
+
+    </div>
+
+    <!-- OCCUPANCY CHART AND RECORDS -->
+    <div class="occupancy-intelligence-layout">
+
+      <!-- DONUT CHART -->
+      <div class="occupancy-chart-visual">
+
+        <div
+          class="occupancy-intelligence-donut"
+          [style.background]="
+            'conic-gradient(#2563eb 0 ' +
+            clampPercent(dashboard?.occupancyRate ?? 0) +
+            '%, #e8eef5 ' +
+            clampPercent(dashboard?.occupancyRate ?? 0) +
+            '% 100%)'
+          "
+          role="img"
+          [attr.aria-label]="
+            'Occupancy rate: ' +
+            (dashboard?.occupancyRate ?? 0) + ' percent'
+          ">
+
+          <div class="occupancy-intelligence-hole">
+
+            <span class="occupancy-chart-label">
+              OCCUPANCY RATE
+            </span>
+
+            <strong>
+              {{ dashboard?.occupancyRate ?? 0 | number:'1.1-1' }}%
+            </strong>
+
+            <span class="occupancy-chart-caption">
+              Units occupied
+            </span>
+
+          </div>
+
+        </div>
+
+        <div class="occupancy-chart-description">
+          <i class="fa-solid fa-chart-pie"></i>
+          Portfolio composition
+        </div>
+
+      </div>
+
+      <!-- PORTFOLIO RECORDS -->
+      <div class="occupancy-chart-records mt-3">
+
+        <div class="occupancy-records-heading">
+          <strong>Portfolio records</strong>
+          <span>Current overview</span>
+        </div>
+
+        <!-- TOTAL UNITS -->
+        <div class="occupancy-record-row">
+
+          <div class="occupancy-record-information">
+
+            <span class="occupancy-record-icon occupancy-icon-total">
+              <i class="fa-solid fa-layer-group"></i>
+            </span>
+
+            <div>
+              <strong>Total registered units</strong>
+              <small>Entire property portfolio</small>
+            </div>
+
+          </div>
+
+          <strong class="occupancy-record-value occupancy-value-total">
+            {{ dashboard?.totalUnits ?? 0 | number }}
+          </strong>
+
+        </div>
+
+        <!-- OCCUPIED UNITS -->
+        <div class="occupancy-record-row">
+
+          <div class="occupancy-record-information">
+
+            <span class="occupancy-record-icon occupancy-icon-occupied">
+              <i class="fa-solid fa-house-circle-check"></i>
+            </span>
+
+            <div>
+              <strong>Occupied units</strong>
+              <small>Currently occupied</small>
+            </div>
+
+          </div>
+
+          <strong class="occupancy-record-value occupancy-value-occupied">
+            {{ dashboard?.occupiedUnits ?? 0 | number }}
+          </strong>
+
+        </div>
+
+        <!-- VACANT UNITS -->
+        <div class="occupancy-record-row">
+
+          <div class="occupancy-record-information">
+
+            <span class="occupancy-record-icon occupancy-icon-vacant">
+              <i class="fa-solid fa-house"></i>
+            </span>
+
+            <div>
+              <strong>Vacant units</strong>
+              <small>Available for letting</small>
+            </div>
+
+          </div>
+
+          <strong class="occupancy-record-value occupancy-value-vacant">
+            {{ dashboard?.vacantUnits ?? 0 | number }}
+          </strong>
+
+        </div>
+
+        <!-- ACTIVE TENANTS -->
+        <div class="occupancy-record-row">
+
+          <div class="occupancy-record-information">
+
+            <span class="occupancy-record-icon occupancy-icon-tenants">
+              <i class="fa-solid fa-users"></i>
+            </span>
+
+            <div>
+              <strong>Active tenants</strong>
+              <small>Registered tenant occupancy</small>
+            </div>
+
+          </div>
+
+          <strong class="occupancy-record-value occupancy-value-tenants">
+            {{ dashboard?.activeTenants ?? 0 | number }}
+          </strong>
+
+        </div>
+
+      </div>
+
+    </div>
+
+    <!-- OCCUPANCY COMPOSITION -->
+    <div class="occupancy-composition">
+
+      <div class="occupancy-composition-heading">
+        <strong>Unit distribution</strong>
+        <span>Occupied vs vacant</span>
+      </div>
+
+      <div class="occupancy-distribution-bar">
+
+        <div
+          class="occupancy-distribution-occupied"
+          [style.width.%]="clampPercent(dashboard?.occupancyRate ?? 0)">
+        </div>
+
+        <div
+          class="occupancy-distribution-vacant"
+          [style.width.%]="
+            100 - clampPercent(dashboard?.occupancyRate ?? 0)
+          ">
+        </div>
+
+      </div>
+
+      <div class="occupancy-distribution-legend">
+
+        <span>
+          <i class="occupancy-legend-dot occupancy-dot-occupied"></i>
+          Occupied
+          <strong>
+            {{ dashboard?.occupancyRate ?? 0 | number:'1.1-1' }}%
+          </strong>
+        </span>
+
+        <span>
+          <i class="occupancy-legend-dot occupancy-dot-vacant"></i>
+          Vacant
+          <strong>
+            {{
+              100 - clampPercent(dashboard?.occupancyRate ?? 0)
+              | number:'1.1-1'
+            }}%
+          </strong>
+        </span>
+
+      </div>
+
+    </div>
+
+    <!-- PORTFOLIO PERFORMANCE -->
+    <!-- <div class="occupancy-performance">
+
+      <div class="occupancy-performance-heading">
+
+        <div>
+          <strong>Occupancy performance</strong>
+          <small>Share of registered units currently occupied</small>
+        </div>
+
+        <strong class="occupancy-performance-rate">
+          {{ dashboard?.occupancyRate ?? 0 | number:'1.1-1' }}%
+        </strong>
+
+      </div>
+
+      <div
+        class="occupancy-performance-track"
+        role="progressbar"
+        [attr.aria-valuenow]="
+          clampPercent(dashboard?.occupancyRate ?? 0)
+        "
+        aria-valuemin="0"
+        aria-valuemax="100"
+        aria-label="Property occupancy performance">
+
+        <div
+          class="occupancy-performance-fill"
+          [style.width.%]="
+            clampPercent(dashboard?.occupancyRate ?? 0)
+          ">
+        </div>
+
+      </div>
+
+    </div> -->
+
+    <!-- PORTFOLIO FOOTER -->
+    <div class="occupancy-intelligence-footer">
+
+      <span class="occupancy-footer-item">
+        <i class="fa-solid fa-building"></i>
+        <strong>{{ dashboard?.totalProperties ?? 0 | number }}</strong>
+        Properties
+      </span>
+
+      <span
+        class="occupancy-status"
+        [class.occupancy-status-excellent]="
+          dashboard?.totalUnits && (dashboard?.occupancyRate ?? 0) >= 90
+        "
+        [class.occupancy-status-good]="
+          dashboard?.totalUnits &&
+          (dashboard?.occupancyRate ?? 0) >= 70 &&
+          (dashboard?.occupancyRate ?? 0) < 90
+        "
+        [class.occupancy-status-warning]="
+          dashboard?.totalUnits &&
+          (dashboard?.occupancyRate ?? 0) < 70
+        "
+        [class.occupancy-status-neutral]="!dashboard?.totalUnits">
+
+        <i
+          class="fa-solid"
+          [ngClass]="
+            !dashboard?.totalUnits
+              ? 'fa-circle-info'
+              : (dashboard?.occupancyRate ?? 0) >= 90
+                ? 'fa-circle-check'
+                : (dashboard?.occupancyRate ?? 0) >= 70
+                  ? 'fa-chart-line'
+                  : 'fa-triangle-exclamation'
+          ">
+        </i>
+
+        {{
+          !dashboard?.totalUnits
+            ? 'Awaiting registrations'
+            : (dashboard?.occupancyRate ?? 0) >= 90
+              ? 'High occupancy'
+              : (dashboard?.occupancyRate ?? 0) >= 70
+                ? 'Good occupancy'
+                : 'Vacancy attention needed'
+        }}
+
+      </span>
+
+    </div>
+
+  </article>
+
+</div>
+
+
+</div>
+
+</section>
+
+
+          <!-- =================================================
+               ACCOUNT ERROR
+          ================================================== -->
+          <div
+            class="alert alert-danger"
+            *ngIf="accountError"
+            role="alert">
+
+            <i class="fa-solid fa-circle-exclamation me-2"></i>
+
+            {{ accountError }}
+
+            <button
+              type="button"
+              class="btn btn-sm btn-outline-danger ms-2"
+              (click)="loadTenantAccounts()"
+              [disabled]="accountLoading">
+              Retry
+            </button>
+          </div>
+
+          <!-- =================================================
+               ACCOUNT LOADING
+          ================================================== -->
+          <div
+            class="account-loading"
+            *ngIf="accountLoading && !accounts.length">
+
+            <div class="spinner-border spinner-border-sm
+                        text-primary me-2"
+                 role="status">
+
+              <span class="visually-hidden">Loading</span>
+            </div>
+
+            Loading tenant account balances...
+          </div>
+
+     
+<!-- =================================================
+     TENANT ACCOUNT REGISTER
+================================================== -->
+
+<!-- =================================================
+     TENANT ACCOUNT REGISTER
+================================================== -->
+<div class="account-table-panel">
+
+  <div class="account-table-toolbar">
+    <div>
+      <h6 class="mb-1">Tenant Account Register</h6>
+      <span class="text-muted small">
+        {{ filteredAccounts.length }} account(s)
+      </span>
+    </div>
+
+<div class="account-search">
+  <span class="search-icon">
+    <i class="fa-solid fa-magnifying-glass"></i>
+  </span>
+
+  <input
+    type="search"
+    class="form-control"
+    placeholder="Search tenant, property or unit..."
+    [value]="accountSearch"
+    (input)="accountSearch = $any($event.target).value"
+    aria-label="Search tenant accounts">
+</div>
+  </div>
+
+  <div class="table-responsive">
+
+    <table class="table tenant-account-table align-middle mb-0">
+
+      <thead>
+        <tr>
+          <th>Tenant</th>
+          <th>Moved in</th>
+          <th class="text-center">Next Rent Due</th>
+          <th class="text-end">Rent Charged</th>
+          <th class="text-end">Payments</th>
+          <th class="text-end">Outstanding</th>
+          <th class="text-end">Overdue</th>
+          <th class="text-end">Credit</th>
+          <th class="text-center">Statement</th>
+        </tr>
+      </thead>
+
+      <tbody>
+
+        <ng-container
+          *ngFor="let account of filteredAccounts; trackBy: trackByAccount">
+
+          <!-- TENANT ACCOUNT ROW -->
+         
+<!-- TENANT ACCOUNT ROW -->
+<tr class="tenant-account-row">
+
+<!-- TENANT -->
+<td>
+  <div class="tenant-account-identity">
+
+    <!-- TENANT PHOTOGRAPH -->
+    <div class="tenant-account-avatar">
+
+      <img
+        *ngIf="account.tenantImageUrl && !tenantAccountImageErrors[account.leaseId]"
+        [src]="getTenantAccountImageUrl(account.tenantImageUrl)"
+        [alt]="'Photograph of ' + (account.tenantName || 'tenant')"
+        class="tenant-account-photo"
+        loading="lazy"
+        (error)="onTenantAccountImageError(account.leaseId)">
+
+      <i
+        *ngIf="!account.tenantImageUrl || tenantAccountImageErrors[account.leaseId]"
+        class="fa-solid fa-user">
+      </i>
+
+    </div>
+
+    <!-- TENANT DETAILS -->
+    <div class="tenant-account-details">
+
+      <div class="fw-semibold">
+        {{ account.tenantName || 'Unknown Tenant' }}
+      </div>
+
+      <small class="text-muted">
+        Lease ID: {{ account.leaseId }}
+      </small>
+
+    </div>
+
+  </div>
+</td>
+
+
+<!-- PROPERTY / UNIT -->
+<td>
+  <div class="property-unit-cell">
+    <div class="property-unit-icon">
+      <i class="fa-solid fa-building"></i>
+    </div>
+
+    <div class="property-unit-details">
+      <div class="property-name">
+        {{ account.propertyName || 'Property not specified' }}
+      </div>
+
+      <div class="unit-name">
+        <i class="fa-solid fa-door-open me-1"></i>
+        {{ account.unitName || 'Unit not specified' }}
+      </div>
+    </div>
+  </div>
+</td>
+
+
+  <!-- NEXT RENT DUE -->
+<!-- NEXT RENT DUE -->
+<td class="text-center text-nowrap">
+
+  <ng-container *ngIf="account.nextRentDueDate; else noRentDueDate">
+
+    <span
+      class="rent-due-date"
+      [class.text-danger]="account.nextRentDueDate < statementTo"
+      [class.text-success]="account.nextRentDueDate >= statementTo">
+
+      <i class="fa-regular fa-calendar me-1"></i>
+
+      {{ account.nextRentDueDate | date:'dd MMM yyyy' }}
+
+    </span>
+
+  </ng-container>
+
+  <ng-template #noRentDueDate>
+    <span class="text-muted small">
+      <i class="fa-solid fa-circle-check me-1"></i>
+      No unpaid charge
+    </span>
+  </ng-template>
+
+</td>
+
+  <!-- RENT CHARGED -->
+  <td class="text-end text-nowrap">
+    {{ account.totalRentCharged | currency:'KES':'code':'1.2-2' }}
+  </td>
+
+  <!-- PAYMENTS -->
+  <td class="text-end text-nowrap text-success fw-semibold">
+    {{ account.totalValidPayments | currency:'KES':'code':'1.2-2' }}
+  </td>
+
+  <!-- OUTSTANDING -->
+  <td
+    class="text-end text-nowrap"
+    [class.text-danger]="account.totalOutstanding > 0"
+    [class.text-success]="account.totalOutstanding <= 0">
+
+    {{ account.totalOutstanding | currency:'KES':'code':'1.2-2' }}
+  </td>
+
+  <!-- OVERDUE -->
+  <td class="text-end text-nowrap">
+    <span
+      [class.text-danger]="account.overdueArrears > 0"
+      [class.text-muted]="account.overdueArrears <= 0">
+
+      {{ account.overdueArrears | currency:'KES':'code':'1.2-2' }}
+    </span>
+  </td>
+
+  <!-- CREDIT -->
+  <td class="text-end text-nowrap text-success">
+    {{ account.availableCredit | currency:'KES':'code':'1.2-2' }}
+  </td>
+
+  <!-- STATEMENT -->
+  <td class="text-center">
+    <button
+      type="button"
+      class="btn btn-sm"
+      [class.btn-primary]="!isStatementOpen(account)"
+      [class.btn-outline-secondary]="isStatementOpen(account)"
+      (click)="openTenantStatement(account)">
+
+      <i
+        class="fa-solid me-1"
+        [ngClass]="isStatementOpen(account)
+          ? 'fa-chevron-up'
+          : 'fa-file-invoice'">
+      </i>
+
+      {{ isStatementOpen(account)
+          ? 'Hide Payments'
+          : 'View Payments' }}
+    </button>
+  </td>
+
+</tr>
+
+
+          <!-- PAYMENT STATEMENT: DIRECTLY BELOW THIS TENANT -->
+          <tr
+            *ngIf="isStatementOpen(account)"
+            class="tenant-statement-row">
+
+            <td colspan="9">
+
+              <div class="tenant-inline-statement">
+
+                <!-- STATEMENT HEADER -->
+                <div class="tenant-statement-heading">
+
+                  <div>
+                    <span class="statement-eyebrow">
+                      TENANT FINANCIAL RECORD
+                    </span>
+
+                    <h6 class="mb-1">
+                      {{ account.tenantName }} — Payment Statement
+                    </h6>
+
+                    <span class="text-muted small">
+                      Lease: {{ account.leaseReference || account.leaseId }}
+                    </span>
+                  </div>
+
+                  <button
+                    type="button"
+                    class="btn btn-sm btn-outline-secondary"
+                    (click)="closeTenantStatement()">
+
+                    <i class="fa-solid fa-xmark me-1"></i>
+                    Close
+                  </button>
+
+                </div>
+
+                <!-- DATE FILTERS -->
+                <div class="statement-filter-panel my-3">
+
+                  <div class="row g-3 align-items-end">
+
+                    <div class="col-12 col-md-4">
+                      <label class="form-label">
+                        Statement from
+                      </label>
+
+                      <input
+                        type="date"
+                        class="form-control"
+                        [value]="statementFrom"
+                        (change)="statementFrom = $any($event.target).value"
+                        [max]="statementTo || null">
+                    </div>
+
+                    <div class="col-12 col-md-4">
+                      <label class="form-label">
+                        Statement to
+                      </label>
+
+                      <input
+                        type="date"
+                        class="form-control"
+                        [value]="statementTo"
+                        (change)="statementTo = $any($event.target).value"
+                        [min]="statementFrom || null">
+                    </div>
+
+                    <div class="col-12 col-md-4">
+                      <button
+                        type="button"
+                        class="btn btn-primary w-100"
+                        (click)="loadTenantStatement()"
+                        [disabled]="statementLoading
+                          || !statementFrom
+                          || !statementTo
+                          || statementFrom > statementTo">
+
+                        <i class="fa-solid fa-file-circle-check me-2"></i>
+
+                        {{ statementLoading
+                            ? 'Generating...'
+                            : 'Generate Statement' }}
+                      </button>
+                    </div>
+
+                  </div>
+                </div>
+
+                <!-- LOADING -->
+                <div
+                  *ngIf="statementLoading"
+                  class="text-center py-4">
+
+                  <div class="spinner-border text-primary"></div>
+                  <p class="text-muted mt-2 mb-0">
+                    Loading payment history...
+                  </p>
+                </div>
+
+                <!-- ERROR -->
+                <div
+                  *ngIf="!statementLoading && statementError"
+                  class="alert alert-danger">
+
+                  <i class="fa-solid fa-circle-exclamation me-2"></i>
+                  {{ statementError }}
+                </div>
+
+                <!-- COMPLETE STATEMENT -->
+                <ng-container *ngIf="!statementLoading && selectedStatement as statement">
+
+                  <div class="d-flex justify-content-end mb-3">
+                    <button
+                      type="button"
+                      class="btn btn-outline-primary btn-sm"
+                      (click)="printTenantStatement()">
+
+                      <i class="fa-solid fa-print me-2"></i>
+                      Print / Save PDF
+                    </button>
+                  </div>
+
+                  <article class="tenant-statement-document">
+
+                    <!-- DOCUMENT HEADER -->
+                    <div class="statement-document-header">
+
+                      <div>
+                        <div class="statement-brand">
+                          RENTAL MANAGEMENT
+                        </div>
+
+                        <h3>Tenant Account Statement</h3>
+
+                        <p class="text-muted mb-0">
+                          Financial transaction history
+                        </p>
+                      </div>
+
+                      <div class="statement-period">
+                        <span>STATEMENT PERIOD</span>
+
+                        <strong>
+                          {{ statement.from | date:'dd MMM yyyy' }}
+                        </strong>
+
+                        <strong>
+                          {{ statement.to | date:'dd MMM yyyy' }}
+                        </strong>
+                      </div>
+
+                    </div>
+
+                    <hr>
+
+                    <!-- TENANT INFORMATION -->
+                    <div class="row g-3 mb-4">
+
+                      <div class="col-12 col-md-6">
+                        <div class="statement-info-label">TENANT</div>
+
+                        <div class="statement-info-value">
+                          {{ statement.tenantName }}
+                        </div>
+
+                        <div class="text-muted small">
+                          Lease reference: {{ statement.leaseReference }}
+                        </div>
+                      </div>
+
+                      <div class="col-12 col-md-6">
+                        <div class="statement-info-label">
+                          ACCOUNT POSITION
+                        </div>
+
+                        <div
+                          class="statement-info-value"
+                          [class.text-danger]="statement.closingBalance > 0"
+                          [class.text-success]="statement.closingBalance < 0">
+
+                          {{ statement.closingBalance
+                            | currency:'KES':'code':'1.2-2' }}
+                        </div>
+
+                        <div class="text-muted small">
+                          {{
+                            statement.closingBalance > 0
+                              ? 'Amount owed'
+                              : statement.closingBalance < 0
+                                ? 'Credit balance'
+                                : 'Account settled'
+                          }}
+                        </div>
+                      </div>
+
+                    </div>
+
+                    <!-- STATEMENT TOTALS -->
+                    <div class="row g-3 mb-4">
+
+                      <div class="col-6 col-lg-3">
+                        <div class="statement-total">
+                          <span>Opening Balance</span>
+                          <strong>
+                            {{ statement.openingBalance
+                              | currency:'KES':'code':'1.2-2' }}
+                          </strong>
+                        </div>
+                      </div>
+
+                      <div class="col-6 col-lg-3">
+                        <div class="statement-total">
+                          <span>Total Charges</span>
+                          <strong>
+                            {{ statement.totalCharges
+                              | currency:'KES':'code':'1.2-2' }}
+                          </strong>
+                        </div>
+                      </div>
+
+                      <div class="col-6 col-lg-3">
+                        <div class="statement-total">
+                          <span>Payments Received</span>
+                          <strong class="text-success">
+                            {{ statement.totalPayments
+                              | currency:'KES':'code':'1.2-2' }}
+                          </strong>
+                        </div>
+                      </div>
+
+                      <div class="col-6 col-lg-3">
+                        <div class="statement-total">
+                          <span>Payment Reversals</span>
+                          <strong class="text-danger">
+                            {{ statement.totalReversals
+                              | currency:'KES':'code':'1.2-2' }}
+                          </strong>
+                        </div>
+                      </div>
+
+                    </div>
+
+                    <!-- TRANSACTION LEDGER -->
+                    <div class="table-responsive">
+
+                      <table class="table statement-ledger align-middle">
+
+                        <thead>
+                          <tr>
+                            <th>Date</th>
+                            <th>Transaction</th>
+                            <th>Reference</th>
+                            <th>Description</th>
+                            <th class="text-end">Debit</th>
+                            <th class="text-end">Credit</th>
+                            <th class="text-end">Balance</th>
+                          </tr>
+                        </thead>
+
+                        <tbody>
+
+                          <tr
+                            *ngFor="let transaction of statement.transactions">
+
+                            <td class="text-nowrap">
+                              {{ transaction.date | date:'dd MMM yyyy' }}
+                            </td>
+
+                            <td>
+                              <span
+                                class="transaction-type"
+                                [ngClass]="{
+                                  'transaction-charge': transaction.type === 'RENT_CHARGE',
+                                  'transaction-payment': transaction.type === 'PAYMENT',
+                                  'transaction-reversal': transaction.type === 'REVERSAL'
+                                }">
+
+                                {{ transaction.type.replace('_', ' ') }}
+                              </span>
+                            </td>
+
+                            <td>
+                              {{ transaction.reference || '—' }}
+                            </td>
+
+                            <td>
+                              {{ transaction.description || '—' }}
+                            </td>
+
+                            <td class="text-end text-nowrap">
+                              <ng-container *ngIf="transaction.debit; else noDebit">
+                                {{ transaction.debit
+                                  | currency:'KES':'code':'1.2-2' }}
+                              </ng-container>
+                              <ng-template #noDebit>—</ng-template>
+                            </td>
+
+                            <td class="text-end text-nowrap">
+                              <ng-container *ngIf="transaction.credit; else noCredit">
+                                {{ transaction.credit
+                                  | currency:'KES':'code':'1.2-2' }}
+                              </ng-container>
+                              <ng-template #noCredit>—</ng-template>
+                            </td>
+
+                            <td class="text-end text-nowrap fw-semibold">
+                              {{ transaction.runningBalance
+                                | currency:'KES':'code':'1.2-2' }}
+                            </td>
+
+                          </tr>
+
+                          <tr *ngIf="!statement.transactions.length">
+                            <td colspan="7" class="text-center text-muted py-4">
+                              <i class="fa-solid fa-file-circle-question me-2"></i>
+                              No transactions were recorded during this period.
+                            </td>
+                          </tr>
+
+                        </tbody>
+
+                        <tfoot>
+                          <tr>
+                            <th colspan="6" class="text-end">
+                              Closing Balance
+                            </th>
+
+                            <th class="text-end">
+                              {{ statement.closingBalance
+                                | currency:'KES':'code':'1.2-2' }}
+                            </th>
+                          </tr>
+                        </tfoot>
+
+                      </table>
+                    </div>
+
+                    <div class="statement-footnote">
+                      <i class="fa-solid fa-circle-info me-2"></i>
+                      Payments and reversals are shown separately.
+                      Contact your property manager if you have a query
+                      about this statement.
+                    </div>
+
+                    <div class="statement-signoff">
+                      <span>
+                        Generated electronically from the rental management system.
+                      </span>
+                      <span>Currency: KES</span>
+                    </div>
+
+                  </article>
+
+                </ng-container>
+
+              </div>
+
+            </td>
+          </tr>
+
+        </ng-container>
+
+        <!-- NO ACCOUNTS -->
+        <tr *ngIf="!accountLoading && !filteredAccounts.length">
+          <td colspan="9" class="text-center py-5 text-muted">
+            <i class="fa-solid fa-folder-open fa-2x mb-2"></i>
+            <div>No tenant accounts found.</div>
+          </td>
+        </tr>
+
+        <!-- LOADING ACCOUNTS -->
+        <tr *ngIf="accountLoading">
+          <td colspan="9" class="text-center py-4">
+            <div class="spinner-border spinner-border-sm text-primary me-2"></div>
+            Loading tenant accounts...
+          </td>
+        </tr>
+
+      </tbody>
+
+    </table>
+
+  </div>
+
+  <div class="account-table-footer">
+    <span>
+      <i class="fa-solid fa-shield-halved me-2"></i>
+      Account information is scoped to your authorized portfolio.
+    </span>
+  </div>
+
+</div>
+
+
+
+        </section>
+
+      </main>
+
+      <!-- =====================================================
+           RIGHT-SIDE QUICK ACTIONS
+      ====================================================== -->
+
+<!-- =====================================================
+     COLLAPSIBLE QUICK ACTIONS
+====================================================== -->
+<aside
+  class="dashboard-sidebar"
+  [class.quick-actions-minimized]="!quickActionsExpanded"
+  aria-label="Quick actions">
+
+  <!-- COLLAPSED: SHOW ONLY THE QUICK ACTIONS BUTTON -->
+  <button
+    *ngIf="!quickActionsExpanded"
+    type="button"
+    class="quick-actions-toggle"
+    (click)="quickActionsExpanded = true"
+    aria-label="Expand quick actions"
+    title="Open Quick Actions">
+
+    <i class="fa-solid fa-bolt"></i>
+    <span>Quick Actions</span>
+    <i class="fa-solid fa-chevron-left ms-auto"></i>
+  </button>
+
+  <!-- EXPANDED: SHOW THE COMPLETE QUICK ACTIONS PANEL -->
+  <div
+    class="quick-actions-panel"
+    *ngIf="quickActionsExpanded">
+
+    <div class="quick-actions-heading">
+
+      <div class="quick-actions-heading-icon">
+        <i class="fa-solid fa-bolt"></i>
+      </div>
+
+      <div class="quick-actions-heading-copy">
+        <h5>Quick Actions</h5>
+        <p>Common tasks at your fingertips</p>
+      </div>
+
+      <button
+        type="button"
+        class="quick-actions-collapse-btn"
+        (click)="quickActionsExpanded = false"
+        aria-label="Collapse quick actions"
+        title="Collapse panel">
+
+        <i class="fa-solid fa-chevron-right"></i>
+      </button>
+
+    </div>
+
+    <div class="quick-actions-list">
+
+      <button
+        *ngFor="let action of quickActions; trackBy: trackByAction"
+        type="button"
+        class="quick-action-card"
+        (click)="openRoute(action.route)"
+        [attr.aria-label]="action.title + ': ' + action.description">
+
+        <span
+          class="action-icon"
+          [ngClass]="'action-' + action.color">
+
+          <i [class]="action.icon"></i>
+        </span>
+
+        <span class="quick-action-copy">
+          <span class="action-title">{{ action.title }}</span>
+          <span class="action-description">
+            {{ action.description }}
+          </span>
+        </span>
+
+        <i class="fa-solid fa-chevron-right action-arrow"></i>
+
+      </button>
+
+    </div>
+
+    <div class="quick-actions-footer">
+      <i class="fa-solid fa-circle-check me-2"></i>
+      Manage your portfolio efficiently
+    </div>
+
+  </div>
+
+</aside>
+
+
+    </div>
+
+  </ng-container>
+
+
+  <!-- =========================================================
+       EMPTY DASHBOARD / ERROR RECOVERY
+  ========================================================== -->
+  <div
+    class="empty-state"
+    *ngIf="!loading && !dashboard && !errorMessage">
+
+    <i class="fa-solid fa-chart-line"></i>
+
+    <h5>Dashboard data is not available</h5>
+
+    <p>
+      Please refresh to try loading your dashboard again.
+    </p>
+
+    <button
+      class="btn btn-primary"
+      type="button"
+      (click)="loadDashboard()">
+
+      <i class="fa-solid fa-rotate me-2"></i>
+      Reload Dashboard
+    </button>
+
+  </div>
+
+</div>

@@ -1,5 +1,7 @@
+
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
+
 import { LoanListComponent } from './loan-list/loan-list.component';
 import { ReportsComponent } from './reports/reports.component';
 import { SettingsComponent } from './settings/settings.component';
@@ -23,16 +25,31 @@ import { StaffComponent } from './staff/staff.component';
 import { ForgotPasswordComponent } from './forgot-password/forgot-password.component';
 import { ApplicantDashboardComponent } from './applicant-dashboard/applicant-dashboard.component';
 import { AuthLayoutComponent } from './auth-layout/auth-layout.component';
+
 import { AuthGuard } from './services/auth-guard.service';
 import { AdminGuard } from './services/services/AdminGuard.services';
 import { DataManagerGuard } from './services/services/DataManagerGuard.service';
 import { ApplicantGuard } from './services/services/ApplicantGuard.service';
 import { AdminOrDataManagerGuard } from './services/admin-or-data-manager-guard.service';
-import { MainDashboardComponent } from './main-dashboard/main-dashboard.component';
 
+import { MainDashboardComponent } from './main-dashboard/main-dashboard.component';
+import { CustomerInfoComponent } from './customer-info/customer-info.component';
+
+import { TenantAgentDashboardComponent } from './tenant-agent-dashboard/tenant-agent-dashboard.component';
+import { TenantPropertyRegistrationComponent } from './tenant-property-registration/tenant-property-registration.component';
+import { TenantRegistrationComponent } from './tenant-registration/tenant-registration.component';
+import { TenantUnitManagementComponent } from './tenant-unit-management/tenant-unit-management.component';
+import { TenantLeaseManagementComponent } from './tenant-lease-management/tenant-lease-management.component';
+import { TenantRentManagementComponent } from './tenant-rent-management/tenant-rent-management.component';
+import { TenantDirectoryComponent } from './tenant-directory/tenant-directory.component';
+import { TenantRemindersComponent } from './tenant-reminders/tenant-reminders.component';
+import { TenantCalendarComponent } from './tenant-calendar/tenant-calendar.component';
+import { TenantPortfolioActivityComponent } from './tenant-portfolio-activity/tenant-portfolio-activity.component';
 
 const routes: Routes = [
-
+  // =====================================================
+  // ROOT
+  // =====================================================
   {
     path: '',
     redirectTo: 'login',
@@ -42,27 +59,22 @@ const routes: Routes = [
   // =====================================================
   // PUBLIC ROUTES
   // =====================================================
-
   {
     path: '',
     component: AuthLayoutComponent,
     children: [
-
       {
         path: 'login',
         component: LoginComponent
       },
-
       {
         path: 'register',
         component: RegistrationComponent
       },
-
       {
         path: 'forgot-password',
         component: ForgotPasswordComponent
       }
-
     ]
   },
 
@@ -72,16 +84,14 @@ const routes: Routes = [
   },
 
   // =====================================================
-  // PROTECTED AREA
+  // PROTECTED APPLICATION
   // =====================================================
-
   {
     path: 'app',
     component: LayoutComponent,
     canActivate: [AuthGuard],
     children: [
-
-      // Default after login (change if desired)
+      // Default application route
       {
         path: '',
         redirectTo: 'applicant',
@@ -89,22 +99,141 @@ const routes: Routes = [
       },
 
       // =====================================================
-      // ADMIN + DATA MANAGER
+      // GENERAL DASHBOARDS
       // =====================================================
-
-      // {
-      //   path: 'dashboard',
-      //   component: DashboardComponent,
-      //   canActivate: [AdminOrDataManagerGuard]
-      // },
-
-
-   {
+      {
         path: 'dashboard',
         component: MainDashboardComponent,
         canActivate: [AdminOrDataManagerGuard]
       },
 
+      {
+        path: 'tenant-agent-dashboard',
+        component: TenantAgentDashboardComponent,
+        canActivate: [AuthGuard],
+        data: {
+          roles: ['TENANT_AGENT']
+        }
+      },
+
+      // =====================================================
+      // TENANT / PROPERTY DIRECTORY ROUTES
+      // =====================================================
+
+      // Property directory
+      {
+        path: 'tenant/properties',
+        component: TenantDirectoryComponent,
+        canActivate: [AuthGuard],
+        data: {
+          roles: ['TENANT_AGENT', 'ADMIN'],
+          directory: 'properties'
+        }
+      },
+
+      // Property registration
+      {
+        path: 'tenant/properties/register',
+        component: TenantPropertyRegistrationComponent,
+        canActivate: [AuthGuard],
+        data: {
+          roles: ['TENANT_AGENT']
+        }
+      },
+
+      // Unit directory MUST remain separate from unit management
+      {
+        path: 'tenant/units/directory',
+        component: TenantDirectoryComponent,
+        canActivate: [AuthGuard],
+        data: {
+          roles: ['TENANT_AGENT', 'ADMIN'],
+          directory: 'units'
+        }
+      },
+
+            {
+        path: 'tenant/reminders',
+        component: TenantRemindersComponent,
+        canActivate: [AuthGuard],
+        data: {
+          roles: ['TENANT_AGENT', 'ADMIN'],
+          directory: 'reminders'
+        }
+      },
+
+      // Existing unit management page
+      {
+        path: 'tenant/units',
+        component: TenantUnitManagementComponent,
+        canActivate: [AuthGuard],
+        data: {
+          roles: ['TENANT_AGENT', 'ADMIN']
+        }
+      },
+
+      // Tenant / resident directory
+      {
+        path: 'tenant/tenants',
+        component: TenantDirectoryComponent,
+        canActivate: [AuthGuard],
+        data: {
+          roles: ['TENANT_AGENT', 'ADMIN'],
+          directory: 'tenants'
+        }
+      },
+
+      // Tenant registration
+      {
+        path: 'tenant/register',
+        component: TenantRegistrationComponent,
+        canActivate: [AuthGuard],
+        data: {
+          roles: ['TENANT_AGENT', 'ADMIN']
+        }
+      },
+
+      // Lease management
+      {
+        path: 'tenant/leases',
+        component: TenantLeaseManagementComponent,
+        canActivate: [AuthGuard],
+        data: {
+          roles: ['TENANT_AGENT', 'ADMIN']
+        }
+      },
+
+      // Rent management
+      {
+        path: 'tenant/rent',
+        component: TenantRentManagementComponent,
+        canActivate: [AuthGuard],
+        data: {
+          roles: ['TENANT_AGENT', 'ADMIN']
+        }
+      },
+
+      {
+  path: 'tenant/calendar',
+  component: TenantCalendarComponent,
+  canActivate: [AuthGuard],
+  data: {
+    roles: ['TENANT_AGENT', 'ADMIN']
+  }
+},
+
+{
+  path: 'tenant/portfolio-activity',
+  component: TenantPortfolioActivityComponent,
+   canActivate: [AuthGuard],
+  data: {
+    roles: ['TENANT_AGENT', 'ADMIN']
+  }
+},
+
+      // =====================================================
+      // ADMIN + DATA MANAGER ROUTES
+      // =====================================================
       {
         path: 'accountsopening',
         component: AccountRegistrationComponent,
@@ -120,6 +249,12 @@ const routes: Routes = [
       {
         path: 'accounts',
         component: AccountsComponent,
+        canActivate: [AdminOrDataManagerGuard]
+      },
+
+      {
+        path: 'customer-info/:accountNumber',
+        component: CustomerInfoComponent,
         canActivate: [AdminOrDataManagerGuard]
       },
 
@@ -144,22 +279,18 @@ const routes: Routes = [
       {
         path: 'user-profile',
         component: ProfileComponent,
-        canActivate: [AdminOrDataManagerGuard]
+       canActivate: [AuthGuard],
+        data: {
+          roles: ['TENANT_AGENT', 'ADMIN']
+        }
       },
 
       // =====================================================
-      // ADMIN ONLY
+      // ADMIN-ONLY ROUTES
       // =====================================================
-
       {
         path: 'staff',
         component: StaffComponent,
-        canActivate: [AdminGuard]
-      },
-
-      {
-        path: 'loanApplication',
-        component: LoanApplicationComponent,
         canActivate: [AdminGuard]
       },
 
@@ -188,21 +319,14 @@ const routes: Routes = [
       },
 
       {
-        path: 'accountsopening',
-        component: AccountRegistrationComponent,
-        canActivate: [AdminGuard]
-      },
-
-      {
         path: 'assign-staff',
         component: AssignStaffComponent,
         canActivate: [AdminGuard]
       },
 
       // =====================================================
-      // DATA MANAGER ONLY
+      // DATA MANAGER-ONLY ROUTES
       // =====================================================
-
       {
         path: 'account-registration',
         component: AccountRegistrationComponent,
@@ -210,9 +334,8 @@ const routes: Routes = [
       },
 
       // =====================================================
-      // APPLICANT ONLY
+      // APPLICANT ROUTES
       // =====================================================
-
       {
         path: 'applicant',
         component: ApplicantDashboardComponent,
@@ -241,20 +364,25 @@ const routes: Routes = [
         path: 'repayment-form',
         component: RepaymentFormComponent,
         canActivate: [AuthGuard]
-      }
+      },
 
+      // =====================================================
+      // UNKNOWN APPLICATION ROUTE
+      // =====================================================
+      {
+        path: '**',
+        redirectTo: 'unauthorized'
+      }
     ]
   },
 
   // =====================================================
-  // FALLBACK
+  // GLOBAL FALLBACK
   // =====================================================
-
   {
     path: '**',
     redirectTo: 'login'
   }
-
 ];
 
 @NgModule({
@@ -266,4 +394,4 @@ const routes: Routes = [
   ],
   exports: [RouterModule]
 })
-export class AppRoutingModule { }
+export class AppRoutingModule {}

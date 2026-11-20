@@ -37,6 +37,7 @@ rejectedByRole?: string;
 
 rejectedAt?: string | Date;
 
+
   totalRepayableAmount?: number;
   amountPaid?: number;
   interestRate?: number;
@@ -73,7 +74,7 @@ rejectedAt?: string | Date;
   principalAmount?: number;
   interestAmount?: number;
   penaltyAmount?: number;
-
+applicationNumber?: string;
 
   assignedStaff?: {
     name: string;

@@ -247,6 +247,11 @@ class="alert alert-danger shadow-sm">
       Amount Applied
     </th>
 
+  <th class="fw-bold">
+      <i class="fas fa-hashtag text-success me-1"></i>
+      Loan Refenece Number
+    </th>
+
     <th class="fw-bold">
       <i class="fas fa-calendar-plus text-warning me-1"></i>
       Applied On
@@ -314,8 +319,10 @@ class="alert alert-danger shadow-sm">
                         'bg-warning text-dark':
                         loan.status?.toUpperCase() === 'AWAITING_AUTHORIZATION',
 
-                        'bg-danger':
-                        loan.status?.toUpperCase() === 'REJECTED',
+                            'bg-danger':
+            loan.status?.toUpperCase() === 'REJECTED' ||
+            loan.status?.toUpperCase() === 'AUTO_REJECTED' ||
+            loan.status?.toUpperCase() === 'AUTO REJECTED',
 
                         'bg-info':
                         loan.status?.toUpperCase() === 'PAID' ||
@@ -340,6 +347,7 @@ class="alert alert-danger shadow-sm">
 </td>
             <td>{{ loan.nationalId }}</td>
             <td>{{ loan.amount | currency:'KES':'symbol':'1.2-2' }}</td>
+            <td>{{ loan.applicationNumber }}</td>
             <td>{{ loan.applicationDate | date:'mediumDate' }}</td>
 <td>
   <div class="d-flex flex-column">

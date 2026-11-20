@@ -13,7 +13,9 @@
 
     <div class="container-fluid ci-hero-inner">
 
-      <!-- TOP BAR -->
+      <!-- =====================================================
+           TOP BAR
+      ====================================================== -->
 
       <div class="ci-breadcrumb">
 
@@ -24,16 +26,25 @@
           </span>
 
           <div>
-            <span class="eyebrow">CREDIT INTELLIGENCE</span>
 
-            <h1>Customer Credit Profile</h1>
+            <span class="eyebrow">
+              CREDIT INTELLIGENCE
+            </span>
+
+            <h1>
+              Customer Credit Profile
+            </h1>
+
           </div>
 
         </div>
 
+
         <div class="loan-reference">
 
-          <span>LOAN REFERENCE</span>
+          <span>
+            LOAN REFERENCE
+          </span>
 
           <strong>
             LN-{{ loan.id }}
@@ -45,10 +56,12 @@
 
 
       <!-- =====================================================
-           CUSTOMER IDENTITY
+           CUSTOMER IDENTITY HERO
       ====================================================== -->
 
       <div class="customer-hero-card">
+
+        <!-- CUSTOMER PROFILE -->
 
         <div class="customer-identity">
 
@@ -83,9 +96,11 @@
 
             </div>
 
+
             <h2>
               {{ loan.applicantName }}
             </h2>
+
 
             <p>
               Loan Applicant
@@ -98,17 +113,17 @@
 
               <span>
                 <i class="fas fa-id-card"></i>
-                {{ loan.nationalId }}
+                {{ loan.nationalId || 'N/A' }}
               </span>
 
               <span>
                 <i class="fas fa-phone"></i>
-                {{ loan.phoneNumber }}
+                {{ loan.phoneNumber || 'N/A' }}
               </span>
 
               <span>
                 <i class="fas fa-envelope"></i>
-                {{ loan.email }}
+                {{ loan.email || 'N/A' }}
               </span>
 
             </div>
@@ -118,202 +133,630 @@
         </div>
 
 
-        <!-- STATUS -->
+        <!-- ===================================================
+             CURRENT STATUS
+        ==================================================== -->
+<!-- =========================================================
+     CUSTOMER STATUS + DECISION ACTIONS
+========================================================== -->
 
-        <div class="customer-status-area">
+<div class="customer-status-area">
 
-          <span class="status-caption">
-            ACCOUNT STATUS
-          </span>
+  <!-- =======================================================
+       CURRENT STATUS
+  ======================================================== -->
 
-          <span
-            class="premium-status"
-            [ngClass]="{
-              'status-approved':
-                loan.status === 'APPROVED' ||
-                loan.status === 'AUTO_APPROVED',
+  <div class="status-summary">
 
-              'status-rejected':
-                loan.status === 'REJECTED' ||
-                loan.status === 'AUTO_REJECTED',
+    <span class="status-caption">
+      CURRENT LOAN STATUS
+    </span>
 
-              'status-pending':
-                loan.status === 'AWAITING_AUTHORIZATION',
+    <span
+      class="premium-status"
+      [ngClass]="{
+        'status-approved':
+          loan.status === 'APPROVED' ||
+          loan.status === 'AUTO_APPROVED',
 
-              'status-overdue':
-                loan.status === 'OVERDUE',
+        'status-rejected':
+          loan.status === 'REJECTED' ||
+          loan.status === 'AUTO_REJECTED',
 
-              'status-paid':
-                loan.status === 'PAID' ||
-                loan.status === 'CLEARED'
-            }">
+        'status-pending':
+          loan.status === 'AWAITING_AUTHORIZATION',
 
-            <i
-              class="fas"
-              [ngClass]="{
-                'fa-check-circle':
-                  loan.status === 'APPROVED' ||
-                  loan.status === 'AUTO_APPROVED',
+        'status-overdue':
+          loan.status === 'OVERDUE',
 
-                'fa-times-circle':
-                  loan.status === 'REJECTED' ||
-                  loan.status === 'AUTO_REJECTED',
+        'status-active':
+          loan.status === 'PARTIAL',
 
-                'fa-clock':
-                  loan.status === 'AWAITING_AUTHORIZATION',
+        'status-paid':
+          loan.status === 'PAID' ||
+          loan.status === 'CLEARED'
+      }">
 
-                'fa-exclamation-triangle':
-                  loan.status === 'OVERDUE',
+      <i
+        class="fas"
+        [ngClass]="{
+          'fa-check-circle':
+            loan.status === 'APPROVED' ||
+            loan.status === 'AUTO_APPROVED',
 
-                'fa-coins':
-                  loan.status === 'PAID' ||
-                  loan.status === 'CLEARED'
-              }">
-            </i>
+          'fa-times-circle':
+            loan.status === 'REJECTED' ||
+            loan.status === 'AUTO_REJECTED',
 
-            {{ loan.status | titlecase }}
+          'fa-clock':
+            loan.status === 'AWAITING_AUTHORIZATION',
 
-          </span>
+          'fa-exclamation-triangle':
+            loan.status === 'OVERDUE',
+
+          'fa-chart-line':
+            loan.status === 'PARTIAL',
+
+          'fa-coins':
+            loan.status === 'PAID' ||
+            loan.status === 'CLEARED'
+        }">
+      </i>
+
+      {{
+        loan.status?.replaceAll('_', ' ')
+        | titlecase
+      }}
+
+    </span>
+
+  </div>
+
+
+  <!-- =======================================================
+       APPROVAL / REJECTION ACTIONS
+       REMAINS DIRECTLY BESIDE STATUS
+  ======================================================== -->
+
+  <div
+    *ngIf="loan.status === 'AWAITING_AUTHORIZATION'"
+    class="hero-decision-actions">
+
+
+    <!-- APPROVE -->
+
+    <button
+      type="button"
+      class="hero-decision-button hero-approve-button"
+      [disabled]="actionInProgress"
+      (click)="approveLoan(loan)">
+
+      <span class="hero-decision-icon">
+
+        <i
+          class="fas"
+          [ngClass]="{
+            'fa-check': !actionInProgress,
+            'fa-spinner fa-spin': actionInProgress
+          }">
+        </i>
+
+      </span>
+
+      <span class="hero-decision-content">
+
+        <strong>
+          {{
+            actionInProgress
+              ? 'Processing...'
+              : 'Approve Loan'
+          }}
+        </strong>
+
+        <small>
+          Authorize
+        </small>
+
+      </span>
+
+    </button>
+
+
+    <!-- REJECT -->
+
+    <button
+      type="button"
+      class="hero-decision-button hero-reject-button"
+      [disabled]="actionInProgress"
+      (click)="openRejectDialog(loan)">
+
+      <span class="hero-decision-icon">
+
+        <i class="fas fa-times"></i>
+
+      </span>
+
+      <span class="hero-decision-content">
+
+        <strong>
+          Reject Loan
+        </strong>
+
+        <small>
+          Record reason
+        </small>
+
+      </span>
+
+    </button>
+
+  </div>
+
+
+  <!-- =======================================================
+       DECISION ALREADY RECORDED
+  ======================================================== -->
+
+  <div
+    *ngIf="loan.status !== 'AWAITING_AUTHORIZATION'"
+    class="hero-decision-record">
+
+    <div
+      class="hero-decision-record-icon"
+      [ngClass]="{
+
+        'record-approved':
+          loan.status === 'APPROVED' ||
+          loan.status === 'AUTO_APPROVED',
+
+        'record-rejected':
+          loan.status === 'REJECTED' ||
+          loan.status === 'AUTO_REJECTED',
+
+        'record-active':
+          loan.status === 'PARTIAL' ||
+          loan.status === 'OVERDUE',
+
+        'record-completed':
+          loan.status === 'PAID' ||
+          loan.status === 'CLEARED'
+
+      }">
+
+      <i
+        class="fas"
+        [ngClass]="{
+
+          'fa-check':
+            loan.status === 'APPROVED' ||
+            loan.status === 'AUTO_APPROVED',
+
+          'fa-times':
+            loan.status === 'REJECTED' ||
+            loan.status === 'AUTO_REJECTED',
+
+          'fa-chart-line':
+            loan.status === 'PARTIAL' ||
+            loan.status === 'OVERDUE',
+
+          'fa-check-double':
+            loan.status === 'PAID' ||
+            loan.status === 'CLEARED'
+
+        }">
+      </i>
+
+    </div>
+
+
+    <div class="hero-decision-record-content">
+
+      <span>
+        DECISION RECORDED
+      </span>
+
+      <strong>
+
+        {{
+          loan.status === 'APPROVED' ||
+          loan.status === 'AUTO_APPROVED'
+            ? 'Approved'
+            : loan.status === 'REJECTED' ||
+              loan.status === 'AUTO_REJECTED'
+            ? 'Rejected'
+            : loan.status === 'PARTIAL' ||
+              loan.status === 'OVERDUE'
+            ? 'Active Repayment'
+            : 'Completed'
+        }}
+
+      </strong>
+
+    </div>
+
+  </div>
+
+         <!-- =================================================
+               REJECTED RECORD
+          ================================================== -->
+
+          <div
+            *ngIf="
+              loan.status === 'REJECTED' ||
+              loan.status === 'AUTO_REJECTED'
+            "
+            class="decision-record rejected-record">
+
+
+            <div class="decision-record-icon">
+
+              <i class="fas fa-ban"></i>
+
+            </div>
+
+
+            <div class="decision-record-content">
+
+              <span>
+                REJECTION RECORDED
+              </span>
+
+              <strong>
+                Loan Application Rejected
+              </strong>
+
+              <p>
+                {{
+                  loan.rejectionReason ||
+                  'No rejection reason was recorded for this application.'
+                }}
+              </p>
+
+            </div>
+
+
+            <div class="rejection-details-grid">
+
+
+              <div>
+
+                <span>
+                  <i class="fas fa-file-signature"></i>
+                  Decision Type
+                </span>
+
+                <strong>
+
+                  {{
+                    loan.status === 'AUTO_REJECTED'
+                      ? 'Automated Credit Decision'
+                      : 'Administrative Rejection'
+                  }}
+
+                </strong>
+
+              </div>
+
+
+              <div>
+
+                <span>
+                  <i class="fas fa-calendar-alt"></i>
+                  Decision Date
+                </span>
+
+                <strong>
+
+                  {{
+                    loan.rejectedAt
+                      ? (loan.rejectedAt | date:'medium')
+                      : 'Not available'
+                  }}
+
+                </strong>
+
+              </div>
+
+            </div>
+
+          </div>
+
+          
+          <!-- =================================================
+               APPROVED RECORD
+          ================================================== -->
+
+          <div
+            *ngIf="
+              loan.status === 'APPROVED' ||
+              loan.status === 'AUTO_APPROVED'
+            "
+            class="decision-record approved-record">
+
+
+            <div class="decision-record-icon">
+
+              <i class="fas fa-check-circle"></i>
+
+            </div>
+
+
+            <div class="decision-record-content">
+
+              <span>
+                APPROVAL RECORDED
+              </span>
+
+              <strong>
+                Loan Application Approved
+              </strong>
+
+              <p>
+                This application has successfully passed
+                the authorization.
+              </p>
+
+            </div>
+
+          </div>
+
+
+
+
+
+          <!-- =================================================
+               ACTIVE FACILITY RECORD
+          ================================================== -->
+
+          <div
+            *ngIf="
+              loan.status === 'PARTIAL' ||
+              loan.status === 'OVERDUE'
+            "
+            class="decision-record active-record">
+
+
+            <div class="decision-record-icon">
+
+              <i class="fas fa-chart-line"></i>
+
+            </div>
+
+
+            <div class="decision-record-content">
+
+              <span>
+                REPAYMENT LIFECYCLE
+              </span>
+
+              <strong>
+                Facility Currently Active
+              </strong>
+
+              <p>
+                The authorization stage has been completed.
+                The facility is now being managed through
+                its repayment lifecycle.
+              </p>
+
+            </div>
+
+          </div>
+
+
+          <!-- =================================================
+               COMPLETED RECORD
+          ================================================== -->
+
+          <div
+            *ngIf="
+              loan.status === 'PAID' ||
+              loan.status === 'CLEARED'
+            "
+            class="decision-record completed-record ">
+
+
+            <div class="decision-record-icon">
+
+              <i class="fas fa-check-double"></i>
+
+            </div>
+
+
+            <div class="decision-record-content">
+
+              <span>
+                FACILITY COMPLETED
+              </span>
+
+              <strong>
+                Loan Fully Settled
+              </strong>
+
+              <p>
+                The customer's outstanding facility balance
+                has been fully settled.
+              </p>
+
+            </div>
+
+          </div>
+
+</div>
+
+  </div>
+
+
+      <!-- =====================================================
+           EXECUTIVE FINANCIAL SNAPSHOT
+      ====================================================== -->
+
+      <div class="financial-snapshot">
+
+
+        <!-- ===================================================
+             OUTSTANDING BALANCE
+        ==================================================== -->
+
+        <div class="snapshot-card snapshot-card-exposure">
+
+          <div class="snapshot-icon exposure">
+
+            <i class="fas fa-wallet"></i>
+
+          </div>
+
+
+          <div class="snapshot-content">
+
+            <span>
+              Outstanding Balance
+            </span>
+
+            <strong>
+              {{
+                loan.dueAmount
+                | currency:'KES':'symbol':'1.2-2'
+              }}
+            </strong>
+
+            <small class="snapshot-meta">
+
+              <i class="fas fa-calendar-alt"></i>
+
+              Due
+              {{
+                loan.dueDate
+                ? (loan.dueDate | date:'mediumDate')
+                : 'Not available'
+              }}
+
+            </small>
+
+          </div>
+
+        </div>
+
+
+        <!-- ===================================================
+             TOTAL REPAID
+        ==================================================== -->
+
+        <div class="snapshot-card snapshot-card-paid">
+
+          <div class="snapshot-icon paid">
+
+            <i class="fas fa-check-double"></i>
+
+          </div>
+
+
+          <div class="snapshot-content">
+
+            <span>
+              Total Repaid
+            </span>
+
+            <strong>
+              {{
+                (
+                  (loan.totalRepayableAmount || 0) -
+                  (loan.dueAmount || 0)
+                )
+                | currency:'KES':'symbol':'1.2-2'
+              }}
+            </strong>
+
+            <small>
+              Customer repayment performance
+            </small>
+
+          </div>
+
+        </div>
+
+
+        <!-- ===================================================
+             ORIGINAL LOAN
+        ==================================================== -->
+
+        <div class="snapshot-card snapshot-card-loan">
+
+          <div class="snapshot-icon loan">
+
+            <i class="fas fa-hand-holding-usd"></i>
+
+          </div>
+
+
+          <div class="snapshot-content">
+
+            <span>
+              Original Loan
+            </span>
+
+            <strong>
+              {{
+                loan.amount
+                | currency:'KES':'symbol':'1.2-2'
+              }}
+            </strong>
+
+            <small class="snapshot-meta">
+
+              <i class="fas fa-calendar-check"></i>
+
+              Applied
+              {{
+                loan.applicationDate
+                ? (loan.applicationDate | date:'mediumDate')
+                : 'Not available'
+              }}
+
+            </small>
+
+          </div>
+
+        </div>
+
+
+        <!-- ===================================================
+             ACCOUNT BALANCE
+        ==================================================== -->
+
+        <div class="snapshot-card snapshot-card-balance">
+
+          <div class="snapshot-icon balance">
+
+            <i class="fas fa-university"></i>
+
+          </div>
+
+
+          <div class="snapshot-content">
+
+            <span>
+              Account Balance
+            </span>
+
+            <strong>
+              {{
+                loan.accountBalance
+                | currency:'KES':'symbol':'1.2-2'
+              }}
+            </strong>
+
+            <small>
+              Available customer balance
+            </small>
+
+          </div>
 
         </div>
 
       </div>
 
-
-     <!-- =====================================================
-     EXECUTIVE FINANCIAL SNAPSHOT
-====================================================== -->
-
-<!-- =========================================================
-     EXECUTIVE FINANCIAL SNAPSHOT
-========================================================== -->
-
-<div class="financial-snapshot">
-
-  <!-- =======================================================
-       OUTSTANDING BALANCE
-  ======================================================== -->
-
-  <div class="snapshot-card snapshot-card-exposure">
-
-    <div class="snapshot-icon exposure">
-      <i class="fas fa-wallet"></i>
     </div>
-
-    <div class="snapshot-content">
-
-      <span>Outstanding Balance</span>
-
-      <strong>
-        {{ loan.dueAmount | currency:'KES':'symbol':'1.2-2' }}
-      </strong>
-
-      <small class="snapshot-meta snapshot-due-date">
-
-        <i class="fas fa-calendar-alt"></i>
-
-        Due
-        {{ loan.dueDate | date:'mediumDate' }}
-
-      </small>
-
-    </div>
-
-  </div>
-
-
-  <!-- =======================================================
-       TOTAL REPAID
-  ======================================================== -->
-
-  <div class="snapshot-card snapshot-card-paid">
-
-    <div class="snapshot-icon paid">
-      <i class="fas fa-check-double"></i>
-    </div>
-
-    <div class="snapshot-content">
-
-      <span>Total Repaid</span>
-
-      <strong>
-        {{
-          ((loan.totalRepayableAmount || 0) -
-          (loan.dueAmount || 0))
-          | currency:'KES':'symbol':'1.2-2'
-        }}
-      </strong>
-
-      <small>
-        Customer repayment performance
-      </small>
-
-    </div>
-
-  </div>
-
-
-  <!-- =======================================================
-       ORIGINAL LOAN
-  ======================================================== -->
-
-  <div class="snapshot-card snapshot-card-loan">
-
-    <div class="snapshot-icon loan">
-      <i class="fas fa-hand-holding-usd"></i>
-    </div>
-
-    <div class="snapshot-content">
-
-      <span>Original Loan</span>
-
-      <strong>
-        {{ loan.amount | currency:'KES':'symbol':'1.2-2' }}
-      </strong>
-
-      <small class="snapshot-meta snapshot-application-date">
-
-        <i class="fas fa-calendar-check"></i>
-
-        Applied
-        {{ loan.applicationDate | date:'mediumDate' }}
-
-      </small>
-
-    </div>
-
-  </div>
-
-
-  <!-- =======================================================
-       ACCOUNT BALANCE
-  ======================================================== -->
-
-  <div class="snapshot-card snapshot-card-balance">
-
-    <div class="snapshot-icon balance">
-      <i class="fas fa-university"></i>
-    </div>
-
-    <div class="snapshot-content">
-
-      <span>Account Balance</span>
-
-      <strong>
-        {{ loan.accountBalance | currency:'KES':'symbol':'1.2-2' }}
-      </strong>
-
-      <small>
-        Available customer balance
-      </small>
-
-    </div>
-
-  </div>
-
-</div>
-
-  </div>
 
   </section>
 
@@ -363,6 +806,7 @@
 
           <div class="intel-grid">
 
+
             <div class="intel-box">
 
               <span>
@@ -385,7 +829,10 @@
               </span>
 
               <strong>
-                {{ loan.income | currency:'KES':'symbol':'1.2-2' }}
+                {{
+                  loan.income
+                  | currency:'KES':'symbol':'1.2-2'
+                }}
               </strong>
 
             </div>
@@ -460,9 +907,12 @@
 
           <div class="loan-information-grid">
 
+
             <div class="intel-box">
 
-              <span>Interest Rate</span>
+              <span>
+                Interest Rate
+              </span>
 
               <strong>
                 {{ loan.interestRate }}%
@@ -473,7 +923,9 @@
 
             <div class="intel-box">
 
-              <span>Penalty Rate</span>
+              <span>
+                Penalty Rate
+              </span>
 
               <strong>
                 {{ loan.penaltyRate }}%
@@ -484,7 +936,9 @@
 
             <div class="intel-box">
 
-              <span>Loan Duration</span>
+              <span>
+                Loan Duration
+              </span>
 
               <strong>
                 {{ loan.duration }}
@@ -495,7 +949,9 @@
 
             <div class="intel-box">
 
-              <span>Loan Type</span>
+              <span>
+                Loan Type
+              </span>
 
               <strong>
                 {{ loan.loanType || 'Standard Loan' }}
@@ -520,6 +976,7 @@
           "
           class="premium-card repayment-card">
 
+
           <div class="card-header-premium">
 
             <div>
@@ -534,9 +991,14 @@
 
             </div>
 
+
             <span class="payment-count">
+
               <i class="fas fa-receipt"></i>
-              {{ loan.repayments?.length }} Payments
+
+              {{ loan.repayments?.length }}
+              Payments
+
             </span>
 
           </div>
@@ -551,18 +1013,12 @@
                 <tr>
 
                   <th>#</th>
-
                   <th>Date</th>
-
                   <th>Amount</th>
-
                   <th>Method</th>
-
                   <th>Reference</th>
-
                   <th>Status</th>
-
-                  <th></th>
+                  <th>Action</th>
 
                 </tr>
 
@@ -577,6 +1033,7 @@
                     let i = index
                   ">
 
+
                   <td class="row-number">
                     {{ i + 1 }}
                   </td>
@@ -587,11 +1044,17 @@
                     <div class="transaction-date">
 
                       <strong>
-                        {{ repayment.date | date:'mediumDate' }}
+                        {{
+                          repayment.date
+                          | date:'mediumDate'
+                        }}
                       </strong>
 
                       <small>
-                        {{ repayment.date | date:'shortTime' }}
+                        {{
+                          repayment.date
+                          | date:'shortTime'
+                        }}
                       </small>
 
                     </div>
@@ -625,7 +1088,9 @@
                   <td>
 
                     <span class="transaction-reference">
+
                       TXN-{{ i + 1 }}
+
                     </span>
 
                   </td>
@@ -647,6 +1112,7 @@
                   <td>
 
                     <button
+                      type="button"
                       class="receipt-button"
                       (click)="downloadReceipt(repayment)">
 
@@ -669,7 +1135,9 @@
         </article>
 
 
-        <!-- EMPTY REPAYMENT STATE -->
+        <!-- ===================================================
+             EMPTY REPAYMENT STATE
+        ==================================================== -->
 
         <article
           *ngIf="
@@ -680,15 +1148,18 @@
           "
           class="empty-history-card">
 
+
           <div class="empty-icon">
 
             <i class="fas fa-receipt"></i>
 
           </div>
 
+
           <h3>
             No Repayments Recorded
           </h3>
+
 
           <p>
             No repayment transactions have been recorded
@@ -701,34 +1172,41 @@
 
 
       <!-- =====================================================
-           RIGHT / COMMAND CENTER
+           RIGHT / EXECUTIVE DECISION CENTER
       ====================================================== -->
 
       <aside class="ci-sidebar">
 
 
         <!-- ===================================================
-             ADMIN COMMAND CENTER
+             LOAN DECISION CENTER
         ==================================================== -->
 
-        <article class="command-card">
+        <article
+          class="command-card decision-center-card">
+
+
+          <!-- =================================================
+               COMMAND HEADER
+          ================================================== -->
 
           <div class="command-header">
 
             <div class="command-icon">
 
-              <i class="fas fa-shield-alt"></i>
+              <i class="fas fa-gavel"></i>
 
             </div>
+
 
             <div>
 
               <span>
-                CONTROL CENTER
+                EXECUTIVE CONTROL CENTER
               </span>
 
               <h3>
-                Administrator Actions
+                Loan Decision Center
               </h3>
 
             </div>
@@ -736,11 +1214,622 @@
           </div>
 
 
-          <p class="command-description">
-            Manage this credit facility and customer
-            relationship from one secure workspace.
-          </p>
+          <!-- =================================================
+               DECISION STATUS BANNER
+          ================================================== -->
 
+          <div
+            class="decision-status-banner"
+            [ngClass]="{
+
+              'decision-banner-pending':
+                loan.status === 'AWAITING_AUTHORIZATION',
+
+              'decision-banner-approved':
+                loan.status === 'APPROVED' ||
+                loan.status === 'AUTO_APPROVED',
+
+              'decision-banner-rejected':
+                loan.status === 'REJECTED' ||
+                loan.status === 'AUTO_REJECTED',
+
+              'decision-banner-active':
+                loan.status === 'PARTIAL' ||
+                loan.status === 'OVERDUE',
+
+              'decision-banner-completed':
+                loan.status === 'PAID' ||
+                loan.status === 'CLEARED'
+
+            }">
+
+
+            <div class="decision-banner-icon">
+
+              <i
+                class="fas"
+                [ngClass]="{
+
+                  'fa-hourglass-half':
+                    loan.status === 'AWAITING_AUTHORIZATION',
+
+                  'fa-check-circle':
+                    loan.status === 'APPROVED' ||
+                    loan.status === 'AUTO_APPROVED',
+
+                  'fa-ban':
+                    loan.status === 'REJECTED' ||
+                    loan.status === 'AUTO_REJECTED',
+
+                  'fa-chart-line':
+                    loan.status === 'PARTIAL' ||
+                    loan.status === 'OVERDUE',
+
+                  'fa-check-double':
+                    loan.status === 'PAID' ||
+                    loan.status === 'CLEARED'
+
+                }">
+              </i>
+
+            </div>
+
+
+            <div class="decision-banner-content">
+
+              <span>
+                CURRENT DECISION STATE
+              </span>
+
+
+              <strong
+                *ngIf="
+                  loan.status === 'AWAITING_AUTHORIZATION'
+                ">
+
+                Awaiting Authorization
+
+              </strong>
+
+
+              <strong
+                *ngIf="
+                  loan.status === 'APPROVED' ||
+                  loan.status === 'AUTO_APPROVED'
+                ">
+
+                Loan Approved
+
+              </strong>
+
+
+              <strong
+                *ngIf="
+                  loan.status === 'REJECTED' ||
+                  loan.status === 'AUTO_REJECTED'
+                ">
+
+                Loan Rejected
+
+              </strong>
+
+
+              <strong
+                *ngIf="
+                  loan.status === 'PARTIAL' ||
+                  loan.status === 'OVERDUE'
+                ">
+
+                Active Repayment
+
+              </strong>
+
+
+              <strong
+                *ngIf="
+                  loan.status === 'PAID' ||
+                  loan.status === 'CLEARED'
+                ">
+
+                Facility Completed
+
+              </strong>
+
+
+              <small>
+
+                {{
+                  loan.status === 'AWAITING_AUTHORIZATION'
+                    ? 'Administrator action is required.'
+                    : loan.status === 'APPROVED' ||
+                      loan.status === 'AUTO_APPROVED'
+                    ? 'Authorization has been completed.'
+                    : loan.status === 'REJECTED' ||
+                      loan.status === 'AUTO_REJECTED'
+                    ? 'The application is no longer eligible for authorization.'
+                    : loan.status === 'PARTIAL' ||
+                      loan.status === 'OVERDUE'
+                    ? 'The facility is currently within its repayment lifecycle.'
+                    : 'The facility has completed its repayment lifecycle.'
+                }}
+
+              </small>
+
+            </div>
+
+          </div>
+
+
+          <!-- =================================================
+               LOAN LIFECYCLE REPORT
+          ================================================== -->
+
+          <div class="loan-stage-report">
+
+
+            <div class="stage-report-header">
+
+              <div>
+
+                <span>
+                  LOAN LIFECYCLE
+                </span>
+
+                <h4>
+                  Application Stage Report
+                </h4>
+
+              </div>
+
+
+              <span class="stage-report-reference">
+
+                <i class="fas fa-route"></i>
+
+                LIVE STATUS
+
+              </span>
+
+            </div>
+
+
+            <div class="stage-timeline">
+
+
+              <!-- APPLICATION -->
+
+              <div
+                class="stage-item stage-complete">
+
+                <div class="stage-marker">
+
+                  <i class="fas fa-check"></i>
+
+                </div>
+
+
+                <div class="stage-item-content">
+
+                  <strong>
+                    Application
+                  </strong>
+
+                  <span>
+                    Loan application received
+                  </span>
+
+                </div>
+
+              </div>
+
+
+              <!-- CREDIT ASSESSMENT -->
+
+              <div
+                class="stage-item"
+                [ngClass]="{
+
+                  'stage-complete':
+                    loan.status !== 'AWAITING_AUTHORIZATION',
+
+                  'stage-current':
+                    loan.status === 'AWAITING_AUTHORIZATION'
+
+                }">
+
+                <div class="stage-marker">
+
+                  <i
+                    class="fas"
+                    [ngClass]="{
+
+                      'fa-check':
+                        loan.status !== 'AWAITING_AUTHORIZATION',
+
+                      'fa-brain':
+                        loan.status === 'AWAITING_AUTHORIZATION'
+
+                    }">
+                  </i>
+
+                </div>
+
+
+                <div class="stage-item-content">
+
+                  <strong>
+                    Credit Assessment
+                  </strong>
+
+                  <span>
+                    Credit and affordability review
+                  </span>
+
+                </div>
+
+              </div>
+
+
+              <!-- DECISION -->
+
+              <div
+                class="stage-item"
+                [ngClass]="{
+
+                  'stage-current':
+                    loan.status === 'AWAITING_AUTHORIZATION',
+
+                  'stage-complete':
+                    loan.status === 'APPROVED' ||
+                    loan.status === 'AUTO_APPROVED' ||
+                    loan.status === 'PARTIAL' ||
+                    loan.status === 'OVERDUE' ||
+                    loan.status === 'PAID' ||
+                    loan.status === 'CLEARED',
+
+                  'stage-rejected':
+                    loan.status === 'REJECTED' ||
+                    loan.status === 'AUTO_REJECTED'
+
+                }">
+
+                <div class="stage-marker">
+
+                  <i
+                    class="fas"
+                    [ngClass]="{
+
+                      'fa-hourglass-half':
+                        loan.status === 'AWAITING_AUTHORIZATION',
+
+                      'fa-check':
+                        loan.status === 'APPROVED' ||
+                        loan.status === 'AUTO_APPROVED' ||
+                        loan.status === 'PARTIAL' ||
+                        loan.status === 'OVERDUE' ||
+                        loan.status === 'PAID' ||
+                        loan.status === 'CLEARED',
+
+                      'fa-times':
+                        loan.status === 'REJECTED' ||
+                        loan.status === 'AUTO_REJECTED'
+
+                    }">
+                  </i>
+
+                </div>
+
+
+                <div class="stage-item-content">
+
+                  <strong>
+                    Decision
+                  </strong>
+
+
+                  <span
+                    *ngIf="
+                      loan.status === 'AWAITING_AUTHORIZATION'
+                    ">
+
+                    Authorization required
+
+                  </span>
+
+
+                  <span
+                    *ngIf="
+                      loan.status === 'APPROVED' ||
+                      loan.status === 'AUTO_APPROVED'
+                    ">
+
+                    Application approved
+
+                  </span>
+
+
+                  <span
+                    *ngIf="
+                      loan.status === 'REJECTED' ||
+                      loan.status === 'AUTO_REJECTED'
+                    ">
+
+                    Application rejected
+
+                  </span>
+
+
+                  <span
+                    *ngIf="
+                      loan.status === 'PARTIAL' ||
+                      loan.status === 'OVERDUE' ||
+                      loan.status === 'PAID' ||
+                      loan.status === 'CLEARED'
+                    ">
+
+                    Authorization completed
+
+                  </span>
+
+                </div>
+
+              </div>
+
+
+              <!-- REPAYMENT -->
+
+              <div
+                class="stage-item"
+                [ngClass]="{
+
+                  'stage-current':
+                    loan.status === 'PARTIAL' ||
+                    loan.status === 'OVERDUE',
+
+                  'stage-complete':
+                    loan.status === 'PAID' ||
+                    loan.status === 'CLEARED',
+
+                  'stage-locked':
+                    loan.status === 'AWAITING_AUTHORIZATION' ||
+                    loan.status === 'REJECTED' ||
+                    loan.status === 'AUTO_REJECTED'
+
+                }">
+
+                <div class="stage-marker">
+
+                  <i
+                    class="fas"
+                    [ngClass]="{
+
+                      'fa-money-check-alt':
+                        loan.status === 'PARTIAL' ||
+                        loan.status === 'OVERDUE',
+
+                      'fa-check':
+                        loan.status === 'PAID' ||
+                        loan.status === 'CLEARED',
+
+                      'fa-lock':
+                        loan.status === 'AWAITING_AUTHORIZATION' ||
+                        loan.status === 'REJECTED' ||
+                        loan.status === 'AUTO_REJECTED'
+
+                    }">
+                  </i>
+
+                </div>
+
+
+                <div class="stage-item-content">
+
+                  <strong>
+                    Repayment
+                  </strong>
+
+
+                  <span
+                    *ngIf="
+                      loan.status === 'PARTIAL' ||
+                      loan.status === 'OVERDUE'
+                    ">
+
+                    Facility in repayment
+
+                  </span>
+
+
+                  <span
+                    *ngIf="
+                      loan.status === 'PAID' ||
+                      loan.status === 'CLEARED'
+                    ">
+
+                    Repayment completed
+
+                  </span>
+
+
+                  <span
+                    *ngIf="
+                      loan.status === 'AWAITING_AUTHORIZATION' ||
+                      loan.status === 'REJECTED' ||
+                      loan.status === 'AUTO_REJECTED'
+                    ">
+
+                    Not active
+
+                  </span>
+
+                </div>
+
+              </div>
+
+
+              <!-- COMPLETED -->
+
+              <div
+                class="stage-item"
+                [ngClass]="{
+
+                  'stage-complete':
+                    loan.status === 'PAID' ||
+                    loan.status === 'CLEARED',
+
+                  'stage-locked':
+                    loan.status !== 'PAID' &&
+                    loan.status !== 'CLEARED'
+
+                }">
+
+                <div class="stage-marker">
+
+                  <i
+                    class="fas"
+                    [ngClass]="{
+
+                      'fa-check':
+                        loan.status === 'PAID' ||
+                        loan.status === 'CLEARED',
+
+                      'fa-lock':
+                        loan.status !== 'PAID' &&
+                        loan.status !== 'CLEARED'
+
+                    }">
+                  </i>
+
+                </div>
+
+
+                <div class="stage-item-content">
+
+                  <strong>
+                    Completed
+                  </strong>
+
+                  <span>
+
+                    {{
+                      loan.status === 'PAID' ||
+                      loan.status === 'CLEARED'
+                        ? 'Facility fully settled'
+                        : 'Awaiting completion'
+
+                    }}
+
+                  </span>
+
+                </div>
+
+              </div>
+
+            </div>
+
+          </div>
+
+
+          <!-- =================================================
+               DECISION SUMMARY
+          ================================================== -->
+
+          <div class="decision-summary-grid">
+
+
+            <div class="decision-summary-item">
+
+              <span>
+                <i class="fas fa-file-signature"></i>
+                Application Status
+              </span>
+
+              <strong>
+                {{
+                  loan.status?.replaceAll('_', ' ')
+                  | titlecase
+                }}
+              </strong>
+
+            </div>
+
+
+            <div class="decision-summary-item">
+
+              <span>
+                <i class="fas fa-robot"></i>
+                Decision Channel
+              </span>
+
+              <strong>
+
+                {{
+                  loan.status === 'AUTO_APPROVED' ||
+                  loan.status === 'AUTO_REJECTED'
+                    ? 'Automated'
+                    : loan.status === 'APPROVED' ||
+                      loan.status === 'REJECTED'
+                    ? 'Administrator'
+                    : 'Pending Review'
+                }}
+
+              </strong>
+
+            </div>
+
+          </div>
+
+
+          <!-- =================================================
+               PENDING AUTHORIZATION
+          ================================================== -->
+
+          <div
+            *ngIf="
+              loan.status === 'AWAITING_AUTHORIZATION'
+            "
+            class="pending-decision-section">
+
+
+            <div class="decision-section-heading">
+
+              <div class="decision-section-icon pending">
+
+                <i class="fas fa-user-shield"></i>
+
+              </div>
+
+
+              <div>
+
+                <span>
+                  ACTION REQUIRED
+                </span>
+
+                <strong>
+                  Authorization Required
+                </strong>
+
+              </div>
+
+            </div>
+
+
+            <p class="command-description">
+
+              Review the customer profile, loan facility,
+              affordability information and credit assessment
+              before authorizing this application.
+
+            </p>
+
+
+          </div>
+
+
+          <!-- =================================================
+               OTHER ADMINISTRATIVE ACTIONS
+          ================================================== -->
 
           <div class="command-actions">
 
@@ -748,16 +1837,23 @@
             <!-- REMINDER -->
 
             <button
+              type="button"
               class="command-action reminder"
 
               *ngIf="
-                loan.status !== 'REJECTED' &&
-                loan.status !== 'AUTO_REJECTED'
+                loan.status === 'APPROVED' ||
+                loan.status === 'AUTO_APPROVED' ||
+                loan.status === 'PARTIAL' ||
+                loan.status === 'OVERDUE'
               ">
 
+
               <span class="action-icon">
+
                 <i class="fas fa-bell"></i>
+
               </span>
+
 
               <span class="action-content">
 
@@ -766,10 +1862,11 @@
                 </strong>
 
                 <small>
-                  Notify customer instantly
+                  Notify customer about the facility
                 </small>
 
               </span>
+
 
               <i class="fas fa-chevron-right action-arrow"></i>
 
@@ -779,22 +1876,28 @@
             <!-- REPAYMENT -->
 
             <button
+              type="button"
               class="command-action repayment"
 
               *ngIf="
-                loan.status !== 'REJECTED' &&
-                loan.status !== 'AUTO_REJECTED' &&
-                loan.status !== 'AWAITING_AUTHORIZATION' &&
-                loan.status !== 'PAID' &&
-                loan.status !== 'CLEARED' &&
+                (
+                  loan.status === 'APPROVED' ||
+                  loan.status === 'AUTO_APPROVED' ||
+                  loan.status === 'PARTIAL' ||
+                  loan.status === 'OVERDUE'
+                ) &&
                 (loan?.dueAmount ?? 0) > 0
               "
 
               (click)="clearLoan(loan.id)">
 
+
               <span class="action-icon">
+
                 <i class="fas fa-credit-card"></i>
+
               </span>
+
 
               <span class="action-content">
 
@@ -808,6 +1911,7 @@
 
               </span>
 
+
               <i class="fas fa-chevron-right action-arrow"></i>
 
             </button>
@@ -816,6 +1920,7 @@
             <!-- ASSIGN OFFICER -->
 
             <button
+              type="button"
               class="command-action officer"
 
               *ngIf="
@@ -825,9 +1930,13 @@
 
               (click)="reassignStaff(loan.id!)">
 
+
               <span class="action-icon">
+
                 <i class="fas fa-user-tie"></i>
+
               </span>
+
 
               <span class="action-content">
 
@@ -836,10 +1945,11 @@
                 </strong>
 
                 <small>
-                  Allocate account manager
+                  Allocate relationship manager
                 </small>
 
               </span>
+
 
               <i class="fas fa-chevron-right action-arrow"></i>
 
@@ -848,11 +1958,17 @@
 
             <!-- STATEMENT -->
 
-            <button class="command-action statement">
+            <button
+              type="button"
+              class="command-action statement">
+
 
               <span class="action-icon">
+
                 <i class="fas fa-file-pdf"></i>
+
               </span>
+
 
               <span class="action-content">
 
@@ -866,6 +1982,7 @@
 
               </span>
 
+
               <i class="fas fa-chevron-right action-arrow"></i>
 
             </button>
@@ -876,10 +1993,11 @@
 
 
         <!-- ===================================================
-             ASSIGNED OFFICER
+             ASSIGNED LOAN OFFICER
         ==================================================== -->
 
         <article class="officer-card">
+
 
           <div class="officer-header">
 
@@ -895,14 +2013,18 @@
 
             </div>
 
+
             <i class="fas fa-user-tie"></i>
 
           </div>
 
 
+          <!-- ASSIGNED OFFICER -->
+
           <div
             *ngIf="loan?.assignedStaff; else noOfficer"
             class="officer-profile">
+
 
             <div class="officer-avatar">
 
@@ -926,9 +2048,12 @@
           </div>
 
 
+          <!-- OFFICER CONTACT -->
+
           <div
             *ngIf="loan?.assignedStaff"
             class="officer-contact">
+
 
             <div>
 
@@ -939,6 +2064,7 @@
               </span>
 
             </div>
+
 
             <div>
 
@@ -953,9 +2079,12 @@
           </div>
 
 
+          <!-- NO OFFICER -->
+
           <ng-template #noOfficer>
 
             <div class="no-officer">
+
 
               <div class="no-officer-icon">
 
@@ -963,9 +2092,11 @@
 
               </div>
 
+
               <strong>
                 No Officer Assigned
               </strong>
+
 
               <span>
                 This facility requires a relationship manager.
@@ -976,7 +2107,6 @@
           </ng-template>
 
         </article>
-
 
       </aside>
 

@@ -12,54 +12,54 @@ import { AccountService } from '../services/account.service';
 import { NotificationService } from '../services/services/notification.service';
 import { interval } from 'rxjs';
 
-declare var bootstrap: any;
+        declare var bootstrap: any;
 
-@Component({
-  selector: 'app-loan-list',
-  templateUrl: './loan-list.component.html',
-  styleUrls: ['./loan-list.component.css']
-})
-export class LoanListComponent implements OnInit {
-  processingLoanId: number | null = null;
-  @Input() loans: Loan[] = [];
-  allLoans: Loan[] = [];
-rejectionReason: string = '';
-loanToReject!: Loan;
-  searchTerm: string = '';
-  searchType: string = 'name';
-  showCreateForm = false;
-  isEditMode = false;
-  selectedLoan: Loan | null = null;
-notifications: AppNotification[] = [];
-unreadCount = 0;
-  loanDecision: any = null;
-  loanDecisionMessage: string = '';
-  isEligible: boolean = false;
-  showEligibilityCard: boolean = false;
-  hasActiveLoanCardVisible: boolean = false;
-  activeLoanMessage: string = '';
-  isCheckingLoan = false;
-showNotifications = false;
-  selectedImageFile: File | null = null;
-  imageSrc: string | null = null;
+        @Component({
+        selector: 'app-loan-list',
+        templateUrl: './loan-list.component.html',
+        styleUrls: ['./loan-list.component.css']
+        })
+        export class LoanListComponent implements OnInit {
+        processingLoanId: number | null = null;
+        @Input() loans: Loan[] = [];
+        allLoans: Loan[] = [];
+        rejectionReason: string = '';
+        loanToReject!: Loan;
+        searchTerm: string = '';
+        searchType: string = 'name';
+        showCreateForm = false;
+        isEditMode = false;
+        selectedLoan: Loan | null = null;
+        notifications: AppNotification[] = [];
+        unreadCount = 0;
+        loanDecision: any = null;
+        loanDecisionMessage: string = '';
+        isEligible: boolean = false;
+        showEligibilityCard: boolean = false;
+        hasActiveLoanCardVisible: boolean = false;
+        activeLoanMessage: string = '';
+        isCheckingLoan = false;
+        showNotifications = false;
+        selectedImageFile: File | null = null;
+        imageSrc: string | null = null;
 
-  errorMessage: string = '';
-  successMessage: string = '';
-  submitError: string | null = null;
-  submitSuccess: string | null = null;
+        errorMessage: string = '';
+        successMessage: string = '';
+        submitError: string | null = null;
+        submitSuccess: string | null = null;
 
-  isLoading = false;
-  isSubmitting = false;
+        isLoading = false;
+        isSubmitting = false;
 
-   nationalId = '';
-  applicant: any;
-  insights: any;
+        nationalId = '';
+        applicant: any;
+        insights: any;
 
-  userRole: string = '';
-  account: Account | null = null;
-  showError: boolean = false;
+        userRole: string = '';
+        account: Account | null = null;
+        showError: boolean = false;
 
-  loanForm!: FormGroup;
+        loanForm!: FormGroup;
 
   counts = { all: 0, pending: 0, approved: 0, rejected: 0 };
   private longPressTimeout: any;
@@ -71,8 +71,8 @@ showNotifications = false;
     private route: ActivatedRoute,
     public router: Router ,
     private accountService: AccountService,
-      private notificationService: NotificationService,
-      private transactionService: TransactionService
+    private notificationService: NotificationService,
+    private transactionService: TransactionService
     
   ) {}
 

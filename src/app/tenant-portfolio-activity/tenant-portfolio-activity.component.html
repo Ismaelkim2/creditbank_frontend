@@ -1,0 +1,838 @@
+
+<div class="portfolio-activity-page">
+
+  <!-- =====================================================
+       PAGE HEADER
+  ====================================================== -->
+  <header class="portfolio-page-header">
+
+    <div class="portfolio-header-content">
+
+      <div class="portfolio-heading-icon">
+        <i class="fa-solid fa-chart-line"></i>
+      </div>
+
+      <div class="portfolio-heading-text">
+        <span class="portfolio-eyebrow">
+          PROPERTY MANAGEMENT / INTELLIGENCE
+        </span>
+
+        <h2>Portfolio Activity</h2>
+
+        <p>
+          Track property operations, tenant movements, lease updates
+          and financial transactions across your portfolio.
+        </p>
+      </div>
+
+    </div>
+
+    <div class="portfolio-header-actions">
+
+      <button
+        type="button"
+        class="portfolio-action-btn portfolio-back-btn"
+        routerLink="/app/tenant-agent-dashboard">
+        <i class="fa-solid fa-arrow-left"></i>
+        <span>Dashboard</span>
+      </button>
+
+      <button
+        type="button"
+        class="portfolio-action-btn portfolio-refresh-btn"
+        (click)="loadPortfolioActivity()"
+        [disabled]="loading">
+
+        <i
+          class="fa-solid fa-rotate"
+          [class.fa-spin]="loading">
+        </i>
+
+        <span>{{ loading ? 'Refreshing...' : 'Refresh data' }}</span>
+      </button>
+
+    </div>
+
+  </header>
+
+
+  <!-- =====================================================
+       PARTIAL DATA WARNING
+  ====================================================== -->
+  <div
+    class="portfolio-alert portfolio-warning"
+    *ngIf="sourceWarnings.length">
+
+    <div class="portfolio-alert-icon">
+      <i class="fa-solid fa-triangle-exclamation"></i>
+    </div>
+
+    <div class="portfolio-alert-content">
+      <strong>Some information could not be synchronised</strong>
+
+      <span *ngFor="let warning of sourceWarnings">
+        {{ warning }}
+      </span>
+    </div>
+
+  </div>
+
+
+  <!-- =====================================================
+       ERROR MESSAGE
+  ====================================================== -->
+  <div
+    class="portfolio-alert portfolio-error"
+    *ngIf="errorMessage">
+
+    <div class="portfolio-alert-icon">
+      <i class="fa-solid fa-circle-exclamation"></i>
+    </div>
+
+    <div class="portfolio-alert-content">
+      <strong>Unable to complete the request</strong>
+      <span>{{ errorMessage }}</span>
+    </div>
+
+    <button
+      type="button"
+      class="portfolio-alert-retry"
+      (click)="loadPortfolioActivity()">
+      <i class="fa-solid fa-rotate-right"></i>
+      Try again
+    </button>
+
+  </div>
+
+
+  <!-- =====================================================
+       PORTFOLIO SNAPSHOT
+  ====================================================== -->
+  <section class="portfolio-section">
+
+    <div class="portfolio-section-heading">
+
+      <div>
+        <span class="portfolio-section-eyebrow">
+          PORTFOLIO OVERVIEW
+        </span>
+
+        <h3>Portfolio Snapshot</h3>
+
+        <p>
+          An overview of your properties, occupancy and rental performance.
+        </p>
+      </div>
+
+      <div class="portfolio-live-indicator">
+        <span class="live-dot"></span>
+        Portfolio overview
+      </div>
+
+    </div>
+
+
+    <div class="portfolio-kpi-grid">
+
+      <!-- PROPERTIES -->
+      <article class="portfolio-kpi-card kpi-blue">
+
+        <div class="portfolio-kpi-top">
+          <div class="portfolio-kpi-icon">
+            <i class="fa-solid fa-building"></i>
+          </div>
+
+          <span class="portfolio-kpi-caption">
+            PROPERTY BASE
+          </span>
+        </div>
+
+        <div class="portfolio-kpi-value">
+          {{ totalProperties | number }}
+        </div>
+
+        <div class="portfolio-kpi-label">
+          Registered properties
+        </div>
+
+        <div class="portfolio-kpi-footer">
+          <i class="fa-solid fa-layer-group"></i>
+          <strong>{{ totalUnits | number }}</strong>
+          <span>total units</span>
+        </div>
+
+      </article>
+
+
+      <!-- OCCUPANCY -->
+      <article class="portfolio-kpi-card kpi-green">
+
+        <div class="portfolio-kpi-top">
+          <div class="portfolio-kpi-icon">
+            <i class="fa-solid fa-house-user"></i>
+          </div>
+
+          <span class="portfolio-kpi-caption">
+            OCCUPANCY
+          </span>
+        </div>
+
+        <div class="portfolio-kpi-value">
+          {{ occupancyRate | number:'1.1-1' }}%
+        </div>
+
+        <div class="portfolio-kpi-label">
+          Portfolio occupancy
+        </div>
+
+        <div class="portfolio-kpi-progress">
+          <div
+            class="portfolio-progress-fill progress-green"
+            [style.width.%]="occupancyRate">
+          </div>
+        </div>
+
+        <div class="portfolio-kpi-footer">
+          <strong>{{ occupiedUnits | number }}</strong>
+          <span>occupied</span>
+          <span class="kpi-separator">|</span>
+          <strong>{{ vacantUnits | number }}</strong>
+          <span>vacant</span>
+        </div>
+
+      </article>
+
+
+      <!-- TENANTS -->
+      <article class="portfolio-kpi-card kpi-purple">
+
+        <div class="portfolio-kpi-top">
+          <div class="portfolio-kpi-icon">
+            <i class="fa-solid fa-users"></i>
+          </div>
+
+          <span class="portfolio-kpi-caption">
+            TENANT BASE
+          </span>
+        </div>
+
+        <div class="portfolio-kpi-value">
+          {{ activeTenants | number }}
+        </div>
+
+        <div class="portfolio-kpi-label">
+          Active tenants
+        </div>
+
+        <div class="portfolio-kpi-footer">
+          <i class="fa-solid fa-file-signature"></i>
+          <strong>{{ activeLeases | number }}</strong>
+          <span>active leases</span>
+        </div>
+
+      </article>
+
+
+      <!-- COLLECTION RATE -->
+      <article class="portfolio-kpi-card kpi-orange">
+
+        <div class="portfolio-kpi-top">
+          <div class="portfolio-kpi-icon">
+            <i class="fa-solid fa-chart-pie"></i>
+          </div>
+
+          <span class="portfolio-kpi-caption">
+            RENT PERFORMANCE
+          </span>
+        </div>
+
+        <div class="portfolio-kpi-value">
+          {{ collectionRate | number:'1.1-1' }}%
+        </div>
+
+        <div class="portfolio-kpi-label">
+          Rent collection rate
+        </div>
+
+        <div class="portfolio-kpi-progress">
+          <div
+            class="portfolio-progress-fill progress-orange"
+            [style.width.%]="collectionRate">
+          </div>
+        </div>
+
+        <div class="portfolio-kpi-footer">
+          <i class="fa-solid fa-circle-check"></i>
+          <strong>{{ formatCurrency(rentCollected) }}</strong>
+          <span>collected</span>
+        </div>
+
+      </article>
+
+    </div>
+
+  </section>
+
+
+  <!-- =====================================================
+       FINANCIAL INTELLIGENCE
+  ====================================================== -->
+  <section class="portfolio-section">
+
+    <div class="portfolio-section-heading">
+
+      <div>
+        <span class="portfolio-section-eyebrow">
+          FINANCIAL PERFORMANCE
+        </span>
+
+        <h3>Rent & Collection Intelligence</h3>
+
+        <p>
+          Understand rental income, outstanding balances and overdue arrears.
+        </p>
+      </div>
+
+    </div>
+
+
+    <div class="portfolio-financial-grid">
+
+      <article class="portfolio-financial-card financial-blue">
+
+        <div class="financial-card-icon">
+          <i class="fa-solid fa-file-invoice-dollar"></i>
+        </div>
+
+        <div class="financial-card-content">
+          <span>Rent charged</span>
+          <strong>{{ formatCurrency(rentCharged) }}</strong>
+          <small>Selected dashboard period</small>
+        </div>
+
+      </article>
+
+
+      <article class="portfolio-financial-card financial-green">
+
+        <div class="financial-card-icon">
+          <i class="fa-solid fa-money-bill-wave"></i>
+        </div>
+
+        <div class="financial-card-content">
+          <span>Rent collected</span>
+          <strong>{{ formatCurrency(rentCollected) }}</strong>
+          <small>Selected dashboard period</small>
+        </div>
+
+      </article>
+
+
+      <article class="portfolio-financial-card financial-orange">
+
+        <div class="financial-card-icon">
+          <i class="fa-solid fa-clock"></i>
+        </div>
+
+        <div class="financial-card-content">
+          <span>Outstanding rent</span>
+          <strong>{{ formatCurrency(outstandingRent) }}</strong>
+          <small>Unsettled rent balance</small>
+        </div>
+
+      </article>
+
+
+      <article class="portfolio-financial-card financial-red">
+
+        <div class="financial-card-icon">
+          <i class="fa-solid fa-triangle-exclamation"></i>
+        </div>
+
+        <div class="financial-card-content">
+          <span>Overdue arrears</span>
+          <strong>{{ formatCurrency(overdueArrears) }}</strong>
+          <small>Overdue rent balance</small>
+        </div>
+
+      </article>
+
+    </div>
+
+
+    <!-- PAYMENT RECONCILIATION -->
+    <div class="portfolio-payment-summary">
+
+      <div class="payment-summary-heading">
+        <div class="payment-summary-icon">
+          <i class="fa-solid fa-scale-balanced"></i>
+        </div>
+
+        <div>
+          <strong>Payment reconciliation</strong>
+          <span>Payment records by posting status</span>
+        </div>
+      </div>
+
+      <div class="payment-summary-values">
+
+        <div class="payment-summary-item">
+          <span>Posted payments</span>
+          <strong>{{ formatCurrency(paymentTotal) }}</strong>
+        </div>
+
+        <div class="payment-summary-divider"></div>
+
+        <div class="payment-summary-item">
+          <span>Reversed payments</span>
+          <strong class="reversed-value">
+            {{ formatCurrency(reversedPaymentTotal) }}
+          </strong>
+        </div>
+
+      </div>
+
+    </div>
+
+  </section>
+
+
+  <!-- =====================================================
+       ACTIVITY TIMELINE
+  ====================================================== -->
+  <section class="portfolio-activity-section">
+
+    <div class="portfolio-section-heading activity-heading">
+
+      <div>
+        <span class="portfolio-section-eyebrow">
+          OPERATIONAL MONITORING
+        </span>
+
+        <h3>Portfolio Activity Timeline</h3>
+
+        <p>
+          Follow the latest changes and transactions recorded across your portfolio.
+        </p>
+      </div>
+
+      <div class="activity-header-stats">
+
+        <div class="activity-stat">
+          <strong>{{ totalActivityCount | number }}</strong>
+          <span>Total records</span>
+        </div>
+
+        <div class="activity-stat">
+          <strong>{{ paymentActivityCount | number }}</strong>
+          <span>Payment events</span>
+        </div>
+
+        <div class="activity-stat">
+          <strong>{{ leaseActivityCount | number }}</strong>
+          <span>Lease events</span>
+        </div>
+
+      </div>
+
+    </div>
+
+
+    <!-- FILTER PANEL -->
+    <div class="portfolio-filter-panel">
+
+      <div class="portfolio-filter-heading">
+
+        <div class="filter-heading-title">
+          <span class="filter-heading-icon">
+            <i class="fa-solid fa-sliders"></i>
+          </span>
+
+          <div>
+            <strong>Find portfolio activity</strong>
+            <small>Refine records by keyword, category, property or date.</small>
+          </div>
+        </div>
+
+        <button
+          type="button"
+          class="portfolio-clear-btn"
+          (click)="clearFilters()">
+          <i class="fa-solid fa-rotate-left"></i>
+          Reset filters
+        </button>
+
+      </div>
+
+
+      <div class="portfolio-filter-grid">
+
+        <div class="portfolio-filter-field portfolio-search-field">
+
+          <label for="activitySearch">Search records</label>
+
+          <div class="portfolio-input-wrap">
+            <i class="fa-solid fa-magnifying-glass"></i>
+
+            <input
+              id="activitySearch"
+              type="search"
+              [value]="searchTerm"
+              (input)="onSearchChange($any($event.target).value)"
+              placeholder="Tenant, property, reference...">
+          </div>
+
+        </div>
+
+
+        <div class="portfolio-filter-field">
+
+          <label for="activityCategory">Activity category</label>
+
+          <select
+            id="activityCategory"
+            [value]="selectedCategory"
+            (change)="onCategoryChange($any($event.target).value)">
+
+            <option value="ALL">All activities</option>
+            <option value="PROPERTY">Properties</option>
+            <option value="UNIT">Units</option>
+            <option value="TENANT">Tenants</option>
+            <option value="LEASE">Leases</option>
+            <option value="RENT">Rent charges</option>
+            <option value="PAYMENT">Payments</option>
+
+          </select>
+
+        </div>
+
+
+        <div class="portfolio-filter-field">
+
+          <label for="activityProperty">Property</label>
+
+          <select
+            id="activityProperty"
+            [value]="selectedProperty"
+            (change)="onPropertyChange($any($event.target).value)">
+
+            <option value="ALL">All properties</option>
+
+            <option
+              *ngFor="let property of properties"
+              [value]="property.id">
+              {{ property.name }}
+            </option>
+
+          </select>
+
+        </div>
+
+
+        <div class="portfolio-filter-field">
+
+          <label for="activityFrom">From date</label>
+
+          <input
+            id="activityFrom"
+            type="date"
+            [value]="dateFrom"
+            [max]="dateTo"
+            (change)="dateFrom = $any($event.target).value">
+
+        </div>
+
+
+        <div class="portfolio-filter-field">
+
+          <label for="activityTo">To date</label>
+
+          <input
+            id="activityTo"
+            type="date"
+            [value]="dateTo"
+            [min]="dateFrom"
+            (change)="dateTo = $any($event.target).value">
+
+        </div>
+
+
+        <div class="portfolio-filter-buttons">
+
+          <button
+            type="button"
+            class="portfolio-apply-btn"
+            (click)="applyDateFilter()">
+
+            <i class="fa-solid fa-filter"></i>
+            Apply dates
+
+          </button>
+
+        </div>
+
+      </div>
+
+    </div>
+
+
+    <!-- TIMELINE TOOLBAR -->
+    <div class="portfolio-timeline-toolbar">
+
+      <div class="timeline-result-label">
+        <strong>Activity records</strong>
+
+        <span>
+          {{ filteredActivities.length | number }} matching records
+        </span>
+      </div>
+
+      <div class="portfolio-export-actions">
+
+        <button
+          type="button"
+          class="portfolio-export-btn"
+          (click)="exportCsv()"
+          [disabled]="!filteredActivities.length">
+
+          <i class="fa-solid fa-file-csv"></i>
+          Export CSV
+
+        </button>
+
+        <button
+          type="button"
+          class="portfolio-export-btn"
+          (click)="printReport()"
+          [disabled]="!filteredActivities.length">
+
+          <i class="fa-solid fa-print"></i>
+          Print report
+
+        </button>
+
+      </div>
+
+    </div>
+
+
+    <!-- LOADING -->
+    <div
+      class="portfolio-loading-panel"
+      *ngIf="loading">
+
+      <div class="portfolio-spinner"></div>
+
+      <strong>Synchronising portfolio activity</strong>
+
+      <span>
+        Gathering property, tenant, lease and financial records...
+      </span>
+
+    </div>
+
+
+   <!-- ACTIVITY FEED -->
+<div
+  class="portfolio-timeline"
+  *ngIf="!loading && filteredActivities.length">
+
+  <article
+    class="portfolio-timeline-item"
+    *ngFor="
+      let activity of filteredActivities
+        | slice:0:visibleActivityLimit;
+      trackBy: trackByActivity
+    ">
+
+    <div class="timeline-visual">
+
+      <div
+        class="timeline-icon"
+        [ngClass]="getSeverityClass(activity.severity)">
+
+        <i class="fa-solid" [ngClass]="activity.icon"></i>
+
+      </div>
+
+      <div class="timeline-connector"></div>
+
+    </div>
+
+    <div class="timeline-content">
+
+      <article class="timeline-card">
+
+        <div class="timeline-card-main">
+
+          <div class="timeline-card-heading">
+
+            <div class="timeline-title-group">
+
+              <h4>{{ activity.title }}</h4>
+
+              <span
+                class="activity-category-badge"
+                [ngClass]="getSeverityClass(activity.severity)">
+                {{ getCategoryLabel(activity.category) }}
+              </span>
+
+            </div>
+
+            <time>
+              <i class="fa-regular fa-clock"></i>
+              {{ activity.dateLabel }}
+            </time>
+
+          </div>
+
+          <p class="timeline-description">
+            {{ activity.description }}
+          </p>
+
+          <div class="timeline-meta">
+
+            <span>
+              <i class="fa-solid fa-building"></i>
+              {{ activity.propertyName }}
+            </span>
+
+            <span>
+              <i class="fa-solid fa-hashtag"></i>
+              {{ activity.reference }}
+            </span>
+
+            <span *ngIf="activity.amount !== null">
+              <i class="fa-solid fa-coins"></i>
+              {{ formatCurrency(activity.amount) }}
+            </span>
+
+          </div>
+
+        </div>
+
+        <div class="timeline-card-side">
+
+          <span
+            class="timeline-source-indicator"
+            [ngClass]="getSeverityClass(activity.severity)">
+          </span>
+
+          <small>{{ activity.source }}</small>
+
+        </div>
+
+      </article>
+
+    </div>
+
+  </article>
+
+</div>
+
+
+<!-- VIEW MORE ACTIVITIES -->
+<div
+  class="portfolio-view-more"
+  *ngIf="
+    !loading &&
+    filteredActivities.length > visibleActivityLimit
+  ">
+
+  <button
+    type="button"
+    class="portfolio-view-more-btn"
+    (click)="viewMoreActivities()">
+
+    <i class="fa-solid fa-arrow-down-wide-short"></i>
+
+    <span>View More Activities</span>
+
+    <span class="portfolio-remaining-count">
+      {{ filteredActivities.length - visibleActivityLimit }}
+    </span>
+
+  </button>
+
+  <small class="portfolio-view-more-hint">
+    Showing {{ visibleActivityLimit }} of
+    {{ filteredActivities.length }} activities
+  </small>
+
+</div>
+
+
+<!-- ALL ACTIVITIES DISPLAYED -->
+<div
+  class="portfolio-view-more"
+  *ngIf="
+    !loading &&
+    filteredActivities.length > 5 &&
+    visibleActivityLimit >= filteredActivities.length
+  ">
+
+  <button
+    type="button"
+    class="portfolio-view-more-btn portfolio-show-less-btn"
+    (click)="showLessActivities()">
+
+    <i class="fa-solid fa-arrow-up"></i>
+    Show Less Activities
+
+  </button>
+
+  <small class="portfolio-view-more-hint">
+    All {{ filteredActivities.length }} activities displayed
+  </small>
+
+</div>
+
+
+    <!-- EMPTY STATE -->
+    <div
+      class="portfolio-empty-state"
+      *ngIf="!loading && !filteredActivities.length">
+
+      <div class="portfolio-empty-icon">
+        <i class="fa-solid fa-calendar-xmark"></i>
+      </div>
+
+      <h4>No matching activity</h4>
+
+      <p>
+        There are no recorded activities matching your current filters.
+        Try a different date range, property or search term.
+      </p>
+
+      <button
+        type="button"
+        class="portfolio-apply-btn"
+        (click)="clearFilters()">
+
+        <i class="fa-solid fa-rotate-left"></i>
+        Reset filters
+
+      </button>
+
+    </div>
+
+  </section>
+
+
+  <!-- =====================================================
+       FOOTER
+  ====================================================== -->
+  <footer class="portfolio-activity-footer">
+
+    <div class="footer-brand">
+      <i class="fa-solid fa-shield-halved"></i>
+      <strong>Portfolio Intelligence</strong>
+    </div>
+
+    <span>
+      Activity is compiled from available property management records.
+    </span>
+
+  </footer>
+
+</div>

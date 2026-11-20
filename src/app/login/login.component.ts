@@ -116,35 +116,54 @@ onSubmit(): void {
   this.authService.login(credentials).subscribe({
     next: (res: any) => {
 
-     const user: AuthUser = {
-  name: res.name || res.user?.fullName,
-  role: res.role || res.user?.role,
-  nationalId: res.nationalId || res.user?.nationalId,
-  email: res.email || res.user?.email,
-  phoneNumber: res.phoneNumber,
-  imageUrl: res.userImageUrl,
-  token: res.token
+const user: AuthUser = {
+  name: res.name || res.user?.name || res.user?.fullName || '',
+  role: res.role || res.user?.role || '',
+  nationalId: res.nationalId || res.user?.nationalId || '',
+  email: res.email || res.user?.email || '',
+  phoneNumber: res.phoneNumber || res.user?.phoneNumber,
+  imageUrl: res.userImageUrl || res.user?.userImageUrl || res.user?.imageUrl,
+  token: res.token || res.user?.token || ''
 };
 
+if (!user.token || !user.role) {
+  this.loading = false;
+  this.loginError =
+    'Login response is missing the session token or user role. Please contact the administrator.';
+  return;
+}
+
 this.authService.setSession(user);
+this.loading = false;
 
-      this.loading = false;
+const role = user.role.toUpperCase().replace('ROLE_', '');
 
-      const role = (user.role || '').toUpperCase();
-
-      switch (role) {
+switch (role) {
   case 'ADMIN':
-  case 'DATA_MANAGER':
     this.router.navigate(['/app/dashboard']);
     break;
 
-        case 'APPLICANT':
-          this.router.navigate(['/app/applicant']);
-          break;
+  case 'DATA_MANAGER':
+    this.router.navigate(['/app/data-manager-dashboard']);
+    break;
 
-        default:
-          this.router.navigate(['/unauthorized']);
-      }
+  case 'CREDIT_AGENT':
+    this.router.navigate(['/app/credit-agent-dashboard']);
+    break;
+
+  case 'TENANT_AGENT':
+    this.router.navigate(['/app/tenant-agent-dashboard']);
+    break;
+
+  case 'APPLICANT':
+    this.router.navigate(['/app/applicant']);
+    break;
+
+  default:
+    this.authService.logout();
+    this.loginError = `Unsupported user role: ${role}`;
+    break;
+}
     },
 
     error: (err) => {
@@ -153,6 +172,41 @@ this.authService.setSession(user);
     }
   });
 }
+
+
+
+private navigateByRole(roleValue: string): void {
+  const role = (roleValue || '')
+    .trim()
+    .toUpperCase()
+    .replace(/^ROLE_/, '');
+
+  const destinations: { [key: string]: string } = {
+    ADMIN: '/app/dashboard',
+    DATA_MANAGER: '/app/data-manager-dashboard',
+    CREDIT_AGENT: '/app/credit-agent-dashboard',
+    TENANT_AGENT: '/app/tenant-agent-dashboard',
+    APPLICANT: '/app/applicant'
+  };
+
+  const destination = destinations[role];
+
+  if (!destination) {
+    this.authService.logout();
+    this.loginError = `Unsupported user role: ${role || 'missing role'}`;
+    return;
+  }
+
+  this.router.navigateByUrl(destination).then(navigated => {
+    if (!navigated) {
+      this.loginError =
+        'Login succeeded, but the dashboard could not be opened. Check the route configuration.';
+    }
+  }).catch(() => {
+    this.loginError = 'Unable to open the dashboard. Please try again.';
+  });
+}
+
 
 
 // 🔹 Start OTP Countdown

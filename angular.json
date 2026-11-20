@@ -60,21 +60,23 @@
           },
           "defaultConfiguration": "production"
         },
-        "serve": {
-          "builder": "@angular-devkit/build-angular:dev-server",
-          "options": {
-            "browserTarget": "credit-management:build"
-          },
-          "configurations": {
-            "production": {
-              "browserTarget": "credit-management:build:production"
-            },
-            "development": {
-              "browserTarget": "credit-management:build:development"
-            }
-          },
-          "defaultConfiguration": "development"
-        },
+
+"serve": {
+  "builder": "@angular-devkit/build-angular:dev-server",
+  "options": {
+    "browserTarget": "credit-management:build",
+    "proxyConfig": "proxy.conf.json"
+  },
+  "configurations": {
+    "production": {
+      "browserTarget": "credit-management:build:production"
+    },
+    "development": {
+      "browserTarget": "credit-management:build:development"
+    }
+  },
+  "defaultConfiguration": "development"
+},
         "extract-i18n": {
           "builder": "@angular-devkit/build-angular:extract-i18n",
           "options": {

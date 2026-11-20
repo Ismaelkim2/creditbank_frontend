@@ -40,6 +40,22 @@ getLoans(): Observable<Loan[]> {
   );
 }
 
+
+ approveLoan(id: number): Observable<Loan> {
+  return this.http.patch<Loan>(
+    `${this.baseUrl}/${id}/approve`,
+    {}
+  );
+}
+
+rejectLoan(id: number, reason: string): Observable<any> {
+  return this.http.patch<any>(
+    `${this.apiUrl}/${id}/reject`,
+    { reason }
+  );
+}
+
+
 createStaff(data: any) {
   return this.http.post(
     `${this.baseUrl}/staff`,
@@ -88,12 +104,6 @@ createStaff(data: any) {
     return this.http.delete(`${this.baseUrl}/${id}`);
   }
 
- approveLoan(id: number): Observable<Loan> {
-  return this.http.patch<Loan>(
-    `${this.baseUrl}/${id}/approve`,
-    {}
-  );
-}
 
 rejectLoanWithReason(
   id: number,
@@ -110,6 +120,19 @@ rejectLoanWithReason(
   refundLoan(id: number) {
     return this.http.post(`${this.baseUrl}/${id}/refund`, {});
   }
+
+
+
+  downloadLoanReceipt(loanId: number): Observable<Blob> {
+
+  return this.http.get(
+    `${this.apiUrl}/api/loans/${loanId}/receipt`,
+    {
+      responseType: 'blob'
+    }
+  );
+
+}
 
   // ===============================
   // REPAYMENTS
@@ -228,5 +251,7 @@ analyzeCreditBatch(
   );
 
 }
+
+
 
 }

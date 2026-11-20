@@ -1,4 +1,7 @@
-<div class="top-nav-premium">
+<div
+  class="top-nav-premium"
+  [class.tenant-mode]="isTenantRole"
+  [class.credit-mode]="!isTenantRole">
 
   <!-- LEFT SECTION -->
   <div class="nav-left">
@@ -15,35 +18,59 @@
             alt="CrediCore Logo">
     </div>
 
-    <div class="brand-text">
-        <span class="brand">
-            CrediCore
-        </span>
+<div class="brand-text">
+  <span class="brand">
+    {{ isTenantRole ? 'CrediCore PropertyHub' : 'CrediCore Credit' }}
+  </span>
 
-        <small class="brand-subtitle">
-            Intelligent Lending Platform
-        </small>
-    </div>
+  <small class="brand-subtitle">
+    {{ isTenantRole
+        ? 'Rental & Property Management'
+        : 'Intelligent Lending Platform' }}
+  </small>
+</div>
 
 </div>
 
-    <!-- MICRO STATS (desktop only) -->
-    <div class="micro-stats d-none d-xl-flex">
-      <div class="stat">
-        <span class="label">Portfolio</span>
-       <span class="value">
-  {{ portfolio ? ('KES ' + formatToMillions(portfolio)) : 'Loading...' }}
-</span>
-      </div>
-      <div class="stat">
-        <span class="label">Liquidity</span>
-        <span class="value text-success">Healthy</span>
-      </div>
-      <div class="stat">
-        <span class="label">Risk</span>
-        <span class="value text-warning">Moderate</span>
-      </div>
-    </div>
+<!-- CREDIT STATISTICS: HIDDEN FOR TENANT AGENTS -->
+<div
+  class="micro-stats d-none d-xl-flex"
+  *ngIf="!isTenantRole">
+
+  <div class="stat">
+    <span class="label">Portfolio</span>
+    <span class="value">
+      {{ portfolio ? ('KES ' + formatToMillions(portfolio)) : 'Loading...' }}
+    </span>
+  </div>
+
+  <div class="stat">
+    <span class="label">Liquidity</span>
+    <span class="value text-success">Healthy</span>
+  </div>
+
+  <div class="stat">
+    <span class="label">Risk</span>
+    <span class="value text-warning">Moderate</span>
+  </div>
+
+</div>
+
+<!-- TENANT CONTEXT: DESKTOP ONLY -->
+<div
+  class="tenant-context d-none d-xl-flex"
+  *ngIf="isTenantRole">
+
+  <span class="tenant-context-icon">
+    <i class="fa-solid fa-building"></i>
+  </span>
+
+  <div>
+    <span class="tenant-context-label">WORKSPACE</span>
+    <span class="tenant-context-value">Property Operations</span>
+  </div>
+
+</div>
   </div>
 
   <!-- RIGHT SECTION -->
@@ -52,7 +79,14 @@
     <!-- SEARCH -->
     <div class="search-command d-none d-md-flex">
       <i class="fa fa-search"></i>
-      <input type="text" placeholder="Search anything… (Ctrl + K)" />
+      <input
+  type="text"
+  [placeholder]="isTenantRole
+    ? 'Search properties, units, tenants…'
+    : 'Search accounts, loans, customers…'"
+  [attr.aria-label]="isTenantRole
+    ? 'Search property management'
+    : 'Search credit management'" />
     </div>
 
     <!-- EMAIL ICON -->

@@ -56,6 +56,38 @@ portfolio = 0;
      private themeService: ThemeService
   ) {}
 
+
+  /**
+ * Normalizes the authenticated user's role.
+ * Supports values such as TENANT_AGENT and ROLE_TENANT_AGENT.
+ */
+private get normalizedUserRole(): string {
+  return (this.userRole || '')
+    .trim()
+    .toUpperCase()
+    .replace(/^ROLE_/, '');
+}
+
+/** True when the logged-in user is a tenant/property agent. */
+get isTenantRole(): boolean {
+  return this.normalizedUserRole === 'TENANT_AGENT';
+}
+
+/** True for credit-facing roles. */
+get isCreditRole(): boolean {
+  return [
+    'ADMIN',
+    'DATA_MANAGER',
+    'APPLICANT'
+  ].includes(this.normalizedUserRole);
+}
+
+get workspaceLabel(): string {
+  return this.isTenantRole
+    ? 'Property Operations'
+    : 'Credit Operations';
+}
+
   ngOnInit(): void {
 
     this.themeService.darkMode$
@@ -308,9 +340,9 @@ onOutsideClick(event: MouseEvent) {
   }
 
   // Close profile dropdown
-  if (!target.closest('.profile-menu')) {
-    this.showDropdown = false;
-  }
+if (!target.closest('.profile-men')) {
+  this.showDropdown = false;
+}
 }
 
 @HostListener('document:keydown.escape')

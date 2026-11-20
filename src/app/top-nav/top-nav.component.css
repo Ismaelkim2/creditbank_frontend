@@ -851,3 +851,122 @@ left:0;
     opacity:1;
   }
 }
+
+
+/* =========================================================
+   ROLE-AWARE TOP NAVIGATION
+   Preserves the existing navigation structure
+========================================================= */
+
+.top-nav-premium {
+  min-width: 0;
+}
+
+.brand-wrapper {
+  min-width: 0;
+}
+
+.brand-text {
+  min-width: 0;
+}
+
+.brand {
+  display: block;
+  line-height: 1.25;
+  font-weight: 800;
+  letter-spacing: -0.2px;
+}
+
+.brand-subtitle {
+  display: block;
+  line-height: 1.35;
+  overflow-wrap: anywhere;
+}
+
+/* Tenant workspace indicator */
+.tenant-context {
+  align-items: center;
+  gap: 11px;
+  margin-left: 22px;
+  padding: 9px 14px;
+  background: #f0f6ff;
+  border: 1px solid #dce9fb;
+  border-radius: 11px;
+}
+
+.tenant-context-icon {
+  display: inline-flex;
+  flex: 0 0 37px;
+  width: 37px;
+  height: 37px;
+  align-items: center;
+  justify-content: center;
+  color: #245fc5;
+  background: #ffffff;
+  border: 1px solid #dce9fb;
+  border-radius: 10px;
+  font-size: 15px;
+}
+
+.tenant-context-label {
+  display: block;
+  margin-bottom: 3px;
+  color: #73839a;
+  font-size: 9px;
+  font-weight: 800;
+  letter-spacing: 1px;
+}
+
+.tenant-context-value {
+  display: block;
+  color: #203a5c;
+  font-size: 12px;
+  font-weight: 750;
+  white-space: nowrap;
+}
+
+/* Tenant-specific search appearance */
+.tenant-mode .search-command:focus-within {
+  border-color: #9ebcf0;
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.08);
+}
+
+/* Prevent brand and controls from forcing horizontal overflow */
+.nav-left,
+.nav-right,
+.search-command {
+  min-width: 0;
+}
+
+.search-command input {
+  min-width: 0;
+  max-width: 100%;
+}
+
+/* Tablet and mobile */
+@media (max-width: 1199.98px) {
+  .tenant-context {
+    display: none !important;
+  }
+}
+
+@media (max-width: 767.98px) {
+  .brand-subtitle {
+    font-size: 10px;
+  }
+
+  .brand {
+    font-size: 15px;
+  }
+
+  .nav-right {
+    min-width: 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .tenant-mode *,
+  .credit-mode * {
+    scroll-behavior: auto;
+  }
+}

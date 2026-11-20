@@ -1,0 +1,1154 @@
+/* =========================================================
+   CUSTOMER INFORMATION / PROFILE PAGE
+   ========================================================= */
+
+:host {
+    display: block;
+    min-height: 100%;
+}
+
+
+/* =========================================================
+   PAGE CONTAINER
+   ========================================================= */
+
+.customer-info-page {
+    min-height: 100vh;
+    padding: 28px 32px 50px;
+    background: #f4f7fb;
+    color: #1f2937;
+    box-sizing: border-box;
+}
+
+
+/* =========================================================
+   PAGE HEADER
+   ========================================================= */
+
+.customer-page-header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 25px;
+    margin-bottom: 28px;
+    padding: 24px 28px;
+    background: #ffffff;
+    border: 1px solid #e7edf5;
+    border-radius: 18px;
+    box-shadow: 0 5px 20px rgba(15, 23, 42, 0.06);
+}
+
+.customer-page-header h2 {
+    margin: 0;
+    font-size: 27px;
+    font-weight: 750;
+    letter-spacing: -0.4px;
+    color: #16213e;
+}
+
+.customer-page-header p {
+    margin-top: 6px;
+    font-size: 14px;
+}
+
+
+/* =========================================================
+   BACK BUTTON
+   ========================================================= */
+
+.btn-back,
+.customer-page-header .btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    border: 1px solid #dce4ef;
+    background: #ffffff;
+    color: #344054;
+    font-size: 13px;
+    font-weight: 600;
+    padding: 9px 17px;
+    transition:
+        transform 0.2s ease,
+        box-shadow 0.2s ease,
+        background 0.2s ease;
+}
+
+.btn-back:hover,
+.customer-page-header .btn:hover {
+    background: #f8fafc;
+    transform: translateX(-2px);
+    box-shadow: 0 5px 15px rgba(15, 23, 42, 0.08);
+}
+
+
+/* =========================================================
+   PROFILE CONTENT
+   ========================================================= */
+
+.customer-profile-content {
+    width: 100%;
+    max-width: 1600px;
+    margin: 0 auto;
+}
+
+
+/* =========================================================
+   GENERAL CARD
+   ========================================================= */
+
+.customer-profile-content .card {
+    background: #ffffff;
+    border: 1px solid #e7edf5 !important;
+    box-shadow: 0 5px 20px rgba(15, 23, 42, 0.055) !important;
+    transition:
+        transform 0.2s ease,
+        box-shadow 0.2s ease;
+}
+
+.customer-profile-content .card:hover {
+    box-shadow: 0 9px 28px rgba(15, 23, 42, 0.075) !important;
+}
+
+
+/* =========================================================
+   PROFILE HERO
+   ========================================================= */
+
+.profile-photo-wrapper {
+    position: relative;
+    width: 145px;
+    height: 145px;
+    margin: 0 auto;
+    border-radius: 50%;
+    padding: 5px;
+    background: #ffffff;
+    border: 1px solid #dfe7f2;
+    box-shadow:
+        0 8px 25px rgba(15, 23, 42, 0.10);
+}
+
+.customer-img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 50%;
+}
+
+.profile-placeholder {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    background: #eef3f9;
+    color: #8a9bb2;
+    font-size: 55px;
+}
+
+.profile-photo-wrapper::after {
+    content: "";
+    position: absolute;
+    right: 8px;
+    bottom: 9px;
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    background: #20a464;
+    border: 3px solid #ffffff;
+}
+
+
+/* =========================================================
+   CUSTOMER NAME
+   ========================================================= */
+
+.customer-profile-content .profile-photo-wrapper + h4,
+.customer-profile-content .profile-photo-wrapper ~ h4 {
+    color: #17233c;
+    font-size: 20px;
+    letter-spacing: -0.2px;
+}
+
+
+/* =========================================================
+   SUMMARY BOXES
+   ========================================================= */
+
+.summary-box {
+    height: 100%;
+    min-height: 82px;
+    padding: 16px 17px;
+    border: 1px solid #e5ebf3;
+    border-radius: 13px;
+    background: #fbfcfe;
+    transition:
+        background 0.2s ease,
+        border-color 0.2s ease,
+        transform 0.2s ease;
+}
+
+.summary-box:hover {
+    background: #ffffff;
+    border-color: #d5dfeb;
+    transform: translateY(-2px);
+}
+
+.summary-box small {
+    display: block;
+    margin-bottom: 7px;
+    font-size: 11px;
+    font-weight: 650;
+    text-transform: uppercase;
+    letter-spacing: 0.55px;
+    color: #7a8799 !important;
+}
+
+.summary-box .fw-bold {
+    color: #17233c;
+    font-size: 15px;
+    word-break: break-word;
+}
+
+
+/* =========================================================
+   BADGES
+   ========================================================= */
+
+.badge {
+    font-weight: 650;
+    letter-spacing: 0.15px;
+}
+
+.customer-profile-content .badge.bg-primary {
+    background: #315f9f !important;
+}
+
+.customer-profile-content .badge.bg-success {
+    background: #16865b !important;
+}
+
+.customer-profile-content .badge.bg-danger {
+    background: #c93d4b !important;
+}
+
+.customer-profile-content .badge.bg-warning {
+    background: #e5a11a !important;
+}
+
+.customer-profile-content .badge.bg-info {
+    background: #258ca8 !important;
+}
+
+.customer-profile-content .badge.bg-secondary {
+    background: #667085 !important;
+}
+
+
+/* =========================================================
+   SECTION HEADERS
+   ========================================================= */
+
+.customer-profile-content .card-header {
+    border-bottom: 1px solid #edf1f6 !important;
+}
+
+.customer-profile-content .card-header h5,
+.customer-profile-content .card-header h6 {
+    font-size: 16px;
+    letter-spacing: -0.1px;
+}
+
+
+/* =========================================================
+   INFORMATION LABELS
+   ========================================================= */
+
+.info-label {
+    display: block;
+    margin-bottom: 7px;
+    color: #7b8798;
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.55px;
+}
+
+.info-value {
+    min-height: 47px;
+    display: flex;
+    align-items: center;
+    padding: 11px 14px;
+    border: 1px solid #e6ebf2;
+    border-radius: 10px;
+    background: #fbfcfe;
+    color: #27364d;
+    font-size: 14px;
+    font-weight: 600;
+    word-break: break-word;
+    transition:
+        background 0.2s ease,
+        border-color 0.2s ease;
+}
+
+.info-value:hover {
+    background: #ffffff;
+    border-color: #d5deea;
+}
+
+.info-value i {
+    flex-shrink: 0;
+    font-size: 15px;
+}
+
+
+/* =========================================================
+   OFFICIALS / SIGNATORIES TABLE
+   ========================================================= */
+
+.table-responsive {
+    border-radius: 12px;
+}
+
+.customer-profile-content table {
+    margin-bottom: 0;
+    border-collapse: separate;
+    border-spacing: 0;
+    overflow: hidden;
+}
+
+.customer-profile-content table thead th {
+    padding: 13px 14px;
+    background: #f7f9fc;
+    border-bottom: 1px solid #e2e8f0;
+    color: #64748b;
+    font-size: 10px;
+    font-weight: 750;
+    text-transform: uppercase;
+    letter-spacing: 0.6px;
+    white-space: nowrap;
+}
+
+.customer-profile-content table tbody td {
+    padding: 14px;
+    border-bottom: 1px solid #edf1f5;
+    color: #435168;
+    font-size: 13px;
+    vertical-align: middle;
+}
+
+.customer-profile-content table tbody tr {
+    transition: background 0.2s ease;
+}
+
+.customer-profile-content table tbody tr:hover {
+    background: #f8fbff;
+}
+
+.customer-profile-content table tbody tr:last-child td {
+    border-bottom: 0;
+}
+
+.customer-profile-content table td.fw-bold {
+    color: #1d2b44;
+}
+
+
+/* =========================================================
+   ROLE BADGES
+   ========================================================= */
+
+.customer-profile-content table .badge {
+    margin: 2px 3px 2px 0;
+    padding: 6px 9px;
+    font-size: 10px;
+    border-radius: 20px;
+}
+
+
+/* =========================================================
+   DOCUMENT VAULT
+   ========================================================= */
+
+.document-vault {
+    margin-top: 28px;
+    overflow: hidden;
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 20px;
+    box-shadow: 0 6px 25px rgba(15, 23, 42, 0.06);
+}
+
+
+/* =========================================================
+   DOCUMENT VAULT HEADER
+   ========================================================= */
+
+.document-vault-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px;
+    padding: 25px 27px;
+    border-bottom: 1px solid #e8edf4;
+    background: #ffffff;
+}
+
+.document-vault-heading {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.document-vault-icon {
+    width: 48px;
+    height: 48px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    border-radius: 13px;
+    background: #edf4ff;
+    color: #315f9f;
+    font-size: 22px;
+}
+
+.document-eyebrow {
+    margin-bottom: 3px;
+    color: #738197;
+    font-size: 9px;
+    font-weight: 750;
+    letter-spacing: 1.2px;
+}
+
+.document-vault-title {
+    margin: 0;
+    color: #18243b;
+    font-size: 19px;
+    font-weight: 750;
+}
+
+.document-vault-subtitle {
+    margin: 4px 0 0;
+    color: #7a8799;
+    font-size: 12px;
+}
+
+
+/* =========================================================
+   DOCUMENT COUNT
+   ========================================================= */
+
+.document-count {
+    min-width: 85px;
+    padding: 10px 15px;
+    text-align: center;
+    border: 1px solid #e1e8f1;
+    border-radius: 12px;
+    background: #f8fafc;
+}
+
+.document-count-number {
+    display: block;
+    color: #315f9f;
+    font-size: 21px;
+    font-weight: 750;
+    line-height: 1.1;
+}
+
+.document-count-label {
+    display: block;
+    margin-top: 3px;
+    color: #7b8798;
+    font-size: 10px;
+    font-weight: 650;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+
+/* =========================================================
+   DOCUMENT SUMMARY
+   ========================================================= */
+
+.document-summary {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1px;
+    background: #e8edf3;
+    border-bottom: 1px solid #e8edf3;
+}
+
+.document-summary-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 17px 20px;
+    background: #ffffff;
+}
+
+.summary-icon {
+    width: 38px;
+    height: 38px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    border-radius: 10px;
+    font-size: 17px;
+}
+
+.summary-icon.total {
+    background: #eef3fa;
+    color: #315f9f;
+}
+
+.summary-icon.verified {
+    background: #e9f8f1;
+    color: #16865b;
+}
+
+.summary-icon.pending {
+    background: #fff6df;
+    color: #c18408;
+}
+
+.summary-icon.compliance {
+    background: #edf0ff;
+    color: #5867c8;
+}
+
+.summary-label {
+    display: block;
+    margin-bottom: 2px;
+    color: #7b8798;
+    font-size: 10px;
+    font-weight: 650;
+    text-transform: uppercase;
+    letter-spacing: 0.45px;
+}
+
+.document-summary-item strong {
+    color: #1d2b44;
+    font-size: 18px;
+}
+
+
+/* =========================================================
+   DOCUMENT BODY
+   ========================================================= */
+
+.document-vault-body {
+    padding: 25px;
+}
+
+
+/* =========================================================
+   DOCUMENT GRID
+   ========================================================= */
+
+.document-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 20px;
+}
+
+
+/* =========================================================
+   DOCUMENT CARD
+   ========================================================= */
+
+.enterprise-document-card {
+    position: relative;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+    border: 1px solid #e2e8f0;
+    border-radius: 15px;
+    background: #ffffff;
+    box-shadow: 0 4px 14px rgba(15, 23, 42, 0.045);
+    transition:
+        transform 0.22s ease,
+        box-shadow 0.22s ease,
+        border-color 0.22s ease;
+}
+
+.enterprise-document-card:hover {
+    transform: translateY(-4px);
+    border-color: #d3ddea;
+    box-shadow: 0 12px 27px rgba(15, 23, 42, 0.09);
+}
+
+
+/* =========================================================
+   DOCUMENT CARD TOP
+   ========================================================= */
+
+.document-card-top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    padding: 12px 14px;
+    border-bottom: 1px solid #edf1f5;
+    background: #fafbfd;
+}
+
+.document-number {
+    color: #8290a4;
+    font-size: 9px;
+    font-weight: 750;
+    letter-spacing: 0.8px;
+}
+
+.document-status {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    padding: 5px 8px;
+    border-radius: 20px;
+    font-size: 9px;
+    font-weight: 700;
+}
+
+.status-verified {
+    background: #eaf8f1;
+    color: #16865b;
+}
+
+.status-pending {
+    background: #fff5df;
+    color: #ad7705;
+}
+
+
+/* =========================================================
+   DOCUMENT PREVIEW
+   ========================================================= */
+
+.document-preview {
+    position: relative;
+    height: 175px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    background: #f5f7fa;
+}
+
+.document-preview-glow {
+    position: absolute;
+    width: 150px;
+    height: 150px;
+    border-radius: 50%;
+    background: #e9eef5;
+    filter: blur(4px);
+}
+
+.document-main-icon {
+    position: relative;
+    z-index: 1;
+    font-size: 57px;
+    color: #8090a4;
+}
+
+.document-file-type {
+    position: absolute;
+    left: 50%;
+    bottom: 13px;
+    transform: translateX(-50%);
+    z-index: 2;
+    padding: 5px 10px;
+    border-radius: 5px;
+    background: rgba(255, 255, 255, 0.94);
+    color: #536176;
+    font-size: 9px;
+    font-weight: 750;
+    letter-spacing: 0.7px;
+}
+
+
+/* =========================================================
+   DOCUMENT IMAGE PREVIEW
+   ========================================================= */
+
+.document-image-preview {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    cursor: pointer;
+    background: #eef2f6;
+}
+
+.document-preview-image {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.35s ease;
+}
+
+.document-image-preview:hover .document-preview-image {
+    transform: scale(1.04);
+}
+
+.document-image-overlay {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    background: rgba(15, 23, 42, 0.58);
+    transition: opacity 0.25s ease;
+}
+
+.document-image-preview:hover .document-image-overlay {
+    opacity: 1;
+}
+
+.image-preview-action {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: #ffffff;
+    font-size: 12px;
+    font-weight: 650;
+}
+
+.image-preview-action-icon {
+    width: 34px;
+    height: 34px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.18);
+}
+
+.document-image-type {
+    position: absolute;
+    right: 10px;
+    bottom: 10px;
+    padding: 5px 8px;
+    border-radius: 5px;
+    background: rgba(15, 23, 42, 0.72);
+    color: #ffffff;
+    font-size: 8px;
+    font-weight: 750;
+}
+
+
+/* =========================================================
+   DOCUMENT INFORMATION
+   ========================================================= */
+
+.document-information {
+    flex: 1;
+    padding: 16px 16px 12px;
+}
+
+.document-type-label {
+    margin-bottom: 5px;
+    color: #315f9f;
+    font-size: 9px;
+    font-weight: 750;
+    text-transform: uppercase;
+    letter-spacing: 0.7px;
+}
+
+.document-name {
+    display: -webkit-box;
+    margin: 0 0 10px;
+    overflow: hidden;
+    color: #24334c;
+    font-size: 14px;
+    font-weight: 700;
+    line-height: 1.4;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+}
+
+.document-meta {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 10px;
+    color: #8793a4;
+    font-size: 10px;
+}
+
+.document-meta span {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.document-meta i {
+    font-size: 11px;
+}
+
+
+/* =========================================================
+   DOCUMENT ACTIONS
+   ========================================================= */
+
+.document-actions {
+    display: flex;
+    align-items: stretch;
+    gap: 8px;
+    padding: 12px 14px 14px;
+    border-top: 1px solid #edf1f5;
+}
+
+.document-view-button {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    gap: 9px;
+    min-width: 0;
+    padding: 9px 11px;
+    border: 1px solid #dce5f0;
+    border-radius: 9px;
+    background: #f9fbfd;
+    color: #33445d;
+    text-align: left;
+    cursor: pointer;
+    transition:
+        background 0.2s ease,
+        border-color 0.2s ease,
+        transform 0.2s ease;
+}
+
+.document-view-button:hover {
+    background: #edf4ff;
+    border-color: #cbdcf2;
+    transform: translateY(-1px);
+}
+
+.view-button-icon {
+    width: 29px;
+    height: 29px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    border-radius: 7px;
+    background: #eaf1fb;
+    color: #315f9f;
+}
+
+.view-button-content {
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+}
+
+.view-button-content strong {
+    font-size: 11px;
+    line-height: 1.2;
+}
+
+.view-button-content small {
+    margin-top: 2px;
+    color: #8793a4;
+    font-size: 9px;
+}
+
+.view-arrow {
+    margin-left: auto;
+    color: #8a97a9;
+    font-size: 12px;
+}
+
+.document-download-button {
+    width: 42px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    border: 1px solid #dce5f0;
+    border-radius: 9px;
+    background: #ffffff;
+    color: #526278;
+    cursor: pointer;
+    transition:
+        background 0.2s ease,
+        color 0.2s ease,
+        border-color 0.2s ease;
+}
+
+.document-download-button:hover {
+    background: #f2f6fb;
+    color: #315f9f;
+    border-color: #cbd8e8;
+}
+
+
+/* =========================================================
+   EMPTY DOCUMENT STATE
+   ========================================================= */
+
+.document-empty-state {
+    padding: 60px 25px;
+    text-align: center;
+}
+
+.empty-document-icon {
+    width: 72px;
+    height: 72px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 18px;
+    border-radius: 18px;
+    background: #f0f4f8;
+    color: #8b99ab;
+    font-size: 30px;
+}
+
+.document-empty-state h5 {
+    margin-bottom: 7px;
+    color: #26364e;
+    font-weight: 700;
+}
+
+.document-empty-state p {
+    max-width: 500px;
+    margin: 0 auto;
+    color: #8290a3;
+    font-size: 13px;
+    line-height: 1.6;
+}
+
+
+/* =========================================================
+   CLOSURE INFORMATION
+   ========================================================= */
+
+.customer-profile-content .alert-danger {
+    padding: 20px 22px;
+    background: #fff3f4;
+    border: 1px solid #f3cbd0 !important;
+    color: #8e2935;
+}
+
+.customer-profile-content .alert-danger strong {
+    color: #842633;
+}
+
+
+/* =========================================================
+   LOADING STATE
+   ========================================================= */
+
+.customer-info-page .spinner-border {
+    width: 40px;
+    height: 40px;
+    border-width: 3px;
+}
+
+
+/* =========================================================
+   SMOOTH FOCUS STATES
+   ========================================================= */
+
+button:focus-visible,
+a:focus-visible {
+    outline: 3px solid rgba(49, 95, 159, 0.22);
+    outline-offset: 2px;
+}
+
+
+/* =========================================================
+   RESPONSIVE - LARGE TABLETS
+   ========================================================= */
+
+@media (max-width: 1200px) {
+
+    .customer-info-page {
+        padding: 24px 22px 40px;
+    }
+
+    .document-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .document-summary {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+}
+
+
+/* =========================================================
+   RESPONSIVE - TABLETS
+   ========================================================= */
+
+@media (max-width: 992px) {
+
+    .customer-page-header {
+        padding: 21px;
+    }
+
+    .profile-photo-wrapper {
+        width: 125px;
+        height: 125px;
+    }
+
+    .customer-page-header {
+        flex-direction: column;
+    }
+
+    .customer-page-header > div:last-child {
+        width: 100%;
+        text-align: left !important;
+    }
+
+}
+
+
+/* =========================================================
+   RESPONSIVE - MOBILE
+   ========================================================= */
+
+@media (max-width: 768px) {
+
+    .customer-info-page {
+        padding: 15px 12px 30px;
+    }
+
+    .customer-page-header {
+        margin-bottom: 18px;
+        padding: 18px;
+        border-radius: 14px;
+    }
+
+    .customer-page-header h2 {
+        font-size: 22px;
+    }
+
+    .document-vault-header {
+        align-items: flex-start;
+        flex-direction: column;
+        padding: 20px;
+    }
+
+    .document-count {
+        width: 100%;
+    }
+
+    .document-summary {
+        grid-template-columns: 1fr;
+    }
+
+    .document-summary-item {
+        padding: 14px 17px;
+    }
+
+    .document-vault-body {
+        padding: 15px;
+    }
+
+    .document-grid {
+        grid-template-columns: 1fr;
+        gap: 15px;
+    }
+
+    .document-preview {
+        height: 190px;
+    }
+
+}
+
+
+/* =========================================================
+   RESPONSIVE - SMALL MOBILE
+   ========================================================= */
+
+@media (max-width: 480px) {
+
+    .customer-info-page {
+        padding: 10px 8px 25px;
+    }
+
+    .customer-page-header {
+        padding: 15px;
+    }
+
+    .customer-page-header h2 {
+        font-size: 20px;
+    }
+
+    .profile-photo-wrapper {
+        width: 110px;
+        height: 110px;
+    }
+
+    .profile-placeholder {
+        font-size: 42px;
+    }
+
+    .summary-box {
+        min-height: 75px;
+        padding: 13px;
+    }
+
+    .info-value {
+        min-height: 44px;
+        padding: 10px 12px;
+        font-size: 13px;
+    }
+
+    .document-vault {
+        border-radius: 14px;
+    }
+
+    .document-vault-title {
+        font-size: 17px;
+    }
+
+    .document-vault-subtitle {
+        font-size: 11px;
+    }
+
+    .document-actions {
+        padding: 10px;
+    }
+
+    .view-button-content small {
+        display: none;
+    }
+
+}
+
+
+/* =========================================================
+   PRINT
+   ========================================================= */
+
+@media print {
+
+    .customer-info-page {
+        padding: 0;
+        background: #ffffff;
+    }
+
+    .customer-page-header,
+    .customer-profile-content .card,
+    .document-vault {
+        box-shadow: none !important;
+    }
+
+    .btn-back,
+    .document-actions {
+        display: none !important;
+    }
+
+    .enterprise-document-card {
+        break-inside: avoid;
+    }
+
+}

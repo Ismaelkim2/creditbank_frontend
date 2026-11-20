@@ -394,29 +394,48 @@
 
     </td>
 
-    <td class="text-center">
+<td class="text-center">
 
-        <div class="d-flex justify-content-center gap-2">
+    <div class="d-flex justify-content-center gap-2">
 
-            <button
-                class="btn-action view"
-                (click)="viewDetails(acc)">
+<!-- VIEW PROFILE -->
+<button
+    type="button"
+    class="btn-action view"
+    title="View Customer Profile"
+    (click)="viewDetails(acc)">
 
-                <i class="bi bi-eye-fill"></i>
+    <i class="bi bi-eye-fill"></i>
 
-            </button>
+</button>
 
-            <button
-                class="btn-action close-account"
-                (click)="closeAccount(acc)">
 
-                <i class="bi bi-lock-fill"></i>
+        <!-- CUSTOMER CERTIFICATE -->
+        <button
+            type="button"
+            class="btn-action certificate text-warning"
+            title="Print Customer Certificate"
+            (click)="printCustomerCertificate(acc)">
 
-            </button>
+            <i class="bi bi-award-fill"></i>
 
-        </div>
+        </button>
 
-    </td>
+
+        <!-- CLOSE ACCOUNT -->
+        <button
+            type="button"
+            class="btn-action close-account"
+            title="Close Account"
+            (click)="closeAccount(acc)">
+
+            <i class="bi bi-lock-fill"></i>
+
+        </button>
+
+    </div>
+
+</td>
 
 </tr>
 
@@ -766,429 +785,436 @@
                 </div>
 
 
-                <!-- ================================================= -->
-                <!-- ACCOUNT INFORMATION                                -->
-                <!-- ================================================= -->
+   <!-- ================================================= -->
+<!-- ACCOUNT INFORMATION                              -->
+<!-- ================================================= -->
 
-                <div class="card border-0 shadow-sm rounded-4 mb-4">
+<div class="card border-0 shadow-sm rounded-4 mb-4">
 
-                    <div class="card-header bg-white border-0 pt-4 px-4">
+    <div class="card-header bg-white border-0 pt-4 px-4">
 
-                        <h6 class="fw-bold text-primary mb-0">
+        <h6 class="fw-bold text-primary mb-0">
 
-                            <i class="bi bi-person-lines-fill me-2"></i>
+            <i class="bi bi-person-lines-fill me-2"></i>
 
-                            Account Information
+            Account Information
 
-                        </h6>
+        </h6>
 
-                    </div>
+    </div>
 
-                    <div class="card-body px-4 pb-4">
 
-                        <div class="row g-3">
+    <div class="card-body px-4 pb-4">
 
+        <div class="row g-3">
 
-                            <!-- FULL NAME -->
 
-                            <div class="col-md-4">
+            <!-- ================================================= -->
+            <!-- INDIVIDUAL ONLY                                   -->
+            <!-- ================================================= -->
 
-                                <label class="info-label">
-                                    Customer Name
-                                </label>
 
-                                <div class="info-value">
+            <!-- CUSTOMER NAME -->
 
-                                    {{ selectedAccount?.fullName || 'N/A' }}
+            <div
+                class="col-md-4"
+                *ngIf="
+                    selectedAccount?.customerCategory === 'INDIVIDUAL'
+                "
+            >
 
-                                </div>
+                <label class="info-label">
+                    Customer Name
+                </label>
 
-                            </div>
+                <div class="info-value">
 
+                    <i class="bi bi-person-fill text-primary me-2"></i>
 
-                            <!-- ORGANIZATION -->
-
-                            <div
-                                class="col-md-4"
-                                *ngIf="selectedAccount?.customerCategory !== 'INDIVIDUAL'">
-
-                                <label class="info-label">
-                                    Organization Name
-                                </label>
-
-                                <div class="info-value">
-
-                                    {{ selectedAccount?.organizationName || 'N/A' }}
-
-                                </div>
-
-                            </div>
-
-
-                            <!-- NATIONAL ID -->
-
-                            <div
-                                class="col-md-4"
-                                *ngIf="selectedAccount?.customerCategory === 'INDIVIDUAL'">
-
-                                <label class="info-label">
-                                    National ID
-                                </label>
-
-                                <div class="info-value">
-
-                                    {{ selectedAccount?.nationalId || 'N/A' }}
-
-                                </div>
-
-                            </div>
-
-
-                            <!-- REGISTRATION -->
-
-                            <div
-                                class="col-md-4"
-                                *ngIf="selectedAccount?.customerCategory !== 'INDIVIDUAL'">
-
-                                <label class="info-label">
-                                    Registration Number
-                                </label>
-
-                                <div class="info-value">
-
-                                    {{ selectedAccount?.registrationNumber || 'N/A' }}
-
-                                </div>
-
-                            </div>
-
-
-                            <!-- PHONE -->
-
-                            <div class="col-md-4">
-
-                                <label class="info-label">
-                                    Phone Number
-                                </label>
-
-                                <div class="info-value">
-
-                                    <i class="bi bi-telephone-fill text-success me-2"></i>
-
-                                    {{ selectedAccount?.phoneNumber || 'N/A' }}
-
-                                </div>
-
-                            </div>
-
-
-                            <!-- EMAIL -->
-
-                            <div class="col-md-4">
-
-                                <label class="info-label">
-                                    Email Address
-                                </label>
-
-                                <div class="info-value">
-
-                                    <i class="bi bi-envelope-fill text-primary me-2"></i>
-
-                                    {{ selectedAccount?.email || 'N/A' }}
-
-                                </div>
-
-                            </div>
-
-
-                            <!-- DOB -->
-
-                            <div
-                                class="col-md-4"
-                                *ngIf="selectedAccount?.customerCategory === 'INDIVIDUAL'">
-
-                                <label class="info-label">
-                                    Date of Birth
-                                </label>
-
-                                <div class="info-value">
-
-                                    {{ selectedAccount?.dateOfBirth
-                                       ? (selectedAccount.dateOfBirth | date:'dd MMM yyyy')
-                                       : 'N/A' }}
-
-                                </div>
-
-                            </div>
-
-
-                            <!-- CITY -->
-
-                            <div class="col-md-4">
-
-                                <label class="info-label">
-                                    City / Town
-                                </label>
-
-                                <div class="info-value">
-
-                                    {{ selectedAccount?.city || 'N/A' }}
-
-                                </div>
-
-                            </div>
-
-
-                            <!-- COUNTY -->
-
-                            <div class="col-md-4">
-
-                                <label class="info-label">
-                                    County
-                                </label>
-
-                                <div class="info-value">
-
-                                    {{ selectedAccount?.county || 'N/A' }}
-
-                                </div>
-
-                            </div>
-
-
-                            <!-- MODE -->
-
-                            <div class="col-md-4">
-
-                                <label class="info-label">
-                                    Mode of Operation
-                                </label>
-
-                                <div>
-
-                                    <span class="badge bg-primary px-3 py-2">
-
-                                        <i class="bi bi-shield-check me-1"></i>
-
-                                        {{ selectedAccount?.modeOfOperation || 'N/A' }}
-
-                                    </span>
-
-                                </div>
-
-                            </div>
-
-
-                            <!-- CREATED -->
-
-                            <div class="col-md-4">
-
-                                <label class="info-label">
-                                    Account Opened
-                                </label>
-
-                                <div class="info-value">
-
-                                    {{ selectedAccount?.createdAt
-                                       ? (selectedAccount.createdAt | date:'dd MMM yyyy HH:mm')
-                                       : 'N/A' }}
-
-                                </div>
-
-                            </div>
-
-
-                            <!-- LAST TRANSACTION -->
-
-                            <div class="col-md-4">
-
-                                <label class="info-label">
-                                    Last Transaction
-                                </label>
-
-                                <div class="info-value">
-
-                                    {{ selectedAccount?.lastTransactionDate
-                                       ? (selectedAccount.lastTransactionDate | date:'dd MMM yyyy HH:mm')
-                                       : 'No transactions' }}
-
-                                </div>
-
-                            </div>
-
-                        </div>
-
-                    </div>
+                    {{ selectedAccount?.fullName || 'N/A' }}
 
                 </div>
 
+            </div>
 
-                <!-- ================================================= -->
-                <!-- BANKING / COMPLIANCE INFORMATION                  -->
-                <!-- ================================================= -->
 
-                <div class="card border-0 shadow-sm rounded-4 mb-4">
+            <!-- PHONE NUMBER -->
 
-                    <div class="card-header bg-white border-0 pt-4 px-4">
+            <div
+                class="col-md-4"
+                *ngIf="
+                    selectedAccount?.customerCategory === 'INDIVIDUAL'
+                "
+            >
 
-                        <h6 class="fw-bold text-primary mb-0">
+                <label class="info-label">
+                    Phone Number
+                </label>
 
-                            <i class="bi bi-shield-lock-fill me-2"></i>
+                <div class="info-value">
 
-                            Banking & Compliance
+                    <i class="bi bi-telephone-fill text-success me-2"></i>
 
-                        </h6>
-
-                    </div>
-
-                    <div class="card-body px-4 pb-4">
-
-                        <div class="row g-3">
-
-
-                            <div class="col-md-3">
-
-                                <label class="info-label">
-                                    CIF Number
-                                </label>
-
-                                <div class="info-value">
-
-                                    {{ selectedAccount?.cifNumber || 'N/A' }}
-
-                                </div>
-
-                            </div>
-
-
-                            <div class="col-md-3">
-
-                                <label class="info-label">
-                                    KYC Status
-                                </label>
-
-                                <div>
-
-                                    <span
-                                        class="badge"
-                                        [ngClass]="getComplianceClass(
-                                            selectedAccount?.kycStatus
-                                        )">
-
-                                        {{ selectedAccount?.kycStatus || 'N/A' }}
-
-                                    </span>
-
-                                </div>
-
-                            </div>
-
-
-                            <div class="col-md-3">
-
-                                <label class="info-label">
-                                    AML Status
-                                </label>
-
-                                <div>
-
-                                    <span
-                                        class="badge"
-                                        [ngClass]="getComplianceClass(
-                                            selectedAccount?.amlStatus
-                                        )">
-
-                                        {{ selectedAccount?.amlStatus || 'N/A' }}
-
-                                    </span>
-
-                                </div>
-
-                            </div>
-
-
-                            <div class="col-md-3">
-
-                                <label class="info-label">
-                                    Risk Rating
-                                </label>
-
-                                <div>
-
-                                    <span
-                                        class="badge"
-                                        [ngClass]="getRiskClass(
-                                            selectedAccount?.riskRating
-                                        )">
-
-                                        {{ selectedAccount?.riskRating || 'N/A' }}
-
-                                    </span>
-
-                                </div>
-
-                            </div>
-
-
-                            <div class="col-md-4">
-
-                                <label class="info-label">
-                                    Relationship Manager
-                                </label>
-
-                                <div class="info-value">
-
-                                    {{ selectedAccount?.relationshipManager || 'Unassigned' }}
-
-                                </div>
-
-                            </div>
-
-
-                            <div class="col-md-4">
-
-                                <label class="info-label">
-                                    Currency
-                                </label>
-
-                                <div class="info-value">
-
-                                    {{ selectedAccount?.currency || 'KES' }}
-
-                                </div>
-
-                            </div>
-
-
-                            <div class="col-md-4">
-
-                                <label class="info-label">
-                                    Profile Completion
-                                </label>
-
-                                <div>
-
-                                    <div class="progress rounded-pill">
-
-                                        <div
-                                            class="progress-bar bg-success"
-                                            [style.width.%]="selectedAccount?.profileCompletion || 0">
-
-                                            {{ selectedAccount?.profileCompletion || 0 }}%
-
-                                        </div>
-
-                                    </div>
-
-                                </div>
-
-                            </div>
-
-                        </div>
-
-                    </div>
+                    {{ selectedAccount?.phoneNumber || 'N/A' }}
 
                 </div>
+
+            </div>
+
+
+            <!-- EMAIL -->
+
+            <div
+                class="col-md-4"
+                *ngIf="
+                    selectedAccount?.customerCategory === 'INDIVIDUAL'
+                "
+            >
+
+                <label class="info-label">
+                    Email Address
+                </label>
+
+                <div class="info-value">
+
+                    <i class="bi bi-envelope-fill text-primary me-2"></i>
+
+                    {{ selectedAccount?.email || 'N/A' }}
+
+                </div>
+
+            </div>
+
+
+            <!-- NATIONAL ID -->
+
+            <div
+                class="col-md-4"
+                *ngIf="
+                    selectedAccount?.customerCategory === 'INDIVIDUAL'
+                "
+            >
+
+                <label class="info-label">
+                    National ID
+                </label>
+
+                <div class="info-value">
+
+                    <i class="bi bi-person-vcard-fill text-dark me-2"></i>
+
+                    {{ selectedAccount?.nationalId || 'N/A' }}
+
+                </div>
+
+            </div>
+
+
+            <!-- DATE OF BIRTH -->
+
+            <div
+                class="col-md-4"
+                *ngIf="
+                    selectedAccount?.customerCategory === 'INDIVIDUAL'
+                "
+            >
+
+                <label class="info-label">
+                    Date of Birth
+                </label>
+
+                <div class="info-value">
+
+                    <i class="bi bi-calendar3 text-info me-2"></i>
+
+                    {{
+                        selectedAccount?.dateOfBirth
+                            ? (
+                                selectedAccount.dateOfBirth
+                                | date:'dd MMM yyyy'
+                            )
+                            : 'N/A'
+                    }}
+
+                </div>
+
+            </div>
+
+
+            <!-- CITY / TOWN -->
+
+            <div
+                class="col-md-4"
+                *ngIf="
+                    selectedAccount?.customerCategory === 'INDIVIDUAL'
+                "
+            >
+
+                <label class="info-label">
+                    City / Town
+                </label>
+
+                <div class="info-value">
+
+                    <i class="bi bi-buildings-fill text-secondary me-2"></i>
+
+                    {{ selectedAccount?.city || 'N/A' }}
+
+                </div>
+
+            </div>
+
+
+
+            <!-- ================================================= -->
+            <!-- ORGANIZATION ONLY                                 -->
+            <!-- ================================================= -->
+
+
+            <!-- ORGANIZATION NAME -->
+
+            <div
+                class="col-md-4"
+                *ngIf="
+                    selectedAccount?.customerCategory !== 'INDIVIDUAL'
+                "
+            >
+
+                <label class="info-label">
+                    Organization Name
+                </label>
+
+                <div class="info-value">
+
+                    <i class="bi bi-building-fill text-primary me-2"></i>
+
+                    {{
+                        selectedAccount?.organizationName || 'N/A'
+                    }}
+
+                </div>
+
+            </div>
+
+
+            <!-- ORGANIZATION TYPE -->
+
+            <div
+                class="col-md-4"
+                *ngIf="
+                    selectedAccount?.customerCategory !== 'INDIVIDUAL'
+                "
+            >
+
+                <label class="info-label">
+                    Customer Category
+                </label>
+
+                <div class="info-value">
+
+                    <i class="bi bi-diagram-3-fill text-primary me-2"></i>
+
+                    {{
+                        selectedAccount?.customerCategory
+                            ? formatDocumentType(
+                                selectedAccount.customerCategory
+                              )
+                            : 'N/A'
+                    }}
+
+                </div>
+
+            </div>
+
+
+            <!-- REGISTRATION NUMBER -->
+
+            <div
+                class="col-md-4"
+                *ngIf="
+                    selectedAccount?.customerCategory !== 'INDIVIDUAL'
+                "
+            >
+
+                <label class="info-label">
+                    Registration Number
+                </label>
+
+                <div class="info-value">
+
+                    <i class="bi bi-file-earmark-text-fill text-success me-2"></i>
+
+                    {{
+                        selectedAccount?.registrationNumber || 'N/A'
+                    }}
+
+                </div>
+
+            </div>
+
+
+            <!-- KRA PIN -->
+
+            <div
+                class="col-md-4"
+                *ngIf="
+                    selectedAccount?.customerCategory !== 'INDIVIDUAL'
+                "
+            >
+
+                <label class="info-label">
+                    KRA PIN
+                </label>
+
+                <div class="info-value">
+
+                    <i class="bi bi-receipt-cutoff text-warning me-2"></i>
+
+                    {{ selectedAccount?.kraPin || 'N/A' }}
+
+                </div>
+
+            </div>
+
+
+            <!-- ================================================= -->
+            <!-- COMMON ACCOUNT INFORMATION                        -->
+            <!-- ================================================= -->
+
+
+            <!-- CIF NUMBER -->
+
+            <div class="col-md-4">
+
+                <label class="info-label">
+                    CIF Number
+                </label>
+
+                <div class="info-value">
+
+                    <i class="bi bi-fingerprint text-primary me-2"></i>
+
+                    {{ selectedAccount?.cifNumber || 'N/A' }}
+
+                </div>
+
+            </div>
+
+
+            <!-- ACCOUNT NUMBER -->
+
+            <div class="col-md-4">
+
+                <label class="info-label">
+                    Account Number
+                </label>
+
+                <div class="info-value">
+
+                    <i class="bi bi-credit-card-2-front-fill text-primary me-2"></i>
+
+                    {{ selectedAccount?.accountNumber || 'N/A' }}
+
+                </div>
+
+            </div>
+
+
+            <!-- COUNTY -->
+
+            <div class="col-md-4">
+
+                <label class="info-label">
+                    County
+                </label>
+
+                <div class="info-value">
+
+                    <i class="bi bi-geo-alt-fill text-danger me-2"></i>
+
+                    {{ selectedAccount?.county || 'N/A' }}
+
+                </div>
+
+            </div>
+
+
+            <!-- CURRENCY -->
+
+            <div class="col-md-4">
+
+                <label class="info-label">
+                    Currency
+                </label>
+
+                <div class="info-value">
+
+                    <i class="bi bi-currency-exchange text-success me-2"></i>
+
+                    {{ selectedAccount?.currency || 'KES' }}
+
+                </div>
+
+            </div>
+
+
+            <!-- ACCOUNT OPENED -->
+
+            <div class="col-md-4">
+
+                <label class="info-label">
+                    Account Opened
+                </label>
+
+                <div class="info-value">
+
+                    <i class="bi bi-calendar-check-fill text-primary me-2"></i>
+
+                    {{
+                        selectedAccount?.createdAt
+                            ? (
+                                selectedAccount.createdAt
+                                | date:'dd MMM yyyy HH:mm'
+                              )
+                            : 'N/A'
+                    }}
+
+                </div>
+
+            </div>
+
+
+            <!-- LAST TRANSACTION -->
+
+            <div class="col-md-4">
+
+                <label class="info-label">
+                    Last Transaction
+                </label>
+
+                <div class="info-value">
+
+                    <i class="bi bi-arrow-left-right text-info me-2"></i>
+
+                    {{
+                        selectedAccount?.lastTransactionDate
+                            ? (
+                                selectedAccount.lastTransactionDate
+                                | date:'dd MMM yyyy HH:mm'
+                              )
+                            : 'No transactions'
+                    }}
+
+                </div>
+
+            </div>
+
+
+        </div>
+
+    </div>
+
+</div>
 
 
                 <!-- ================================================= -->
@@ -1213,6 +1239,28 @@
                                 Officials & Signatories
 
                             </h6>
+
+                                                        <!-- MODE -->
+
+                            <div class="col-md-4">
+
+                                <label class="info-label">
+                                    Mode of Operation
+                                </label>
+
+                                <div>
+
+                                    <span class="badge bg-primary px-3 py-2">
+
+                                        <i class="bi bi-shield-check me-1"></i>
+
+                                        {{ selectedAccount?.modeOfOperation || 'N/A' }}
+
+                                    </span>
+
+                                </div>
+
+                            </div>
 
                             <span class="badge bg-primary">
 
@@ -1338,512 +1386,160 @@
                 </div>
 
 
-                <!-- ================================================= -->
-                <!-- LOANS                                              -->
-                <!-- ================================================= -->
+<!-- ============================================================
+     ENTERPRISE CUSTOMER DOCUMENT VAULT
+     ============================================================ -->
 
-                <div class="card border-0 shadow-sm rounded-4 mb-4">
+<section class="document-vault">
 
-                    <div class="card-header bg-white border-0 pt-4 px-4">
+    <!-- ========================================================
+         HEADER
+         ======================================================== -->
 
-                        <div class="d-flex justify-content-between align-items-center">
+    <div class="document-vault-header">
 
-                            <h6 class="fw-bold text-primary mb-0">
+        <div class="document-vault-heading">
 
-                                <i class="bi bi-cash-stack me-2"></i>
+            <div class="document-vault-icon">
+                <i class="bi bi-shield-check"></i>
+            </div>
 
-                                Loan Portfolio
+            <div>
 
-                            </h6>
-
-                            <button
-                                class="btn btn-sm btn-outline-primary rounded-pill px-3"
-                                (click)="showLoanSummary = !showLoanSummary">
-
-                                <i
-                                    class="bi"
-                                    [ngClass]="showLoanSummary
-                                        ? 'bi-chevron-up'
-                                        : 'bi-chevron-down'">
-                                </i>
-
-                                {{ showLoanSummary
-                                    ? 'Hide Loans'
-                                    : 'Show Loans' }}
-
-                            </button>
-
-                        </div>
-
-                    </div>
-
-
-                    <div
-                        class="card-body px-4 pb-4"
-                        *ngIf="showLoanSummary">
-
-                        <div
-                            *ngIf="(loanDetails?.length ?? 0) > 0"
-                            class="table-responsive">
-
-                            <table
-                                class="table modern-loan-table table-hover align-middle">
-
-                                <thead class="table-light">
-
-                                    <tr>
-
-                                        <th>#</th>
-                                        <th>Loan Type</th>
-                                        <th>Amount</th>
-                                        <th>Status</th>
-                                        <th>Issued</th>
-
-                                    </tr>
-
-                                </thead>
-
-                                <tbody>
-
-                                    <tr
-                                        *ngFor="
-                                            let loan of loanDetails;
-                                            index as i
-                                        ">
-
-                                        <td>{{ i + 1 }}</td>
-
-                                        <td class="fw-semibold">
-
-                                            {{ loan.loanType || 'Loan' }}
-
-                                        </td>
-
-                                        <td class="fw-bold">
-
-                                            {{ loan.amount || 0 | currency:'KES ' }}
-
-                                        </td>
-
-                                        <td>
-
-                                            <span
-                                                class="badge px-3 py-2"
-                                                [ngClass]="getStatusClass(loan.status)">
-
-                                                {{ loan.status || 'N/A' }}
-
-                                            </span>
-
-                                        </td>
-
-                                        <td>
-
-                                            {{ loan.issueDate
-                                                ? (loan.issueDate | date:'dd MMM yyyy')
-                                                : 'N/A' }}
-
-                                        </td>
-
-                                    </tr>
-
-                                </tbody>
-
-                            </table>
-
-                        </div>
-
-
-                        <div
-                            *ngIf="!loanDetails || loanDetails.length === 0"
-                            class="text-center py-4">
-
-                            <i class="bi bi-cash-stack fs-1 text-secondary"></i>
-
-                            <p class="text-muted mt-2 mb-0">
-
-                                No loan records found.
-
-                            </p>
-
-                        </div>
-
-                    </div>
-
+                <div class="document-eyebrow">
+                    KYC • COMPLIANCE • VERIFICATION
                 </div>
 
-
-                <!-- ================================================= -->
-                <!-- TRANSACTIONS                                       -->
-                <!-- ================================================= -->
-
-                <div class="card border-0 shadow-sm rounded-4 mb-4">
-
-                    <div class="card-header bg-white border-0 pt-4 px-4">
-
-                        <h6 class="fw-bold text-primary mb-0">
-
-                            <i class="bi bi-arrow-left-right me-2"></i>
-
-                            Recent Transactions
-
-                        </h6>
-
-                    </div>
-
-                    <div class="card-body px-4 pb-4">
-
-                        <div
-                            *ngIf="selectedAccount?.transactions?.length > 0"
-                            class="table-responsive">
-
-                            <table class="table table-hover align-middle">
-
-                                <thead class="table-light">
-
-                                    <tr>
-
-                                        <th>#</th>
-                                        <th>Reference</th>
-                                        <th>Type</th>
-                                        <th>Amount</th>
-                                        <th>Channel</th>
-                                        <th>Status</th>
-                                        <th>Date</th>
-
-                                    </tr>
-
-                                </thead>
-
-                                <tbody>
-
-                                    <tr
-                                        *ngFor="
-                                            let tx of selectedAccount?.transactions;
-                                            let i = index
-                                        ">
-
-                                        <td>{{ i + 1 }}</td>
-
-                                        <td class="fw-semibold">
-
-                                            {{ tx.reference || tx.transactionReference || 'N/A' }}
-
-                                        </td>
-
-                                        <td>
-
-                                            {{ tx.transactionType || 'N/A' }}
-
-                                        </td>
-
-                                        <td class="fw-bold">
-
-                                            {{ tx.amount || 0 | currency:'KES ' }}
-
-                                        </td>
-
-                                        <td>
-
-                                            {{ tx.channel || 'N/A' }}
-
-                                        </td>
-
-                                        <td>
-
-                                            <span class="badge bg-success">
-
-                                                {{ tx.status || 'N/A' }}
-
-                                            </span>
-
-                                        </td>
-
-                                        <td>
-
-                                            {{ tx.initiatedAt
-                                                ? (tx.initiatedAt | date:'dd MMM yyyy HH:mm')
-                                                : 'N/A' }}
-
-                                        </td>
-
-                                    </tr>
-
-                                </tbody>
-
-                            </table>
-
-                        </div>
-
-
-                        <div
-                            *ngIf="!selectedAccount?.transactions?.length"
-                            class="text-center py-4">
-
-                            <i class="bi bi-receipt fs-1 text-secondary"></i>
-
-                            <p class="text-muted mb-0">
-
-                                No transaction records found.
-
-                            </p>
-
-                        </div>
-
-                    </div>
-
-                </div>
-
-
-                <!-- ================================================= -->
-                <!-- DOCUMENTS                                         -->
-                <!-- ================================================= -->
-
-                <div class="card border-0 shadow-sm rounded-4 mb-4">
-
-                    <div class="card-header bg-white border-0 pt-4 px-4">
-
-                        <div class="d-flex justify-content-between align-items-center">
-
-                            <h6 class="fw-bold text-primary mb-0">
-
-                                <i class="bi bi-folder2-open me-2"></i>
-
-                                Customer Documents
-
-                            </h6>
-
-                            <!-- ========================================================= -->
-<!-- ACCOUNT DOCUMENTS -->
-<!-- ========================================================= -->
-
-<div class="row mt-4">
-
-    <div class="col-12">
-
-        <div class="card border-0 shadow-sm">
-
-            <!-- HEADER -->
-
-            <div class="card-header bg-white border-bottom">
-
-                <div class="d-flex justify-content-between align-items-center">
-
-                    <div>
-
-                        <h5 class="mb-1">
-
-                            <i class="bi bi-folder2-open me-2 text-primary"></i>
-
-                            Customer Documents
-
-                        </h5>
-
-                        <small class="text-muted">
-
-                            KYC and account supporting documents
-
-                        </small>
-
-                    </div>
-
-                    <span class="badge bg-primary">
-
-                        {{ documents.length }}
-
-                        {{ documents.length === 1 ? 'Document' : 'Documents' }}
-
-                    </span>
-
-                </div>
+                <h4 class="document-vault-title">
+                    Customer Document Vault
+                </h4>
+
+                <p class="document-vault-subtitle">
+                    Official customer documents, registration records
+                    and supporting compliance evidence
+                </p>
 
             </div>
 
+        </div>
 
-            <!-- BODY -->
 
-            <div class="card-body">
+        <!-- DOCUMENT COUNT -->
 
+        <div class="document-count">
 
-                <!-- ================================================= -->
-                <!-- NO DOCUMENTS -->
-                <!-- ================================================= -->
+            <span class="document-count-number">
+                {{ selectedAccount?.documents?.length || 0 }}
+            </span>
 
-                <div
-                    *ngIf="documents.length === 0"
-                    class="text-center py-5"
-                >
+            <span class="document-count-label">
+                {{
+                    (selectedAccount?.documents?.length || 0) === 1
+                    ? 'Document'
+                    : 'Documents'
+                }}
+            </span>
 
-                    <i
-                        class="bi bi-folder-x display-5 text-muted"
-                    ></i>
+        </div>
 
-                    <h6 class="mt-3">
+    </div>
 
-                        No documents available
 
-                    </h6>
+    <!-- ========================================================
+         DOCUMENT SUMMARY STRIP
+         ======================================================== -->
 
-                    <p class="text-muted mb-0">
+    <div
+        *ngIf="selectedAccount?.documents?.length"
+        class="document-summary"
+    >
 
-                        No documents have been uploaded for this account.
+        <!-- TOTAL -->
 
-                    </p>
+        <div class="document-summary-item">
 
-                </div>
+            <div class="summary-icon total">
+                <i class="bi bi-folder2-open"></i>
+            </div>
 
+            <div>
 
-                <!-- ================================================= -->
-                <!-- DOCUMENT LIST -->
-                <!-- ================================================= -->
+                <span class="summary-label">
+                    Total Documents
+                </span>
 
-                <div
-                    *ngIf="documents.length > 0"
-                    class="row g-3"
-                >
+                <strong>
+                    {{ selectedAccount?.documents?.length || 0 }}
+                </strong>
 
-                    <div
-                        class="col-md-6 col-xl-4"
-                        *ngFor="let document of documents"
-                    >
+            </div>
 
-                        <div
-                            class="document-card border rounded-3 p-3 h-100"
-                        >
+        </div>
 
-                            <!-- DOCUMENT HEADER -->
 
-                            <div
-                                class="d-flex align-items-start justify-content-between"
-                            >
+        <!-- VERIFIED -->
 
-                                <div
-                                    class="d-flex align-items-center"
-                                >
+        <div class="document-summary-item">
 
-                                    <div class="document-icon me-3">
+            <div class="summary-icon verified">
+                <i class="bi bi-patch-check-fill"></i>
+            </div>
 
-                                        <i
-                                            [class]="getDocumentIcon(document.documentType)"
-                                        ></i>
+            <div>
 
-                                    </div>
+                <span class="summary-label">
+                    Verified
+                </span>
 
-                                    <div>
+                <strong>
+                    {{ getVerifiedDocumentsCount() }}
+                </strong>
 
-                                        <h6 class="mb-1">
+            </div>
 
-                                            {{
-                                                formatDocumentType(
-                                                    document.documentType
-                                                )
-                                            }}
+        </div>
 
-                                        </h6>
 
-                                        <small class="text-muted">
+        <!-- PENDING -->
 
-                                            {{
-                                                document.source
-                                            }}
+        <div class="document-summary-item">
 
-                                        </small>
+            <div class="summary-icon pending">
+                <i class="bi bi-clock-history"></i>
+            </div>
 
-                                    </div>
+            <div>
 
-                                </div>
+                <span class="summary-label">
+                    Pending Review
+                </span>
 
-                            </div>
+                <strong>
+                    {{ getPendingDocumentsCount() }}
+                </strong>
 
+            </div>
 
-                            <!-- FILE NAME -->
+        </div>
 
-                            <div class="mt-3">
 
-                                <small class="text-muted d-block">
+        <!-- COMPLIANCE -->
 
-                                    File
+        <div class="document-summary-item">
 
-                                </small>
+            <div class="summary-icon compliance">
+                <i class="bi bi-shield-check"></i>
+            </div>
 
-                                <span
-                                    class="fw-semibold text-break"
-                                >
+            <div>
 
-                                    {{
-                                        document.originalName ||
-                                        document.storedName
-                                    }}
+                <span class="summary-label">
+                    Compliance
+                </span>
 
-                                </span>
-
-                            </div>
-
-
-                            <!-- FILE DETAILS -->
-
-                            <div
-                                class="d-flex justify-content-between mt-3"
-                            >
-
-                                <small class="text-muted">
-
-                                    {{
-                                        formatFileSize(
-                                            document.fileSize
-                                        )
-                                    }}
-
-                                </small>
-
-                                <small class="text-muted">
-
-                                    {{
-                                        document.uploadedAt
-                                            | date:'dd MMM yyyy, HH:mm'
-                                    }}
-
-                                </small>
-
-                            </div>
-
-
-                            <!-- ACTIONS -->
-
-                            <div
-                                class="d-flex gap-2 mt-3"
-                            >
-
-                                <button
-                                    type="button"
-                                    class="btn btn-sm btn-primary flex-fill"
-                                    (click)="viewDocument(document)"
-                                >
-
-                                    <i class="bi bi-eye me-1"></i>
-
-                                    View
-
-                                </button>
-
-
-                                <button
-                                    type="button"
-                                    class="btn btn-sm btn-outline-secondary"
-                                   
-                                >
-
-                                    <i class="bi bi-download"></i>
-
-                                </button>
-
-                            </div>
-
-                        </div>
-
-                    </div>
-
-                </div>
+                <strong>
+                    {{ getDocumentCompliancePercentage() }}%
+                </strong>
 
             </div>
 
@@ -1851,144 +1547,353 @@
 
     </div>
 
+
+    <!-- ========================================================
+         DOCUMENT CONTENT
+         ======================================================== -->
+
+    <div class="document-vault-body">
+
+
+        <!-- ====================================================
+             NO DOCUMENTS
+             ==================================================== -->
+
+        <div
+            *ngIf="!selectedAccount?.documents?.length"
+            class="document-empty-state"
+        >
+
+            <div class="empty-document-icon">
+
+                <i class="bi bi-folder2-open"></i>
+
+            </div>
+
+            <h5>
+                No Customer Documents
+            </h5>
+
+            <p>
+                No KYC, registration or supporting documents
+                have been uploaded for this customer yet.
+            </p>
+
+        </div>
+
+
+        <!-- ====================================================
+             DOCUMENT GRID
+             ==================================================== -->
+
+        <div
+            *ngIf="selectedAccount?.documents?.length"
+            class="document-grid"
+        >
+
+            <article
+                class="enterprise-document-card"
+                *ngFor="
+                    let document of selectedAccount?.documents;
+                    let i = index
+                "
+            >
+
+                <!-- =================================================
+                     TOP DOCUMENT BAR
+                     ================================================= -->
+
+                <div class="document-card-top">
+
+                    <span class="document-number">
+                        DOC {{ (i + 1).toString().padStart(2, '0') }}
+                    </span>
+
+                    <span
+                        class="document-status"
+                        [ngClass]="
+                            document.verified
+                            ? 'status-verified'
+                            : 'status-pending'
+                        "
+                    >
+
+                        <i
+                            class="bi"
+                            [ngClass]="
+                                document.verified
+                                ? 'bi-check-circle-fill'
+                                : 'bi-clock-fill'
+                            "
+                        ></i>
+
+                        {{
+                            document.verified
+                            ? 'Verified'
+                            : 'Pending Review'
+                        }}
+
+                    </span>
+
+                </div>
+
+
+                <!-- =================================================
+                     DOCUMENT VISUAL
+                     ================================================= -->
+<!-- =================================================
+     DOCUMENT VISUAL / LIVE PREVIEW
+     ================================================= -->
+
+<div
+    class="document-preview"
+    [ngClass]="getDocumentPreviewClass(document)"
+>
+
+    <!-- =================================================
+         REAL IMAGE PREVIEW
+         ================================================= -->
+
+    <ng-container
+        *ngIf="
+            isImageDocument(document)
+            && getDocumentPreviewUrl(document);
+            else standardDocumentPreview
+        "
+    >
+
+        <div
+            class="document-image-preview"
+            (click)="viewDocument(document)"
+            title="Click to inspect document"
+        >
+
+            <img
+                [src]="getDocumentPreviewUrl(document)"
+                [alt]="
+                    formatDocumentType(
+                        document.documentType
+                    )
+                "
+                class="document-preview-image"
+                loading="lazy"
+                (error)="onDocumentImageError($event)"
+            >
+
+            <!-- FALLBACK IF IMAGE FAILS -->
+
+            <div
+                class="document-image-fallback"
+                style="display:none;"
+            >
+
+                <i
+                    [class]="
+                        getDocumentIcon(
+                            document.documentType
+                        )
+                    "
+                ></i>
+
+                <span>
+                    Preview unavailable
+                </span>
+
+            </div>
+
+
+            <!-- IMAGE HOVER OVERLAY -->
+
+            <div class="document-image-overlay">
+
+                <div class="image-preview-action">
+
+                    <span class="image-preview-action-icon">
+
+                        <i class="bi bi-eye-fill"></i>
+
+                    </span>
+
+                    <span>
+                        Inspect Document
+                    </span>
+
+                </div>
+
+            </div>
+
+
+            <!-- IMAGE TYPE BADGE -->
+
+            <span class="document-image-type">
+
+                {{ getDocumentFileType(document) }}
+
+            </span>
+
+        </div>
+
+    </ng-container>
+
+
+    <!-- =================================================
+         STANDARD DOCUMENT PREVIEW
+         PDF / WORD / EXCEL / OTHER
+         ================================================= -->
+
+    <ng-template #standardDocumentPreview>
+
+        <div class="document-preview-glow"></div>
+
+        <i
+            [class]="
+                getDocumentIcon(
+                    document.documentType
+                )
+            "
+            class="document-main-icon"
+        ></i>
+
+        <span class="document-file-type">
+
+            {{
+                getDocumentFileType(document)
+            }}
+
+        </span>
+
+    </ng-template>
+
 </div>
 
-                            <span class="badge bg-secondary">
 
-                                {{ selectedAccount?.documents?.length || 0 }}
-                                Documents
+                <!-- =================================================
+                     DOCUMENT INFORMATION
+                     ================================================= -->
 
-                            </span>
+                <div class="document-information">
 
-                        </div>
+                    <!-- OFFICIAL DOCUMENT NAME -->
 
+                    <div class="document-type-label">
+                        {{ formatDocumentType(document.documentType) }}
                     </div>
 
 
-                    <div class="card-body px-4 pb-4">
+                    <!-- FILE NAME -->
 
-                        <div
-                            *ngIf="selectedAccount?.documents?.length > 0"
-                            class="row g-3">
+                    <h5
+                        class="document-name"
+                        [title]="
+                            document.originalName ||
+                            document.originalFileName ||
+                            document.fileName ||
+                            document.storedName
+                        "
+                    >
 
-                            <div
-                                class="col-md-6 col-lg-4"
-                                *ngFor="
-                                    let document of selectedAccount?.documents
-                                ">
+                        {{
+                            document.originalName ||
+                            document.originalFileName ||
+                            document.fileName ||
+                            document.storedName ||
+                            'Document file'
+                        }}
 
-                                <div class="document-card">
-
-                                    <div class="d-flex align-items-center">
-
-                                        <div class="document-icon me-3">
-
-                                            <i
-                                                class="bi"
-                                                [ngClass]="
-                                                    document.contentType?.includes('pdf')
-                                                    ? 'bi-file-earmark-pdf-fill'
-                                                    : 'bi-file-earmark-image-fill'
-                                                ">
-                                            </i>
-
-                                        </div>
-
-                                        <div class="flex-grow-1">
-
-                                            <div class="fw-bold">
-
-                                                {{ formatDocumentType(
-                                                    document.documentType
-                                                ) }}
-
-                                            </div>
-
-                                            <small class="text-muted">
-
-                                                {{ document.originalFileName
-                                                    || document.fileName }}
-
-                                            </small>
-
-                                        </div>
-
-                                    </div>
+                    </h5>
 
 
-                                    <div class="mt-3">
+                    <!-- METADATA -->
 
-                                        <span
-                                            class="badge me-2"
-                                            [ngClass]="
-                                                document.verified
-                                                ? 'bg-success'
-                                                : 'bg-warning text-dark'
-                                            ">
+                    <div class="document-meta">
 
-                                            <i
-                                                class="bi"
-                                                [ngClass]="
-                                                    document.verified
-                                                    ? 'bi-check-circle-fill'
-                                                    : 'bi-clock-fill'
-                                                ">
-                                            </i>
+                        <span>
 
-                                            {{ document.verified
-                                                ? 'Verified'
-                                                : 'Pending Verification' }}
+                            <i class="bi bi-hdd"></i>
 
-                                        </span>
+                            {{
+                                formatFileSize(
+                                    document.fileSize
+                                )
+                            }}
 
+                        </span>
 
-                                        <a
-                                            *ngIf="
-                                                document.downloadUrl ||
-                                                document.fileUrl ||
-                                                document.filePath
-                                            "
-                                            [href]="
-                                                document.downloadUrl ||
-                                                document.fileUrl ||
-                                                ('http://localhost:8080/' + document.filePath)
-                                            "
-                                            target="_blank"
-                                            class="btn btn-sm btn-outline-primary">
+                        <span>
 
-                                            <i class="bi bi-eye me-1"></i>
+                            <i class="bi bi-calendar3"></i>
 
-                                            View
+                            {{
+                                document.uploadedAt
+                                | date:'dd MMM yyyy'
+                            }}
 
-                                        </a>
-
-                                    </div>
-
-                                </div>
-
-                            </div>
-
-                        </div>
-
-
-                        <div
-                            *ngIf="!selectedAccount?.documents?.length"
-                            class="text-center py-4">
-
-                            <i class="bi bi-folder-x fs-1 text-secondary"></i>
-
-                            <p class="text-muted mt-2 mb-0">
-
-                                No documents uploaded.
-
-                            </p>
-
-                        </div>
+                        </span>
 
                     </div>
 
                 </div>
 
+
+                <!-- =================================================
+                     ACTION AREA
+                     ================================================= -->
+
+                <div class="document-actions">
+
+                    <!-- PRIMARY VIEW BUTTON -->
+
+                    <button
+                        type="button"
+                        class="document-view-button"
+                        (click)="viewDocument(document)"
+                    >
+
+                        <span class="view-button-icon">
+
+                            <i class="bi bi-eye-fill"></i>
+
+                        </span>
+
+                        <span class="view-button-content">
+
+                            <strong>
+                                View Document
+                            </strong>
+
+                            <small>
+                                Open & inspect file
+                            </small>
+
+                        </span>
+
+                        <i class="bi bi-arrow-up-right view-arrow"></i>
+
+                    </button>
+
+
+                    <!-- SECONDARY DOWNLOAD -->
+
+                    <button
+                        type="button"
+                        class="document-download-button"
+                        title="Download document"
+                        (click)="downloadDocument(document)"
+                    >
+
+                        <i class="bi bi-download"></i>
+
+                    </button>
+
+                </div>
+
+            </article>
+
+        </div>
+
+    </div>
+
+</section>
 
                 <!-- ================================================= -->
                 <!-- CLOSURE INFORMATION                                -->
@@ -2059,3 +1964,464 @@
     </div>
 
 </div>
+
+
+
+
+<div
+    *ngIf="showCertificate"
+    class="certificate-modal">
+
+    <!-- BACKDROP -->
+    <div
+        class="certificate-backdrop"
+        (click)="closeCertificate()">
+    </div>
+
+    <!-- DIALOG -->
+    <div
+        class="certificate-dialog"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="certificateDialogTitle">
+
+        <!-- =====================================================
+             MODAL HEADER
+        ====================================================== -->
+        <div class="certificate-modal-header">
+
+            <div class="certificate-modal-heading">
+
+                <div class="certificate-modal-icon">
+                    <i class="bi bi-award-fill"></i>
+                </div>
+
+                <div>
+                    <div
+                        id="certificateDialogTitle"
+                        class="certificate-modal-title">
+                        Customer Account Certificate
+                    </div>
+
+                    <div class="certificate-modal-subtitle">
+                        Official account verification document
+                    </div>
+                </div>
+
+            </div>
+
+            <button
+                type="button"
+                class="certificate-close-btn"
+                title="Close certificate"
+                (click)="closeCertificate()">
+
+                <i class="bi bi-x-lg"></i>
+
+            </button>
+
+        </div>
+
+
+        <!-- =====================================================
+             PREVIEW
+        ====================================================== -->
+        <div class="certificate-preview-area">
+
+            <div
+                id="customerCertificate"
+                class="customer-certificate">
+
+                <!-- DECORATIVE ELEMENTS -->
+                <div class="certificate-accent-top"></div>
+
+                <div class="certificate-watermark">
+                    CREDIBANK
+                </div>
+
+
+                <!-- =================================================
+                     HEADER
+                ================================================== -->
+                <header class="certificate-header">
+
+                    <div class="certificate-brand">
+
+                        <div class="certificate-logo">
+                            <i class="bi bi-bank2"></i>
+                        </div>
+
+                        <div>
+                            <div class="certificate-bank-name">
+                                CREDIBANK
+                            </div>
+
+                            <div class="certificate-bank-subtitle">
+                                TRUSTED FINANCIAL SERVICES
+                            </div>
+                        </div>
+
+                    </div>
+
+
+                    <div class="certificate-reference">
+
+                        <span>
+                            ACCOUNT NUMBER
+                        </span>
+
+                        <strong>
+                            {{ certificateAccount?.accountNumber || 'N/A' }}
+                        </strong>
+
+                    </div>
+
+                </header>
+
+
+                <!-- =================================================
+                     TITLE
+                ================================================== -->
+                <section class="certificate-title-section">
+
+                    <div class="certificate-eyebrow">
+                        OFFICIAL BANKING DOCUMENT
+                    </div>
+
+                    <h1>
+                        CUSTOMER ACCOUNT
+                        <span>CERTIFICATE</span>
+                    </h1>
+
+                    <div class="certificate-title-line"></div>
+
+                    <p>
+                        Official confirmation of customer account
+                        registration and status
+                    </p>
+
+                </section>
+
+
+                <!-- =================================================
+                     CUSTOMER
+                ================================================== -->
+                <section class="certificate-customer">
+
+                    <div class="certificate-customer-seal">
+                        <i class="bi bi-person-check-fill"></i>
+                    </div>
+
+                    <div class="certificate-customer-content">
+
+                        <div class="certificate-customer-label">
+                            ACCOUNT HOLDER
+                        </div>
+
+                        <div class="certificate-customer-name">
+                            {{ getCertificateCustomerName(certificateAccount) }}
+                        </div>
+
+                        <div class="certificate-category">
+                            <i class="bi bi-shield-check"></i>
+
+                            {{
+                                certificateAccount?.customerCategory
+                                || 'CUSTOMER'
+                            }}
+                        </div>
+
+                    </div>
+
+                    <div class="certificate-verified">
+                        <i class="bi bi-patch-check-fill"></i>
+
+                        <span>
+                            VERIFIED
+                        </span>
+                    </div>
+
+                </section>
+
+
+                <!-- =================================================
+                     ACCOUNT INFORMATION
+                ================================================== -->
+                <section class="certificate-information-section">
+
+                    <div class="certificate-section-heading">
+
+                        <span></span>
+
+                        <strong>
+                            ACCOUNT INFORMATION
+                        </strong>
+
+                        <span></span>
+
+                    </div>
+
+
+                    <div class="certificate-information">
+
+                        <!-- ACCOUNT -->
+                        <div class="certificate-information-item">
+
+                            <div class="certificate-information-icon">
+                                <i class="bi bi-credit-card-2-front-fill"></i>
+                            </div>
+
+                            <div>
+                                <label>
+                                    Account Number
+                                </label>
+
+                                <strong>
+                                    {{
+                                        certificateAccount?.accountNumber
+                                        || 'N/A'
+                                    }}
+                                </strong>
+                            </div>
+
+                        </div>
+
+
+                        <!-- CATEGORY -->
+                        <div class="certificate-information-item">
+
+                            <div class="certificate-information-icon">
+                                <i class="bi bi-people-fill"></i>
+                            </div>
+
+                            <div>
+                                <label>
+                                    Customer Category
+                                </label>
+
+                                <strong>
+                                    {{
+                                        certificateAccount?.customerCategory
+                                        || 'N/A'
+                                    }}
+                                </strong>
+                            </div>
+
+                        </div>
+
+
+                        <!-- STATUS -->
+                        <div class="certificate-information-item">
+
+                            <div class="certificate-information-icon">
+                                <i class="bi bi-activity"></i>
+                            </div>
+
+                            <div>
+                                <label>
+                                    Account Status
+                                </label>
+
+                                <strong>
+
+                                    <span
+                                        class="certificate-status"
+                                        [ngClass]="
+                                            getCertificateStatusClass(
+                                                certificateAccount?.accountStatus
+                                            )
+                                        ">
+
+                                        <span class="status-dot"></span>
+
+                                        {{
+                                            certificateAccount?.accountStatus
+                                            || 'N/A'
+                                        }}
+
+                                    </span>
+
+                                </strong>
+
+                            </div>
+
+                        </div>
+
+
+                        <!-- DATE -->
+                        <div class="certificate-information-item">
+
+                            <div class="certificate-information-icon">
+                                <i class="bi bi-calendar-check-fill"></i>
+                            </div>
+
+                            <div>
+                                <label>
+                                    Date Issued
+                                </label>
+
+                                <strong>
+                                    {{ currentDate | date:'dd MMMM yyyy' }}
+                                </strong>
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </section>
+
+
+                <!-- =================================================
+                     OFFICIAL CONFIRMATION
+                ================================================== -->
+                <section class="certificate-declaration">
+
+                    <div class="certificate-declaration-icon">
+                        <i class="bi bi-patch-check-fill"></i>
+                    </div>
+
+                    <div>
+
+                        <strong>
+                            OFFICIAL CONFIRMATION
+                        </strong>
+
+                        <p>
+                            This certificate confirms that the
+                            above-mentioned customer maintains an account
+                            with CrediBank. The information contained herein
+                            is based on the institution's official customer
+                            records and is issued for legitimate business,
+                            verification and compliance purposes.
+                        </p>
+
+                    </div>
+
+                </section>
+
+
+                <!-- =================================================
+                     SIGNATURE / SECURITY
+                ================================================== -->
+                <footer class="certificate-footer">
+
+                    <div class="certificate-signature">
+
+                        <div class="signature-line"></div>
+
+                        <strong>
+                            AUTHORIZED OFFICER
+                        </strong>
+
+                        <span>
+                            CrediBank
+                        </span>
+
+                    </div>
+
+
+                    <div class="certificate-seal">
+
+                        <div class="seal-inner">
+
+                            <i class="bi bi-shield-check"></i>
+
+                            <strong>
+                                CREDIBANK
+                            </strong>
+
+                            <small>
+                                AUTHENTIC
+                            </small>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="certificate-issued">
+
+                        <div>
+                            <span>ISSUED</span>
+                            <strong>
+                                {{ currentDate | date:'dd MMM yyyy, HH:mm' }}
+                            </strong>
+                        </div>
+
+                        <div>
+                            <span>ACCOUNT</span>
+                            <strong>
+                                {{ certificateAccount?.accountNumber || 'N/A' }}
+                            </strong>
+                        </div>
+
+                    </div>
+
+                </footer>
+
+
+                <!-- SECURITY FOOTER -->
+                <div class="certificate-security-line">
+
+                    <span>
+                        CREDIBANK • CUSTOMER ACCOUNT CERTIFICATE
+                    </span>
+
+                    <span>
+                        OFFICIAL • CONFIDENTIAL
+                    </span>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- =====================================================
+             ACTION BAR
+        ====================================================== -->
+        <div class="certificate-actions no-print">
+
+            <div class="certificate-action-info">
+
+                <i class="bi bi-info-circle-fill"></i>
+
+                <span>
+                    Official certificate ready for printing or PDF export
+                </span>
+
+            </div>
+
+            <div class="certificate-action-buttons">
+
+                <button
+                    type="button"
+                    class="certificate-btn certificate-btn-secondary"
+                    (click)="closeCertificate()">
+
+                    <i class="bi bi-x-lg"></i>
+                    Close
+
+                </button>
+
+                <button
+                    type="button"
+                    class="certificate-btn certificate-btn-primary"
+                    (click)="printCertificate()">
+
+                    <i class="bi bi-printer-fill"></i>
+                    Print / Save PDF
+
+                </button>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+

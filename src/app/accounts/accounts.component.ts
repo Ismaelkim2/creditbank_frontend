@@ -4,14 +4,28 @@ import { Router } from '@angular/router';
 
 interface AccountDocument {
     id: number;
+
     documentType: string;
-    originalName: string;
-    storedName: string;
-    filePath: string;
-    fileSize: number;
-    fileUrl: string;
-    uploadedAt: string;
-    source: 'ACCOUNT' | 'ORGANIZATION';
+
+    originalName?: string;
+    originalFileName?: string;
+
+    storedName?: string;
+    fileName?: string;
+
+    filePath?: string;
+    fileUrl?: string;
+    downloadUrl?: string;
+
+    fileSize?: number;
+
+    uploadedAt?: string;
+
+    contentType?: string;
+
+    source?: 'ACCOUNT' | 'ORGANIZATION' | string;
+
+    verified?: boolean;
 }
 
 @Component({
@@ -37,6 +51,19 @@ selectedPortfolio = 'ALL';
   showLoanSummary = false;
 
   selectedCategory = 'ALL';
+
+
+  // ============================================================
+// CUSTOMER CERTIFICATE
+// ============================================================
+
+showCertificate = false;
+
+certificateAccount: any = null;
+
+currentDate = new Date();
+
+
 
   constructor(
     private accountService: AccountService,
@@ -146,171 +173,174 @@ viewDetails(account: any): void {
         return;
     }
 
-    this.loading = true;
-
-    this.selectedAccount = null;
-    this.documents = [];
-    this.loanDetails = [];
+    const accountNumber = account.accountNumber;
 
     console.log(
-        'Loading profile for account:',
-        account.accountNumber
+        'Opening customer profile for account:',
+        accountNumber
     );
 
-    this.accountService
-        .getCustomerProfile(account.accountNumber)
-        .subscribe({
+    this.router.navigate([
+        '/app',
+        'customer-info',
+        accountNumber
+    ]).then(success => {
 
-            next: (profile: any) => {
+        console.log(
+            'Navigation result:',
+            success
+        );
 
-                console.log(
-                    '========== CUSTOMER PROFILE =========='
-                );
+    }).catch(error => {
 
-                console.log(profile);
+        console.error(
+            'Navigation failed:',
+            error
+        );
 
-                console.log(
-                    'ACCOUNT NUMBER:',
-                    profile?.accountNumber
-                );
-
-                console.log(
-                    'DOCUMENTS RETURNED:',
-                    profile?.documents
-                );
-
-                console.log(
-                    'DOCUMENT COUNT:',
-                    profile?.documents?.length || 0
-                );
-
-                console.log(
-                    '======================================'
-                );
-
-
-                // =============================================
-                // STORE PROFILE
-                // =============================================
-
-                this.selectedAccount = profile;
-
-
-                // =============================================
-                // STORE LOANS
-                // =============================================
-
-                this.loanDetails =
-                    profile?.loans || [];
-
-
-                // =============================================
-                // STORE DOCUMENTS
-                // =============================================
-
-                this.documents =
-                    Array.isArray(profile?.documents)
-                        ? profile.documents
-                        : [];
-
-
-                // =============================================
-                // ALSO ATTACH TO SELECTED ACCOUNT
-                // =============================================
-
-                this.selectedAccount.documents =
-                    this.documents;
-
-
-                // =============================================
-                // OPEN MODAL
-                // =============================================
-
-                this.showLoanSummary = false;
-
-                this.showDetailsModal = true;
-
-                this.loading = false;
-            },
-
-            error: (error) => {
-
-                console.error(
-                    'Failed to load customer profile:',
-                    error
-                );
-
-                console.error(
-                    'Backend response:',
-                    error?.error
-                );
-
-                this.documents = [];
-
-                this.loading = false;
-
-                alert(
-                    'Unable to load the complete customer profile.'
-                );
-            }
-
-        });
+    });
 }
 
-getDocumentUrl(document: AccountDocument): string {
-
-    if (!document) {
-        return '';
-    }
-
-    return document.fileUrl || '';
-}
 
 getDocumentIcon(type: string): string {
 
-    const documentType =
-        (type || '').toUpperCase();
+    const documentType = (type || '').toUpperCase();
 
     if (
         documentType.includes('PHOTO') ||
         documentType.includes('IMAGE')
     ) {
-        return 'bi bi-image';
+        return 'bi bi-image-fill';
     }
 
     if (
         documentType.includes('PDF')
     ) {
-        return 'bi bi-file-earmark-pdf';
+        return 'bi bi-file-earmark-pdf-fill';
     }
 
     if (
         documentType.includes('ID') ||
         documentType.includes('PASSPORT')
     ) {
-        return 'bi bi-person-vcard';
+        return 'bi bi-person-vcard-fill';
     }
 
     if (
         documentType.includes('SIGNATURE')
     ) {
-        return 'bi bi-pen';
+        return 'bi bi-pen-fill';
     }
 
     if (
         documentType.includes('KRA') ||
         documentType.includes('TAX')
     ) {
-        return 'bi bi-receipt';
+        return 'bi bi-receipt-cutoff';
     }
 
     if (
         documentType.includes('ADDRESS')
     ) {
-        return 'bi bi-house';
+        return 'bi bi-house-fill';
     }
 
-    return 'bi bi-file-earmark-text';
+    if (
+        documentType.includes('CERTIFICATE') ||
+        documentType.includes('INCORPORATION') ||
+        documentType.includes('REGISTRATION')
+    ) {
+        return 'bi bi-award-fill';
+    }
+
+    if (
+        documentType.includes('RESOLUTION') ||
+        documentType.includes('BOARD')
+    ) {
+        return 'bi bi-file-earmark-check-fill';
+    }
+
+    if (
+        documentType.includes('CONSTITUTION') ||
+        documentType.includes('TRUST')
+    ) {
+        return 'bi bi-journal-text';
+    }
+
+    return 'bi bi-file-earmark-text-fill';
+}
+
+// ============================================================
+// DETERMINE WHETHER DOCUMENT IS AN IMAGE
+// ============================================================
+
+isImageDocument(document: AccountDocument): boolean {
+
+    if (!document) {
+        return false;
+    }
+
+    const contentType =
+        (document.contentType || '').toLowerCase();
+
+    const fileName =
+        (
+            document.originalName ||
+            document.originalFileName ||
+            document.fileName ||
+            document.storedName ||
+            ''
+        ).toLowerCase();
+
+    return (
+        contentType.startsWith('image/') ||
+        /\.(jpg|jpeg|png|gif|webp|bmp|svg)$/i.test(fileName)
+    );
+}
+
+
+// ============================================================
+// IMAGE PREVIEW URL
+// ============================================================
+
+getDocumentPreviewUrl(
+    document: AccountDocument
+): string {
+
+    return this.getDocumentUrl(document);
+}
+
+
+// ============================================================
+// IMAGE LOAD ERROR
+// ============================================================
+
+onDocumentImageError(
+    event: Event
+): void {
+
+    const image =
+        event.target as HTMLImageElement;
+
+    if (!image) {
+        return;
+    }
+
+    console.warn(
+        'Unable to load document preview:',
+        image.src
+    );
+
+    image.style.display = 'none';
+
+    const fallback =
+        image.parentElement?.querySelector(
+            '.document-image-fallback'
+        ) as HTMLElement;
+
+    if (fallback) {
+        fallback.style.display = 'flex';
+    }
 }
 
 
@@ -331,24 +361,312 @@ formatFileSize(size: number): string {
     return `${(size / (1024 * 1024)).toFixed(1)} MB`;
 }
 
+
+// ============================================================
+// DOCUMENT HELPERS
+// ============================================================
+
+/**
+ * Returns the currently displayed documents.
+ *
+ * We use this.documents as the single source of truth because
+ * both account documents and organization documents are loaded
+ * into this array.
+ */
+private getCurrentDocuments(): AccountDocument[] {
+
+    if (Array.isArray(this.documents)) {
+        return this.documents;
+    }
+
+    return [];
+}
+
+
+// ============================================================
+// VERIFIED DOCUMENTS
+// ============================================================
+
+getVerifiedDocumentsCount(): number {
+
+    return this.getCurrentDocuments()
+        .filter(document => document.verified === true)
+        .length;
+}
+
+
+// ============================================================
+// PENDING DOCUMENTS
+// ============================================================
+
+getPendingDocumentsCount(): number {
+
+    return this.getCurrentDocuments()
+        .filter(document => document.verified !== true)
+        .length;
+}
+
+
+// ============================================================
+// DOCUMENT COMPLIANCE
+// ============================================================
+
+getDocumentCompliancePercentage(): number {
+
+    const documents = this.getCurrentDocuments();
+
+    if (documents.length === 0) {
+        return 0;
+    }
+
+    const verified =
+        documents.filter(
+            document => document.verified === true
+        ).length;
+
+    return Math.round(
+        (verified / documents.length) * 100
+    );
+}
+
+
+// ============================================================
+// DOCUMENT FILE TYPE
+// ============================================================
+
+getDocumentFileType(document: AccountDocument): string {
+
+    if (!document) {
+        return 'Document';
+    }
+
+    const contentType =
+        (document.contentType || '').toLowerCase();
+
+    const fileName =
+        (
+            document.originalName ||
+            document.originalFileName ||
+            document.storedName ||
+            document.fileName ||
+            ''
+        ).toLowerCase();
+
+
+    // PDF
+    if (
+        contentType.includes('pdf') ||
+        fileName.endsWith('.pdf')
+    ) {
+        return 'PDF';
+    }
+
+
+    // Images
+    if (
+        contentType.startsWith('image/') ||
+        /\.(jpg|jpeg|png|gif|webp|bmp)$/i.test(fileName)
+    ) {
+        return 'IMAGE';
+    }
+
+
+    // Word
+    if (
+        contentType.includes('word') ||
+        contentType.includes('document') ||
+        /\.(doc|docx)$/i.test(fileName)
+    ) {
+        return 'WORD';
+    }
+
+
+    // Excel
+    if (
+        contentType.includes('excel') ||
+        contentType.includes('spreadsheet') ||
+        /\.(xls|xlsx)$/i.test(fileName)
+    ) {
+        return 'EXCEL';
+    }
+
+
+    // Text
+    if (
+        contentType.includes('text') ||
+        fileName.endsWith('.txt')
+    ) {
+        return 'TEXT';
+    }
+
+
+    return 'DOCUMENT';
+}
+
+
+// ============================================================
+// DOCUMENT PREVIEW CLASS
+// ============================================================
+
+getDocumentPreviewClass(
+    document: AccountDocument
+): string {
+
+    const type =
+        this.getDocumentFileType(document);
+
+    switch (type) {
+
+        case 'PDF':
+            return 'document-preview-pdf';
+
+        case 'IMAGE':
+            return 'document-preview-image';
+
+        case 'WORD':
+            return 'document-preview-word';
+
+        case 'EXCEL':
+            return 'document-preview-excel';
+
+        case 'TEXT':
+            return 'document-preview-text';
+
+        default:
+            return 'document-preview-default';
+    }
+}
+
+
+
+// ============================================================
+// DOCUMENT URL
+// ============================================================
+
+getDocumentUrl(document: AccountDocument): string {
+
+    if (!document) {
+        return '';
+    }
+
+
+    // Preferred browser URL
+    if (
+        document.fileUrl &&
+        document.fileUrl.trim() !== ''
+    ) {
+        return document.fileUrl;
+    }
+
+
+    // Download URL
+    if (
+        document.downloadUrl &&
+        document.downloadUrl.trim() !== ''
+    ) {
+        return document.downloadUrl;
+    }
+
+
+    // Stored file path
+    if (
+        document.filePath &&
+        document.filePath.trim() !== ''
+    ) {
+
+        const path =
+            document.filePath.trim();
+
+        if (
+            path.startsWith('http://') ||
+            path.startsWith('https://')
+        ) {
+            return path;
+        }
+
+        return `http://localhost:8080/${path
+            .replace(/^\/+/, '')}`;
+    }
+
+
+    return '';
+}
+
+
+// ============================================================
+// VIEW DOCUMENT
+// ============================================================
+
 viewDocument(document: AccountDocument): void {
 
-    const url = this.getDocumentUrl(document);
+    const url =
+        this.getDocumentUrl(document);
 
     if (!url) {
 
         alert(
-            'Document URL is not available.'
+            'This document does not have a valid viewing URL.'
         );
 
         return;
     }
 
+
     window.open(
         url,
-        '_blank'
+        '_blank',
+        'noopener,noreferrer'
     );
 }
+
+
+// ============================================================
+// DOWNLOAD DOCUMENT
+// ============================================================
+
+downloadDocument(
+    document: AccountDocument
+): void {
+
+    const url =
+        this.getDocumentUrl(document);
+
+    if (!url) {
+
+        alert(
+            'This document cannot be downloaded because its file URL is unavailable.'
+        );
+
+        return;
+    }
+
+
+    const fileName =
+        document.originalName ||
+        document.originalFileName ||
+        document.storedName ||
+        document.fileName ||
+        'document';
+
+
+    const link =
+        window.document.createElement('a');
+
+    link.href = url;
+
+    link.target = '_blank';
+
+    link.download = fileName;
+
+    link.rel = 'noopener noreferrer';
+
+    window.document.body.appendChild(link);
+
+    link.click();
+
+    window.document.body.removeChild(link);
+}
+
 
 closeDetailsModal(): void {
 
@@ -565,4 +883,829 @@ getStatusClass(status: string): string {
 }
 
 
+
+// ============================================================
+// CUSTOMER CERTIFICATE
+// PREPARE + PRINT
+// ============================================================
+
+printCustomerCertificate(account: any): void {
+
+    if (!account) {
+        console.warn('No account supplied for certificate.');
+        return;
+    }
+
+    // Store selected customer
+    this.certificateAccount = account;
+
+    // Refresh certificate date
+    this.currentDate = new Date();
+
+    // Show certificate in Angular first
+    this.showCertificate = true;
+
+    /*
+     * IMPORTANT:
+     * Angular needs a moment to render #customerCertificate
+     * before we try to print it.
+     */
+    setTimeout(() => {
+
+        this.printCertificate();
+
+    }, 300);
+}
+
+
+// ============================================================
+// CLOSE CERTIFICATE PREVIEW
+// ============================================================
+
+closeCertificate(): void {
+
+    this.showCertificate = false;
+    this.certificateAccount = null;
+
+}
+
+
+// ============================================================
+// CERTIFICATE CUSTOMER NAME
+// ============================================================
+
+getCertificateCustomerName(account: any): string {
+
+    if (!account) {
+        return 'N/A';
+    }
+
+    // INDIVIDUAL
+    if (
+        account.customerCategory === 'INDIVIDUAL'
+    ) {
+
+        return (
+            account.fullName ||
+            account.displayName ||
+            'Individual Customer'
+        );
+
+    }
+
+    // ORGANIZATION
+    return (
+        account.organizationName ||
+        account.fullName ||
+        account.displayName ||
+        'Registered Organization'
+    );
+
+}
+
+
+// ============================================================
+// CERTIFICATE STATUS
+// ============================================================
+
+getCertificateStatusClass(status: string): string {
+
+    switch ((status || '').toUpperCase()) {
+
+        case 'ACTIVE':
+            return 'certificate-status-active';
+
+        case 'DORMANT':
+            return 'certificate-status-dormant';
+
+        case 'CLOSED':
+            return 'certificate-status-closed';
+
+        default:
+            return 'certificate-status-default';
+
+    }
+
+}
+
+
+// ============================================================
+// PRINT CUSTOMER CERTIFICATE
+// ============================================================
+
+printCertificate(): void {
+
+    const certificate =
+        window.document.getElementById('customerCertificate');
+
+    if (!certificate) {
+
+        console.error(
+            'Customer certificate element was not found.'
+        );
+
+        alert(
+            'Customer certificate could not be prepared for printing.'
+        );
+
+        return;
+    }
+
+    const printWindow =
+        window.open(
+            '',
+            '_blank',
+            'width=1200,height=900'
+        );
+
+    if (!printWindow) {
+
+        alert(
+            'Unable to open the print window. Please allow pop-ups for this application.'
+        );
+
+        return;
+    }
+
+    printWindow.document.open();
+
+    printWindow.document.write(`
+
+        <!DOCTYPE html>
+
+        <html>
+
+        <head>
+
+            <meta charset="UTF-8">
+
+            <meta
+                name="viewport"
+                content="width=device-width, initial-scale=1.0"
+            >
+
+            <title>
+                Customer Account Certificate
+            </title>
+
+            <style>
+
+                ${this.getCertificatePrintStyles()}
+
+            </style>
+
+        </head>
+
+        <body>
+
+            ${certificate.outerHTML}
+
+        </body>
+
+        </html>
+
+    `);
+
+    printWindow.document.close();
+
+    /*
+     * Wait for the new window to finish rendering
+     * before opening the print dialog.
+     */
+    printWindow.onload = () => {
+
+        setTimeout(() => {
+
+            printWindow.focus();
+
+            printWindow.print();
+
+        }, 500);
+
+    };
+
+    /*
+     * Safety fallback for browsers where onload
+     * fires before Angular content is completely ready.
+     */
+    setTimeout(() => {
+
+        if (!printWindow.closed) {
+
+            printWindow.focus();
+
+        }
+
+    }, 1000);
+
+}
+
+
+// ============================================================
+// PROFESSIONAL CERTIFICATE PRINT STYLES
+// ============================================================
+
+private getCertificatePrintStyles(): string {
+
+    return `
+
+        * {
+            box-sizing: border-box;
+        }
+
+
+        html,
+        body {
+
+            margin: 0;
+            padding: 0;
+
+            background: #ffffff;
+
+            font-family:
+                "Segoe UI",
+                Arial,
+                Helvetica,
+                sans-serif;
+
+            color: #172033;
+
+        }
+
+
+        body {
+
+            padding: 25px;
+
+        }
+
+
+        .certificate-wrapper {
+
+            width: 100%;
+            max-width: 1100px;
+
+            margin: 0 auto;
+
+            background: #ffffff;
+
+        }
+
+
+        .customer-certificate {
+
+            position: relative;
+
+            width: 100%;
+
+            min-height: 760px;
+
+            padding: 55px 65px;
+
+            border: 1px solid #d8dee9;
+
+            background:
+                linear-gradient(
+                    135deg,
+                    #ffffff 0%,
+                    #f8fafc 100%
+                );
+
+            overflow: hidden;
+
+        }
+
+
+        /* =========================================
+           DECORATIVE TOP LINE
+        ========================================= */
+
+        .customer-certificate::before {
+
+            content: "";
+
+            position: absolute;
+
+            top: 0;
+            left: 0;
+            right: 0;
+
+            height: 10px;
+
+            background:
+                linear-gradient(
+                    90deg,
+                    #0f3d91,
+                    #2563eb,
+                    #0f766e
+                );
+
+        }
+
+
+        .customer-certificate::after {
+
+            content: "";
+
+            position: absolute;
+
+            width: 320px;
+            height: 320px;
+
+            right: -170px;
+            top: -170px;
+
+            border-radius: 50%;
+
+            border: 35px solid rgba(37, 99, 235, 0.05);
+
+        }
+
+
+        /* =========================================
+           HEADER
+        ========================================= */
+
+        .certificate-header {
+
+            display: flex;
+
+            justify-content: space-between;
+
+            align-items: center;
+
+            padding-bottom: 28px;
+
+            border-bottom: 2px solid #e5eaf1;
+
+        }
+
+
+        .certificate-brand {
+
+            display: flex;
+
+            align-items: center;
+
+            gap: 16px;
+
+        }
+
+
+        .certificate-logo {
+
+            width: 65px;
+            height: 65px;
+
+            display: flex;
+
+            align-items: center;
+            justify-content: center;
+
+            border-radius: 14px;
+
+            background:
+                linear-gradient(
+                    135deg,
+                    #0f3d91,
+                    #2563eb
+                );
+
+            color: #ffffff;
+
+            font-size: 30px;
+
+            font-weight: 700;
+
+        }
+
+
+        .certificate-bank-name {
+
+            font-size: 24px;
+
+            font-weight: 800;
+
+            letter-spacing: .4px;
+
+            color: #0f3d91;
+
+        }
+
+
+        .certificate-bank-subtitle {
+
+            margin-top: 4px;
+
+            font-size: 11px;
+
+            color: #64748b;
+
+            letter-spacing: 1.5px;
+
+            text-transform: uppercase;
+
+        }
+
+
+        .certificate-reference {
+
+            text-align: right;
+
+        }
+
+
+        .certificate-reference-label {
+
+            font-size: 9px;
+
+            color: #64748b;
+
+            text-transform: uppercase;
+
+            letter-spacing: 1px;
+
+        }
+
+
+        .certificate-reference-value {
+
+            margin-top: 5px;
+
+            font-size: 14px;
+
+            font-weight: 700;
+
+            color: #172033;
+
+        }
+
+
+        /* =========================================
+           TITLE
+        ========================================= */
+
+        .certificate-title-section {
+
+            text-align: center;
+
+            margin: 45px 0 35px;
+
+        }
+
+
+        .certificate-title {
+
+            margin: 0;
+
+            font-size: 30px;
+
+            font-weight: 800;
+
+            letter-spacing: 2px;
+
+            color: #0f3d91;
+
+            text-transform: uppercase;
+
+        }
+
+
+        .certificate-subtitle {
+
+            margin-top: 10px;
+
+            font-size: 13px;
+
+            color: #64748b;
+
+        }
+
+
+        /* =========================================
+           CUSTOMER IDENTIFICATION
+        ========================================= */
+
+        .certificate-customer {
+
+            padding: 25px 30px;
+
+            border-radius: 14px;
+
+            background: #f8fafc;
+
+            border: 1px solid #e2e8f0;
+
+            text-align: center;
+
+            margin-bottom: 30px;
+
+        }
+
+
+        .certificate-customer-label {
+
+            font-size: 10px;
+
+            color: #64748b;
+
+            text-transform: uppercase;
+
+            letter-spacing: 1.5px;
+
+        }
+
+
+        .certificate-customer-name {
+
+            margin-top: 8px;
+
+            font-size: 25px;
+
+            font-weight: 800;
+
+            color: #172033;
+
+        }
+
+
+        .certificate-category {
+
+            display: inline-block;
+
+            margin-top: 10px;
+
+            padding: 7px 16px;
+
+            border-radius: 999px;
+
+            background: #e8f0ff;
+
+            color: #1d4ed8;
+
+            font-size: 11px;
+
+            font-weight: 700;
+
+            letter-spacing: .8px;
+
+            text-transform: uppercase;
+
+        }
+
+
+        /* =========================================
+           INFORMATION GRID
+        ========================================= */
+
+        .certificate-information {
+
+            display: grid;
+
+            grid-template-columns:
+                repeat(2, 1fr);
+
+            gap: 18px;
+
+            margin-top: 25px;
+
+        }
+
+
+        .certificate-information-item {
+
+            padding: 18px 20px;
+
+            border: 1px solid #e2e8f0;
+
+            border-radius: 10px;
+
+            background: #ffffff;
+
+        }
+
+
+        .certificate-information-label {
+
+            display: block;
+
+            margin-bottom: 6px;
+
+            font-size: 9px;
+
+            font-weight: 700;
+
+            color: #64748b;
+
+            text-transform: uppercase;
+
+            letter-spacing: 1px;
+
+        }
+
+
+        .certificate-information-value {
+
+            font-size: 15px;
+
+            font-weight: 700;
+
+            color: #172033;
+
+        }
+
+
+        /* =========================================
+           STATUS
+        ========================================= */
+
+        .certificate-status {
+
+            display: inline-block;
+
+            padding: 7px 14px;
+
+            border-radius: 999px;
+
+            font-size: 11px;
+
+            font-weight: 800;
+
+            text-transform: uppercase;
+
+        }
+
+
+        .certificate-status-active {
+
+            background: #dcfce7;
+
+            color: #166534;
+
+        }
+
+
+        .certificate-status-dormant {
+
+            background: #fef3c7;
+
+            color: #92400e;
+
+        }
+
+
+        .certificate-status-closed {
+
+            background: #fee2e2;
+
+            color: #991b1b;
+
+        }
+
+
+        .certificate-status-default {
+
+            background: #e2e8f0;
+
+            color: #475569;
+
+        }
+
+
+        /* =========================================
+           DECLARATION
+        ========================================= */
+
+        .certificate-declaration {
+
+            margin-top: 32px;
+
+            padding: 20px 22px;
+
+            border-left: 4px solid #2563eb;
+
+            background: #f8fafc;
+
+            font-size: 12px;
+
+            line-height: 1.7;
+
+            color: #475569;
+
+        }
+
+
+        /* =========================================
+           FOOTER
+        ========================================= */
+
+        .certificate-footer {
+
+            display: flex;
+
+            justify-content: space-between;
+
+            align-items: flex-end;
+
+            margin-top: 50px;
+
+            padding-top: 25px;
+
+            border-top: 1px solid #e2e8f0;
+
+        }
+
+
+        .certificate-signature {
+
+            width: 220px;
+
+            text-align: center;
+
+        }
+
+
+        .signature-line {
+
+            border-top: 1px solid #172033;
+
+            margin-bottom: 7px;
+
+        }
+
+
+        .signature-label {
+
+            font-size: 10px;
+
+            color: #64748b;
+
+            text-transform: uppercase;
+
+            letter-spacing: 1px;
+
+        }
+
+
+        .certificate-issued {
+
+            text-align: right;
+
+            font-size: 10px;
+
+            color: #64748b;
+
+            line-height: 1.6;
+
+        }
+
+
+        /* =========================================
+           PRINT
+        ========================================= */
+
+        @media print {
+
+            @page {
+
+                size: A4 portrait;
+
+                margin: 10mm;
+
+            }
+
+
+            body {
+
+                padding: 0;
+
+                background: #ffffff;
+
+            }
+
+
+            .customer-certificate {
+
+                border: none;
+
+                min-height: auto;
+
+                box-shadow: none;
+
+                page-break-inside: avoid;
+
+            }
+
+
+            .no-print {
+
+                display: none !important;
+
+            }
+
+        }
+
+    `;
+
+}
 }

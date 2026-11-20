@@ -480,6 +480,35 @@
 
                 </div>
 
+                <div class="alert alert-light border shadow-sm mt-3 mb-4">
+  <div class="d-flex align-items-start gap-3">
+    <div class="text-primary fs-4">
+      <i class="fas fa-shield-alt"></i>
+    </div>
+    <div>
+      <h6 class="fw-bold mb-1">Data quality &amp; compliance</h6>
+      <p class="small text-muted mb-0">
+        Use only official customer information. Controlled fields must be selected from the approved lists.
+        Phone numbers must be valid Kenyan mobile numbers, email addresses must use a valid email format,
+        and identification / registration details are format-checked before submission.
+      </p>
+    </div>
+  </div>
+</div>
+
+<div *ngIf="missingItems.length > 0" class="alert alert-danger registration-validation-summary shadow-sm mt-3">
+                  <div class="d-flex align-items-start">
+                    <i class="fas fa-shield-alt fa-lg me-3 mt-1"></i>
+                    <div class="flex-grow-1">
+                      <h6 class="fw-bold mb-2">This step is not complete</h6>
+                      <p class="mb-2">Please resolve the following requirement(s) before continuing:</p>
+                      <ol class="mb-0 ps-3">
+                        <li *ngFor="let item of missingItems">{{ item }}</li>
+                      </ol>
+                    </div>
+                  </div>
+                </div>
+
                 <!-- STEP 1 STARTS IN PART 2 -->
               
               
@@ -525,8 +554,8 @@ Provide the institution's registration details.
 
 </p>
 
-<!-- MODE OF OPERATION -->
-<div class="col-md-6">
+<!-- MODE OF OPERATION : INDIVIDUAL ONLY -->
+<div class="col-md-6" *ngIf="isIndividual">
 
 <div class="form-floating">
 
@@ -570,7 +599,16 @@ Mode of Operation *
             type="text"
             class="form-control"
             formControlName="fullName"
-            placeholder="Enter Full Name">
+            placeholder="Enter full legal name"
+            autocomplete="name"
+            maxlength="100"
+            spellcheck="false"
+            (input)="sanitizePersonName($event, 'fullName')"
+            [class.is-invalid]="accountForm.get('fullName')?.touched && accountForm.get('fullName')?.invalid"
+            [class.is-valid]="accountForm.get('fullName')?.touched && accountForm.get('fullName')?.valid">
+        <div class="invalid-feedback" *ngIf="accountForm.get('fullName')?.touched && accountForm.get('fullName')?.invalid">
+            Enter a valid full name using letters, spaces, hyphens or apostrophes only.
+        </div>
 
         <label>
             Full Name *
@@ -578,6 +616,24 @@ Mode of Operation *
 
     </div>
 
+</div>
+
+<!-- ORGANIZATION MODE OF OPERATION -->
+<div class="col-md-6" *ngIf="!isIndividual">
+  <div class="form-floating">
+    <select
+      class="form-select"
+      formControlName="modeOfOperation">
+      <option value="">Select Mode of Operation</option>
+      <option *ngFor="let mode of modeOfOperationOptions" [value]="mode.value">
+        {{ mode.label }}
+      </option>
+    </select>
+    <label>Mode of Operation <span class="text-danger">*</span></label>
+  </div>
+  <div class="form-text">
+    Authorization rule: {{ organizationOperationRequirement }}
+  </div>
 </div>
 
 <!-- ===================================================== -->
@@ -594,6 +650,12 @@ Mode of Operation *
             type="text"
             class="form-control"
             formControlName="organizationName"
+            maxlength="200"
+            autocomplete="organization"
+            spellcheck="false"
+            (input)="sanitizeOrganizationName($event)"
+            [class.is-invalid]="accountForm.get('organizationName')?.touched && accountForm.get('organizationName')?.invalid"
+            [class.is-valid]="accountForm.get('organizationName')?.touched && accountForm.get('organizationName')?.valid"
             [placeholder]="
                 isGroup
                     ? 'Enter Group Name'
@@ -653,6 +715,8 @@ Mode of Operation *
             type="text"
             class="enterprise-input"
             formControlName="nationalId"
+            autocomplete="off"
+            spellcheck="false"
             [maxlength]="idMaxLength"
             [placeholder]="idPlaceholder"
             (input)="allowNumbersOnly($event)">
@@ -662,25 +726,21 @@ Mode of Operation *
 </div>
 
                   <!-- DATE OF BIRTH -->
+<input
+    type="date"
+    class="form-control"
+    formControlName="dateOfBirth"
+    autocomplete="off"
+    [class.is-invalid]="
+        accountForm.get('dateOfBirth')?.touched &&
+        accountForm.get('dateOfBirth')?.invalid
+    "
+    [class.is-valid]="
+        accountForm.get('dateOfBirth')?.touched &&
+        accountForm.get('dateOfBirth')?.valid
+    ">
 
-                  <div class="col-md-6" *ngIf="selectedCustomerCategory===CustomerCategory.INDIVIDUAL">
-
-                    <div class="form-floating">
-
-                      <input
-                        type="date"
-                        class="form-control"
-                        formControlName="dateOfBirth">
-
-                      <label>
-
-                        Date of Birth *
-
-                      </label>
-
-                    </div>
-
-                  </div>
+<label>Date of Birth *</label>
 
                   <!-- GENDER -->
 
@@ -734,14 +794,30 @@ Mode of Operation *
 
     <div class="form-floating">
 
-        <input
-            type="text"
-            class="form-control"
-            formControlName="nationality"
-            placeholder="Nationality">
+        <select
+            class="form-select"
+            formControlName="nationality">
+            <option value="">Select Nationality</option>
+            <option value="Kenyan">Kenyan</option>
+            <option value="Ugandan">Ugandan</option>
+            <option value="Tanzanian">Tanzanian</option>
+            <option value="Rwandan">Rwandan</option>
+            <option value="Burundian">Burundian</option>
+            <option value="South Sudanese">South Sudanese</option>
+            <option value="Ethiopian">Ethiopian</option>
+            <option value="Somali">Somali</option>
+            <option value="Nigerian">Nigerian</option>
+            <option value="South African">South African</option>
+            <option value="British">British</option>
+            <option value="American">American</option>
+            <option value="Other">Other</option>
+        </select>
+        <div class="invalid-feedback" *ngIf="accountForm.get('nationality')?.touched && accountForm.get('nationality')?.invalid">
+            Select a valid nationality.
+        </div>
 
         <label>
-            Nationality
+            Nationality <span class="text-danger">*</span>
         </label>
 
     </div>
@@ -790,51 +866,200 @@ Mode of Operation *
 
                   </div>
 
-                  <!-- PIN -->
 
-                  <div class="col-md-6">
+<!-- ============================================================
+     KRA PIN
+     
+     ALL CUSTOMER TYPES:
+       1 letter + 9 digits + 1 letter
+     
+     Examples:
+       A123456789Z
+       P123456789Z
+       K123456789Z
+       X123456789M
+     
+     IMPORTANT:
+       The first letter MUST NOT be restricted to A or P.
+       The final character is also a letter.
+============================================================= -->
 
-                    <div class="form-floating">
+<div class="col-md-6">
 
-                      <input
-                        type="text"
-                        class="form-control"
-                        formControlName="kraPin"
-                        placeholder="KRA PIN">
+  <div class="form-floating">
 
-<label>
+<input
+  type="text"
+  class="form-control text-uppercase"
+  id="kraPin"
+  formControlName="kraPin"
+  placeholder="KRA PIN"
+  maxlength="11"
+  minlength="11"
+  inputmode="text"
+  autocomplete="off"
+  spellcheck="false"
+  (input)="sanitizeKraPin($event)"
+  [class.is-invalid]="
+    accountForm.get('kraPin')?.touched &&
+    accountForm.get('kraPin')?.invalid
+  "
+  [class.is-valid]="
+    accountForm.get('kraPin')?.touched &&
+    accountForm.get('kraPin')?.valid
+  ">
 
-<span *ngIf="isIndividual">
-KRA PIN
-</span>
+<label for="kraPin">
 
-<span *ngIf="isGroup">
-Group KRA PIN
-</span>
+  <ng-container *ngIf="isIndividual">
+    KRA PIN
+  </ng-container>
 
-<span *ngIf="isCompany">
-Company KRA PIN
-</span>
+  <ng-container *ngIf="isGroup">
+    Group KRA PIN
+  </ng-container>
 
-<span *ngIf="isInstitution">
-Institution KRA PIN
-</span>
+  <ng-container *ngIf="isCompany">
+    Company KRA PIN
+  </ng-container>
+
+  <ng-container *ngIf="isInstitution">
+    Institution KRA PIN
+  </ng-container>
+
+  <span class="text-danger">*</span>
 
 </label>
 
-                    </div>
 
-                  </div>
+<!-- ========================================================
+     FORMAT GUIDANCE
+     SAME FORMAT FOR ALL CUSTOMER TYPES
+========================================================= -->
+
+<div class="form-text mt-2">
+
+  <div class="d-flex align-items-center gap-2">
+
+    <i class="fas fa-info-circle text-primary"></i>
+
+    <span>
+      Enter the KRA PIN exactly as issued by KRA.
+    </span>
+
+  </div>
+
+  <div class="mt-1 ms-4">
+
+    <strong>Required format:</strong>
+
+    <code>A123456789Z</code>
+
+    <span class="text-muted">
+      (1 letter + 9 digits + 1 letter)
+    </span>
+
+  </div>
+
+  <div class="mt-1 ms-4 text-muted small">
+    The first letter may be any letter. It is not restricted to
+    <strong>A</strong> or <strong>P</strong>.
+  </div>
+
+</div>
 
 
-                  <div class="col-md-6" *ngIf="!isIndividual">
+<!-- ========================================================
+     REQUIRED ERROR
+========================================================= -->
+
+<div
+  class="invalid-feedback"
+  *ngIf="
+    accountForm.get('kraPin')?.touched &&
+    accountForm.get('kraPin')?.hasError('required')
+  ">
+
+  <ng-container *ngIf="isIndividual">
+    Please enter the KRA PIN.
+  </ng-container>
+
+  <ng-container *ngIf="isGroup">
+    Please enter the Group KRA PIN.
+  </ng-container>
+
+  <ng-container *ngIf="isCompany">
+    Please enter the Company KRA PIN.
+  </ng-container>
+
+  <ng-container *ngIf="isInstitution">
+    Please enter the Institution KRA PIN.
+  </ng-container>
+
+</div>
+
+
+<!-- ========================================================
+     FORMAT ERROR
+     
+     SAME VALIDATION RULE FOR EVERY CUSTOMER TYPE:
+     
+     Letter + 9 digits + Letter
+========================================================= -->
+
+<div
+  class="invalid-feedback"
+  *ngIf="
+    accountForm.get('kraPin')?.touched &&
+    (
+      accountForm.get('kraPin')?.hasError('invalidKraPin') ||
+      accountForm.get('kraPin')?.hasError('invalidIndividualKraPin') ||
+      accountForm.get('kraPin')?.hasError('invalidOrganizationKraPin')
+    )
+  ">
+
+  <strong>Invalid KRA PIN format.</strong>
+
+  <div class="mt-1">
+
+    Use exactly:
+
+    <code>A123456789Z</code>
+
+    — one letter, nine digits, and one final letter.
+
+  </div>
+
+
+</div>
+
+  </div>
+
+</div>
+
+
+
+
+<div class="col-md-6" *ngIf="!isIndividual">
 
     <div class="form-floating">
 
-        <input
-            class="form-control"
-            formControlName="registrationDate"
-            type="date">
+<input
+    type="date"
+    class="form-control"
+    formControlName="registrationDate"
+    autocomplete="off"
+    [class.is-invalid]="accountForm.get('registrationDate')?.touched && accountForm.get('registrationDate')?.invalid"
+    [class.is-valid]="accountForm.get('registrationDate')?.touched && accountForm.get('registrationDate')?.valid">
+
+<div
+    class="invalid-feedback"
+    *ngIf="
+        accountForm.get('registrationDate')?.touched &&
+        accountForm.get('registrationDate')?.hasError('futureDate')
+    ">
+    Registration date cannot be in the future.
+</div>
 
         <label>Registration Date</label>
 
@@ -847,8 +1072,18 @@ Institution KRA PIN
     <div class="form-floating">
 
         <input
-            class="form-control"
-            formControlName="registrationNumber">
+            class="form-control text-uppercase"
+            formControlName="registrationNumber"
+            placeholder="Official registration number"
+            maxlength="50"
+            autocomplete="off"
+            spellcheck="false"
+            (input)="sanitizeRegistrationNumber($event)"
+            [class.is-invalid]="accountForm.get('registrationNumber')?.touched && accountForm.get('registrationNumber')?.invalid"
+            [class.is-valid]="accountForm.get('registrationNumber')?.touched && accountForm.get('registrationNumber')?.valid">
+        <div class="invalid-feedback" *ngIf="accountForm.get('registrationNumber')?.touched && accountForm.get('registrationNumber')?.invalid">
+            Use letters, numbers, hyphens, slashes or periods only.
+        </div>
 
         <label>Registration Number</label>
 
@@ -856,65 +1091,487 @@ Institution KRA PIN
 
 </div>
 
-<div class="col-md-6" *ngIf="isCompany">
 
-    <div class="form-floating">
 
-        <input
-            class="form-control"
-            formControlName="industry">
-
-        <label>Industry</label>
-
-    </div>
-
-</div>
-
-<div class="col-md-6" *ngIf="isCompany">
-
-    <div class="form-floating">
-
-        <input
-            class="form-control"
-            formControlName="natureOfBusiness">
-
-        <label>Nature of Business</label>
-
-    </div>
-
-</div>
-
-<div class="col-md-6" *ngIf="isInstitution">
-
+<!-- ============================================================
+     REGISTRATION TYPE
+     Controlled selection — no free typing
+============================================================= -->
+<div class="col-md-6" *ngIf="!isIndividual">
     <div class="form-floating">
 
         <select
             class="form-select"
-            formControlName="institutionType">
+            id="registrationType"
+            formControlName="registrationType"
+            autocomplete="off"
+            [class.is-invalid]="
+                accountForm.get('registrationType')?.touched &&
+                accountForm.get('registrationType')?.invalid
+            "
+            [class.is-valid]="
+                accountForm.get('registrationType')?.touched &&
+                accountForm.get('registrationType')?.valid
+            ">
 
-            <option value="">Select Institution Type</option>
+            <option value="" disabled>
+                Select Registration Type
+            </option>
 
-            <option>School</option>
+            <option value="LIMITED_COMPANY">
+                Limited Company
+            </option>
 
-            <option>Church</option>
+            <option value="PUBLIC_LIMITED_COMPANY">
+                Public Limited Company
+            </option>
 
-            <option>NGO</option>
+            <option value="PARTNERSHIP">
+                Partnership
+            </option>
 
-            <option>Government Agency</option>
+            <option value="SOLE_PROPRIETORSHIP">
+                Sole Proprietorship
+            </option>
 
-            <option>Trust</option>
+            <option value="SOCIETY">
+                Society
+            </option>
 
-            <option>University</option>
+            <option value="COOPERATIVE">
+                Cooperative
+            </option>
 
-            <option>Hospital</option>
+            <option value="TRUST">
+                Trust
+            </option>
+
+            <option value="NGO">
+                Non-Governmental Organization (NGO)
+            </option>
+
+            <option value="GOVERNMENT_AGENCY">
+                Government Agency
+            </option>
+
+            <option value="OTHER">
+                Other
+            </option>
 
         </select>
 
-        <label>Institution Type</label>
+        <label for="registrationType">
+            Registration Type
+            <span class="text-danger">*</span>
+        </label>
+
+        <div
+            class="invalid-feedback"
+            *ngIf="
+                accountForm.get('registrationType')?.touched &&
+                accountForm.get('registrationType')?.hasError('required')
+            ">
+            Please select the organization's registration type.
+        </div>
+
+        <div
+            class="invalid-feedback"
+            *ngIf="
+                accountForm.get('registrationType')?.touched &&
+                accountForm.get('registrationType')?.hasError('invalidOption')
+            ">
+            Please select a valid registration type from the approved list.
+        </div>
 
     </div>
-
 </div>
+
+
+<!-- ============================================================
+     INDUSTRY
+     Company only — controlled selection
+============================================================= -->
+<div class="col-md-6" *ngIf="isCompany">
+    <div class="form-floating">
+
+        <select
+            class="form-select"
+            id="industry"
+            formControlName="industry"
+            autocomplete="off"
+            [class.is-invalid]="
+                accountForm.get('industry')?.touched &&
+                accountForm.get('industry')?.invalid
+            "
+            [class.is-valid]="
+                accountForm.get('industry')?.touched &&
+                accountForm.get('industry')?.valid
+            ">
+
+            <option value="" disabled>
+                Select Industry
+            </option>
+
+            <option value="AGRICULTURE">
+                Agriculture
+            </option>
+
+            <option value="MANUFACTURING">
+                Manufacturing
+            </option>
+
+            <option value="CONSTRUCTION">
+                Construction
+            </option>
+
+            <option value="RETAIL">
+                Retail
+            </option>
+
+            <option value="WHOLESALE">
+                Wholesale
+            </option>
+
+            <option value="TRANSPORT_LOGISTICS">
+                Transport &amp; Logistics
+            </option>
+
+            <option value="FINANCIAL_SERVICES">
+                Financial Services
+            </option>
+
+            <option value="REAL_ESTATE">
+                Real Estate
+            </option>
+
+            <option value="PROFESSIONAL_SERVICES">
+                Professional Services
+            </option>
+
+            <option value="EDUCATION">
+                Education
+            </option>
+
+            <option value="HEALTHCARE">
+                Healthcare
+            </option>
+
+            <option value="HOSPITALITY">
+                Hospitality
+            </option>
+
+            <option value="ICT">
+                Information &amp; Communication Technology (ICT)
+            </option>
+
+            <option value="ENERGY">
+                Energy
+            </option>
+
+            <option value="MINING">
+                Mining
+            </option>
+
+            <option value="GOVERNMENT">
+                Government
+            </option>
+
+            <option value="NON_PROFIT">
+                Non-Profit
+            </option>
+
+            <option value="OTHER">
+                Other
+            </option>
+
+        </select>
+
+        <label for="industry">
+            Industry
+            <span class="text-danger">*</span>
+        </label>
+
+        <div
+            class="invalid-feedback"
+            *ngIf="
+                accountForm.get('industry')?.touched &&
+                accountForm.get('industry')?.hasError('required')
+            ">
+            Please select the company's industry.
+        </div>
+
+        <div
+            class="invalid-feedback"
+            *ngIf="
+                accountForm.get('industry')?.touched &&
+                accountForm.get('industry')?.hasError('invalidOption')
+            ">
+            Please select an approved industry.
+        </div>
+
+    </div>
+</div>
+
+
+<!-- ============================================================
+     NATURE OF BUSINESS
+     Company only — controlled selection
+============================================================= -->
+<div class="col-md-6" *ngIf="isCompany">
+    <div class="form-floating">
+
+        <select
+            class="form-select"
+            id="natureOfBusiness"
+            formControlName="natureOfBusiness"
+            autocomplete="off"
+            [class.is-invalid]="
+                accountForm.get('natureOfBusiness')?.touched &&
+                accountForm.get('natureOfBusiness')?.invalid
+            "
+            [class.is-valid]="
+                accountForm.get('natureOfBusiness')?.touched &&
+                accountForm.get('natureOfBusiness')?.valid
+            ">
+
+            <option value="" disabled>
+                Select Nature of Business
+            </option>
+
+            <option value="AGRICULTURE">
+                Agriculture
+            </option>
+
+            <option value="MANUFACTURING">
+                Manufacturing
+            </option>
+
+            <option value="CONSTRUCTION">
+                Construction
+            </option>
+
+            <option value="RETAIL">
+                Retail
+            </option>
+
+            <option value="WHOLESALE">
+                Wholesale
+            </option>
+
+            <option value="TRANSPORT_LOGISTICS">
+                Transport &amp; Logistics
+            </option>
+
+            <option value="PROFESSIONAL_SERVICES">
+                Professional Services
+            </option>
+
+            <option value="EDUCATION">
+                Education
+            </option>
+
+            <option value="HEALTHCARE">
+                Healthcare
+            </option>
+
+            <option value="HOSPITALITY">
+                Hospitality
+            </option>
+
+            <option value="ICT_SERVICES">
+                ICT Services
+            </option>
+
+            <option value="REAL_ESTATE">
+                Real Estate
+            </option>
+
+            <option value="FINANCIAL_SERVICES">
+                Financial Services
+            </option>
+
+            <option value="OTHER">
+                Other
+            </option>
+
+        </select>
+
+        <label for="natureOfBusiness">
+            Nature of Business
+            <span class="text-danger">*</span>
+        </label>
+
+        <div
+            class="invalid-feedback"
+            *ngIf="
+                accountForm.get('natureOfBusiness')?.touched &&
+                accountForm.get('natureOfBusiness')?.hasError('required')
+            ">
+            Please select the nature of the company's business.
+        </div>
+
+        <div
+            class="invalid-feedback"
+            *ngIf="
+                accountForm.get('natureOfBusiness')?.touched &&
+                accountForm.get('natureOfBusiness')?.hasError('invalidOption')
+            ">
+            Please select an approved nature of business.
+        </div>
+
+    </div>
+</div>
+
+
+<!-- ============================================================
+     INSTITUTION TYPE
+     Institution only — controlled selection
+============================================================= -->
+<div class="col-md-6" *ngIf="isInstitution">
+    <div class="form-floating">
+
+        <select
+            class="form-select"
+            id="institutionType"
+            formControlName="institutionType"
+            autocomplete="off"
+            [class.is-invalid]="
+                accountForm.get('institutionType')?.touched &&
+                accountForm.get('institutionType')?.invalid
+            "
+            [class.is-valid]="
+                accountForm.get('institutionType')?.touched &&
+                accountForm.get('institutionType')?.valid
+            ">
+
+            <option value="" disabled>
+                Select Institution Type
+            </option>
+
+            <option value="School">
+                School
+            </option>
+
+            <option value="Church">
+                Church
+            </option>
+
+            <option value="NGO">
+                Non-Governmental Organization (NGO)
+            </option>
+
+            <option value="Government Agency">
+                Government Agency
+            </option>
+
+            <option value="Trust">
+                Trust
+            </option>
+
+            <option value="University">
+                University
+            </option>
+
+            <option value="Hospital">
+                Hospital
+            </option>
+
+        </select>
+
+        <label for="institutionType">
+            Institution Type
+            <span class="text-danger">*</span>
+        </label>
+
+        <div
+            class="invalid-feedback"
+            *ngIf="
+                accountForm.get('institutionType')?.touched &&
+                accountForm.get('institutionType')?.hasError('required')
+            ">
+            Please select the institution type.
+        </div>
+
+        <div
+            class="invalid-feedback"
+            *ngIf="
+                accountForm.get('institutionType')?.touched &&
+                accountForm.get('institutionType')?.hasError('invalidOption')
+            ">
+            Please select an approved institution type.
+        </div>
+
+    </div>
+</div>
+
+<!-- ORGANIZATION CONTACT & PHYSICAL ADDRESS -->
+<ng-container *ngIf="!isIndividual">
+  <div class="col-md-6">
+    <div class="form-floating">
+      <input
+            type="tel"
+            class="form-control"
+            formControlName="phoneNumber"
+            placeholder="07XXXXXXXX or 2547XXXXXXXX"
+            inputmode="tel"
+            autocomplete="tel"
+            maxlength="13"
+            (input)="sanitizePhone($event, 'phoneNumber')"
+            (blur)="checkPhoneNumber()"
+            [class.is-invalid]="accountForm.get('phoneNumber')?.touched && accountForm.get('phoneNumber')?.invalid"
+            [class.is-valid]="accountForm.get('phoneNumber')?.touched && accountForm.get('phoneNumber')?.valid">
+        <div class="invalid-feedback" *ngIf="accountForm.get('phoneNumber')?.touched && accountForm.get('phoneNumber')?.invalid">
+            Enter a valid Kenyan mobile number, e.g. 0712345678 or 254712345678.
+        </div>
+      <label>Organization Phone <span class="text-danger">*</span></label>
+    </div>
+  </div>
+  <div class="col-md-6">
+    <div class="form-floating">
+      <input
+            type="email"
+            class="form-control"
+            formControlName="email"
+            placeholder="name@example.com"
+            autocomplete="email"
+            maxlength="254"
+            inputmode="email"
+            spellcheck="false"
+            (input)="sanitizeEmail($event)"
+            (blur)="checkEmail()"
+            [class.is-invalid]="accountForm.get('email')?.touched && accountForm.get('email')?.invalid"
+            [class.is-valid]="accountForm.get('email')?.touched && accountForm.get('email')?.valid">
+        <div class="invalid-feedback" *ngIf="accountForm.get('email')?.touched && accountForm.get('email')?.invalid">
+            Enter a valid email address, e.g. accounts&#64;example.com.
+        </div>
+      <label>Organization Email <span class="text-danger">*</span></label>
+    </div>
+  </div>
+  <div class="col-12">
+    <div class="form-floating">
+      <input type="text" class="form-control" formControlName="residentialAddress" placeholder="Physical Address">
+      <label>Physical / Registered Address <span class="text-danger">*</span></label>
+    </div>
+  </div>
+  <div class="col-md-6">
+    <div class="form-floating">
+      <select class="form-select" formControlName="county" (change)="onCountyChange()">
+        <option value="">Select County</option>
+        <option *ngFor="let county of counties" [value]="county.id">{{ county.name }}</option>
+      </select>
+      <label>County <span class="text-danger">*</span></label>
+    </div>
+  </div>
+  <div class="col-md-6">
+    <div class="form-floating">
+      <select class="form-select" formControlName="city">
+        <option value="">Select Town / City</option>
+        <option *ngFor="let town of towns" [value]="town.name">{{ town.name }}</option>
+      </select>
+      <label>Town / City <span class="text-danger">*</span></label>
+    </div>
+  </div>
+</ng-container>
 
                   <!-- NAVIGATION -->
 
@@ -947,260 +1604,378 @@ Institution KRA PIN
                     </div>
 
                   </div>
-
-                </div>
+                 </div>
 
            
 <!-- ===================================================== -->
-<!-- STEP 2 : CONTACT INFORMATION -->
+<!-- STEP 2 -->
 <!-- ===================================================== -->
 <div *ngIf="currentStep === 2" class="row g-4">
 
-    <!-- SECTION TITLE -->
-    <div class="col-12">
-        <div class="section-title">
-            <i class="fas fa-address-book me-2"></i>
-            Contact Information
-        </div>
-    </div>
+    <!-- ================================================= -->
+    <!-- INDIVIDUAL : CONTACT INFORMATION -->
+    <!-- ================================================= -->
 
-    <!-- PHONE -->
-    <div class="col-md-6"  *ngIf="isIndividual">
-        <div class="form-floating">
-            <input
-                type="text"
-                class="form-control"
-                formControlName="phoneNumber"
-                placeholder="Phone Number"
-                (blur)="checkPhoneNumber()">
+    <ng-container *ngIf="isIndividual">
 
-            <label>Phone Number *</label>
+        <!-- SECTION TITLE -->
+        <div class="col-12">
+            <div class="section-title">
+                <i class="fas fa-address-book me-2"></i>
+                Contact Information
+            </div>
+
+            <p class="text-muted">
+                Provide the applicant's contact and residential information.
+            </p>
         </div>
 
-        <small
-            class="text-danger"
-            *ngIf="accountForm.get('phoneNumber')?.errors?.['duplicate']">
+        <!-- PHONE -->
+        <div class="col-md-6">
 
-            An account with this phone number already exists.
+            <div class="form-floating">
 
-        </small>
-    </div>
+                <input
+                    type="text"
+                    class="form-control"
+                     maxlength="13"
+                     autocomplete="tel"
+                    formControlName="phoneNumber"
+                    placeholder="Phone Number"
+                     (input)="sanitizePhone($event, 'phoneNumber')"
+                    (blur)="checkPhoneNumber()">
 
-    <!-- EMAIL -->
-    <div class="col-md-6">
-        <div class="form-floating">
-            <input
-                type="email"
-                class="form-control"
-                formControlName="email"
-                placeholder="Email Address"
-                (blur)="checkEmail()">
+                <label>Phone Number *</label>
 
-            <label>Email Address *</label>
+            </div>
+
+            <small
+                class="text-danger"
+                *ngIf="accountForm.get('phoneNumber')?.errors?.['duplicate']">
+
+                An account with this phone number already exists.
+
+            </small>
+
+            <div
+  *ngIf="
+    accountForm.get('phoneNumber')?.invalid &&
+    (
+      accountForm.get('phoneNumber')?.dirty ||
+      accountForm.get('phoneNumber')?.touched
+    )
+  "
+  class="text-danger small mt-1"
+>
+  <div *ngIf="accountForm.get('phoneNumber')?.hasError('required')">
+    Phone number is required.
+  </div>
+
+  <div *ngIf="accountForm.get('phoneNumber')?.hasError('invalidPhone')">
+    Enter a valid Kenyan mobile number, e.g. 0712345678.
+  </div>
+</div>
+
         </div>
 
-        <small
-            class="text-danger"
-            *ngIf="accountForm.get('email')?.errors?.['duplicate']">
 
-            An account with this email already exists.
+        <!-- EMAIL -->
+        <div class="col-md-6">
 
-        </small>
-    </div>
+            <div class="form-floating">
 
-    <!-- ADDRESS -->
-    <div class="col-12">
-        <div class="form-floating">
-            <input
-                type="text"
-                class="form-control"
-                formControlName="residentialAddress"
-                placeholder="Residential Address">
+                <input
+                    type="email"
+                    class="form-control"
+                    formControlName="email"
+                    placeholder="Email Address"
+                    (blur)="checkEmail()">
 
-            <label>Residential Address *</label>
+                <label>Email Address *</label>
+
+            </div>
+
+            <small
+                class="text-danger"
+                *ngIf="accountForm.get('email')?.errors?.['duplicate']">
+
+                An account with this email already exists.
+
+            </small>
+
         </div>
-    </div>
 
-    <!-- COUNTY -->
-    <div class="col-md-6">
-        <div class="form-floating">
-            <select
-                class="form-select"
-                formControlName="county"
-                (change)="onCountyChange()">
 
-                <option value="">Select County</option>
+        <!-- ADDRESS -->
+        <div class="col-12">
 
-                <option
-                    *ngFor="let county of counties"
-                    [value]="county.id">
+            <div class="form-floating">
 
-                    {{ county.name }}
+                <input
+                    type="text"
+                    class="form-control"
+                    formControlName="residentialAddress"
+                    placeholder="Residential Address">
 
-                </option>
+                <label>Residential Address *</label>
 
-            </select>
+            </div>
 
-            <label>County *</label>
         </div>
-    </div>
 
-    <!-- TOWN -->
-    <div class="col-md-6">
-        <div class="form-floating">
-            <select
-                class="form-select"
-                formControlName="city">
 
-                <option value="">Select Town</option>
+        <!-- COUNTY -->
+        <div class="col-md-6">
 
-                <option
-                    *ngFor="let town of towns"
-                    [value]="town.name">
+            <div class="form-floating">
 
-                    {{ town.name }}
+                <select
+                    class="form-select"
+                    formControlName="county"
+                    (change)="onCountyChange()">
 
-                </option>
+                    <option value="">
+                        Select County
+                    </option>
 
-            </select>
+                    <option
+                        *ngFor="let county of counties"
+                        [value]="county.id">
 
-            <label>Town / City *</label>
+                        {{ county.name }}
+
+                    </option>
+
+                </select>
+
+                <label>County *</label>
+
+            </div>
+
         </div>
-    </div>
+
+
+        <!-- TOWN -->
+        <div class="col-md-6">
+
+            <div class="form-floating">
+
+                <select
+                    class="form-select"
+                    formControlName="city">
+
+                    <option value="">
+                        Select Town
+                    </option>
+
+                    <option
+                        *ngFor="let town of towns"
+                        [value]="town.name">
+
+                        {{ town.name }}
+
+                    </option>
+
+                </select>
+
+                <label>Town / City *</label>
+
+            </div>
+
+        </div>
+
+    </ng-container>
+
 
     <!-- ================================================= -->
-    <!-- ORGANIZATION PEOPLE -->
+    <!-- ORGANIZATION : MEMBER INFORMATION -->
     <!-- ================================================= -->
 
     <ng-container *ngIf="!isIndividual">
 
-        <div class="col-12 mt-4">
+        <!-- HEADER -->
+        <div class="col-12">
 
             <div class="section-title">
+
                 <i class="fas fa-users me-2 text-primary"></i>
 
                 {{
                     isGroup
                         ? 'Group Members'
                         : isCompany
-                            ? 'Company Directors'
+                            ? 'Company Directors & Officials'
                             : 'Institution Officials'
                 }}
 
             </div>
 
-            <p class="text-muted mb-4">
+            <p class="text-muted mb-2">
 
-                Add all authorized people associated with this account.
-                Signatories and account operators will be selected in the next step.
+                Add the people authorized to operate this account.
+                The first member is added below. You can add more members
+                before proceeding to the next step.
 
             </p>
 
         </div>
 
-        <div class="col-12" formArrayName="organizationPeople">
+
+        <!-- ================================================= -->
+        <!-- ORGANIZATION PEOPLE -->
+        <!-- ================================================= -->
+
+        <div
+            class="col-12"
+            formArrayName="organizationPeople">
 
             <div
-                *ngFor="let person of organizationPeople.controls; let i=index"
-                class="card shadow-sm border-0 mb-4"
+                *ngFor="
+                    let person of organizationPeople.controls;
+                    let i = index
+                "
+                class="organization-person-card mb-4"
                 [formGroupName]="i">
 
+
                 <!-- CARD HEADER -->
+                <div class="organization-person-header">
 
-                <div class="card-header bg-light d-flex justify-content-between align-items-center">
+                    <div>
 
-                    <strong>
+                        <span class="person-number">
+                            {{ i + 1 }}
+                        </span>
 
-                        <i class="fas fa-user-circle me-2"></i>
+                        <div class="d-inline-block ms-2">
 
-                        Person {{ i + 1 }}
+                            <strong>
+                                {{
+                                    i === 0
+                                        ? 'Primary Member'
+                                        : 'Additional Member'
+                                }}
+                            </strong>
 
-                    </strong>
+                            <small class="d-block text-muted">
 
+                                {{
+                                    isGroup
+                                        ? 'Group Member'
+                                        : isCompany
+                                            ? 'Company Director / Official'
+                                            : 'Institution Official'
+                                }}
+
+                            </small>
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- REMOVE -->
                     <button
                         *ngIf="organizationPeople.length > 1"
                         type="button"
                         class="btn btn-sm btn-outline-danger"
                         (click)="removeOrganizationPerson(i)">
 
-                        <i class="fas fa-trash"></i>
+                        <i class="fas fa-trash me-1"></i>
+                        Remove
 
                     </button>
 
                 </div>
 
-                <!-- CARD BODY -->
 
-                <div class="card-body">
+                <!-- CARD BODY -->
+                <div class="organization-person-body">
 
                     <div class="row g-3">
 
-                        <!-- NAME -->
 
+                        <!-- FULL NAME -->
                         <div class="col-md-6">
 
                             <div class="form-floating">
 
                                 <input
+                                    type="text"
                                     class="form-control"
-                                    formControlName="fullName">
+                                    formControlName="fullName"
+                                    placeholder="Full Name">
 
-                                <label>Full Name *</label>
+                                <label>
+                                    Full Name *
+                                </label>
 
                             </div>
 
                         </div>
 
-                        <!-- ID -->
 
+                        <!-- NATIONAL ID -->
                         <div class="col-md-6">
 
                             <div class="form-floating">
 
                                 <input
+                                    type="text"
                                     class="form-control"
-                                    formControlName="nationalId">
+                                    formControlName="nationalId"
+                                    placeholder="National ID">
 
-                                <label>National ID *</label>
+                                <label>
+                                    National ID *
+                                </label>
 
                             </div>
 
                         </div>
+
 
                         <!-- PHONE -->
-
                         <div class="col-md-6">
 
                             <div class="form-floating">
 
                                 <input
+                                    type="text"
                                     class="form-control"
-                                    formControlName="phone">
+                                    formControlName="phone"
+                                    placeholder="Phone Number">
 
-                                <label>Phone Number</label>
+                                <label>
+                                    Phone Number *
+                                </label>
 
                             </div>
 
                         </div>
+
 
                         <!-- EMAIL -->
-
                         <div class="col-md-6">
 
                             <div class="form-floating">
 
                                 <input
+                                    type="email"
                                     class="form-control"
-                                    formControlName="email">
+                                    formControlName="email"
+                                    placeholder="Email Address">
 
-                                <label>Email Address</label>
+                                <label>
+                                    Email Address
+                                </label>
 
                             </div>
 
                         </div>
 
-                        <!-- DESIGNATION -->
 
+                        <!-- DESIGNATION -->
                         <div class="col-md-6">
 
                             <div class="form-floating">
@@ -1209,140 +1984,201 @@ Institution KRA PIN
                                     class="form-select"
                                     formControlName="designation">
 
-                                    <option value="">Select Designation</option>
+                                    <option value="">
+                                        Select Designation
+                                    </option>
+
 
                                     <!-- GROUP -->
-
                                     <ng-container *ngIf="isGroup">
 
-                                        <option>Chairperson</option>
-                                        <option>Vice Chairperson</option>
-                                        <option>Secretary</option>
-                                        <option>Treasurer</option>
-                                        <option>Member</option>
+                                        <option value="CHAIRPERSON">
+                                            Chairperson
+                                        </option>
+
+                                        <option value="VICE_CHAIRPERSON">
+                                            Vice Chairperson
+                                        </option>
+
+                                        <option value="SECRETARY">
+                                            Secretary
+                                        </option>
+
+                                        <option value="TREASURER">
+                                            Treasurer
+                                        </option>
+
+                                        <option value="MEMBER">
+                                            Member
+                                        </option>
 
                                     </ng-container>
+
 
                                     <!-- COMPANY -->
-
                                     <ng-container *ngIf="isCompany">
 
-                                        <option>Managing Director</option>
-                                        <option>Director</option>
-                                        <option>CEO</option>
-                                        <option>Company Secretary</option>
-                                        <option>Finance Director</option>
+                                        <option value="MANAGING_DIRECTOR">
+                                            Managing Director
+                                        </option>
+
+                                        <option value="DIRECTOR">
+                                            Director
+                                        </option>
+
+                                        <option value="CEO">
+                                            CEO
+                                        </option>
+
+                                        <option value="COMPANY_SECRETARY">
+                                            Company Secretary
+                                        </option>
+
+                                        <option value="FINANCE_DIRECTOR">
+                                            Finance Director
+                                        </option>
 
                                     </ng-container>
 
-                                    <!-- INSTITUTION -->
 
+                                    <!-- INSTITUTION -->
                                     <ng-container *ngIf="isInstitution">
 
-                                        <option>Chairperson</option>
-                                        <option>Trustee</option>
-                                        <option>Secretary</option>
-                                        <option>Treasurer</option>
-                                        <option>Principal</option>
-                                        <option>Pastor</option>
-                                        <option>Bishop</option>
-                                        <option>CEO</option>
+                                        <option value="CHAIRPERSON">
+                                            Chairperson
+                                        </option>
+
+                                        <option value="TRUSTEE">
+                                            Trustee
+                                        </option>
+
+                                        <option value="SECRETARY">
+                                            Secretary
+                                        </option>
+
+                                        <option value="TREASURER">
+                                            Treasurer
+                                        </option>
+
+                                        <option value="PRINCIPAL">
+                                            Principal
+                                        </option>
+
+                                        <option value="PASTOR">
+                                            Pastor
+                                        </option>
+
+                                        <option value="BISHOP">
+                                            Bishop
+                                        </option>
+
+                                        <option value="CEO">
+                                            CEO
+                                        </option>
 
                                     </ng-container>
 
                                 </select>
 
-                                <label>Designation *</label>
+                                <label>
+                                    Designation *
+                                </label>
 
                             </div>
 
                         </div>
 
+
+                        <!-- ================================================= -->
                         <!-- FLAGS -->
+                        <!-- ================================================= -->
 
                         <div class="col-12">
 
-                            <div class="row">
+                            <div class="member-flags">
 
-                                <div class="col-md-3">
+                                <!-- OFFICIAL -->
+                                <div class="form-check">
 
-                                    <div class="form-check">
+                                    <input
+                                        class="form-check-input"
+                                        type="checkbox"
+                                        formControlName="isOfficial"
+                                        [id]="'official-' + i">
 
-                                        <input
-                                            class="form-check-input"
-                                            type="checkbox"
-                                            formControlName="isOfficial">
+                                    <label
+                                        class="form-check-label"
+                                        [for]="'official-' + i">
 
-                                        <label class="form-check-label">
+                                        Official
 
-                                            Official
-
-                                        </label>
-
-                                    </div>
+                                    </label>
 
                                 </div>
 
+
+                                <!-- DIRECTOR -->
                                 <div
-                                    class="col-md-3"
+                                    class="form-check"
                                     *ngIf="isCompany">
 
-                                    <div class="form-check">
+                                    <input
+                                        class="form-check-input"
+                                        type="checkbox"
+                                        formControlName="isDirector"
+                                        [id]="'director-' + i">
 
-                                        <input
-                                            class="form-check-input"
-                                            type="checkbox"
-                                            formControlName="isDirector">
+                                    <label
+                                        class="form-check-label"
+                                        [for]="'director-' + i">
 
-                                        <label>
+                                        Director
 
-                                            Director
-
-                                        </label>
-
-                                    </div>
+                                    </label>
 
                                 </div>
 
+
+                                <!-- TRUSTEE -->
                                 <div
-                                    class="col-md-3"
+                                    class="form-check"
                                     *ngIf="isInstitution">
 
-                                    <div class="form-check">
+                                    <input
+                                        class="form-check-input"
+                                        type="checkbox"
+                                        formControlName="isTrustee"
+                                        [id]="'trustee-' + i">
 
-                                        <input
-                                            class="form-check-input"
-                                            type="checkbox"
-                                            formControlName="isTrustee">
+                                    <label
+                                        class="form-check-label"
+                                        [for]="'trustee-' + i">
 
-                                        <label>
+                                        Trustee
 
-                                            Trustee
-
-                                        </label>
-
-                                    </div>
+                                    </label>
 
                                 </div>
 
+
+                                <!-- BENEFICIAL OWNER -->
                                 <div
-                                    class="col-md-3"
+                                    class="form-check"
                                     *ngIf="isCompany">
 
-                                    <div class="form-check">
+                                    <input
+                                        class="form-check-input"
+                                        type="checkbox"
+                                        formControlName="isBeneficialOwner"
+                                        [id]="'beneficial-' + i">
 
-                                        <input
-                                            class="form-check-input"
-                                            type="checkbox"
-                                            formControlName="isBeneficialOwner">
+                                    <label
+                                        class="form-check-label"
+                                        [for]="'beneficial-' + i">
 
-                                        <label>
+                                        Beneficial Owner
 
-                                            Beneficial Owner
-
-                                        </label>
-
-                                    </div>
+                                    </label>
 
                                 </div>
 
@@ -1356,9 +2192,12 @@ Institution KRA PIN
 
             </div>
 
-            <!-- ADD PERSON -->
 
-            <div class="text-center mb-4">
+            <!-- ================================================= -->
+            <!-- ADD ANOTHER PERSON -->
+            <!-- ================================================= -->
+
+            <div class="add-member-area">
 
                 <button
                     type="button"
@@ -1371,861 +2210,481 @@ Institution KRA PIN
 
                 </button>
 
+                <div class="small text-muted mt-2">
+
+                    Add all relevant members before continuing.
+
+                </div>
+
             </div>
 
         </div>
 
     </ng-container>
 
-    <!-- ================================================= -->
-    <!-- NAVIGATION -->
-    <!-- ================================================= -->
+<!-- ================================================= -->
+<!-- STEP 2 NAVIGATION -->
+<!-- ================================================= -->
 
-    <div class="col-12 d-flex justify-content-between mt-3">
+<div class="col-12 d-flex justify-content-between mt-4">
 
-        <button
-            type="button"
-            class="btn btn-outline-secondary"
-            (click)="previousStep()">
+    <!-- BACK -->
+    <button
+        type="button"
+        class="btn btn-outline-secondary"
+        (click)="previousStep()">
 
-            <i class="fas fa-arrow-left me-2"></i>
+        <i class="fas fa-arrow-left me-2"></i>
+        Back
 
-            Back
+    </button>
 
-        </button>
 
-        <button
-            type="button"
-            class="btn btn-bank"
-            (click)="nextStep()"
-            [disabled]="hasDuplicateErrors()">
+    <!-- CONTINUE -->
+<button
+    type="button"
+    class="btn btn-bank"
+    (click)="nextStep()"
+    [disabled]="!isStep2Valid()">
 
-            Continue
+    Continue
 
-            <i class="fas fa-arrow-right ms-2"></i>
+    <i class="fas fa-arrow-right ms-2"></i>
 
-        </button>
+</button>
 
-    </div>
+</div>
+
 
 </div>
 
 
 
-
-
 <!-- ===================================================== -->
-<!-- STEP 3 : ACCOUNT OPERATION -->
+<!-- STEP 3 : INDIVIDUAL ACCOUNT OPERATION -->
 <!-- ===================================================== -->
-<div *ngIf="currentStep === 3" class="row g-4">
 
-    <!-- ===================================================== -->
-    <!-- PAGE HEADER -->
-    <!-- ===================================================== -->
+<div
+    *ngIf="currentStep === 3 && isIndividual"
+    class="row g-4 step-content">
+
+
+    <!-- ================================================= -->
+    <!-- HEADER -->
+    <!-- ================================================= -->
+
     <div class="col-12">
 
         <div class="section-title">
 
             <i class="fas fa-user-shield me-2 text-primary"></i>
 
-            {{
-                isIndividual
-                    ? 'Account Operation & Banking Preferences'
-                    : 'Account Operation & Signatory Configuration'
-            }}
+            Account Operation & Banking Preferences
 
         </div>
 
         <p class="text-muted mb-4">
 
-            {{
-                isIndividual
-                    ? 'Configure how your account will operate, preferred banking services and transaction controls.'
-                    : 'Configure account operation rules, authorized signatories and transaction controls.'
-            }}
+            Configure how the individual account will operate,
+            the customer's financial profile and preferred account type.
 
         </p>
 
     </div>
 
-    <!-- ===================================================== -->
-    <!-- INDIVIDUAL ACCOUNT SETTINGS -->
-    <!-- ===================================================== -->
-    <ng-container *ngIf="isIndividual">
 
-        <div class="col-12">
+    <!-- ================================================= -->
+    <!-- MODE OF OPERATION -->
+    <!-- ================================================= -->
 
-            <div class="card shadow-sm border-0">
+    <div class="col-md-6">
 
-                <div class="card-header bg-light">
+        <div class="form-floating">
 
-                    <h5 class="mb-0">
+            <select
+                class="form-select"
+                formControlName="modeOfOperation"
+                id="individualModeOfOperation">
 
-                        <i class="fas fa-cogs me-2 text-primary"></i>
+                <option [ngValue]="null">
+                    Select Mode of Operation
+                </option>
 
-                        Account Operation
+                <option [ngValue]="ModeOfOperation.SINGLY">
+                    Single Signatory
+                </option>
 
-                    </h5>
+                <option [ngValue]="ModeOfOperation.JOINT">
+                    Joint Account
+                </option>
 
-                </div>
+                <option [ngValue]="ModeOfOperation.ANY_ONE">
+                    Any One to Sign
+                </option>
 
-                <div class="card-body">
+                <option [ngValue]="ModeOfOperation.TTS">
+                    Two to Sign
+                </option>
 
-                    <div class="row g-3">
+            </select>
 
-                        <!-- Mode of Operation -->
+            <label for="individualModeOfOperation">
 
-                        <div class="col-md-6">
+                Mode of Operation
 
-                            <div class="form-floating">
+                <span class="text-danger">*</span>
 
-                                <select
-                                    class="form-select"
-                                    formControlName="modeOfOperation">
-
-                                    <option value="">Select Mode</option>
-                                    <option value="SINGLY">Single Signatory</option>
-
-                                    <option value="POWER_OF_ATTORNEY">
-                                        Power of Attorney
-                                    </option>
-
-                                    <option value="JOINT">
-                                        Joint Account
-                                    </option>
-
-                                </select>
-
-                                <label>Mode of Operation *</label>
-
-                            </div>
-
-                        </div>
-
-                        <!-- Preferred Currency -->
-
-                        <div class="col-md-6">
-
-                            <div class="form-floating">
-
-                                <select
-                                    class="form-select"
-                                    formControlName="currency">
-
-                                    <option value="KES">Kenya Shilling (KES)</option>
-
-                                    <option value="USD">US Dollar (USD)</option>
-
-                                    <option value="EUR">Euro (EUR)</option>
-
-                                    <option value="GBP">British Pound (GBP)</option>
-
-                                </select>
-
-                                <label>Operating Currency</label>
-
-                            </div>
-
-                        </div>
-
-                    </div>
-
-                </div>
-
-            </div>
+            </label>
 
         </div>
 
-        <!-- ===================================================== -->
-        <!-- DIGITAL BANKING -->
-        <!-- ===================================================== -->
+    </div>
 
-        <div class="col-lg-6">
 
-            <div class="card shadow-sm border-0 h-100">
+    <!-- ================================================= -->
+    <!-- EMPLOYMENT STATUS -->
+    <!-- ================================================= -->
 
-                <div class="card-header bg-light">
+    <div class="col-md-6">
 
-                    <h5 class="mb-0">
+        <div class="form-floating">
 
-                        <i class="fas fa-mobile-alt me-2 text-success"></i>
+            <select
+                class="form-select"
+                formControlName="employmentStatus"
+                id="individualEmploymentStatus">
 
-                        Digital Banking
+                <option value="">
+                    Select Employment Status
+                </option>
 
-                    </h5>
+                <option value="EMPLOYED">
+                    Employed
+                </option>
 
-                </div>
+                <option value="SELF_EMPLOYED">
+                    Self Employed
+                </option>
 
-                <div class="card-body">
+                <option value="BUSINESS_OWNER">
+                    Business Owner
+                </option>
 
-                    <div class="form-check mb-3">
+                <option value="STUDENT">
+                    Student
+                </option>
 
-                        <input
-                            type="checkbox"
-                            class="form-check-input"
-                            formControlName="internetBanking">
+                <option value="RETIRED">
+                    Retired
+                </option>
 
-                        <label class="form-check-label">
+                <option value="UNEMPLOYED">
+                    Unemployed
+                </option>
 
-                            Internet Banking
+            </select>
 
-                        </label>
+            <label for="individualEmploymentStatus">
 
-                    </div>
+                Employment Status
 
-                    <div class="form-check mb-3">
+                <span class="text-danger">*</span>
 
-                        <input
-                            type="checkbox"
-                            class="form-check-input"
-                            formControlName="mobileBanking">
-
-                        <label class="form-check-label">
-
-                            Mobile Banking
-
-                        </label>
-
-                    </div>
-
-                    <div class="form-check mb-3">
-
-                        <input
-                            type="checkbox"
-                            class="form-check-input"
-                            formControlName="smsAlerts">
-
-                        <label class="form-check-label">
-
-                            SMS Alerts
-
-                        </label>
-
-                    </div>
-
-                    <div class="form-check">
-
-                        <input
-                            type="checkbox"
-                            class="form-check-input"
-                            formControlName="emailStatements">
-
-                        <label class="form-check-label">
-
-                            Email Statements
-
-                        </label>
-
-                    </div>
-
-                </div>
-
-            </div>
+            </label>
 
         </div>
 
-        <!-- ===================================================== -->
-        <!-- ACCOUNT SERVICES -->
-        <!-- ===================================================== -->
+    </div>
 
-        <div class="col-lg-6">
 
-            <div class="card shadow-sm border-0 h-100">
+    <!-- ================================================= -->
+    <!-- MONTHLY INCOME -->
+    <!-- ================================================= -->
 
-                <div class="card-header bg-light">
+    <div class="col-md-6">
 
-                    <h5 class="mb-0">
+        <div class="form-floating">
 
-                        <i class="fas fa-credit-card me-2 text-warning"></i>
+            <input
+                type="number"
+                class="form-control"
+                formControlName="monthlyIncome"
+                id="individualMonthlyIncome"
+                min="0"
+                step="0.01"
+                placeholder="Monthly Income">
 
-                        Banking Services
+            <label for="individualMonthlyIncome">
 
-                    </h5>
+                Monthly Income (KES)
 
-                </div>
+                <span class="text-danger">*</span>
 
-                <div class="card-body">
-
-                    <div class="form-check mb-3">
-
-                        <input
-                            class="form-check-input"
-                            type="checkbox"
-                            formControlName="atmCard">
-
-                        <label class="form-check-label">
-
-                            ATM Card
-
-                        </label>
-
-                    </div>
-
-                    <div class="form-check mb-3">
-
-                        <input
-                            class="form-check-input"
-                            type="checkbox"
-                            formControlName="visaCard">
-
-                        <label>
-
-                            Visa Debit Card
-
-                        </label>
-
-                    </div>
-
-                    <div class="form-check mb-3">
-
-                        <input
-                            class="form-check-input"
-                            type="checkbox"
-                            formControlName="chequeBook">
-
-                        <label>
-
-                            Cheque Book
-
-                        </label>
-
-                    </div>
-
-                    <div class="form-check">
-
-                        <input
-                            class="form-check-input"
-                            type="checkbox"
-                            formControlName="standingOrder">
-
-                        <label>
-
-                            Standing Orders
-
-                        </label>
-
-                    </div>
-
-                </div>
-
-            </div>
+            </label>
 
         </div>
 
-        <!-- ===================================================== -->
-        <!-- COMMUNICATION -->
-        <!-- ===================================================== -->
+    </div>
 
-        <div class="col-lg-6">
 
-            <div class="card shadow-sm border-0">
+    <!-- ================================================= -->
+    <!-- SOURCE OF FUNDS -->
+    <!-- ================================================= -->
 
-                <div class="card-header bg-light">
+    <div class="col-md-6">
 
-                    <h5 class="mb-0">
+        <div class="form-floating">
 
-                        <i class="fas fa-envelope-open-text me-2 text-info"></i>
+            <select
+                class="form-select"
+                formControlName="sourceOfFunds"
+                id="individualSourceOfFunds">
 
-                        Communication Preferences
+                <option value="">
+                    Select Source of Funds
+                </option>
 
-                    </h5>
+                <option value="SALARY">
+                    Salary / Employment
+                </option>
 
-                </div>
+                <option value="BUSINESS">
+                    Business Income
+                </option>
 
-                <div class="card-body">
+                <option value="INVESTMENT">
+                    Investments
+                </option>
 
-                    <div class="form-floating mb-3">
+                <option value="PENSION">
+                    Pension
+                </option>
 
-                        <select
-                            class="form-select"
-                            formControlName="statementFrequency">
+                <option value="FAMILY">
+                    Family / Personal Support
+                </option>
 
-                            <option value="MONTHLY">Monthly</option>
-                            <option value="QUARTERLY">Quarterly</option>
-                            <option value="HALF_YEARLY">Half Yearly</option>
-                            <option value="YEARLY">Yearly</option>
+                <option value="OTHER">
+                    Other
+                </option>
 
-                        </select>
+            </select>
 
-                        <label>
+            <label for="individualSourceOfFunds">
 
-                            Statement Frequency
+                Source of Funds
 
-                        </label>
+                <span class="text-danger">*</span>
 
-                    </div>
-
-                    <div class="form-floating">
-
-                        <select
-                            class="form-select"
-                            formControlName="communicationChannel">
-
-                            <option value="SMS">
-                                SMS
-                            </option>
-
-                            <option value="EMAIL">
-                                Email
-                            </option>
-
-                            <option value="BOTH">
-                                SMS & Email
-                            </option>
-
-                        </select>
-
-                        <label>
-
-                            Preferred Communication
-
-                        </label>
-
-                    </div>
-
-                </div>
-
-            </div>
+            </label>
 
         </div>
 
-        <!-- ===================================================== -->
-        <!-- TRANSACTION LIMITS -->
-        <!-- ===================================================== -->
+    </div>
 
-        <div class="col-lg-6">
 
-            <div class="card shadow-sm border-0">
+    <!-- ================================================= -->
+    <!-- ACCOUNT TYPE -->
+    <!-- ================================================= -->
 
-                <div class="card-header bg-light">
+    <div class="col-md-6">
 
-                    <h5 class="mb-0">
+        <div class="form-floating">
 
-                        <i class="fas fa-money-check-alt me-2 text-danger"></i>
+            <select
+                class="form-select"
+                formControlName="accountType"
+                id="individualAccountType">
 
-                        Transaction Limits
+                <option value="">
+                    Select Account Type
+                </option>
 
-                    </h5>
+                <option value="SAVINGS">
+                    Savings Account
+                </option>
 
-                </div>
+                <option value="CURRENT">
+                    Current Account
+                </option>
 
-                <div class="card-body">
+                <option value="SALARY">
+                    Salary Account
+                </option>
 
-                    <div class="form-floating mb-3">
+                <option value="STUDENT">
+                    Student Account
+                </option>
 
-                        <input
-                            type="number"
-                            min="0"
-                            class="form-control"
-                            formControlName="dailyWithdrawalLimit">
+            </select>
 
-                        <label>
+            <label for="individualAccountType">
 
-                            Daily Withdrawal Limit (KES)
+                Account Type
 
-                        </label>
+                <span class="text-danger">*</span>
 
-                    </div>
-
-                    <div class="form-floating mb-3">
-
-                        <input
-                            type="number"
-                            min="0"
-                            class="form-control"
-                            formControlName="dailyTransferLimit">
-
-                        <label>
-
-                            Daily Transfer Limit (KES)
-
-                        </label>
-
-                    </div>
-
-                    <div class="form-floating">
-
-                        <input
-                            type="number"
-                            min="0"
-                            class="form-control"
-                            formControlName="maximumTransactionLimit">
-
-                        <label>
-
-                            Maximum Single Transaction (KES)
-
-                        </label>
-
-                    </div>
-
-                </div>
-
-            </div>
+            </label>
 
         </div>
 
-    </ng-container>
-
-        <!-- ===================================================== -->
-    <!-- ORGANIZATION ACCOUNT OPERATION -->
-    <!-- ===================================================== -->
-    <ng-container *ngIf="!isIndividual">
-
-        <!-- ACCOUNT OPERATION -->
-
-        <div class="col-12">
-
-            <div class="card shadow-sm border-0">
-
-                <div class="card-header bg-light">
-
-                    <h5 class="mb-0">
-
-                        <i class="fas fa-building me-2 text-primary"></i>
-
-                        Account Operation
-
-                    </h5>
-
-                </div>
-
-                <div class="card-body">
-
-                    <div class="row g-3">
-
-                        <!-- MODE OF OPERATION -->
-
-                        <div class="col-lg-6">
-
-                            <div class="form-floating">
-
-                                <select
-                                    class="form-select"
-                                    formControlName="modeOfOperation">
-
-<option [ngValue]="ModeOfOperation.SINGLY">
-    Single Signatory
-</option>
-
-<option [ngValue]="ModeOfOperation.ANY_ONE">
-    Any One to Sign
-</option>
-
-<option [ngValue]="ModeOfOperation.ANY_TWO">
-    Any Two to Sign
-</option>
-
-<option [ngValue]="ModeOfOperation.ANY_THREE">
-    Any Three to Sign
-</option>
-
-<option [ngValue]="ModeOfOperation.ALL">
-    All Signatories
-</option>
-
-<option [ngValue]="ModeOfOperation.BOARD_APPROVAL">
-    Board Resolution Required
-</option>
-
-                                </select>
-
-                                <label>
-
-                                    Mode of Operation *
-
-                                </label>
-
-                            </div>
-
-                        </div>
-
-                        <!-- ACCOUNT CURRENCY -->
-
-                        <div class="col-lg-6">
-
-                            <div class="form-floating">
-
-                                <select
-                                    class="form-select"
-                                    formControlName="currency">
-
-                                    <option value="KES">
-                                        Kenya Shilling (KES)
-                                    </option>
-
-                                    <option value="USD">
-                                        US Dollar (USD)
-                                    </option>
-
-                                    <option value="EUR">
-                                        Euro (EUR)
-                                    </option>
-
-                                    <option value="GBP">
-                                        British Pound
-                                    </option>
-
-                                </select>
-
-                                <label>
-
-                                    Operating Currency
-
-                                </label>
-
-                            </div>
-
-                        </div>
-
-                    </div>
-
-                </div>
-
-            </div>
-
-        </div>
-
-        <!-- SIGNATORIES -->
-
-        <div class="col-12">
-
-            <div class="card shadow border-0">
-
-                <div class="card-header bg-light">
-
-                    <h5 class="mb-0">
-
-                        <i class="fas fa-signature me-2 text-success"></i>
-
-                        Authorized Signatories
-
-                    </h5>
-
-                    <small class="text-muted">
-
-                        Select the officials allowed to operate this account.
-
-                    </small>
-
-                </div>
-
-                <div class="card-body">
-
-                    <div
-                        formArrayName="organizationPeople"
-                        class="row">
-
-                        <div
-                            class="col-lg-6 mb-4"
-                            *ngFor="let person of organizationPeople.controls; let i=index"
-                            [formGroupName]="i">
-
-                            <div class="card h-100 border">
-
-                                <div class="card-body">
-
-                                    <div
-                                        class="d-flex justify-content-between align-items-center mb-3">
-
-                                        <div>
-
-                                            <h6 class="fw-bold mb-1">
-
-                                                {{person.get('fullName')?.value}}
-
-                                            </h6>
-
-                                            <small class="text-muted">
-
-                                                {{person.get('designation')?.value}}
-
-                                            </small>
-
-                                        </div>
-
-                                        <i class="fas fa-user-circle fa-2x text-primary"></i>
-
-                                    </div>
-
-                                    <!-- SIGNATORY -->
-
-<div class="form-check">
-
-    <input
-        type="radio"
-        name="primarySignatory"
-        class="form-check-input"
-        [checked]="person.get('primarySignatory')?.value"
-        [disabled]="!person.get('isSignatory')?.value"
-        (change)="setPrimarySignatory(i)">
-
-        <div class="form-check mb-3">
-
-    <input
-        class="form-check-input"
-        type="checkbox"
-        formControlName="isSignatory">
-
-    <label class="form-check-label">
-
-        Authorized Signatory
-
-    </label>
-
+    </div>
+    </div>
+
+
+ <!-- ===================================================== -->
+<!-- INDIVIDUAL STEP 3 NAVIGATION -->
+<div *ngIf="currentStep === 3 && isIndividual" class="col-12 mt-4">
+  <div class="d-flex justify-content-between">
+    <button type="button" class="btn btn-outline-secondary px-4" (click)="previousStep()"><i class="fas fa-arrow-left me-2"></i>Back</button>
+    <button type="button" class="btn btn-bank px-5" (click)="nextStep()">Continue <i class="fas fa-arrow-right ms-2"></i></button>
+  </div>
 </div>
 
-    <label class="form-check-label">
-        Primary Signatory
-    </label>
+<!-- STEP 3 : ORGANIZATION SIGNATORIES -->
+<!-- COMPANY / GROUP / INSTITUTION -->
+<!-- ===================================================== -->
 
-</div>
+<div
+    *ngIf="currentStep === 3 && !isIndividual"
+    class="row g-4 step-content">
 
-                                    <!-- MAKER -->
+    <!-- ================================================= -->
+    <!-- HEADER -->
+    <!-- ================================================= -->
 
-                                    <div class="form-check mb-2">
+    <div class="col-12">
 
-                                        <input
-                                            class="form-check-input"
-                                            type="checkbox"
-                                            formControlName="isMaker">
+        <div class="section-title">
 
-                                        <label class="form-check-label">
+            <i class="fas fa-signature me-2 text-primary"></i>
 
-                                            Maker
+            Authorized Signatories & Signing Mandate
 
-                                        </label>
+        </div>
 
-                                    </div>
+        <p class="text-muted mb-4">
 
-                                    <!-- CHECKER -->
+            Select the authorized persons who will operate this
+            account and define the signing mandate for the organization.
 
-                                    <div class="form-check mb-2">
+        </p>
 
-                                        <input
-                                            class="form-check-input"
-                                            type="checkbox"
-                                            formControlName="isChecker">
+    </div>
 
-                                        <label class="form-check-label">
 
-                                            Checker
+    <!-- ================================================= -->
+    <!-- MODE OF OPERATION -->
+    <!-- ================================================= -->
 
-                                        </label>
+<!-- ===================================================== -->
+<!-- MODE OF OPERATION -->
+<!-- ===================================================== -->
 
-                                    </div>
+<div class="col-12">
 
-                                    <!-- APPROVER -->
+    <div class="premium-operation-card">
 
-                                    <div class="form-check mb-3">
+        <div class="operation-card-header">
 
-                                        <input
-                                            class="form-check-input"
-                                            type="checkbox"
-                                            formControlName="isApprover">
+            <div class="operation-icon">
+                <i class="fas fa-user-shield"></i>
+            </div>
 
-                                        <label class="form-check-label">
+            <div>
 
-                                            Approver
+                <h5 class="mb-1">
+                    Mode of Operation
+                </h5>
 
-                                        </label>
-
-                                    </div>
-
-                                    <!-- LIMIT -->
-
-                                    <div class="form-floating">
-
-                                        <input
-                                            type="number"
-                                            class="form-control"
-                                            min="0"
-                                            formControlName="transactionLimit">
-
-                                        <label>
-
-                                            Transaction Limit (KES)
-
-                                        </label>
-
-                                    </div>
-
-                                </div>
-
-                            </div>
-
-                        </div>
-
-                    </div>
-
-                </div>
+                <small class="text-muted">
+                    Define how transactions will be authorized
+                    on this account.
+                </small>
 
             </div>
 
         </div>
 
-        <!-- CUSTOM RULE -->
+
+        <div class="form-floating mt-3">
+
+            <select
+                class="form-select"
+                id="organizationModeOfOperation"
+                formControlName="modeOfOperation"
+                (change)="onModeOfOperationChanged()">
+
+                <option value="">
+                    Select Mode of Operation
+                </option>
+
+                <option [value]="ModeOfOperation.SINGLY">
+                    Single Signatory
+                </option>
+
+                <option [value]="ModeOfOperation.JOINT">
+                    Joint Account
+                </option>
+
+                <option [value]="ModeOfOperation.ANY_ONE">
+                    Any One to Sign
+                </option>
+
+                <option [value]="ModeOfOperation.ANY_TWO">
+                    Any Two to Sign
+                </option>
+
+                <option [value]="ModeOfOperation.ANY_THREE">
+                    Any Three to Sign
+                </option>
+
+                <option [value]="ModeOfOperation.ALL">
+                    All Must Sign
+                </option>
+
+                <option [value]="ModeOfOperation.TTS">
+                    TTS (Two to Sign)
+                </option>
+
+                <option [value]="ModeOfOperation.BOARD_APPROVAL">
+                    Board Approval
+                </option>
+
+            </select>
+
+            <label for="organizationModeOfOperation">
+
+                Mode of Operation
+
+                <span class="text-danger">*</span>
+
+            </label>
+
+        </div>
+
+
+        <!-- DYNAMIC REQUIREMENT -->
 
         <div
-            class="col-12"
-            *ngIf="accountForm.get('modeOfOperation')?.value=='CUSTOM'">
+            class="operation-requirement mt-3"
+            *ngIf="organizationModeOfOperation">
 
-            <div class="card border-0 shadow-sm">
+            <div class="requirement-icon">
 
-                <div class="card-header bg-warning bg-opacity-10">
+                <i class="fas fa-info-circle"></i>
 
-                    <h5 class="mb-0">
+            </div>
 
-                        <i class="fas fa-project-diagram me-2"></i>
+            <div>
 
-                        Custom Signing Rule
+                <strong>
+                    Authorization Requirement
+                </strong>
 
-                    </h5>
+                <div class="small text-muted">
 
-                </div>
-
-                <div class="card-body">
-
-                    <div class="row g-3">
-
-                        <div class="col-md-6">
-
-                            <div class="form-floating">
-
-                                <input
-                                    class="form-control"
-                                    formControlName="customRuleName">
-
-                                <label>
-
-                                    Rule Name
-
-                                </label>
-
-                            </div>
-
-                        </div>
-
-                        <div class="col-md-6">
-
-                            <div class="form-floating">
-
-                                <textarea
-                                    class="form-control"
-                                    style="height:120px"
-                                    formControlName="customRuleDescription"></textarea>
-
-                                <label>
-
-                                    Rule Description
-
-                                </label>
-
-                            </div>
-
-                        </div>
-
-                    </div>
+                    {{ organizationOperationRequirement }}
 
                 </div>
 
@@ -2233,72 +2692,520 @@ Institution KRA PIN
 
         </div>
 
-    </ng-container>
+    </div>
 
-    <!-- ===================================================== -->
-<!-- STEP 3 NAVIGATION -->
-<!-- ===================================================== -->
+</div>
 
-<div class="col-12 mt-5">
 
-    <hr class="mb-4">
+    <!-- ================================================= -->
+    <!-- SIGNATORY SUMMARY -->
+    <!-- ================================================= -->
 
-    <div class="d-flex justify-content-between align-items-center flex-wrap gap-3">
+    <div class="col-12">
 
-        <button
-            type="button"
-            class="btn btn-outline-secondary btn-lg px-4"
-            (click)="previousStep()">
+        <div class="signatory-summary-card">
 
-            <i class="fas fa-arrow-left me-2"></i>
-            Back
+            <div class="summary-item">
 
-        </button>
+                <div class="summary-icon">
 
-        <div class="text-center flex-grow-1">
+                    <i class="fas fa-users"></i>
 
-            <small class="text-muted d-block">
-                <i class="fas fa-shield-check me-1 text-success"></i>
-                Financial information is collected to comply with KYC,
-                AML and regulatory requirements.
-            </small>
+                </div>
+
+                <div>
+
+                    <span class="summary-label">
+
+                        Available Officials
+
+                    </span>
+
+                    <strong>
+
+                        {{ organizationPeople.length }}
+
+                    </strong>
+
+                </div>
+
+            </div>
+
+
+            <div class="summary-divider"></div>
+
+
+            <div class="summary-item">
+
+                <div class="summary-icon">
+
+                    <i class="fas fa-signature"></i>
+
+                </div>
+
+                <div>
+
+                    <span class="summary-label">
+
+                        Selected Signatories
+
+                    </span>
+
+                    <strong>
+
+                        {{ totalSignatories }}
+
+                    </strong>
+
+                </div>
+
+            </div>
+
+
+            <div class="summary-divider"></div>
+
+
+            <div class="summary-item">
+
+                <div class="summary-icon">
+
+                    <i class="fas fa-star"></i>
+
+                </div>
+
+                <div>
+
+                    <span class="summary-label">
+
+                        Primary Signatory
+
+                    </span>
+
+                   <strong>
+    {{ primarySignatoryName }}
+</strong>
+
+                </div>
+
+            </div>
 
         </div>
+
+    </div>
+
+
+    <!-- ================================================= -->
+    <!-- NO OFFICIALS -->
+    <!-- ================================================= -->
+
+    <div
+        class="col-12"
+        *ngIf="organizationPeople.length === 0">
+
+        <div class="empty-signatory-state">
+
+            <div class="empty-icon">
+
+                <i class="fas fa-user-plus"></i>
+
+            </div>
+
+            <h5>
+
+                No Officials Available
+
+            </h5>
+
+            <p>
+
+                Please go back to the Directors / Officials step
+                and add at least one organization official.
+
+            </p>
+
+            <button
+                type="button"
+                class="btn btn-outline-primary"
+                (click)="previousStep()">
+
+                <i class="fas fa-arrow-left me-2"></i>
+
+                Add Officials
+
+            </button>
+
+        </div>
+
+    </div>
+
+
+    <!-- ================================================= -->
+    <!-- SIGNATORY LIST -->
+    <!-- ================================================= -->
+
+ <!-- ===================================================== -->
+<!-- ORGANIZATION OFFICIALS -->
+<!-- ===================================================== -->
+
 <div
-    *ngIf="errorMessage"
-    class="alert alert-danger">
+    class="col-12"
+    *ngIf="organizationPeople.length > 0">
 
-    <h6 class="mb-2">
-        Please correct the following:
-    </h6>
+    <div class="signatory-list-card">
 
-    <div style="white-space: pre-line;">
-        {{ errorMessage }}
+        <!-- HEADER -->
+
+        <div class="signatory-list-header">
+
+            <div>
+
+                <h5 class="mb-1">
+
+                    <i class="fas fa-users me-2 text-primary"></i>
+
+                    Organization Officials
+
+                </h5>
+
+                <p class="mb-0 text-muted">
+
+                    Select the officials authorized to operate
+                    this account.
+
+                </p>
+
+            </div>
+
+            <div class="required-badge">
+
+                <i class="fas fa-shield-alt me-1"></i>
+
+                {{ requiredSignatoriesText }}
+
+            </div>
+
+        </div>
+
+
+        <!-- OFFICIALS -->
+
+        <div
+            class="signatory-person"
+            *ngFor="
+                let person of organizationPeople.controls;
+                let i = index
+            "
+            [class.selected-signatory]="
+                person.get('isSignatory')?.value
+            "
+            [class.primary-signatory]="
+                person.get('primarySignatory')?.value
+            ">
+
+
+            <!-- ================================================= -->
+            <!-- PERSON -->
+            <!-- ================================================= -->
+
+            <div class="person-identity">
+
+                <div class="person-avatar">
+
+                    <i class="fas fa-user"></i>
+
+                </div>
+
+                <div>
+
+                    <div class="person-name">
+
+                        {{
+                            person.get('fullName')?.value
+                            || 'Unnamed Official'
+                        }}
+
+                    </div>
+
+                    <div class="person-meta">
+
+                        <span>
+
+                            <i class="fas fa-id-card me-1"></i>
+
+                            {{
+                                person.get('nationalId')?.value
+                                || 'No ID'
+                            }}
+
+                        </span>
+
+                        <span>
+
+                            <i class="fas fa-briefcase me-1"></i>
+
+                            {{
+                                person.get('designation')?.value
+                                || 'Organization Official'
+                            }}
+
+                        </span>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <!-- ================================================= -->
+            <!-- AUTHORIZED SIGNATORY -->
+            <!-- ================================================= -->
+
+            <div class="person-action">
+
+                <label class="premium-checkbox">
+
+                    <input
+                        type="checkbox"
+                        [formControl]="
+                            getPersonControl(
+                                person,
+                                'isSignatory'
+                            )
+                        "
+                        (change)="toggleSignatory(i)"
+                    />
+
+                    <span class="checkmark"></span>
+
+                    <span class="checkbox-text">
+
+                        Authorized Signatory
+
+                    </span>
+
+                </label>
+
+            </div>
+
+
+            <!-- ================================================= -->
+            <!-- PRIMARY SIGNATORY -->
+            <!-- ================================================= -->
+
+            <div
+                class="person-action"
+                *ngIf="
+                    person.get('isSignatory')?.value
+                ">
+
+                <label class="premium-radio">
+
+                    <input
+                        type="radio"
+                        name="primarySignatory"
+                        [checked]="
+                            person.get('primarySignatory')?.value
+                        "
+                        (change)="
+                            setPrimarySignatory(i)
+                        "
+                    />
+
+                    <span class="radio-mark"></span>
+
+                    <span class="radio-text">
+
+                        Primary Signatory
+
+                    </span>
+
+                </label>
+
+            </div>
+
+
+            <!-- ================================================= -->
+            <!-- SIGNING LIMIT -->
+            <!-- ================================================= -->
+
+            <div
+                class="signing-limit"
+                *ngIf="
+                    person.get('isSignatory')?.value
+                ">
+
+                <label>
+
+                    Signing Limit
+
+                </label>
+
+                <div class="input-group">
+
+                    <span class="input-group-text">
+                        KES
+                    </span>
+
+                    <input
+                        type="number"
+                        class="form-control"
+                        [formControl]="
+                            getPersonControl(
+                                person,
+                                'signingLimit'
+                            )
+                        "
+                        min="0"
+                        step="0.01"
+                        placeholder="0.00"
+                    />
+
+                </div>
+
+            </div>
+
+        </div>
+
     </div>
 
 </div>
-        <button
-            type="button"
-            class="btn btn-bank btn-lg px-5"
-            (click)="nextStep()">
 
-            Continue
 
-            <i class="fas fa-arrow-right ms-2"></i>
+    <!-- ================================================= -->
+    <!-- VALIDATION MESSAGE -->
+    <!-- ================================================= -->
 
-        </button>
+    <div
+        class="col-12"
+        *ngIf="errorMessage">
+
+        <div class="alert alert-warning">
+
+            <i class="fas fa-exclamation-triangle me-2"></i>
+
+            {{ errorMessage }}
+
+        </div>
 
     </div>
 
-</div>
+
+    <!-- ================================================= -->
+    <!-- STEP 3 NAVIGATION -->
+    <!-- ================================================= -->
+
+    <div class="col-12">
+
+        <div
+            class="wizard-navigation
+                   d-flex
+                   justify-content-between
+                   align-items-center
+                   mt-4
+                   pt-4">
+
+            <!-- BACK -->
+
+            <button
+                type="button"
+                class="btn btn-outline-secondary wizard-back-btn"
+                (click)="previousStep()">
+
+                <i class="fas fa-arrow-left me-2"></i>
+
+                Back
+
+            </button>
+
+
+            <!-- CONTINUE -->
+
+            <button
+                type="button"
+                class="btn btn-primary wizard-next-btn"
+                (click)="nextStep()">
+
+                Continue
+
+                <i class="fas fa-arrow-right ms-2"></i>
+
+            </button>
+
+        </div>
+
+    </div>
 
 </div>
 
 <!-- ===================================================== -->
+<!-- STEP 4 : INDIVIDUAL NEXT OF KIN -->
+<div *ngIf="currentStep === 4 && isIndividual" class="row g-4 step-content">
+  <div class="col-12">
+    <div class="section-title"><i class="fas fa-user-friends text-primary me-2"></i>Next of Kin & Emergency Contact</div>
+    <p class="text-muted">Provide a valid next-of-kin contact. The phone number must be different from the applicant's phone number.</p>
+  </div>
+  <div class="col-md-6"><div class="form-floating"><input
+        type="text"
+        class="form-control"
+        formControlName="nextOfKinName"
+        placeholder="Enter next-of-kin full name"
+        maxlength="100"
+        autocomplete="name"
+        (input)="sanitizePersonName($event, 'nextOfKinName')"
+        [class.is-invalid]="accountForm.get('nextOfKinName')?.touched && accountForm.get('nextOfKinName')?.invalid"
+        [class.is-valid]="accountForm.get('nextOfKinName')?.touched && accountForm.get('nextOfKinName')?.valid">
+      <div class="invalid-feedback" *ngIf="accountForm.get('nextOfKinName')?.touched && accountForm.get('nextOfKinName')?.invalid">
+        Enter a valid full name.
+      </div><label>Next of Kin Full Name <span class="text-danger">*</span></label></div></div>
+  <div class="col-md-6"><div class="form-floating"><input
+        type="tel"
+        class="form-control"
+        formControlName="nextOfKinPhone"
+        placeholder="07XXXXXXXX or 2547XXXXXXXX"
+        inputmode="tel"
+        autocomplete="tel"
+        maxlength="13"
+       (input)="sanitizePhone($event, 'phoneNumber')"
+        [class.is-invalid]="accountForm.get('nextOfKinPhone')?.touched && accountForm.get('nextOfKinPhone')?.invalid"
+        [class.is-valid]="accountForm.get('nextOfKinPhone')?.touched && accountForm.get('nextOfKinPhone')?.valid">
+      <div class="invalid-feedback" *ngIf="accountForm.get('nextOfKinPhone')?.touched && accountForm.get('nextOfKinPhone')?.invalid">
+        Enter a valid Kenyan mobile number and use a number different from the applicant's.
+      </div>
+      <label>Next of Kin Phone <span class="text-danger">*</span></label></div>
+      <div
+  *ngIf="
+    accountForm.get('nextOfKinPhone')?.invalid &&
+    (
+      accountForm.get('nextOfKinPhone')?.dirty ||
+      accountForm.get('nextOfKinPhone')?.touched
+    )
+  "
+  class="text-danger small mt-1"
+>
+  <div *ngIf="accountForm.get('nextOfKinPhone')?.hasError('required')">
+    Next of Kin phone number is required.
+  </div>
+
+  <div *ngIf="accountForm.get('nextOfKinPhone')?.hasError('invalidPhone')">
+    Enter a valid Kenyan mobile number, e.g. 0712345678.
+  </div>
+
+  <div *ngIf="accountForm.get('nextOfKinPhone')?.hasError('sameAsOwnerPhone')">
+    Next of Kin phone number cannot be the same as the owner's phone number.
+  </div>
+</div>
+    </div>
+  <div class="col-md-6"><div class="form-floating"><select class="form-select" formControlName="nextOfKinRelationship"><option value="">Select Relationship</option><option value="SPOUSE">Spouse</option><option value="PARENT">Parent</option><option value="CHILD">Child</option><option value="SIBLING">Sibling</option><option value="GUARDIAN">Guardian</option><option value="OTHER">Other</option></select><label>Relationship <span class="text-danger">*</span></label></div></div>
+  <div class="col-md-6"><div class="form-floating"><input type="email" class="form-control" formControlName="nextOfKinEmail" placeholder="Next of Kin Email"><label>Next of Kin Email (Optional)</label></div></div>
+  <div class="col-12"><div class="alert alert-light border"><i class="fas fa-lock me-2 text-primary"></i>This information is captured for contact, identification and account-service purposes.</div></div>
+  <div class="col-12 d-flex justify-content-between mt-3"><button type="button" class="btn btn-outline-secondary" (click)="previousStep()"><i class="fas fa-arrow-left me-2"></i>Back</button><button type="button" class="btn btn-bank px-5" (click)="nextStep()">Continue <i class="fas fa-arrow-right ms-2"></i></button></div>
+</div>
+
 <!-- STEP 4 : DOCUMENTS & VERIFICATION -->
 <!-- ===================================================== -->
 
-<div *ngIf="currentStep === 4" class="row g-4">
+<div *ngIf="currentStep === (isIndividual ? 5 : 4)" class="row g-4">
 
     <div class="col-12">
 
@@ -2348,7 +3255,7 @@ Institution KRA PIN
         <input
             type="file"
             class="form-control mt-3"
-            accept="image/*"
+            accept="image/jpeg,image/png,image/webp"
             (change)="onPassportPhotoSelected($event)">
 
         <small
@@ -2457,7 +3364,7 @@ Institution KRA PIN
         <input
             type="file"
             class="form-control"
-            accept=".pdf,.jpg,.jpeg,.png"
+            accept="application/pdf,image/jpeg,image/png,image/webp"
             (change)="onIdDocumentSelected($event)">
 
         <small
@@ -2499,7 +3406,7 @@ Institution KRA PIN
         <input
             type="file"
             class="form-control"
-            accept=".pdf,.jpg,.jpeg,.png"
+            accept="application/pdf,image/jpeg,image/png,image/webp"
             (change)="onAddressProofSelected($event)">
 
         <small
@@ -2540,7 +3447,7 @@ Institution KRA PIN
         <input
             type="file"
             class="form-control"
-            accept=".pdf,.jpg,.jpeg,.png"
+            accept="application/pdf,image/jpeg,image/png,image/webp"
             (change)="onIncomeProofSelected($event)">
 
         <small
@@ -2600,7 +3507,7 @@ Institution KRA PIN
         <input
             type="file"
             class="form-control"
-            accept=".pdf,.jpg,.jpeg,.png"
+            accept="application/pdf,image/jpeg,image/png,image/webp"
             (change)="onGroupCertificateSelected($event)">
 
         <small
@@ -2632,7 +3539,7 @@ Institution KRA PIN
         <input
             type="file"
             class="form-control"
-            accept=".pdf,.jpg,.jpeg,.png"
+            accept="application/pdf,image/jpeg,image/png,image/webp"
             (change)="onMeetingResolutionSelected($event)">
 
         <small
@@ -2663,7 +3570,7 @@ Institution KRA PIN
         <input
             type="file"
             class="form-control"
-            accept=".pdf,.jpg,.jpeg,.png"
+            accept="application/pdf,image/jpeg,image/png,image/webp"
             (change)="onGroupConstitutionSelected($event)">
 
         <small
@@ -2712,7 +3619,7 @@ Institution KRA PIN
             <input
                 type="file"
                 class="form-control"
-                accept=".pdf,.jpg,.jpeg,.png"
+                accept="application/pdf,image/jpeg,image/png,image/webp"
                 (change)="onCertificateOfIncorporationSelected($event)">
 
             <small
@@ -2743,7 +3650,7 @@ Institution KRA PIN
             <input
                 type="file"
                 class="form-control"
-                accept=".pdf,.jpg,.jpeg,.png"
+                accept="application/pdf,image/jpeg,image/png,image/webp"
                 (change)="onCr12Selected($event)">
 
             <small
@@ -2774,7 +3681,7 @@ Institution KRA PIN
             <input
                 type="file"
                 class="form-control"
-                accept=".pdf,.jpg,.jpeg,.png"
+                accept="application/pdf,image/jpeg,image/png,image/webp"
                 (change)="onBoardResolutionSelected($event)">
 
             <small
@@ -2804,7 +3711,7 @@ Institution KRA PIN
             <input
                 type="file"
                 class="form-control"
-                accept=".pdf,.jpg,.jpeg,.png"
+                accept="application/pdf,image/jpeg,image/png,image/webp"
                 (change)="onMemorandumSelected($event)">
 
             <small
@@ -2853,7 +3760,7 @@ Institution KRA PIN
                 <input
                     type="file"
                     class="form-control"
-                    accept=".pdf,.jpg,.jpeg,.png"
+                    accept="application/pdf,image/jpeg,image/png,image/webp"
                     (change)="onRegistrationCertificateSelected($event)">
 
                 <small
@@ -2884,7 +3791,7 @@ Institution KRA PIN
                 <input
                     type="file"
                     class="form-control"
-                    accept=".pdf,.jpg,.jpeg,.png"
+                    accept="application/pdf,image/jpeg,image/png,image/webp"
                     (change)="onTrustDeedSelected($event)">
 
                 <small
@@ -2915,7 +3822,7 @@ Institution KRA PIN
                 <input
                     type="file"
                     class="form-control"
-                    accept=".pdf,.jpg,.jpeg,.png"
+                    accept="application/pdf,image/jpeg,image/png,image/webp"
                     (change)="onInstitutionResolutionSelected($event)">
 
                 <small
@@ -3003,7 +3910,7 @@ Institution KRA PIN
                 type="button"
                 class="btn btn-bank btn-lg px-5"
                 (click)="nextStep()"
-                [disabled]="uploadedDocuments < requiredDocuments">
+                [disabled]="!allRequiredDocumentsUploaded">
 
                 Continue
 
@@ -3023,7 +3930,7 @@ Institution KRA PIN
 <!-- PART 1 : REVIEW DASHBOARD + CUSTOMER SUMMARY -->
 <!-- ========================================================= -->
 
-<div *ngIf="currentStep === 5" class="row g-4">
+<div *ngIf="currentStep === (isIndividual ? 6 : 5)" class="row g-4">
 
     <!-- ===================================================== -->
     <!-- PAGE HEADER -->
@@ -3132,14 +4039,14 @@ Institution KRA PIN
 
                                         <i
                                             class="fas"
-                                            [class.fa-check-circle]="accountForm.valid"
-                                            [class.fa-times-circle]="!accountForm.valid"
-                                            [class.text-success]="accountForm.valid"
-                                            [class.text-danger]="!accountForm.valid">
+                                            [class.fa-check-circle]="canSubmit"
+                                            [class.fa-times-circle]="!canSubmit"
+                                            [class.text-success]="canSubmit"
+                                            [class.text-danger]="!canSubmit">
 
                                         </i>
 
-{{ missingItems.length === 0 ? 'Complete' : 'Incomplete (' + missingItems.length + ' Issue(s))' }}
+{{ canSubmit ? 'Complete' : 'Incomplete (' + (missingItems.length || 1) + ' Issue(s))' }}
 
                                     </div>
 
@@ -3189,13 +4096,12 @@ Institution KRA PIN
 
                                         <span
                                             class="badge"
-                                            [ngClass]="uploadProgress==100 && accountForm.valid
+                                            [ngClass]="canSubmit
                                             ? 'bg-success'
                                             : 'bg-warning text-dark'">
 
                                             {{
-                                            uploadProgress==100 &&
-                                            accountForm.valid
+                                            canSubmit
                                             ? 'READY'
                                             : 'PENDING'
                                             }}
@@ -4531,9 +5437,6 @@ Institution KRA PIN
 
 </div>
 
-<!-- ===================================================== -->
-<!-- VALIDATION STATUS -->
-<!-- ===================================================== -->
 
 <div class="col-12">
 
@@ -4648,9 +5551,7 @@ Institution KRA PIN
 
 </div>
 
-<!-- ===================================================== -->
-<!-- ACTION BUTTONS -->
-<!-- ===================================================== -->
+
 
 <div class="col-12 mt-4">
 
@@ -4670,7 +5571,7 @@ Institution KRA PIN
         <button
             type="submit"
             class="btn btn-success btn-lg px-5"
-            [disabled]="loading || accountForm.invalid">
+            [disabled]="loading || !canSubmit">
 
             <span
                 *ngIf="loading"
@@ -4690,11 +5591,4 @@ Institution KRA PIN
 
 </div>
 
-
-<!-- ===================================================== -->
-<!-- END OF REGISTRATION WIZARD -->
-<!-- ===================================================== -->
-
 </div>
-
-

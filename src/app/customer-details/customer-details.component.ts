@@ -28,6 +28,12 @@ monthlyIncome: number = 0;
 phoneNumber: string = '';
 accountId: number = 0;
 
+  actionInProgress = false;
+
+  showRejectDialog = false;
+
+  rejectionReason = '';
+
   constructor(
     private route: ActivatedRoute,
     private loanService: LoanService,
@@ -718,6 +724,267 @@ this.selectedLoan?.account?.monthlyIncome || 0,
       console.error('🔥 Router error:', err);
 
     });
+
+  }
+
+
+  // =========================================================
+  // APPROVE LOAN
+  // =========================================================
+
+  approveLoan(loan: Loan): void {
+
+    if (!loan?.id) {
+      alert('Invalid loan selected.');
+      return;
+    }
+
+    const status =
+      String(loan.status || '')
+        .trim()
+        .toUpperCase()
+        .replace(/[\s-]+/g, '_');
+
+    // Approval is only allowed for applications awaiting authorization
+    if (status !== 'AWAITING_AUTHORIZATION') {
+
+      alert(
+        `This application cannot be approved because its current status is "${loan.status || 'UNKNOWN'}".`
+      );
+
+      return;
+    }
+
+    const confirmed = window.confirm(
+      `Approve loan application #${loan.id}?\n\n` +
+      `Applicant: ${loan.applicantName || '-'}\n` +
+      `Amount: KES ${(loan.amount || 0).toLocaleString('en-KE')}\n\n` +
+      `The application will proceed to loan approval/disbursement according to the backend authorization rules.`
+    );
+
+    if (!confirmed) {
+      return;
+    }
+
+    this.actionInProgress = true;
+
+    this.loanService.approveLoan(loan.id).subscribe({
+
+      next: (approvedLoan: Loan) => {
+
+        this.actionInProgress = false;
+
+        this.selectedLoan = approvedLoan;
+
+        this.computeDueMetrics();
+
+        alert('Loan approved successfully.');
+
+      },
+
+      error: (error) => {
+
+        console.error(
+          '❌ Loan approval failed:',
+          error
+        );
+
+        this.actionInProgress = false;
+
+        const message =
+          error?.error?.message ||
+          error?.error?.error ||
+          'Unable to approve the loan. Please try again.';
+
+        alert(message);
+
+      }
+
+    });
+
+  }
+
+
+ openRejectDialog(loan: Loan): void {
+
+  if (!loan || loan.id == null) {
+    alert('Invalid loan selected.');
+    return;
+  }
+
+  const status = String(loan.status || '')
+    .trim()
+    .toUpperCase()
+    .replace(/[\s-]+/g, '_');
+
+  // Rejection is only allowed at authorization stage
+  if (status !== 'AWAITING_AUTHORIZATION') {
+
+    alert(
+      `This application cannot be rejected because its current status is "${loan.status || 'UNKNOWN'}".`
+    );
+
+    return;
+  }
+
+  // Store the loan being rejected
+  this.selectedLoan = loan;
+
+  // Clear previous rejection reason
+  this.rejectionReason = '';
+
+  // Open rejection dialog
+  this.showRejectDialog = true;
+}
+
+
+  // =========================================================
+  // CLOSE REJECTION DIALOG
+  // =========================================================
+
+  closeRejectDialog(): void {
+
+    if (this.actionInProgress) {
+      return;
+    }
+
+    this.showRejectDialog = false;
+
+    this.rejectionReason = '';
+
+  }
+
+
+  // =========================================================
+  // CONFIRM LOAN REJECTION
+  // =========================================================
+
+  confirmRejectLoan(): void {
+
+    const loan = this.selectedLoan;
+
+    if (!loan?.id) {
+
+      alert('No loan application selected.');
+
+      return;
+
+    }
+
+    const status =
+      String(loan.status || '')
+        .trim()
+        .toUpperCase()
+        .replace(/[\s-]+/g, '_');
+
+    // Backend lifecycle protection
+    if (status !== 'AWAITING_AUTHORIZATION') {
+
+      alert(
+        `This application can no longer be rejected because its current status is "${loan.status || 'UNKNOWN'}".`
+      );
+
+      this.showRejectDialog = false;
+
+      return;
+
+    }
+
+    const reason =
+      String(this.rejectionReason || '')
+        .trim();
+
+    if (!reason) {
+
+      alert(
+        'Please provide a reason for rejecting this loan application.'
+      );
+
+      return;
+
+    }
+
+    if (reason.length < 5) {
+
+      alert(
+        'Please provide a meaningful rejection reason.'
+      );
+
+      return;
+
+    }
+
+    this.actionInProgress = true;
+
+    this.loanService
+      .rejectLoan(loan.id, reason)
+      .subscribe({
+
+        next: (response: any) => {
+
+          this.actionInProgress = false;
+
+          this.showRejectDialog = false;
+
+          this.rejectionReason = '';
+
+          /*
+           * Your backend may return either:
+           *
+           * { loan: Loan, message: '...' }
+           *
+           * or the Loan directly.
+           */
+          const rejectedLoan: Loan | null =
+            response?.loan ||
+            response ||
+            null;
+
+          if (rejectedLoan) {
+
+            this.selectedLoan = rejectedLoan;
+
+          } else {
+
+            /*
+             * Keep the current object synchronized if
+             * backend only returned a success message.
+             */
+            this.selectedLoan = {
+              ...loan,
+              status: 'REJECTED',
+              rejectionReason: reason
+            };
+
+          }
+
+          this.computeDueMetrics();
+
+          alert(
+            'Loan application rejected successfully.'
+          );
+
+        },
+
+        error: (error) => {
+
+          console.error(
+            '❌ Loan rejection failed:',
+            error
+          );
+
+          this.actionInProgress = false;
+
+          const message =
+            error?.error?.message ||
+            error?.error?.error ||
+            'Unable to reject the loan. Please try again.';
+
+          alert(message);
+
+        }
+
+      });
 
   }
 

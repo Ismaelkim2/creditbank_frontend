@@ -1,0 +1,1175 @@
+<div class="tenant-calendar-page container-fluid py-3">
+
+  <!-- =====================================================
+       PAGE HEADER
+  ====================================================== -->
+  <section class="calendar-page-header">
+
+    <div class="calendar-heading-copy">
+      <div class="calendar-eyebrow">
+        <i class="fa-solid fa-building me-2"></i>
+        PROPERTY MANAGEMENT
+      </div>
+
+      <h3>Tenant Calendar</h3>
+
+      <p>
+        Schedule activities, monitor important dates and manage
+        tenant-related events from one place.
+      </p>
+    </div>
+
+    <div class="calendar-header-actions">
+
+        <a
+  routerLink="/app/tenant/reminders"
+  class="btn smart-calendar-btn">
+
+  <span class="calendar-btn-icon">
+    <i class="bi bi-bell-fill"></i>
+  </span>
+
+  <span class="calendar-btn-text">
+    <strong>Bulk Reminder</strong>
+    <small>Connect with Tenants</small>
+  </span>
+
+  <i class="bi bi-arrow-up-right calendar-btn-arrow"></i>
+
+</a>
+
+      <button
+        type="button"
+        class="btn btn-primary"
+        (click)="openCreateEvent()">
+
+        <i class="fa-solid fa-plus me-2"></i>
+        New Event
+      </button>
+
+            <button
+        type="button"
+        class="btn btn-outline-primary"
+        (click)="refreshCalendar()"
+        [disabled]="loading">
+
+        <i
+          class="fa-solid fa-rotate me-2"
+          [class.fa-spin]="loading">
+        </i>
+        Refresh
+      </button>
+
+    </div>
+
+  </section>
+
+  <!-- =====================================================
+       FEEDBACK MESSAGES
+  ====================================================== -->
+  <div
+    *ngIf="errorMessage"
+    class="alert alert-danger calendar-alert"
+    role="alert">
+
+    <i class="fa-solid fa-circle-exclamation me-2"></i>
+    {{ errorMessage }}
+
+    <button
+      type="button"
+      class="btn btn-sm btn-outline-danger ms-2"
+      (click)="refreshCalendar()"
+      [disabled]="loading">
+      Retry
+    </button>
+  </div>
+
+  <div
+    *ngIf="successMessage"
+    class="alert alert-success calendar-alert"
+    role="status">
+
+    <i class="fa-solid fa-circle-check me-2"></i>
+    {{ successMessage }}
+
+    <button
+      type="button"
+      class="btn-close float-end"
+      aria-label="Dismiss"
+      (click)="successMessage = ''">
+    </button>
+  </div>
+
+  <!-- =====================================================
+       CALENDAR KPI CARDS
+  ====================================================== -->
+  <section class="calendar-kpi-grid">
+
+    <article class="calendar-kpi-card">
+
+      <div class="calendar-kpi-top">
+        <span class="calendar-kpi-icon kpi-icon-blue">
+          <i class="fa-regular fa-calendar-check"></i>
+        </span>
+
+        <span class="calendar-kpi-caption">Today</span>
+      </div>
+
+      <div class="calendar-kpi-value">
+        {{ todayEvents.length }}
+      </div>
+
+      <div class="calendar-kpi-description">
+        Events scheduled for today
+      </div>
+
+    </article>
+
+    <article class="calendar-kpi-card">
+
+      <div class="calendar-kpi-top">
+        <span class="calendar-kpi-icon kpi-icon-green">
+          <i class="fa-solid fa-calendar-day"></i>
+        </span>
+
+        <span class="calendar-kpi-caption">Upcoming</span>
+      </div>
+
+      <div class="calendar-kpi-value">
+        {{ upcomingEvents.length }}
+      </div>
+
+      <div class="calendar-kpi-description">
+        Future scheduled events
+      </div>
+
+    </article>
+
+    <article class="calendar-kpi-card">
+
+      <div class="calendar-kpi-top">
+        <span class="calendar-kpi-icon kpi-icon-red">
+          <i class="fa-solid fa-clock"></i>
+        </span>
+
+        <span class="calendar-kpi-caption">Overdue</span>
+      </div>
+
+      <div class="calendar-kpi-value">
+        {{ overdueEvents.length }}
+      </div>
+
+      <div class="calendar-kpi-description">
+        Events requiring attention
+      </div>
+
+    </article>
+
+    <article class="calendar-kpi-card">
+
+      <div class="calendar-kpi-top">
+        <span class="calendar-kpi-icon kpi-icon-purple">
+          <i class="fa-solid fa-calendar-plus"></i>
+        </span>
+
+        <span class="calendar-kpi-caption">Calendar events</span>
+      </div>
+
+     <div class="calendar-kpi-value">
+  {{ calendarEventCount }}
+</div>
+
+      <div class="calendar-kpi-description">
+        Manually scheduled activities
+      </div>
+
+    </article>
+
+  </section>
+
+  <!-- =====================================================
+       MAIN CALENDAR WORKSPACE
+  ====================================================== -->
+  <section class="calendar-workspace">
+
+    <main class="calendar-main-panel">
+
+      <!-- CALENDAR TOOLBAR -->
+      <div class="calendar-toolbar">
+
+        <div class="calendar-toolbar-left">
+
+          <div class="calendar-navigation">
+
+            <button
+              type="button"
+              class="calendar-nav-btn"
+              (click)="navigate(-1)"
+              aria-label="Previous period">
+              <i class="fa-solid fa-chevron-left"></i>
+            </button>
+
+            <button
+              type="button"
+              class="calendar-nav-btn"
+              (click)="navigate(1)"
+              aria-label="Next period">
+              <i class="fa-solid fa-chevron-right"></i>
+            </button>
+
+          </div>
+
+          <button
+            type="button"
+            class="btn btn-outline-secondary btn-sm today-button"
+            (click)="goToToday()">
+            Today
+          </button>
+
+          <h5 class="calendar-current-heading mb-0">
+            {{ calendarHeading }}
+          </h5>
+
+        </div>
+
+        <div class="calendar-view-switch">
+
+          <button
+            type="button"
+            [class.active]="view === 'MONTH'"
+            (click)="setView('MONTH')">
+            Month
+          </button>
+
+          <button
+            type="button"
+            [class.active]="view === 'WEEK'"
+            (click)="setView('WEEK')">
+            Week
+          </button>
+
+          <button
+            type="button"
+            [class.active]="view === 'DAY'"
+            (click)="setView('DAY')">
+            Day
+          </button>
+
+        </div>
+
+      </div>
+
+      <!-- CATEGORY FILTERS -->
+      <div class="calendar-filter-bar">
+
+        <span class="filter-heading">
+          <i class="fa-solid fa-filter me-2"></i>
+          Filter
+        </span>
+
+        <div class="calendar-filter-options">
+
+          <button
+            *ngFor="let filter of filters"
+            type="button"
+            class="calendar-filter-chip"
+            [class.active]="activeFilter === filter.value"
+            (click)="setFilter(filter.value)">
+
+            <i class="fa-solid me-1" [ngClass]="filter.icon"></i>
+            {{ filter.label }}
+
+          </button>
+
+        </div>
+
+      </div>
+
+      <!-- LOADING -->
+      <div
+        *ngIf="loading"
+        class="calendar-loading">
+
+        <div class="spinner-border spinner-border-sm text-primary"></div>
+
+        <span>Loading calendar events...</span>
+
+      </div>
+
+      <!-- =================================================
+           MONTH VIEW
+      ================================================== -->
+      <div
+        *ngIf="!loading && view === 'MONTH'"
+        class="calendar-grid month-calendar">
+
+        <div
+          class="calendar-weekday"
+          *ngFor="let weekday of weekdays">
+          {{ weekday.substring(0, 3) }}
+        </div>
+
+        <div
+          class="calendar-day-cell"
+          *ngFor="let day of calendarDays; trackBy: trackByDate"
+          [class.other-month]="!day.isCurrentMonth"
+          [class.selected-day]="day.isSelected"
+          [class.today-cell]="day.isToday"
+          (click)="selectDate(day.date)">
+
+          <div class="calendar-day-header">
+
+            <button
+              type="button"
+              class="calendar-day-number"
+              [class.today-number]="day.isToday"
+              (click)="selectDate(day.date); $event.stopPropagation()">
+
+              {{ day.dayNumber }}
+
+            </button>
+
+            <button
+              type="button"
+              class="day-add-button"
+              title="Add event"
+              aria-label="Add event to this date"
+              (click)="openCreateEvent(day.date); $event.stopPropagation()">
+
+              <i class="fa-solid fa-plus"></i>
+
+            </button>
+
+          </div>
+
+          <div class="calendar-day-events">
+
+            <button
+              *ngFor="let event of getFirstEvents(day); trackBy: trackByEvent"
+              type="button"
+              class="calendar-event-pill"
+              [ngClass]="eventCssClass(event)"
+              [title]="event.title"
+              (click)="
+                selectDate(day.date);
+                $event.stopPropagation()
+              ">
+
+              <span class="event-pill-time">
+                {{ eventTime(event) === 'All day' ? '' : eventTime(event) }}
+              </span>
+
+              <span class="event-pill-title">
+                {{ event.title }}
+              </span>
+
+            </button>
+
+            <button
+              *ngIf="getRemainingEventCount(day) > 0"
+              type="button"
+              class="more-events-button"
+              (click)="selectDateAndOpenDay(day.date); $event.stopPropagation()">
+
+              +{{ getRemainingEventCount(day) }} more
+
+            </button>
+
+          </div>
+
+        </div>
+
+      </div>
+
+      <!-- =================================================
+           WEEK VIEW
+      ================================================== -->
+<div
+  *ngIf="!loading && view === 'WEEK'"
+  class="week-calendar">
+
+  <div class="week-overview-grid">
+
+    <article
+      class="week-overview-day"
+      *ngFor="let day of calendarDays; trackBy: trackByDate"
+      [class.week-overview-today]="day.isToday"
+      [class.week-overview-selected]="day.isSelected">
+
+      <button
+        type="button"
+        class="week-overview-heading"
+        (click)="selectDate(day.date)">
+
+        <span>{{ day.date | date:'EEE' }}</span>
+
+        <strong>{{ day.dayNumber }}</strong>
+
+      </button>
+
+      <div class="week-overview-events">
+
+        <button
+          *ngFor="let event of day.events; trackBy: trackByEvent"
+          type="button"
+          class="week-event-card"
+          [ngClass]="eventCssClass(event)"
+          (click)="selectDate(day.date)">
+
+          <strong>{{ eventTime(event) }}</strong>
+          <span>{{ event.title }}</span>
+
+        </button>
+
+        <span
+          class="week-no-events"
+          *ngIf="!day.events.length">
+          No events
+        </span>
+
+      </div>
+
+      <button
+        type="button"
+        class="week-add-event"
+        (click)="openCreateEvent(day.date)">
+
+        <i class="fa-solid fa-plus me-1"></i>
+        Add
+
+      </button>
+
+    </article>
+
+  </div>
+
+</div>
+
+      <!-- =================================================
+           DAY VIEW
+      ================================================== -->
+      <div
+        *ngIf="!loading && view === 'DAY'"
+        class="day-calendar">
+
+        <div class="day-calendar-heading">
+
+          <div>
+            <span class="day-calendar-weekday">
+              {{ currentDate | date:'EEEE' }}
+            </span>
+
+            <h4>
+              {{ currentDate | date:'d MMMM yyyy' }}
+            </h4>
+          </div>
+
+          <button
+            type="button"
+            class="btn btn-primary btn-sm"
+            (click)="openCreateEvent(currentDate)">
+
+            <i class="fa-solid fa-plus me-2"></i>
+            Add event
+
+          </button>
+
+        </div>
+
+        <div
+          class="day-event-list"
+          *ngIf="visibleSelectedDayEvents.length">
+
+          <article
+            class="day-event-card"
+            *ngFor="
+              let event of visibleSelectedDayEvents;
+              trackBy: trackByEvent
+            "
+            [ngClass]="eventCssClass(event)">
+
+            <div class="day-event-time">
+              {{ eventTime(event) }}
+            </div>
+
+            <div class="day-event-icon">
+              <i
+                class="fa-solid"
+                [ngClass]="eventIcon(event.type)">
+              </i>
+            </div>
+
+            <div class="day-event-content">
+
+              <div class="day-event-title-row">
+                <h6>{{ event.title }}</h6>
+
+                <span class="event-status">
+                  {{ eventStatusLabel(event.status) }}
+                </span>
+              </div>
+
+              <p>{{ event.message }}</p>
+
+              <div class="day-event-meta">
+
+                <span>
+                  <i class="fa-solid fa-tag me-1"></i>
+                  {{ eventCategoryLabel(event.type) }}
+                </span>
+
+                <span *ngIf="getTenantName(event)">
+                  <i class="fa-solid fa-user me-1"></i>
+                  {{ getTenantName(event) }}
+                </span>
+
+                <span *ngIf="getPropertyName(event)">
+                  <i class="fa-solid fa-building me-1"></i>
+                  {{ getPropertyName(event) }}
+                </span>
+
+                <span *ngIf="getUnitName(event)">
+                  <i class="fa-solid fa-door-open me-1"></i>
+                  {{ getUnitName(event) }}
+                </span>
+
+                <span *ngIf="event.amount !== null && event.amount !== undefined">
+                  <i class="fa-solid fa-money-bill-wave me-1"></i>
+                  {{ formatAmount(event.amount) }}
+                </span>
+
+              </div>
+
+              <div class="day-event-actions">
+
+                <button
+                  *ngIf="isEditable(event)"
+                  type="button"
+                  class="btn btn-sm btn-outline-primary"
+                  (click)="openEditEvent(event)">
+
+                  <i class="fa-solid fa-pen me-1"></i>
+                  Edit
+
+                </button>
+
+                <button
+                  *ngIf="event.status !== 'CANCELLED'"
+                  type="button"
+                  class="btn btn-sm btn-outline-success"
+                  [disabled]="actionLoadingId === event.id"
+                  (click)="markFollowedUp(event)">
+
+                  <i class="fa-solid fa-check me-1"></i>
+                  Follow up
+
+                </button>
+
+                <button
+                  *ngIf="isEditable(event)"
+                  type="button"
+                  class="btn btn-sm btn-outline-danger"
+                  [disabled]="actionLoadingId === event.id"
+                  (click)="cancelEvent(event)">
+
+                  <i class="fa-solid fa-ban me-1"></i>
+                  Cancel
+
+                </button>
+
+              </div>
+
+            </div>
+
+          </article>
+
+        </div>
+
+        <div
+          class="calendar-empty-state"
+          *ngIf="!visibleSelectedDayEvents.length">
+
+          <span class="empty-calendar-icon">
+            <i class="fa-regular fa-calendar"></i>
+          </span>
+
+          <h6>No events scheduled</h6>
+
+          <p>
+            There are no matching events for this date.
+          </p>
+
+          <button
+            type="button"
+            class="btn btn-outline-primary btn-sm"
+            (click)="openCreateEvent(currentDate)">
+
+            <i class="fa-solid fa-plus me-2"></i>
+            Schedule an event
+
+          </button>
+
+        </div>
+
+      </div>
+
+      <!-- EMPTY MONTH/WEEK -->
+      <div
+        *ngIf="
+          !loading &&
+          view !== 'DAY' &&
+          !filteredEvents.length
+        "
+        class="calendar-range-empty">
+
+        <i class="fa-regular fa-calendar-xmark"></i>
+        <span>No events found in this period.</span>
+
+      </div>
+
+      <!-- CALENDAR LEGEND -->
+      <div class="calendar-legend">
+
+        <span class="legend-heading">Event categories</span>
+
+        <span class="legend-item">
+          <i class="legend-dot legend-calendar"></i>
+          Calendar
+        </span>
+
+        <span class="legend-item">
+          <i class="legend-dot legend-rent"></i>
+          Rent due
+        </span>
+
+        <span class="legend-item">
+          <i class="legend-dot legend-overdue"></i>
+          Overdue
+        </span>
+
+        <span class="legend-item">
+          <i class="legend-dot legend-lease"></i>
+          Lease expiry
+        </span>
+
+        <span class="legend-item">
+          <i class="legend-dot legend-maintenance"></i>
+          Maintenance
+        </span>
+
+        <span class="legend-item">
+          <i class="legend-dot legend-document"></i>
+          Documents
+        </span>
+
+      </div>
+
+    </main>
+
+    <!-- ===================================================
+         RIGHT-SIDE AGENDA
+    ==================================================== -->
+    <aside class="calendar-agenda-panel">
+
+      <div class="agenda-panel-header">
+
+        <div>
+          <span class="agenda-eyebrow">DAILY AGENDA</span>
+
+          <h5>
+            {{ selectedDate | date:'EEE, d MMM' }}
+          </h5>
+
+          <p>
+            {{ visibleSelectedDayEvents.length }}
+            scheduled event(s)
+          </p>
+        </div>
+
+        <button
+          type="button"
+          class="agenda-add-button"
+          title="Add event"
+          (click)="openCreateEvent(selectedDate)">
+
+          <i class="fa-solid fa-plus"></i>
+
+        </button>
+
+      </div>
+
+      <div class="agenda-date-navigation">
+
+        <button
+          type="button"
+          (click)="selectDate(addDaysForTemplate(selectedDate, -1))">
+          <i class="fa-solid fa-chevron-left"></i>
+        </button>
+
+        <span>{{ selectedDate | date:'MMMM yyyy' }}</span>
+
+        <button
+          type="button"
+          (click)="selectDate(addDaysForTemplate(selectedDate, 1))">
+          <i class="fa-solid fa-chevron-right"></i>
+        </button>
+
+      </div>
+
+      <div
+        class="agenda-events"
+        *ngIf="visibleSelectedDayEvents.length">
+
+        <article
+          class="agenda-event-item"
+          *ngFor="
+            let event of visibleSelectedDayEvents;
+            trackBy: trackByEvent
+          "
+          [ngClass]="eventCssClass(event)">
+
+          <div class="agenda-event-top">
+
+            <span class="agenda-event-time">
+              {{ eventTime(event) }}
+            </span>
+
+            <span class="agenda-event-status">
+              {{ eventStatusLabel(event.status) }}
+            </span>
+
+          </div>
+
+          <div class="agenda-event-title">
+            <i
+              class="fa-solid me-2"
+              [ngClass]="eventIcon(event.type)">
+            </i>
+
+            {{ event.title }}
+          </div>
+
+          <p class="agenda-event-message">
+            {{ event.message }}
+          </p>
+
+          <div
+            class="agenda-event-tenant"
+            *ngIf="getTenantName(event)">
+
+            <i class="fa-solid fa-user me-2"></i>
+            {{ getTenantName(event) }}
+
+          </div>
+
+          <div
+            class="agenda-event-tenant"
+            *ngIf="getPropertyName(event)">
+
+            <i class="fa-solid fa-building me-2"></i>
+            {{ getPropertyName(event) }}
+
+          </div>
+
+          <div class="agenda-event-actions">
+
+            <button
+              *ngIf="isEditable(event)"
+              type="button"
+              title="Edit event"
+              (click)="openEditEvent(event)">
+
+              <i class="fa-solid fa-pen"></i>
+
+            </button>
+
+            <button
+              *ngIf="event.status !== 'CANCELLED'"
+              type="button"
+              title="Mark as followed up"
+              [disabled]="actionLoadingId === event.id"
+              (click)="markFollowedUp(event)">
+
+              <i class="fa-solid fa-check"></i>
+
+            </button>
+
+            <button
+              *ngIf="isEditable(event)"
+              type="button"
+              title="Cancel event"
+              [disabled]="actionLoadingId === event.id"
+              (click)="cancelEvent(event)">
+
+              <i class="fa-solid fa-xmark"></i>
+
+            </button>
+
+          </div>
+
+        </article>
+
+      </div>
+
+      <div
+        class="agenda-empty"
+        *ngIf="!visibleSelectedDayEvents.length">
+
+        <i class="fa-regular fa-calendar"></i>
+
+        <strong>Nothing scheduled</strong>
+
+        <span>
+          Your selected date has no matching events.
+        </span>
+
+        <button
+          type="button"
+          class="btn btn-outline-primary btn-sm"
+          (click)="openCreateEvent(selectedDate)">
+
+          Create event
+
+        </button>
+
+      </div>
+
+      <div class="agenda-panel-footer">
+        <i class="fa-solid fa-shield-halved me-2"></i>
+        Events follow your authorized portfolio access.
+      </div>
+
+    </aside>
+
+  </section>
+
+  <!-- =====================================================
+       EVENT EDITOR
+  ====================================================== -->
+  <div
+    class="calendar-editor-backdrop"
+    *ngIf="editorOpen"
+    (click)="closeEditor()">
+
+    <section
+      class="calendar-editor-panel mt-5"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="calendarEditorTitle"
+      (click)="$event.stopPropagation()">
+
+      <div class="calendar-editor-header mt-2">
+
+        <div>
+          <span class="editor-eyebrow">
+            EVENT MANAGEMENT
+          </span>
+
+          <h5 id="calendarEditorTitle">
+            {{ editingEventId ? 'Edit calendar event' : 'Create calendar event' }}
+          </h5>
+
+          <p>
+            Schedule an activity and optionally associate it with a tenant.
+          </p>
+        </div>
+
+        <button
+          type="button"
+          class="editor-close-button"
+          aria-label="Close editor"
+          [disabled]="saving"
+          (click)="closeEditor()">
+
+          <i class="fa-solid fa-xmark"></i>
+
+        </button>
+
+      </div>
+
+      <form
+        class="calendar-editor-form"
+        #calendarEventForm="ngForm"
+        (ngSubmit)="saveEvent()">
+
+        <div
+          *ngIf="editorError"
+          class="alert alert-danger py-2">
+          <i class="fa-solid fa-circle-exclamation me-2"></i>
+          {{ editorError }}
+        </div>
+
+        <!-- TITLE -->
+        <div class="editor-field">
+
+          <label for="eventTitle">
+            Event title <span class="text-danger">*</span>
+          </label>
+
+          <input
+            id="eventTitle"
+            type="text"
+            class="form-control"
+            name="title"
+            [(ngModel)]="editor.title"
+            maxlength="150"
+            required
+            placeholder="e.g. Tenant inspection">
+
+        </div>
+
+        <!-- DESCRIPTION -->
+        <div class="editor-field">
+
+          <label for="eventMessage">
+            Description <span class="text-danger">*</span>
+          </label>
+
+          <textarea
+            id="eventMessage"
+            class="form-control"
+            name="message"
+            [(ngModel)]="editor.message"
+            rows="3"
+            maxlength="2000"
+            required
+            placeholder="Enter event details and any important instructions...">
+          </textarea>
+
+        </div>
+
+        <!-- DATE -->
+        <div class="editor-field">
+
+          <label for="eventDate">
+            Event date <span class="text-danger">*</span>
+          </label>
+
+          <input
+            id="eventDate"
+            type="date"
+            class="form-control"
+            name="dueDate"
+            [(ngModel)]="editor.dueDate"
+            required>
+
+        </div>
+
+        <!-- TIME -->
+        <div class="editor-field">
+
+          <label class="editor-checkbox-label">
+
+            <input
+              type="checkbox"
+              name="hasTime"
+              [(ngModel)]="editor.hasTime">
+
+            <span>Set a specific time</span>
+
+          </label>
+
+          <input
+            *ngIf="editor.hasTime"
+            type="time"
+            class="form-control mt-2"
+            name="startTime"
+            [(ngModel)]="editor.startTime"
+            required>
+
+          <small class="field-hint">
+            Leave unchecked for an all-day event.
+          </small>
+
+        </div>
+
+        <!-- TENANT ASSOCIATION -->
+        <div class="editor-field tenant-association-field">
+
+          <label for="tenantSearch">
+            Associate tenant
+          </label>
+
+          <div class="tenant-search-wrapper">
+
+            <div class="tenant-search-input">
+
+              <i class="fa-solid fa-magnifying-glass"></i>
+
+              <input
+                id="tenantSearch"
+                type="search"
+                class="form-control"
+                name="tenantSearch"
+                [ngModel]="editor.tenantSearch"
+                (ngModelChange)="onTenantSearch($event)"
+                (focus)="tenantDropdownOpen = true"
+                autocomplete="off"
+                placeholder="Search tenant by name, phone or email">
+
+              <span
+                *ngIf="tenantSearchLoading"
+                class="spinner-border spinner-border-sm">
+              </span>
+
+              <button
+                *ngIf="editor.tenantId"
+                type="button"
+                class="tenant-clear-button"
+                title="Remove tenant association"
+                (click)="clearTenant()">
+
+                <i class="fa-solid fa-xmark"></i>
+
+              </button>
+
+            </div>
+
+            <div
+              class="tenant-search-dropdown"
+              *ngIf="tenantDropdownOpen && tenantResults.length">
+
+              <button
+                type="button"
+                class="tenant-search-result"
+                *ngFor="let tenant of tenantResults"
+                (click)="selectTenant(tenant)">
+
+                <span class="tenant-result-avatar">
+                  <i class="fa-solid fa-user"></i>
+                </span>
+
+                <span class="tenant-result-copy">
+
+                  <strong>{{ tenant.name }}</strong>
+
+                  <small>
+                    {{ tenant.phoneNumber || tenant.email || 'Tenant' }}
+                  </small>
+
+                  <small *ngIf="tenant.propertyName || tenant.unitNumber">
+                    {{ tenant.propertyName || '' }}
+                    {{ tenant.unitNumber ? ' · ' + tenant.unitNumber : '' }}
+                  </small>
+
+                </span>
+
+                <i class="fa-solid fa-chevron-right"></i>
+
+              </button>
+
+            </div>
+
+            <div
+              class="tenant-search-empty"
+              *ngIf="
+                tenantDropdownOpen &&
+                editor.tenantSearch.trim().length > 0 &&
+                !tenantSearchLoading &&
+                !tenantResults.length &&
+                !tenantSearchError
+              ">
+
+              No matching tenants found.
+
+            </div>
+
+            <div
+              *ngIf="tenantSearchError"
+              class="text-danger small mt-2">
+              {{ tenantSearchError }}
+            </div>
+
+          </div>
+
+          <div
+            class="selected-tenant-summary"
+            *ngIf="editor.selectedTenant as tenant">
+
+            <i class="fa-solid fa-circle-check text-success me-2"></i>
+
+            <span>
+              {{ tenant.name }}
+            </span>
+
+            <button
+              type="button"
+              (click)="clearTenant()">
+              Remove
+            </button>
+
+          </div>
+
+          <small class="field-hint">
+            Tenant association is optional. You can also create a personal
+            property-management event.
+          </small>
+
+        </div>
+
+        <!-- AMOUNT -->
+        <div class="editor-field">
+
+          <label for="eventAmount">
+            Amount (KES)
+          </label>
+
+          <input
+            id="eventAmount"
+            type="number"
+            class="form-control"
+            name="amount"
+            [(ngModel)]="editor.amount"
+            min="0"
+            step="0.01"
+            placeholder="Optional">
+
+        </div>
+
+        <!-- FOOTER -->
+        <div class="calendar-editor-footer">
+
+          <button
+            type="button"
+            class="btn btn-light"
+            [disabled]="saving"
+            (click)="closeEditor()">
+
+            Cancel
+
+          </button>
+
+          <button
+            type="submit"
+            class="btn btn-primary"
+            [disabled]="saving || !calendarEventForm.valid">
+
+            <span
+              *ngIf="saving"
+              class="spinner-border spinner-border-sm me-2">
+            </span>
+
+            <i
+              *ngIf="!saving"
+              class="fa-solid fa-floppy-disk me-2">
+            </i>
+
+            {{
+              saving
+                ? 'Saving...'
+                : editingEventId
+                  ? 'Save changes'
+                  : 'Create event'
+            }}
+
+          </button>
+
+        </div>
+
+      </form>
+
+    </section>
+
+  </div>
+
+</div>

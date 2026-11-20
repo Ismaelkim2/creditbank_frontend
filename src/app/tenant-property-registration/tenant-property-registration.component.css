@@ -1,0 +1,289 @@
+
+:host {
+  display: block;
+  color: #243247;
+}
+
+.property-registration-page {
+  max-width: 1600px;
+  margin: 0 auto;
+}
+
+.page-heading {
+  gap: 1rem;
+}
+
+.heading-icon {
+  width: 54px;
+  height: 54px;
+  flex: 0 0 54px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 14px;
+  background: #eaf2ff;
+  color: #155eef;
+  font-size: 1.35rem;
+}
+
+.section-eyebrow {
+  color: #155eef;
+  font-size: 0.72rem;
+  font-weight: 800;
+  letter-spacing: 0.11em;
+  margin-bottom: 5px;
+}
+
+.page-title {
+  color: #172b4d;
+  font-size: clamp(1.45rem, 2vw, 1.9rem);
+  font-weight: 750;
+}
+
+.page-subtitle {
+  color: #69788c;
+  font-size: 0.92rem;
+}
+
+.form-panel,
+.guidance-panel {
+  height: 100%;
+  background: #fff;
+  border: 1px solid #e3eaf3;
+  border-radius: 16px;
+  box-shadow: 0 5px 20px rgba(25, 50, 90, 0.045);
+}
+
+.form-panel {
+  padding: clamp(18px, 3vw, 30px);
+}
+
+.panel-heading {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding-bottom: 22px;
+  border-bottom: 1px solid #edf1f6;
+}
+
+.panel-heading h5 {
+  color: #172b4d;
+  font-size: 1.08rem;
+  font-weight: 750;
+}
+
+.panel-heading p {
+  font-size: 0.84rem;
+}
+
+.form-step {
+  padding: 8px 12px;
+  border-radius: 8px;
+  background: #f0f5ff;
+  color: #2458a6;
+  font-size: 0.78rem;
+  font-weight: 700;
+}
+
+.form-section {
+  padding-top: 24px;
+}
+
+.form-section-title {
+  color: #263c5a;
+  font-size: 0.94rem;
+  font-weight: 750;
+  margin-bottom: 20px;
+}
+
+.form-section-title i {
+  color: #2563eb;
+}
+
+.form-label {
+  display: block;
+  color: #34445b;
+  font-size: 0.84rem;
+  font-weight: 650;
+  margin-bottom: 8px;
+}
+
+.required {
+  color: #dc3545;
+}
+
+.form-control,
+.form-select {
+  min-height: 44px;
+  border-color: #d8e1ed;
+  border-radius: 8px;
+  color: #243247;
+  font-size: 0.9rem;
+  box-shadow: none;
+}
+
+.form-control:focus,
+.form-select:focus {
+  border-color: #5b8def;
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.11);
+}
+
+textarea.form-control {
+  min-height: 115px;
+  resize: vertical;
+}
+
+.field-hint {
+  display: block;
+  color: #7a8799;
+  font-size: 0.76rem;
+  line-height: 1.5;
+}
+
+.section-divider {
+  margin: 24px 0 0;
+  border-color: #edf1f6;
+  opacity: 1;
+}
+
+.form-actions {
+  padding-top: 20px;
+  border-top: 1px solid #edf1f6;
+}
+
+.form-actions .btn {
+  min-height: 43px;
+  border-radius: 8px;
+  font-size: 0.86rem;
+  font-weight: 650;
+}
+
+.btn-primary {
+  background: #155eef;
+  border-color: #155eef;
+}
+
+.btn-primary:hover {
+  background: #124dcc;
+  border-color: #124dcc;
+}
+
+.btn:disabled {
+  cursor: not-allowed;
+  opacity: 0.7;
+}
+
+.guidance-panel {
+  padding: 25px;
+}
+
+.guidance-icon {
+  width: 46px;
+  height: 46px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 18px;
+  border-radius: 12px;
+  background: #fff5dc;
+  color: #a66b00;
+  font-size: 1.15rem;
+}
+
+.guidance-panel h5 {
+  color: #172b4d;
+  font-size: 1.05rem;
+  font-weight: 750;
+}
+
+.guidance-panel > p {
+  margin: 10px 0 22px;
+  color: #68778b;
+  font-size: 0.86rem;
+  line-height: 1.7;
+}
+
+.guidance-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 11px;
+  margin-bottom: 20px;
+}
+
+.guidance-item > i {
+  color: #159957;
+  margin-top: 3px;
+}
+
+.guidance-item strong,
+.guidance-item span {
+  display: block;
+}
+
+.guidance-item strong {
+  color: #2d405a;
+  font-size: 0.84rem;
+  margin-bottom: 4px;
+}
+
+.guidance-item span {
+  color: #758297;
+  font-size: 0.79rem;
+  line-height: 1.5;
+}
+
+.security-note {
+  margin-top: 25px;
+  padding: 14px;
+  border: 1px solid #dce8fa;
+  border-radius: 10px;
+  background: #f4f8ff;
+  color: #35527b;
+  font-size: 0.79rem;
+  line-height: 1.6;
+}
+
+.alert {
+  border-radius: 10px;
+  overflow-wrap: anywhere;
+}
+
+@media (max-width: 575.98px) {
+  .property-registration-page {
+    padding-left: 12px;
+    padding-right: 12px;
+  }
+
+  .heading-icon {
+    width: 46px;
+    height: 46px;
+    flex-basis: 46px;
+  }
+
+  .form-panel,
+  .guidance-panel {
+    border-radius: 12px;
+  }
+
+  .form-actions {
+    display: grid !important;
+    grid-template-columns: 1fr;
+  }
+
+  .form-actions .btn {
+    width: 100%;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    scroll-behavior: auto !important;
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}

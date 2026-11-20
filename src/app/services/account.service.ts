@@ -10,10 +10,6 @@ import { environment } from '../../environments/environment';
 })
 export class AccountService {
 
-    // ============================================================
-    // API BASE URLS
-    // ============================================================
-
     private accountsUrl = `${environment.apiUrl}/accounts`;
     private activityUrl = `${environment.apiUrl}/activity`;
     private passwordUrl = `${environment.apiUrl}/auth/change-password`;
@@ -23,11 +19,7 @@ export class AccountService {
 
     constructor(
         private http: HttpClient
-    ) {}
-
-    // ============================================================
-    // AUTHORIZATION HEADER
-    // ============================================================
+           ) {}
 
     private getHeaders(): HttpHeaders {
 
@@ -47,13 +39,8 @@ export class AccountService {
         return headers;
     }
 
-    /**
-     * Headers for multipart/form-data.
-     *
-     * IMPORTANT:
-     * Do NOT manually set Content-Type here.
-     * Browser must create the multipart boundary.
-     */
+   
+ 
     private getMultipartHeaders(): HttpHeaders {
 
         const token = sessionStorage.getItem('token');
@@ -71,9 +58,6 @@ export class AccountService {
     }
 
 
-    // ============================================================
-    // ACCOUNT DETAILS
-    // ============================================================
 
     getAccountDetailsByNationalId(
         nationalId: string
@@ -88,9 +72,6 @@ export class AccountService {
     }
 
 
-    // ============================================================
-    // ACCOUNT BY NATIONAL ID
-    // ============================================================
 
     getByNationalId(
         nationalId: string
@@ -105,9 +86,6 @@ export class AccountService {
     }
 
 
-    // ============================================================
-    // CUSTOMER PROFILE
-    // ============================================================
 
     getCustomerProfile(
         accountNumber: string
@@ -122,9 +100,6 @@ export class AccountService {
     }
 
 
-    // ============================================================
-    // CREATE ACCOUNT
-    // ============================================================
 
     createAccount(
         formData: FormData
@@ -140,9 +115,6 @@ export class AccountService {
     }
 
 
-    // ============================================================
-    // GET ALL ACCOUNTS
-    // ============================================================
 
     getAllAccounts(): Observable<Account[]> {
 
@@ -155,17 +127,6 @@ export class AccountService {
     }
 
 
-    // ============================================================
-    // GET ACCOUNTS BY STATUS
-    // ============================================================
-
-    /**
-     * CORRECT BACKEND URL:
-     *
-     * /api/accounts/status/ACTIVE
-     * /api/accounts/status/DORMANT
-     * /api/accounts/status/CLOSED
-     */
 
     getAccountsByStatus(
         status: string
@@ -181,10 +142,6 @@ export class AccountService {
         );
     }
 
-
-    // ============================================================
-    // CLOSE ACCOUNT
-    // ============================================================
 
     closeAccount(
         accountNumber: string,
@@ -203,10 +160,6 @@ export class AccountService {
     }
 
 
-    // ============================================================
-    // ACCOUNT BY PHONE
-    // ============================================================
-
     getByPhoneNumber(
         phone: string
     ): Observable<any> {
@@ -220,10 +173,6 @@ export class AccountService {
     }
 
 
-    // ============================================================
-    // ACCOUNT BY EMAIL
-    // ============================================================
-
     getByEmail(
         email: string
     ): Observable<any> {
@@ -236,10 +185,6 @@ export class AccountService {
         );
     }
 
-
-    // ============================================================
-    // UPDATE PROFILE
-    // ============================================================
 
     updateUserProfile(
         payload: any
@@ -263,10 +208,6 @@ export class AccountService {
     }
 
 
-    // ============================================================
-    // CHANGE PASSWORD
-    // ============================================================
-
     changePassword(
         payload: any
     ): Observable<any> {
@@ -280,10 +221,6 @@ export class AccountService {
         );
     }
 
-
-    // ============================================================
-    // USER ACTIVITY
-    // ============================================================
 
     getUserActivity(
         page: number,
@@ -311,10 +248,6 @@ export class AccountService {
     }
 
 
-    // ============================================================
-    // COUNTIES
-    // ============================================================
-
     getCounties(): Observable<any[]> {
 
         return this.http.get<any[]>(
@@ -325,10 +258,6 @@ export class AccountService {
         );
     }
 
-
-    // ============================================================
-    // TOWNS
-    // ============================================================
 
     getTowns(
         countyCode: string
@@ -342,10 +271,6 @@ export class AccountService {
         );
     }
 
-
-    // ============================================================
-    // STATEMENTS
-    // ============================================================
 
     saveStatement(
         nationalId: string,
@@ -375,10 +300,6 @@ export class AccountService {
     }
 
 
-    // ============================================================
-    // LOANS
-    // ============================================================
-
     getLoanDetailsByNationalId(
         nationalId: string
     ): Observable<any[]> {
@@ -391,10 +312,6 @@ export class AccountService {
         );
     }
 
-
-    // ============================================================
-    // INDIVIDUAL ACCOUNT DOCUMENT
-    // ============================================================
 
     uploadAccountDocument(
         accountId: number,
@@ -433,10 +350,6 @@ export class AccountService {
     }
 
 
-    // ============================================================
-    // ORGANIZATION DOCUMENT UPLOAD
-    // ============================================================
-
     uploadOrganizationDocument(
         accountId: number,
         file: File,
@@ -465,10 +378,6 @@ export class AccountService {
     }
 
 
-    // ============================================================
-    // GET ORGANIZATION DOCUMENTS
-    // ============================================================
-
     getOrganizationDocuments(
         accountId: number
     ): Observable<any> {
@@ -482,9 +391,6 @@ export class AccountService {
     }
 
 
-    // ============================================================
-    // VIEW ORGANIZATION DOCUMENT
-    // ============================================================
 
     getOrganizationDocumentViewUrl(
         accountId: number,
@@ -496,9 +402,6 @@ export class AccountService {
     }
 
 
-    // ============================================================
-    // DOWNLOAD ORGANIZATION DOCUMENT
-    // ============================================================
 
     getOrganizationDocumentDownloadUrl(
         accountId: number,
@@ -509,10 +412,6 @@ export class AccountService {
             `/organization-documents/${documentId}/download`;
     }
 
-
-    // ============================================================
-    // GET ORGANIZATION DOCUMENT AS BLOB
-    // ============================================================
 
     viewOrganizationDocument(
         accountId: number,
@@ -532,10 +431,6 @@ export class AccountService {
     }
 
 
-    // ============================================================
-    // SAVE ORGANIZATION PEOPLE
-    // ============================================================
-
     saveOrganizationPeople(
         accountId: number,
         people: any[]
@@ -549,4 +444,9 @@ export class AccountService {
             }
         );
     }
+
+
+    
+    
+    
 }

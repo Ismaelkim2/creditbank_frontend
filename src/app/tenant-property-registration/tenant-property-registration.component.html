@@ -1,0 +1,675 @@
+
+<div class="property-registration-page container-fluid py-4">
+
+  <!-- PAGE HEADING -->
+  <div class="page-heading d-flex flex-wrap justify-content-between align-items-center gap-3 mb-4">
+
+    <div class="d-flex align-items-center gap-3">
+      <div class="heading-icon">
+        <i class="fa-solid fa-building"></i>
+      </div>
+
+      <div>
+        <div class="section-eyebrow">PROPERTY MANAGEMENT</div>
+
+        <h2 class="page-title mb-1">
+          {{ isEditMode ? 'Edit Property' : 'Register Property' }}
+        </h2>
+
+        <p class="page-subtitle mb-0">
+          {{
+            isEditMode
+              ? 'Update the property information and photograph.'
+              : 'Add a property to your rental portfolio.'
+          }}
+        </p>
+      </div>
+    </div>
+
+    <button
+      type="button"
+      class="btn btn-outline-primary"
+      (click)="goToProperties()">
+
+      <i class="fa-solid fa-list me-2"></i>
+      View Properties
+    </button>
+
+  </div>
+
+  <!-- LOADING PROPERTY -->
+  <div
+    *ngIf="loadingProperty"
+    class="alert alert-info d-flex align-items-center gap-2"
+    role="status">
+
+    <span
+      class="spinner-border spinner-border-sm"
+      aria-hidden="true">
+    </span>
+
+    <span>Loading property information...</span>
+  </div>
+
+  <!-- SUCCESS FEEDBACK -->
+  <div
+    *ngIf="successMessage"
+    class="alert alert-success d-flex align-items-start gap-2"
+    role="status">
+
+    <i class="fa-solid fa-circle-check mt-1"></i>
+
+    <div>{{ successMessage }}</div>
+  </div>
+
+  <!-- ERROR FEEDBACK -->
+  <div
+    *ngIf="errorMessage"
+    class="alert alert-danger d-flex align-items-start gap-2"
+    role="alert">
+
+    <i class="fa-solid fa-circle-exclamation mt-1"></i>
+
+    <div>{{ errorMessage }}</div>
+  </div>
+
+  <div class="row g-4">
+
+    <!-- PROPERTY FORM -->
+    <div class="col-12 col-xl-8">
+
+      <div class="form-panel">
+
+        <!-- PANEL HEADER -->
+        <div class="panel-heading">
+
+          <div>
+            <h5 class="mb-1">
+              {{
+                isEditMode
+                  ? 'Update property information'
+                  : 'Property information'
+              }}
+            </h5>
+
+            <p class="text-muted mb-0">
+              Fields marked with * are mandatory.
+            </p>
+          </div>
+
+          <span class="form-step">
+            <i class="fa-solid fa-clipboard-list me-1"></i>
+
+            {{ isEditMode ? 'Edit property' : 'Property details' }}
+          </span>
+
+        </div>
+
+        <form
+          [formGroup]="propertyForm"
+          (ngSubmit)="submitProperty()"
+          novalidate>
+
+          <fieldset
+            [disabled]="submitting || loadingProperty"
+            class="border-0 p-0 m-0">
+
+            <!-- IDENTIFICATION -->
+            <div class="form-section">
+
+              <h6 class="form-section-title">
+                <i class="fa-solid fa-fingerprint me-2"></i>
+                Identification
+              </h6>
+
+              <div class="row g-3">
+
+                <!-- PROPERTY CODE -->
+                <div class="col-12 col-md-6">
+
+                  <label for="propertyCode" class="form-label">
+                    Property code <span class="required">*</span>
+                  </label>
+
+                  <input
+                    id="propertyCode"
+                    type="text"
+                    class="form-control"
+                    formControlName="propertyCode"
+                    maxlength="40"
+                    placeholder="e.g. NKR-RES-001"
+                    autocomplete="off"
+                    [class.is-invalid]="isInvalid('propertyCode')">
+
+                  <div
+                    class="invalid-feedback"
+                    *ngIf="isInvalid('propertyCode')">
+
+                    <span *ngIf="f['propertyCode'].errors?.['required']">
+                      Property code is required.
+                    </span>
+
+                    <span *ngIf="f['propertyCode'].errors?.['maxlength']">
+                      Maximum 40 characters.
+                    </span>
+
+                    <span *ngIf="f['propertyCode'].errors?.['pattern']">
+                      Use letters, numbers, hyphens or underscores only.
+                    </span>
+
+                  </div>
+
+                  <small class="field-hint">
+                    Use a unique reference for this property.
+                  </small>
+
+                </div>
+
+                <!-- PROPERTY NAME -->
+                <div class="col-12 col-md-6">
+
+                  <label for="name" class="form-label">
+                    Property name <span class="required">*</span>
+                  </label>
+
+                  <input
+                    id="name"
+                    type="text"
+                    class="form-control"
+                    formControlName="name"
+                    maxlength="160"
+                    placeholder="e.g. Greenview Apartments"
+                    [class.is-invalid]="isInvalid('name')">
+
+                  <div
+                    class="invalid-feedback"
+                    *ngIf="isInvalid('name')">
+
+                    <span *ngIf="f['name'].errors?.['required']">
+                      Property name is required.
+                    </span>
+
+                    <span *ngIf="f['name'].errors?.['maxlength']">
+                      Maximum 160 characters.
+                    </span>
+
+                    <span *ngIf="f['name'].errors?.['pattern']">
+                      Enter a valid property name.
+                    </span>
+
+                  </div>
+
+                </div>
+
+                <!-- PROPERTY TYPE -->
+                <div class="col-12 col-md-6">
+
+                  <label for="propertyType" class="form-label">
+                    Property type <span class="required">*</span>
+                  </label>
+
+                  <select
+                    id="propertyType"
+                    class="form-select"
+                    formControlName="propertyType"
+                    [class.is-invalid]="isInvalid('propertyType')">
+
+                    <option value="">Select property type</option>
+
+                    <option
+                      *ngFor="let type of propertyTypes"
+                      [value]="type.value">
+
+                      {{ type.label }}
+
+                    </option>
+
+                  </select>
+
+                  <div
+                    class="invalid-feedback"
+                    *ngIf="isInvalid('propertyType')">
+
+                    Select a property type.
+
+                  </div>
+
+                </div>
+
+              </div>
+
+            </div>
+
+            <hr class="section-divider">
+
+            <!-- LOCATION -->
+            <div class="form-section">
+
+              <h6 class="form-section-title">
+                <i class="fa-solid fa-location-dot me-2"></i>
+                Location and address
+              </h6>
+
+              <div class="row g-3">
+
+                <!-- COUNTY -->
+                <div class="col-12 col-md-6">
+
+                  <label for="county" class="form-label">
+                    County
+                  </label>
+
+                  <input
+                    id="county"
+                    type="text"
+                    class="form-control"
+                    formControlName="county"
+                    maxlength="100"
+                    placeholder="e.g. Nakuru"
+                    [class.is-invalid]="isInvalid('county')">
+
+                  <div
+                    class="text-danger small mt-1"
+                    *ngIf="isInvalid('county')">
+
+                    County cannot exceed 100 characters.
+
+                  </div>
+
+                </div>
+
+                <!-- TOWN -->
+                <div class="col-12 col-md-6">
+
+                  <label for="town" class="form-label">
+                    Town / locality
+                  </label>
+
+                  <input
+                    id="town"
+                    type="text"
+                    class="form-control"
+                    formControlName="town"
+                    maxlength="100"
+                    placeholder="e.g. Nakuru CBD"
+                    [class.is-invalid]="isInvalid('town')">
+
+                  <div
+                    class="text-danger small mt-1"
+                    *ngIf="isInvalid('town')">
+
+                    Town cannot exceed 100 characters.
+
+                  </div>
+
+                </div>
+
+                <!-- PHYSICAL ADDRESS -->
+                <div class="col-12">
+
+                  <label for="address" class="form-label">
+                    Physical address
+                  </label>
+
+                  <input
+                    id="address"
+                    type="text"
+                    class="form-control"
+                    formControlName="address"
+                    maxlength="255"
+                    placeholder="Street, road, estate or landmark"
+                    [class.is-invalid]="isInvalid('address')">
+
+                  <div
+                    class="text-danger small mt-1"
+                    *ngIf="isInvalid('address')">
+
+                    Address cannot exceed 255 characters.
+
+                  </div>
+
+                </div>
+
+              </div>
+
+            </div>
+
+            <hr class="section-divider">
+
+            <!-- ADDITIONAL INFORMATION -->
+            <div class="form-section">
+
+              <h6 class="form-section-title">
+                <i class="fa-solid fa-align-left me-2"></i>
+                Additional information
+              </h6>
+
+              <!-- PROPERTY IMAGE -->
+              <div class="form-section property-image-section">
+
+                <h6 class="form-section-title">
+
+                  <i class="fa-solid fa-camera me-2"></i>
+
+                  Property photograph
+
+                  <span class="optional-label ms-2">
+                    OPTIONAL
+                  </span>
+
+                </h6>
+
+                <p class="text-muted small mb-3">
+                  {{
+                    isEditMode
+                      ? 'Keep the existing photograph or select a new one to replace it.'
+                      : 'Upload a photo of the property to make it easier to identify in your portfolio.'
+                  }}
+                </p>
+
+                <div
+                  class="property-image-upload"
+                  [class.has-image]="!!imagePreview">
+
+                  <!-- IMAGE PREVIEW -->
+                  <div
+                    class="property-image-preview"
+                    *ngIf="imagePreview">
+
+                    <img
+                      [src]="imagePreview"
+                      alt="Property photograph preview">
+
+                    <button
+  type="button"
+  class="remove-image-btn"
+  (click)="removeImage(propertyImageInput)"
+  [disabled]="submitting || loadingProperty"
+  aria-label="Remove photograph and choose another">
+
+  <i class="fa-solid fa-xmark"></i>
+</button>
+
+                  </div>
+
+                  <!-- EMPTY UPLOAD STATE -->
+                  <label
+                    class="property-image-dropzone"
+                    for="propertyImage"
+                    *ngIf="!imagePreview">
+
+                    <div class="upload-icon">
+                      <i class="fa-solid fa-cloud-arrow-up"></i>
+                    </div>
+
+                    <strong>
+                      {{ isEditMode ? 'Upload replacement photograph' : 'Upload property photograph' }}
+                    </strong>
+
+                    <span>
+                      Click to browse or choose an image from your device
+                    </span>
+
+                    <small>
+                      JPG, JPEG, PNG or WEBP · Maximum 5 MB
+                    </small>
+
+                  </label>
+
+                  <!-- FILE INPUT -->
+                 <input
+  #propertyImageInput
+  id="propertyImage"
+  type="file"
+  class="visually-hidden"
+  accept="image/jpeg,image/png,image/webp"
+  (change)="onImageSelected($event)"
+  [disabled]="submitting || loadingProperty">
+
+                  <!-- SELECTED IMAGE DETAILS -->
+                  <div
+                    class="image-file-details"
+                    *ngIf="selectedImage">
+
+                    <div class="d-flex align-items-center gap-2">
+
+                      <i class="fa-solid fa-file-image text-primary"></i>
+
+                      <div class="flex-grow-1 overflow-hidden">
+
+                        <strong class="d-block text-truncate">
+                          {{ selectedImage.name }}
+                        </strong>
+
+                        <small class="text-muted">
+                          {{ (selectedImage.size / 1024 / 1024).toFixed(2) }} MB
+                        </small>
+
+                      </div>
+
+                  <button
+  type="button"
+  class="btn btn-sm btn-outline-primary"
+  (click)="removeImage(propertyImageInput)"
+  [disabled]="submitting || loadingProperty">
+
+  <i class="fa-solid fa-trash-can me-1"></i>
+  Remove
+</button>
+
+                    </div>
+
+                  </div>
+
+                </div>
+
+                <!-- IMAGE ERROR -->
+                <div
+                  class="text-danger small mt-2"
+                  *ngIf="imageError">
+
+                  <i class="fa-solid fa-circle-exclamation me-1"></i>
+
+                  {{ imageError }}
+
+                </div>
+
+                <small class="field-hint d-block mt-2">
+
+                  {{
+                    isEditMode
+                      ? 'If you do not select a replacement, the existing photograph will be retained.'
+                      : 'You can register the property without a photograph and add one later.'
+                  }}
+
+                </small>
+
+              </div>
+
+              <!-- DESCRIPTION -->
+              <div class="mt-4">
+
+                <label for="description" class="form-label">
+                  Property description
+                </label>
+
+                <textarea
+                  id="description"
+                  class="form-control"
+                  formControlName="description"
+                  rows="4"
+                  maxlength="5000"
+                  placeholder="Add useful information about the property..."
+                  [class.is-invalid]="isInvalid('description')">
+                </textarea>
+
+                <div class="d-flex justify-content-between flex-wrap gap-2 mt-1">
+
+                  <small class="field-hint">
+                    Optional. Include relevant property details.
+                  </small>
+
+                  <small class="field-hint">
+                    {{ f['description'].value?.length || 0 }}/5000
+                  </small>
+
+                </div>
+
+                <div
+                  class="text-danger small mt-1"
+                  *ngIf="isInvalid('description')">
+
+                  Description cannot exceed 5,000 characters.
+
+                </div>
+
+              </div>
+
+            </div>
+
+          </fieldset>
+
+          <!-- FORM ACTIONS -->
+          <div class="form-actions d-flex flex-wrap justify-content-end gap-2 mt-4">
+
+            <button
+              type="button"
+              class="btn btn-light border"
+              [disabled]="submitting || loadingProperty"
+              (click)="resetForm()">
+
+              <i class="fa-solid fa-rotate-left me-2"></i>
+
+              {{ isEditMode ? 'Reset Changes' : 'Reset Form' }}
+
+            </button>
+
+            <button
+              type="submit"
+              class="btn btn-primary px-4"
+              [disabled]="submitting || loadingProperty">
+
+              <span
+                *ngIf="submitting"
+                class="spinner-border spinner-border-sm me-2"
+                aria-hidden="true">
+              </span>
+
+              <i
+                *ngIf="!submitting"
+                class="fa-solid fa-floppy-disk me-2">
+              </i>
+
+              {{
+                submitting
+                  ? (isEditMode ? 'Updating...' : 'Registering...')
+                  : (isEditMode ? 'Save Changes' : 'Register Property')
+              }}
+
+            </button>
+
+          </div>
+
+        </form>
+
+      </div>
+
+    </div>
+
+    <!-- GUIDANCE PANEL -->
+    <div class="col-12 col-xl-4">
+
+      <aside class="guidance-panel">
+
+        <div class="guidance-icon">
+          <i class="fa-solid fa-lightbulb"></i>
+        </div>
+
+        <h5>
+          {{ isEditMode ? 'Property update guidance' : 'Before you register' }}
+        </h5>
+
+        <p>
+          {{
+            isEditMode
+              ? 'Review the property information carefully before saving your changes.'
+              : 'Ensure the property information is accurate. You can add rental units after the property has been registered.'
+          }}
+        </p>
+
+        <div class="guidance-item">
+
+          <i class="fa-solid fa-check-circle"></i>
+
+          <div>
+            <strong>Unique property code</strong>
+
+            <span>
+              Use an identifiable internal reference.
+            </span>
+          </div>
+
+        </div>
+
+        <div class="guidance-item">
+
+          <i class="fa-solid fa-check-circle"></i>
+
+          <div>
+            <strong>Accurate location</strong>
+
+            <span>
+              Capture the county, town and address where available.
+            </span>
+          </div>
+
+        </div>
+
+        <div class="guidance-item">
+
+          <i class="fa-solid fa-check-circle"></i>
+
+          <div>
+            <strong>Correct classification</strong>
+
+            <span>
+              Select the property type supported by the system.
+            </span>
+          </div>
+
+        </div>
+
+        <div class="guidance-item">
+
+          <i class="fa-solid fa-check-circle"></i>
+
+          <div>
+            <strong>Property photograph</strong>
+
+            <span>
+              {{
+                isEditMode
+                  ? 'Keep the existing photograph or upload a replacement.'
+                  : 'A photograph is optional but helps identify the property.'
+              }}
+            </span>
+          </div>
+
+        </div>
+
+        <div class="security-note">
+
+          <i class="fa-solid fa-shield-halved me-2"></i>
+
+          Property ownership should be assigned by the authenticated
+          backend user, not supplied by the browser.
+
+        </div>
+
+      </aside>
+
+    </div>
+
+  </div>
+
+</div>

@@ -1,4 +1,4 @@
 export const environment = {
   production: true,
-  apiUrl: 'https://credit-management.fly.dev/api'
+  apiUrl: 'https://credicore-backend.onrender.com/api'
 };

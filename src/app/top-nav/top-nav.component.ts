@@ -40,6 +40,8 @@ darkMode = false;
   currentPage = 1;
 pageSize = 10;
 
+uploadingProfileImage = false;
+
 portfolio = 0;
 
   private notificationSub?: Subscription;
@@ -266,37 +268,68 @@ this.notificationService
     this.router.navigate(['/login']);
   }
 
-  private loadUserDetails(): void {
-    const user = this.authService.getUser();
+ private loadUserDetails(): void {
 
-    if (!user) {
-      this.loadFromBackend();
-      return;
-    }
+  const user = this.authService.getUser();
 
-    this.username = user.name || '';
-    this.userRole = user.role || 'Bank Officer';
+  if (!user) {
+    this.loadFromBackend();
+    return;
+  }
 
-    if (user.nationalId) {
-      this.accountService.getByNationalId(user.nationalId).subscribe({
+  this.username = user.name || '';
+  this.userRole = user.role || 'Bank Officer';
+
+  // Always prioritize the user's uploaded profile photo.
+  this.imageUrl =
+    user.userImageUrl ||
+    user.imageUrl ||
+    'assets/default-user.png';
+
+  // Only fetch account photo as a fallback.
+  if (user.nationalId && !user.userImageUrl && !user.imageUrl) {
+
+    this.accountService.getByNationalId(user.nationalId)
+      .subscribe({
+
         next: (res: any) => {
-          this.imageUrl = res?.imageUrl || 'assets/default-user.png';
+          this.imageUrl =
+            res?.imageUrl || 'assets/default-user.png';
         },
-        error: () => this.imageUrl = 'assets/default-user.png'
+
+        error: () => {
+          this.imageUrl = 'assets/default-user.png';
+        }
+
       });
-    }
+
   }
 
-  private loadFromBackend(): void {
-    this.authService.getLoggedInUser().subscribe({
-      next: (res: any) => {
-        this.username = res?.fullName || res?.name || '';
-        this.userRole = res?.role || 'Bank Officer';
-        this.imageUrl = res?.imageUrl || 'assets/default-user.png';
-      },
-      error: () => this.imageUrl = 'assets/default-user.png'
-    });
-  }
+}
+
+ private loadFromBackend(): void {
+
+  this.authService.getLoggedInUser().subscribe({
+
+    next: (res: any) => {
+
+      this.username = res?.fullName || res?.name || '';
+      this.userRole = res?.role || 'Bank Officer';
+
+      this.imageUrl =
+        res?.userImageUrl ||
+        res?.imageUrl ||
+        'assets/default-user.png';
+
+    },
+
+    error: () => {
+      this.imageUrl = 'assets/default-user.png';
+    }
+
+  });
+
+}
 
   markAllNotificationsRead(): void {
 
@@ -455,6 +488,98 @@ previousPage(): void {
   if (this.currentPage > 1) {
     this.currentPage--;
   }
+}
+
+onTopNavImageSelected(event: Event): void {
+
+  const input = event.target as HTMLInputElement;
+  const file = input.files?.[0];
+
+  if (!file) {
+    return;
+  }
+
+  const allowedTypes = [
+    'image/jpeg',
+    'image/png',
+    'image/webp'
+  ];
+
+  if (!allowedTypes.includes(file.type)) {
+    this.toastMessage = 'Please select a JPG, PNG or WEBP image.';
+    this.showToast = true;
+    input.value = '';
+    return;
+  }
+
+  if (file.size > 5 * 1024 * 1024) {
+    this.toastMessage = 'Image must not exceed 5 MB.';
+    this.showToast = true;
+    input.value = '';
+    return;
+  }
+
+  if (this.uploadingProfileImage) {
+    input.value = '';
+    return;
+  }
+
+  this.uploadingProfileImage = true;
+
+  this.authService.uploadProfileImage(file).subscribe({
+
+    next: (response: any) => {
+
+      const uploadedImage =
+        response?.userImageUrl || response?.imageUrl;
+
+      if (!uploadedImage) {
+        this.toastMessage =
+          'Upload completed, but no image URL was returned.';
+        this.showToast = true;
+        this.uploadingProfileImage = false;
+        input.value = '';
+        return;
+      }
+
+      // Update the navigation photo immediately.
+      this.imageUrl = uploadedImage;
+
+      // Update the authenticated user's local session.
+      this.authService.updateProfileImage(uploadedImage);
+
+      this.toastMessage = 'Profile photo updated successfully.';
+      this.showToast = true;
+
+      this.uploadingProfileImage = false;
+      input.value = '';
+
+      setTimeout(() => {
+        this.showToast = false;
+      }, 3000);
+
+    },
+
+    error: (error: any) => {
+
+      console.error('Profile photo upload failed:', error);
+
+      this.toastMessage =
+        error?.error?.message ||
+        'Unable to upload profile photo. Please try again.';
+
+      this.showToast = true;
+      this.uploadingProfileImage = false;
+      input.value = '';
+
+      setTimeout(() => {
+        this.showToast = false;
+      }, 4000);
+
+    }
+
+  });
+
 }
 
 }

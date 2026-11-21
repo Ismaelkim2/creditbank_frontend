@@ -264,18 +264,55 @@
     <!-- USER PROFILE -->
     <div class="user-menu profile-men" (click)="$event.stopPropagation()">
       <div class="user-info" (click)="toggleDropdown()">
-        <img [src]="imageUrl" class="avatar shadow-lg" alt="User Image">
-        <div class="user-details d-none d-md-flex">
-          <span class="username">{{ username }}</span>
-          <span class="role">{{ userRole }}</span>
-        </div>
-        <i class="fa fa-chevron-down chevron"></i>
-      </div>
+
+  <!-- Clickable Profile Photo -->
+  <label
+    for="topNavProfileImage"
+    class="avatar-edit-trigger"
+    title="Click to change profile photo"
+    (click)="$event.stopPropagation()">
+
+    <img
+      [src]="imageUrl"
+      class="avatar shadow-lg"
+      alt="User Image">
+
+    <span class="avatar-edit-icon">
+      <i class="fas fa-camera"></i>
+    </span>
+
+    <span
+      *ngIf="uploadingProfileImage"
+      class="avatar-upload-spinner">
+      <i class="fas fa-spinner fa-spin"></i>
+    </span>
+
+  </label>
+
+  <!-- Hidden Image Input -->
+  <input
+    id="topNavProfileImage"
+    type="file"
+    hidden
+    accept=".jpg,.jpeg,.png,.webp,image/jpeg,image/png,image/webp"
+    [disabled]="uploadingProfileImage"
+    (change)="onTopNavImageSelected($event)">
+
+  <div class="user-details d-none d-md-flex">
+    <span class="username">{{ username }}</span>
+    <span class="role">{{ userRole }}</span>
+  </div>
+
+  <i class="fa fa-chevron-down chevron"></i>
+
+</div>
 
       <!-- Dropdown -->
       <div class="dropdown-advanced" *ngIf="showDropdown">
-        <div class="dropdown-item" (click)="profile()"><i class="fa fa-user-circle me-2"></i>Profile</div>
-        <div class="dropdown-item"><i class="fa fa-cog me-2"></i>Preferences</div>
+<div class="dropdown-item" (click)="profile()">
+  <i class="fa fa-user-edit me-2"></i>
+  Edit Profile
+</div>        <div class="dropdown-item"><i class="fa fa-cog me-2"></i>Preferences</div>
         <div class="dropdown-divider"></div>
         <div class="dropdown-item text-danger" (click)="signOut()">
           <i class="fa fa-sign-out-alt me-2"></i>Sign Out

@@ -1,7 +1,7 @@
+
 import { Component, OnInit } from '@angular/core';
 import { AuthService } from '../services/auth-service.service';
 import { AccountService } from '../services/account.service';
-import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
 import { Router } from '@angular/router';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { environment } from '../../environments/environment';
@@ -21,7 +21,7 @@ export class ProfileComponent implements OnInit {
     branch: '',
     accountNumber: '',
     lastLogin: '',
-    imageUrl: 'assets/default-user.png' as string | SafeUrl
+    imageUrl: 'assets/default-user.png'
   };
 
   // UI states
@@ -31,8 +31,8 @@ export class ProfileComponent implements OnInit {
   changingPassword = false;
 
   // Image upload
-  imagePreview: SafeUrl | null = null;
-  uploadProgress: number = -1;
+  imagePreview: string | null = null;
+  uploadProgress = -1;
 
   // Activity
   activities: any[] = [];
@@ -50,14 +50,11 @@ export class ProfileComponent implements OnInit {
   changing = false;
 
   notifications: any[] = [];
-notificationsCount = 0;
-
-  
+  notificationsCount = 0;
 
   constructor(
     public authService: AuthService,
     private accountService: AccountService,
-    private sanitizer: DomSanitizer,
     private router: Router,
     private fb: FormBuilder
   ) {}
@@ -67,12 +64,10 @@ notificationsCount = 0;
     this.loadUserDetails();
   }
 
+  /** ================= INIT FORMS ================= */
 
-
-  /** -------------------------------------------------------------
-   *  INIT FORMS
-   * ------------------------------------------------------------- */
   private initForms(): void {
+
     this.editForm = this.fb.group({
       name: ['', Validators.required],
       phoneNumber: [''],
@@ -93,10 +88,10 @@ notificationsCount = 0;
     });
   }
 
-  /** -------------------------------------------------------------
-   *  LOAD USER DETAILS
-   * ------------------------------------------------------------- */
+  /** ================= LOAD USER DETAILS ================= */
+
   private loadUserDetails(): void {
+
     const storedUser = this.authService.getUser();
 
     if (storedUser?.nationalId) {
@@ -116,166 +111,240 @@ notificationsCount = 0;
     });
   }
 
-private patchUser(data: any): void {
+  private patchUser(data: any): void {
 
-  this.user = {
-    ...this.user,
-    ...data,
-    imageUrl: data.imageUrl || 'assets/default-user.png'
-  };
+    this.user = {
+      ...this.user,
+      ...data,
 
-console.log('User from Auth:', data);
-console.log('Image URL:', data.imageUrl);
-console.log('Profile Image:', this.profileImage);
+      // User profile photo takes priority.
+      imageUrl:
+        data.userImageUrl ||
+        data.imageUrl ||
+        'assets/default-user.png'
+    };
 
-  //==================================================
-  // SECURITY
-  //==================================================
+    // SECURITY
+    this.user.failedAttempts =
+      this.user.failedAttempts ?? 0;
 
-  this.user.failedAttempts =
-    this.user.failedAttempts ?? 0;
+    this.user.mfaEnabled =
+      this.user.mfaEnabled ?? true;
 
-  this.user.mfaEnabled =
-    this.user.mfaEnabled ?? true;
+    this.user.passwordChangedAt =
+      this.user.passwordChangedAt ?? new Date();
 
-  this.user.passwordChangedAt =
-    this.user.passwordChangedAt ?? new Date();
+    // COMPLIANCE
+    this.user.accountStatus =
+      this.user.accountStatus ?? 'ACTIVE';
 
-  //==================================================
-  // COMPLIANCE
-  //==================================================
+    this.user.kycStatus =
+      this.user.kycStatus ?? 'Verified';
 
-  this.user.accountStatus =
-    this.user.accountStatus ?? 'ACTIVE';
+    this.user.riskLevel =
+      this.user.riskLevel ?? 'LOW';
 
-  this.user.kycStatus =
-    this.user.kycStatus ?? 'Verified';
+    this.user.complianceScore =
+      this.user.complianceScore ?? 100;
 
-  this.user.riskLevel =
-    this.user.riskLevel ?? 'LOW';
+    this.user.createdDate =
+      this.user.createdDate ?? new Date('2024-03-12');
 
-  this.user.complianceScore =
-    this.user.complianceScore ?? 100;
+    this.user.kycCompletedDate =
+      this.user.kycCompletedDate ?? new Date('2024-03-13');
 
-  this.user.createdDate =
-    this.user.createdDate ?? new Date('2024-03-12');
+    this.user.updatedAt =
+      this.user.updatedAt ?? new Date();
 
-  this.user.kycCompletedDate =
-    this.user.kycCompletedDate ?? new Date('2024-03-13');
+    this.user.createdBy =
+      this.user.createdBy ?? 'System Administrator';
 
-  this.user.updatedAt =
-    this.user.updatedAt ?? new Date();
+    this.user.approvedBy =
+      this.user.approvedBy ?? 'Branch Manager';
 
-  this.user.createdBy =
-    this.user.createdBy ?? 'System Administrator';
+    this.user.modifiedBy =
+      this.user.modifiedBy ?? 'Profile Owner';
 
-  this.user.approvedBy =
-    this.user.approvedBy ?? 'Branch Manager';
-
-  this.user.modifiedBy =
-    this.user.modifiedBy ?? 'Profile Owner';
-
-  //==================================================
-  // ACTIVE SESSIONS
-  //==================================================
-
-  this.user.sessions =
-    this.user.sessions ?? [
-
-      {
-        device: 'Desktop',
-        browser: 'Chrome 138',
-        location: 'Nakuru, Kenya',
-        lastSeen: 'Now',
-        current: true
-      },
-
-      {
-        device: 'Mobile',
-        browser: 'Android App',
-        location: 'Nairobi',
-        lastSeen: 'Yesterday',
-        current: false
-      }
-
-    ];
-
-  //==================================================
-  // PERMISSIONS
-  //==================================================
-
-  this.user.permissions =
-    this.user.permissions ?? [
-
-      'Loan Approval',
-      'Loan Review',
-      'Customer Management',
-      'Account Opening',
-      'Credit Scoring',
-      'Reporting',
-      'Notifications',
-      'Profile Management'
-
-    ];
-
-  this.editForm.patchValue({
-
-    name: this.user.name,
-    phoneNumber: this.user.phoneNumber,
-    branch: this.user.branch
-
-  });
-
-}
-
-private getAccountDetails(nationalId: string): void {
-
-  this.accountService
-    .getAccountDetailsByNationalId(nationalId)
-    .subscribe({
-      next: (acct: any) => {
-
-        if (acct) {
-          this.user.accountNumber = acct.accountNumber;
-          this.user.branch = acct.branch;
-          this.user.phoneNumber = acct.phoneNumber;
-          this.user.imageUrl = acct.imageUrl;
+    // ACTIVE SESSIONS
+    this.user.sessions =
+      this.user.sessions ?? [
+        {
+          device: 'Desktop',
+          browser: 'Chrome 138',
+          location: 'Nakuru, Kenya',
+          lastSeen: 'Now',
+          current: true
+        },
+        {
+          device: 'Mobile',
+          browser: 'Android App',
+          location: 'Nairobi',
+          lastSeen: 'Yesterday',
+          current: false
         }
+      ];
 
-        this.loading = false;
-      },
+    // PERMISSIONS
+    this.user.permissions =
+      this.user.permissions ?? [
+        'Loan Approval',
+        'Loan Review',
+        'Customer Management',
+        'Account Opening',
+        'Credit Scoring',
+        'Reporting',
+        'Notifications',
+        'Profile Management'
+      ];
 
-      error: () => {
-        this.loading = false;
-      }
+    this.editForm.patchValue({
+      name: this.user.name,
+      phoneNumber: this.user.phoneNumber,
+      branch: this.user.branch
     });
-
-}
-
-onImageSelected(event: any): void {
-
-  const file = event.target.files[0];
-
-  if (!file) {
-    return;
   }
 
-  const reader = new FileReader();
+  /** ================= ACCOUNT DETAILS ================= */
 
-  reader.onload = () => {
-    this.imagePreview =
-      this.sanitizer.bypassSecurityTrustUrl(
-        reader.result as string
-      );
-  };
+  private getAccountDetails(nationalId: string): void {
 
-  reader.readAsDataURL(file);
+    this.accountService
+      .getAccountDetailsByNationalId(nationalId)
+      .subscribe({
+        next: (acct: any) => {
 
-}
+          if (acct) {
 
-  /** -------------------------------------------------------------
-   *  EDIT PROFILE
-   * ------------------------------------------------------------- */
+            this.user.accountNumber = acct.accountNumber;
+            this.user.branch = acct.branch;
+            this.user.phoneNumber = acct.phoneNumber;
+
+            // Never overwrite an uploaded user profile photo
+            // with the account photograph.
+            this.user.imageUrl =
+              this.user.userImageUrl ||
+              acct.imageUrl ||
+              this.user.imageUrl;
+          }
+
+          this.loading = false;
+        },
+
+        error: () => {
+          this.loading = false;
+        }
+      });
+  }
+
+  /** ================= CLOUDINARY PROFILE PHOTO UPLOAD ================= */
+
+  onImageSelected(event: Event): void {
+
+    const input = event.target as HTMLInputElement;
+    const file = input.files?.[0];
+
+    if (!file) {
+      return;
+    }
+
+    // Validate file size (maximum 5 MB).
+    if (file.size > 5 * 1024 * 1024) {
+      alert('Image must not exceed 5 MB.');
+      input.value = '';
+      return;
+    }
+
+    // Validate supported image types.
+    const allowedTypes = [
+      'image/jpeg',
+      'image/png',
+      'image/webp'
+    ];
+
+    if (!allowedTypes.includes(file.type.toLowerCase())) {
+      alert('Only JPG, PNG and WEBP images are allowed.');
+      input.value = '';
+      return;
+    }
+
+    // Prevent another upload while one is in progress.
+    if (this.uploadProgress === 0) {
+      input.value = '';
+      return;
+    }
+
+    // Show an immediate local preview.
+    const reader = new FileReader();
+
+    reader.onload = () => {
+
+      this.imagePreview = reader.result as string;
+
+      // Begin Cloudinary upload after preview is ready.
+      this.uploadProgress = 0;
+
+      this.authService.uploadProfileImage(file).subscribe({
+
+        next: (response: any) => {
+
+          const imageUrl = response?.userImageUrl;
+
+          if (!imageUrl) {
+            this.imagePreview = null;
+            this.uploadProgress = -1;
+
+            alert('Upload completed, but no image URL was returned.');
+            return;
+          }
+
+          // Update the component.
+          this.user.userImageUrl = imageUrl;
+          this.user.imageUrl = imageUrl;
+
+          // Update local authentication session.
+          this.authService.updateProfileImage(imageUrl);
+
+          // Display the permanent Cloudinary image.
+          this.imagePreview = null;
+
+          this.uploadProgress = 100;
+
+          console.log('Profile photo uploaded:', imageUrl);
+        },
+
+        error: (error) => {
+
+          console.error('Profile image upload failed:', error);
+
+          this.imagePreview = null;
+          this.uploadProgress = -1;
+
+          const message =
+            error?.error?.message ||
+            error?.error?.detail ||
+            'Unable to upload your profile photo. Please try again.';
+
+          alert(message);
+        }
+      });
+    };
+
+    reader.onerror = () => {
+
+      this.imagePreview = null;
+      this.uploadProgress = -1;
+
+      alert('Unable to read the selected image.');
+    };
+
+    reader.readAsDataURL(file);
+
+    // Allow selecting the same file again later.
+    input.value = '';
+  }
+
+  /** ================= EDIT PROFILE ================= */
+
   openEditModal(): void {
     this.editing = true;
   }
@@ -285,6 +354,7 @@ onImageSelected(event: any): void {
   }
 
   saveProfile(): void {
+
     if (this.editForm.invalid) return;
 
     this.saving = true;
@@ -292,34 +362,43 @@ onImageSelected(event: any): void {
     const payload = this.editForm.value;
 
     this.accountService.updateProfile(payload).subscribe({
+
       next: () => {
+
         this.saving = false;
         this.editing = false;
+
         Object.assign(this.user, payload);
       },
-      error: () => (this.saving = false)
+
+      error: () => {
+        this.saving = false;
+      }
     });
   }
 
-  /** -------------------------------------------------------------
-   *  CHANGE PASSWORD
-   * ------------------------------------------------------------- */
+  /** ================= CHANGE PASSWORD ================= */
+
   openChangePasswordModal(): void {
     this.changingPassword = true;
   }
 
-LoanSetting(): void {
-  this.router.navigate(['/app/settings']);
-}
+  LoanSetting(): void {
+    this.router.navigate(['/app/settings']);
+  }
 
   closeChangePasswordModal(): void {
     this.changingPassword = false;
   }
 
   changePassword(): void {
+
     if (this.passwordForm.invalid) return;
 
-    if (this.passwordForm.value.newPassword !== this.passwordForm.value.confirmPassword) {
+    if (
+      this.passwordForm.value.newPassword !==
+      this.passwordForm.value.confirmPassword
+    ) {
       alert('Passwords do not match!');
       return;
     }
@@ -327,55 +406,80 @@ LoanSetting(): void {
     this.changing = true;
 
     this.accountService.changePassword(this.passwordForm.value).subscribe({
+
       next: () => {
+
         this.changing = false;
         this.changingPassword = false;
       },
-      error: () => (this.changing = false)
+
+      error: () => {
+        this.changing = false;
+      }
     });
   }
 
-  /** -------------------------------------------------------------
-   *  ACTIVITY PANEL
-   * ------------------------------------------------------------- */
+  /** ================= ACTIVITY PANEL ================= */
+
   fetchActivity(): void {
+
     this.activityPage = 0;
     this.activities = [];
     this.activityEnd = false;
+
     this.loadMoreActivities();
   }
 
   loadMoreActivities(): void {
+
     if (this.activityEnd) return;
 
     this.activityLoading = true;
 
-    this.accountService.getUserActivity(this.activityPage, this.activityQ).subscribe({
-      next: (resp) => {
-        if (resp.length === 0) {
-          this.activityEnd = true;
-        } else {
-          this.activities.push(...resp);
-          this.activityPage++;
+    this.accountService
+      .getUserActivity(this.activityPage, this.activityQ)
+      .subscribe({
+
+        next: (resp) => {
+
+          if (resp.length === 0) {
+
+            this.activityEnd = true;
+
+          } else {
+
+            this.activities.push(...resp);
+            this.activityPage++;
+          }
+
+          this.activityLoading = false;
+        },
+
+        error: () => {
+          this.activityLoading = false;
         }
-        this.activityLoading = false;
-      },
-      error: () => (this.activityLoading = false)
-    });
+      });
   }
 
-  /** -------------------------------------------------------------
-   *  BACK NAVIGATION
-   * ------------------------------------------------------------- */
+  /** ================= BACK NAVIGATION ================= */
+
   goBack(): void {
+
     const role = this.authService.getRole();
 
-    if (role === 'ADMIN') this.router.navigate(['/dashboard']);
-    else if (role === 'DATA_MANAGER') this.router.navigate(['/data-manager-dashboard']);
-    else this.router.navigate(['/applicant-dashboard']);
+    if (role === 'ADMIN') {
+      this.router.navigate(['/dashboard']);
+
+    } else if (role === 'DATA_MANAGER') {
+      this.router.navigate(['/data-manager-dashboard']);
+
+    } else {
+      this.router.navigate(['/applicant-dashboard']);
+    }
   }
 
-  /** ROLE ACCESSORS */
+  /** ================= ROLE ACCESSORS ================= */
+
   get isApplicant(): boolean {
     return this.authService.getRole() === 'APPLICANT';
   }
@@ -384,48 +488,62 @@ LoanSetting(): void {
     return this.authService.getRole() === 'ADMIN';
   }
 
-get profileImage(): string {
+  /** ================= PROFILE IMAGE DISPLAY ================= */
 
-  const img = this.imagePreview
-    ? this.imagePreview.toString()
-    : this.user.imageUrl;
+  get profileImage(): string {
 
-  if (!img) {
-    return 'assets/default-user.png';
-  }
+    const img =
+      this.imagePreview ||
+      this.user.imageUrl ||
+      this.user.userImageUrl;
 
-  if (img.startsWith('data:')) {
-    return img;
-  }
+    if (!img) {
+      return 'assets/default-user.png';
+    }
 
-  const backendOrigin = new URL(environment.apiUrl).origin;
-
-  try {
-
-    if (
-      img.startsWith('http://') ||
-      img.startsWith('https://')
-    ) {
-      const parsedUrl = new URL(img);
-
-      if (
-        parsedUrl.hostname === 'localhost' ||
-        parsedUrl.hostname === '127.0.0.1'
-      ) {
-        return `${backendOrigin}${parsedUrl.pathname}${parsedUrl.search}${parsedUrl.hash}`;
-      }
-
+    if (img.startsWith('data:')) {
       return img;
     }
 
-    return new URL(
-      img.replace(/^\/+/, ''),
-      `${backendOrigin}/`
-    ).toString();
+    try {
 
-  } catch (error) {
-    console.error('Unable to resolve profile image URL:', img, error);
-    return 'assets/default-user.png';
+      const backendOrigin = new URL(environment.apiUrl).origin;
+
+      if (
+        img.startsWith('http://') ||
+        img.startsWith('https://')
+      ) {
+
+        const parsedUrl = new URL(img);
+
+        // Legacy localhost URLs are redirected to the configured backend.
+        if (
+          parsedUrl.hostname === 'localhost' ||
+          parsedUrl.hostname === '127.0.0.1'
+        ) {
+          return `${backendOrigin}${parsedUrl.pathname}${parsedUrl.search}${parsedUrl.hash}`;
+        }
+
+        // Cloudinary HTTPS URLs are returned unchanged.
+        return img;
+      }
+
+      // Legacy relative image paths.
+      return new URL(
+        img.replace(/^\/+/, ''),
+        `${backendOrigin}/`
+      ).toString();
+
+    } catch (error) {
+
+      console.error(
+        'Unable to resolve profile image URL:',
+        img,
+        error
+      );
+
+      return 'assets/default-user.png';
+    }
   }
-}
+
 }

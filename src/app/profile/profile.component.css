@@ -2459,3 +2459,36 @@ UPLOAD BUTTON
     color: #fff;
 
 }
+
+
+/* Profile photo upload status */
+
+.upload-photo-btn.disabled {
+    opacity: 0.65;
+    cursor: not-allowed;
+    pointer-events: none;
+}
+
+.profile-upload-status,
+.profile-upload-success {
+    position: absolute;
+    left: 50%;
+    bottom: -35px;
+    transform: translateX(-50%);
+    white-space: nowrap;
+    font-size: 11px;
+    font-weight: 600;
+    padding: 5px 10px;
+    border-radius: 20px;
+    z-index: 5;
+}
+
+.profile-upload-status {
+    color: #075985;
+    background: #e0f2fe;
+}
+
+.profile-upload-success {
+    color: #166534;
+    background: #dcfce7;
+}

@@ -1,3 +1,4 @@
+
 import { Injectable, Inject, PLATFORM_ID } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Router } from '@angular/router';
@@ -12,10 +13,10 @@ export interface AuthUser {
   email: string;
   phoneNumber?: string;
   imageUrl?: string;
+  userImageUrl?: string;
   accountNumber?: string;
   token?: string;
 }
-
 
 @Injectable({ providedIn: 'root' })
 export class AuthService {
@@ -35,38 +36,96 @@ export class AuthService {
   ) {
     if (isPlatformBrowser(this.platformId)) {
       const user = this.getStoredUser();
-      if (user) this.userSubject.next(user);
+      if (user) {
+        this.userSubject.next(user);
+      }
     }
   }
 
   /** ================= LOGIN ================= */
+
   login(credentials: any): Observable<any> {
     return this.http.post(`${this.baseUrl}/login`, credentials);
   }
 
-  setSession(user: AuthUser) {
+  setSession(user: AuthUser): void {
+    if (!isPlatformBrowser(this.platformId)) return;
+
     localStorage.setItem(this.userKey, JSON.stringify(user));
     localStorage.setItem(this.tokenKey, user.token || '');
+
     this.userSubject.next(user);
   }
 
   /** ================= CURRENT USER ================= */
+
   getCurrentUser(): AuthUser | null {
+    if (!isPlatformBrowser(this.platformId)) return null;
+
     const data = localStorage.getItem(this.userKey);
     return data ? JSON.parse(data) : null;
   }
 
   private getStoredUser(): AuthUser | null {
+    if (!isPlatformBrowser(this.platformId)) return null;
+
     const data = localStorage.getItem(this.userKey);
     return data ? JSON.parse(data) : null;
   }
 
+  /** ================= PROFILE IMAGE UPLOAD ================= */
+
+  uploadProfileImage(file: File): Observable<any> {
+
+    const formData = new FormData();
+    formData.append('image', file);
+
+    const headers = new HttpHeaders({
+      Authorization: `Bearer ${this.getToken()}`
+    });
+
+    return this.http.post(
+      `${this.baseUrl}/profile-image`,
+      formData,
+      { headers }
+    );
+  }
+
+  /**
+   * Updates the locally stored profile photo after a successful upload.
+   * Keeps the existing login token and other user information unchanged.
+   */
+  updateProfileImage(imageUrl: string): void {
+
+    if (!isPlatformBrowser(this.platformId)) return;
+
+    const currentUser = this.getCurrentUser();
+
+    if (!currentUser) return;
+
+    const updatedUser: AuthUser = {
+      ...currentUser,
+      userImageUrl: imageUrl,
+      imageUrl: imageUrl
+    };
+
+    localStorage.setItem(
+      this.userKey,
+      JSON.stringify(updatedUser)
+    );
+
+    this.userSubject.next(updatedUser);
+  }
+
   /** ================= ROLE ================= */
+
   getRole(): string {
     return this.getCurrentUser()?.role || '';
   }
 
   getToken(): string {
+    if (!isPlatformBrowser(this.platformId)) return '';
+
     return localStorage.getItem(this.tokenKey) || '';
   }
 
@@ -75,94 +134,114 @@ export class AuthService {
   }
 
   logout(): void {
-    localStorage.clear();
+    if (isPlatformBrowser(this.platformId)) {
+      localStorage.clear();
+    }
+
     this.userSubject.next(null);
     this.router.navigate(['/login']);
   }
 
   /** ================= COMPATIBILITY HELPERS ================= */
 
-getUser(): AuthUser | null {
-  return this.getCurrentUser();
-}
-
-getNationalId(): string {
-  return this.getCurrentUser()?.nationalId || '';
-}
-
-getUsername(): string {
-  return this.getCurrentUser()?.name || '';
-}
-
-/** ================= OTP (restore missing methods) ================= */
-
-verifyOtp(email: string, otp: string): Observable<any> {
-  return this.http.post(`${this.baseUrl}/verify-otp`, { email, otp });
-}
-
-sendOtp(phoneNumber: string, email: string): Observable<any> {
-  return this.http.post(`${this.baseUrl}/send-otp`, { phoneNumber, email });
-}
-
-/** ================= OPTIONAL ================= */
-
-register(payload: any): Observable<any> {
-  return this.http.post(`${this.baseUrl}/register`, payload);
-}
-
-getLoggedInUser(): Observable<AuthUser> {
-  const user = this.getCurrentUser();
-
-  if (user) {
-    return of(user);
+  getUser(): AuthUser | null {
+    return this.getCurrentUser();
   }
 
-  return this.http.get<AuthUser>(`${this.baseUrl}/me`, {
-    headers: {
-      Authorization: `Bearer ${this.getToken()}`
+  getNationalId(): string {
+    return this.getCurrentUser()?.nationalId || '';
+  }
+
+  getUsername(): string {
+    return this.getCurrentUser()?.name || '';
+  }
+
+  /** ================= OTP ================= */
+
+  verifyOtp(email: string, otp: string): Observable<any> {
+    return this.http.post(
+      `${this.baseUrl}/verify-otp`,
+      { email, otp }
+    );
+  }
+
+  sendOtp(phoneNumber: string, email: string): Observable<any> {
+    return this.http.post(
+      `${this.baseUrl}/send-otp`,
+      { phoneNumber, email }
+    );
+  }
+
+  /** ================= REGISTRATION ================= */
+
+  register(payload: any): Observable<any> {
+    return this.http.post(
+      `${this.baseUrl}/register`,
+      payload
+    );
+  }
+
+  /** ================= LOGGED-IN USER ================= */
+
+  getLoggedInUser(): Observable<AuthUser> {
+
+    const user = this.getCurrentUser();
+
+    if (user) {
+      return of(user);
     }
-  });
-}
 
-
-/** Safely resolves user from memory OR storage */
-resolveCurrentUser(): AuthUser | null {
-  // 1. try BehaviorSubject (fastest + reliable after login)
-  const cached = this.userSubject.value;
-  if (cached) return cached;
-
-  // 2. fallback to localStorage
-  const stored = localStorage.getItem(this.userKey);
-  if (stored) {
-    const user = JSON.parse(stored);
-    this.userSubject.next(user); // rehydrate memory
-    return user;
+    return this.http.get<AuthUser>(
+      `${this.baseUrl}/me`,
+      {
+        headers: {
+          Authorization: `Bearer ${this.getToken()}`
+        }
+      }
+    );
   }
 
-  return null;
-}
+  /** ================= USER RESOLUTION ================= */
 
+  resolveCurrentUser(): AuthUser | null {
 
-resetPassword(data: any) {
+    const cached = this.userSubject.value;
+
+    if (cached) return cached;
+
+    const stored = this.getStoredUser();
+
+    if (stored) {
+      this.userSubject.next(stored);
+      return stored;
+    }
+
+    return null;
+  }
+
+  /** ================= PASSWORD RESET ================= */
+
+  resetPassword(data: any): Observable<any> {
+    return this.http.post(
+      `${this.baseUrl}/forgot-password`,
+      data
+    );
+  }
+
+  /** ================= ACCOUNT VERIFICATION ================= */
+
+  verifyAccount(
+    email: string,
+    accountNumber: string
+  ): Observable<any> {
 
     return this.http.post(
-
-        this.baseUrl + '/forgot-password',
-
-        data
-
+      `${this.baseUrl}/verify-account`,
+      {
+        email,
+        accountNumber
+      }
     );
-
-}
-
-verifyAccount(email: string, accountNumber: string) {
-  return this.http.post(
-    `${this.baseUrl}/verify-account`,
-    {
-      email,
-      accountNumber
-    }
-  );
-}
+  }
 
 }

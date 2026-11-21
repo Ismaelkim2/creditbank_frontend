@@ -88,36 +88,52 @@ updateProperty(
     );
   }
 
-  /**
-   * Converts backend-relative image paths into absolute URLs.
-   */
-  getPropertyImageUrl(
-    imageUrl?: string | null
-  ): string | null {
-    if (!imageUrl?.trim()) {
-      return null;
-    }
-
-    const imagePath = imageUrl.trim();
-
-    // Preserve absolute HTTP/HTTPS URLs.
-    if (/^https?:\/\//i.test(imagePath)) {
-      return imagePath;
-    }
-
-    try {
-      const backendOrigin = new URL(environment.apiUrl).origin;
-      const cleanPath = imagePath.replace(/^\/+/, '');
-
-      return `${backendOrigin}/${cleanPath}`;
-    } catch (error) {
-      console.error(
-        'Unable to resolve property image URL:',
-        environment.apiUrl,
-        error
-      );
-
-      return null;
-    }
+/**
+ * Converts backend-relative image paths into absolute URLs
+ * and corrects old localhost image URLs for production.
+ */
+getPropertyImageUrl(
+  imageUrl?: string | null
+): string | null {
+  if (!imageUrl?.trim()) {
+    return null;
   }
+
+  const cleanedUrl = imageUrl.trim();
+
+  try {
+    const backendOrigin = new URL(environment.apiUrl).origin;
+
+    // Handle absolute URLs.
+    if (/^https?:\/\//i.test(cleanedUrl)) {
+      const parsedUrl = new URL(cleanedUrl);
+
+      // Replace old local development URLs with production backend.
+      if (
+        parsedUrl.hostname === 'localhost' ||
+        parsedUrl.hostname === '127.0.0.1'
+      ) {
+        return `${backendOrigin}${parsedUrl.pathname}${parsedUrl.search}${parsedUrl.hash}`;
+      }
+
+      // Preserve external image URLs, such as Cloudinary.
+      return cleanedUrl;
+    }
+
+    // Resolve relative paths against the backend origin.
+    return new URL(
+      cleanedUrl.replace(/^\/+/, ''),
+      `${backendOrigin}/`
+    ).toString();
+
+  } catch (error) {
+    console.error(
+      'Unable to resolve property image URL:',
+      cleanedUrl,
+      error
+    );
+
+    return null;
+  }
+}
 }

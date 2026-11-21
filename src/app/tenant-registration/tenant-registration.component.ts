@@ -480,40 +480,53 @@ private emptyFormValue(): Record<string, string> {
     }
   }
 
-  private resolveImageUrl(
-    imageUrl: string | null | undefined
-  ): string {
 
-    if (!imageUrl) {
-      return '';
-    }
 
-    const cleanedUrl = imageUrl.trim();
+private resolveImageUrl(
+  imageUrl: string | null | undefined
+): string {
 
-    if (!cleanedUrl) {
-      return '';
-    }
+  if (!imageUrl?.trim()) {
+    return '';
+  }
 
+  const cleanedUrl = imageUrl.trim();
+
+  try {
+    const backendOrigin = new URL(environment.apiUrl).origin;
+
+    // Handle absolute image URLs.
     if (/^https?:\/\//i.test(cleanedUrl)) {
+      const parsedUrl = new URL(cleanedUrl);
+
+      // Correct previously saved localhost URLs.
+      if (
+        parsedUrl.hostname === 'localhost' ||
+        parsedUrl.hostname === '127.0.0.1'
+      ) {
+        return `${backendOrigin}${parsedUrl.pathname}${parsedUrl.search}${parsedUrl.hash}`;
+      }
+
+      // Preserve external image hosting URLs.
       return cleanedUrl;
     }
 
-    try {
+    // Resolve relative image paths against the backend.
+    return new URL(
+      cleanedUrl.replace(/^\/+/, ''),
+      `${backendOrigin}/`
+    ).toString();
 
-      const backendOrigin = new URL(environment.apiUrl).origin;
+  } catch (error) {
+    console.error(
+      'Could not resolve tenant photograph URL:',
+      cleanedUrl,
+      error
+    );
 
-      return new URL(
-        cleanedUrl.replace(/^\/+/, ''),
-        backendOrigin + '/'
-      ).toString();
-
-    } catch (error) {
-
-      console.error('Could not resolve tenant photograph URL:', error);
-
-      return '';
-    }
+    return '';
   }
+}
 
   // ---------------------------------------------------------
   // VALIDATION

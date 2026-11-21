@@ -79,41 +79,44 @@ export class TenantDirectoryService {
     );
   }
 
-  /**
- * Resolves property image paths against the Spring Boot backend.
- *
- * Supports:
- * 1. Relative paths: /uploads/properties/property.jpg
- * 2. Absolute HTTP/HTTPS image URLs.
- */
+
 getPropertyImageUrl(
   imageUrl: string | null | undefined
 ): string {
-  if (!imageUrl) {
+
+  if (!imageUrl?.trim()) {
     return '';
   }
 
   const cleanedUrl = imageUrl.trim();
 
-  if (!cleanedUrl) {
-    return '';
-  }
-
-  // Preserve already complete image URLs.
-  if (/^https?:\/\//i.test(cleanedUrl)) {
-    return cleanedUrl;
-  }
-
   try {
-    // Static uploads are served from the backend root.
     const backendOrigin = new URL(environment.apiUrl).origin;
 
-    return `${backendOrigin}/${cleanedUrl.replace(/^\/+/, '')}`;
+    if (/^https?:\/\//i.test(cleanedUrl)) {
+      const parsedUrl = new URL(cleanedUrl);
+
+      if (
+        parsedUrl.hostname === 'localhost' ||
+        parsedUrl.hostname === '127.0.0.1'
+      ) {
+        return `${backendOrigin}${parsedUrl.pathname}${parsedUrl.search}${parsedUrl.hash}`;
+      }
+
+      return cleanedUrl;
+    }
+
+    return new URL(
+      cleanedUrl.replace(/^\/+/, ''),
+      `${backendOrigin}/`
+    ).toString();
+
   } catch (error) {
     console.error('Could not resolve property image URL:', error);
     return '';
   }
 }
+
 
   getProperty(id: number): Observable<TenantPropertyRecord> {
     return this.http.get<TenantPropertyRecord>(

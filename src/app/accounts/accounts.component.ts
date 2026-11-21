@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { AccountService } from '../services/account.service';
 import { Router } from '@angular/router';
+import { environment } from '../../environments/environment';
 
 interface AccountDocument {
     id: number;
@@ -539,57 +540,52 @@ getDocumentPreviewClass(
 
 
 
-// ============================================================
-// DOCUMENT URL
-// ============================================================
-
 getDocumentUrl(document: AccountDocument): string {
 
-    if (!document) {
-        return '';
+  if (!document) {
+    return '';
+  }
+
+  const backendOrigin = new URL(environment.apiUrl).origin;
+
+  const resolveUrl = (value?: string): string => {
+    if (!value?.trim()) {
+      return '';
     }
 
+    const cleanedUrl = value.trim();
 
-    // Preferred browser URL
-    if (
-        document.fileUrl &&
-        document.fileUrl.trim() !== ''
-    ) {
-        return document.fileUrl;
-    }
-
-
-    // Download URL
-    if (
-        document.downloadUrl &&
-        document.downloadUrl.trim() !== ''
-    ) {
-        return document.downloadUrl;
-    }
-
-
-    // Stored file path
-    if (
-        document.filePath &&
-        document.filePath.trim() !== ''
-    ) {
-
-        const path =
-            document.filePath.trim();
+    try {
+      if (/^https?:\/\//i.test(cleanedUrl)) {
+        const parsedUrl = new URL(cleanedUrl);
 
         if (
-            path.startsWith('http://') ||
-            path.startsWith('https://')
+          parsedUrl.hostname === 'localhost' ||
+          parsedUrl.hostname === '127.0.0.1'
         ) {
-            return path;
+          return `${backendOrigin}${parsedUrl.pathname}${parsedUrl.search}${parsedUrl.hash}`;
         }
 
-        return `http://localhost:8080/${path
-            .replace(/^\/+/, '')}`;
+        return cleanedUrl;
+      }
+
+      return new URL(
+        cleanedUrl.replace(/^\/+/, ''),
+        `${backendOrigin}/`
+      ).toString();
+
+    } catch (error) {
+      console.error('Unable to resolve account document URL:', error);
+      return '';
     }
+  };
 
-
-    return '';
+  // Preserve existing URL priority.
+  return (
+    resolveUrl(document.fileUrl) ||
+    resolveUrl(document.downloadUrl) ||
+    resolveUrl(document.filePath)
+  );
 }
 
 

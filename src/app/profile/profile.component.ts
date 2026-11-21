@@ -4,6 +4,7 @@ import { AccountService } from '../services/account.service';
 import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
 import { Router } from '@angular/router';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { environment } from '../../environments/environment';
 
 @Component({
   selector: 'app-profile',
@@ -383,7 +384,7 @@ LoanSetting(): void {
     return this.authService.getRole() === 'ADMIN';
   }
 
-  get profileImage(): string {
+get profileImage(): string {
 
   const img = this.imagePreview
     ? this.imagePreview.toString()
@@ -393,16 +394,38 @@ LoanSetting(): void {
     return 'assets/default-user.png';
   }
 
-  // Already full URL
-  if (
-      img.startsWith('http://') ||
-      img.startsWith('https://') ||
-      img.startsWith('data:')
-  ) {
+  if (img.startsWith('data:')) {
     return img;
   }
 
-  // Relative path from backend
-  return `http://localhost:8080/${img}`;
+  const backendOrigin = new URL(environment.apiUrl).origin;
+
+  try {
+
+    if (
+      img.startsWith('http://') ||
+      img.startsWith('https://')
+    ) {
+      const parsedUrl = new URL(img);
+
+      if (
+        parsedUrl.hostname === 'localhost' ||
+        parsedUrl.hostname === '127.0.0.1'
+      ) {
+        return `${backendOrigin}${parsedUrl.pathname}${parsedUrl.search}${parsedUrl.hash}`;
+      }
+
+      return img;
+    }
+
+    return new URL(
+      img.replace(/^\/+/, ''),
+      `${backendOrigin}/`
+    ).toString();
+
+  } catch (error) {
+    console.error('Unable to resolve profile image URL:', img, error);
+    return 'assets/default-user.png';
+  }
 }
 }

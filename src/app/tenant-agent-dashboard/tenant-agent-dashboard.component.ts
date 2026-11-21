@@ -785,38 +785,39 @@ getTenantAccountImageUrl(
   imageUrl: string | null | undefined
 ): string {
 
-  if (!imageUrl) {
+  if (!imageUrl?.trim()) {
     return '';
   }
 
-  const trimmedUrl = imageUrl.trim();
+  const cleanedUrl = imageUrl.trim();
 
-  if (!trimmedUrl) {
-    return '';
-  }
-
-  // Already an absolute URL, for example a Cloudinary URL.
-  if (/^https?:\/\//i.test(trimmedUrl)) {
-    return trimmedUrl;
-  }
-
-  // Resolve backend-relative image paths such as:
-  // /uploads/tenants/abc123.jpg
   try {
-    const apiOrigin = new URL(environment.apiUrl).origin;
+    const backendOrigin = new URL(environment.apiUrl).origin;
 
+    // Handle absolute URLs.
+    if (/^https?:\/\//i.test(cleanedUrl)) {
+      const parsedUrl = new URL(cleanedUrl);
+
+      // Repair URLs previously saved with localhost.
+      if (
+        parsedUrl.hostname === 'localhost' ||
+        parsedUrl.hostname === '127.0.0.1'
+      ) {
+        return `${backendOrigin}${parsedUrl.pathname}${parsedUrl.search}${parsedUrl.hash}`;
+      }
+
+      // Preserve external URLs such as Cloudinary.
+      return cleanedUrl;
+    }
+
+    // Resolve relative backend upload paths.
     return new URL(
-      trimmedUrl.startsWith('/') ? trimmedUrl : `/${trimmedUrl}`,
-      apiOrigin
+      cleanedUrl.replace(/^\/+/, ''),
+      `${backendOrigin}/`
     ).toString();
 
   } catch (error) {
-    console.error(
-      'Unable to resolve tenant account image URL:',
-      trimmedUrl,
-      error
-    );
-
+    console.error('Unable to resolve tenant image URL:', cleanedUrl, error);
     return '';
   }
 }

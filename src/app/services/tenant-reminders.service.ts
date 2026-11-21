@@ -8,6 +8,7 @@ import {
 
 import { Observable, throwError } from 'rxjs';
 import { catchError } from 'rxjs/operators';
+import { environment } from '../../environments/environment.prod';
 
 // =========================================================
 // REMINDER TYPES
@@ -205,8 +206,8 @@ export interface SpringPage<T> {
 })
 export class TenantRemindersService {
 
-  private readonly apiUrl = '/api/tenant/reminders';
-  private readonly residentsApiUrl = '/api/tenant/residents';
+private readonly apiUrl = `${environment.apiUrl}/tenant/reminders`;
+private readonly residentsApiUrl = `${environment.apiUrl}/tenant/residents`;
 
   constructor(
     private readonly http: HttpClient

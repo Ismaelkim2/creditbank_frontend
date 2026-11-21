@@ -4,13 +4,14 @@ import { BehaviorSubject, map, Observable, tap } from 'rxjs';
 import { AppNotification } from '../../../models/loan.model';
 import { AuthService } from '../auth-service.service'; // adjust path
 import { HttpHeaders } from '@angular/common/http';
+import { environment } from '../../../environments/environment.prod';
 
 @Injectable({
   providedIn: 'root'
 })
 export class NotificationService {
 
-  private apiUrl = 'http://localhost:8080/api/notifications';
+private apiUrl = `${environment.apiUrl}/notifications`;
 
   private soundEnabledSubject = new BehaviorSubject<boolean>(true);
 

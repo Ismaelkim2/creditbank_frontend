@@ -45,6 +45,7 @@ import { TenantDirectoryComponent } from './tenant-directory/tenant-directory.co
 import { TenantRemindersComponent } from './tenant-reminders/tenant-reminders.component';
 import { TenantCalendarComponent } from './tenant-calendar/tenant-calendar.component';
 import { TenantPortfolioActivityComponent } from './tenant-portfolio-activity/tenant-portfolio-activity.component';
+import { StaffInvitationComponent } from './staff-invitation/staff-invitation.component';
 
 const routes: Routes = [
   // =====================================================
@@ -63,6 +64,12 @@ const routes: Routes = [
     path: '',
     component: AuthLayoutComponent,
     children: [
+
+      {
+  path: 'staff-invitation',
+  component: StaffInvitationComponent
+},
+
       {
         path: 'login',
         component: LoginComponent

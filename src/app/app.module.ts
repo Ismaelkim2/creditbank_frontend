@@ -46,6 +46,7 @@ import { TenantRemindersComponent } from './tenant-reminders/tenant-reminders.co
 import { TenantAgentDashboardComponent } from './tenant-agent-dashboard/tenant-agent-dashboard.component';
 import { TenantCalendarComponent } from './tenant-calendar/tenant-calendar.component';
 import { TenantPortfolioActivityComponent } from './tenant-portfolio-activity/tenant-portfolio-activity.component';
+import { StaffInvitationComponent } from './staff-invitation/staff-invitation.component';
 
 @NgModule({
   declarations: [
@@ -88,7 +89,8 @@ import { TenantPortfolioActivityComponent } from './tenant-portfolio-activity/te
     TenantRemindersComponent,
     TenantAgentDashboardComponent,
     TenantCalendarComponent,
-    TenantPortfolioActivityComponent
+    TenantPortfolioActivityComponent,
+    StaffInvitationComponent
   
     
   

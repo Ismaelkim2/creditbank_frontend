@@ -1,0 +1,169 @@
+<div class="invitation-page">
+  <div class="invitation-card">
+
+    <div class="brand-header">
+      <div class="brand-icon">
+        <i class="fa fa-shield-alt"></i>
+      </div>
+
+      <h2>CrediCore</h2>
+      <p>Staff Account Activation</p>
+    </div>
+
+    <!-- LOADING -->
+    <div class="status-section" *ngIf="isLoading">
+      <div class="spinner-border text-primary" role="status"></div>
+      <p>Validating your invitation...</p>
+    </div>
+
+    <!-- INVALID INVITATION -->
+    <div class="status-section" *ngIf="!isLoading && errorMessage && !registrationCompleted">
+      <div class="status-icon error-icon">
+        <i class="fa fa-exclamation-triangle"></i>
+      </div>
+
+      <h3>Invitation unavailable</h3>
+      <p class="error-message">{{ errorMessage }}</p>
+
+      <button class="btn btn-primary w-100" (click)="goToLogin()">
+        Return to Login
+      </button>
+    </div>
+
+    <!-- VALID INVITATION -->
+    <div *ngIf="!isLoading && isValidInvitation && !registrationCompleted">
+
+      <div class="welcome-section">
+        <h3>Complete your registration</h3>
+        <p>
+          Your administrator has invited you to join CrediCore.
+          Create your password to activate your staff registration.
+        </p>
+      </div>
+
+      <div class="staff-details">
+        <div class="detail-row">
+          <span>Staff Name</span>
+          <strong>{{ staffName || 'Invited Staff Member' }}</strong>
+        </div>
+
+        <div class="detail-row">
+          <span>Email Address</span>
+          <strong>{{ staffEmail || 'Not provided' }}</strong>
+        </div>
+
+        <div class="detail-row">
+          <span>Assigned Role</span>
+          <strong>{{ staffRole || 'Staff' }}</strong>
+        </div>
+      </div>
+
+      <form [formGroup]="invitationForm" (ngSubmit)="completeRegistration()">
+
+        <div class="form-group">
+          <label for="newPassword">Create Password</label>
+
+          <input
+            id="newPassword"
+            type="password"
+            class="form-control"
+            formControlName="newPassword"
+            placeholder="Enter a password"
+            autocomplete="new-password"
+          />
+
+          <small
+            class="text-danger"
+            *ngIf="f['newPassword'].touched && f['newPassword'].hasError('required')">
+            Password is required.
+          </small>
+
+          <small
+            class="text-danger"
+            *ngIf="f['newPassword'].touched && f['newPassword'].hasError('minlength')">
+            Password must contain at least 8 characters.
+          </small>
+        </div>
+
+        <div class="form-group">
+          <label for="confirmPassword">Confirm Password</label>
+
+          <input
+            id="confirmPassword"
+            type="password"
+            class="form-control"
+            formControlName="confirmPassword"
+            placeholder="Confirm your password"
+            autocomplete="new-password"
+          />
+
+          <small
+            class="text-danger"
+            *ngIf="f['confirmPassword'].touched && f['confirmPassword'].hasError('required')">
+            Please confirm your password.
+          </small>
+
+          <small
+            class="text-danger"
+            *ngIf="f['confirmPassword'].touched && invitationForm.hasError('passwordMismatch')">
+            Passwords do not match.
+          </small>
+        </div>
+
+        <div class="security-note">
+          <i class="fa fa-lock"></i>
+          Your password will be securely encrypted.
+        </div>
+
+        <button
+          type="submit"
+          class="btn btn-primary w-100 submit-button"
+          [disabled]="isSubmitting || invitationForm.invalid">
+
+          <span *ngIf="!isSubmitting">
+            Complete Registration
+            <i class="fa fa-arrow-right"></i>
+          </span>
+
+          <span *ngIf="isSubmitting">
+            <span class="spinner-border spinner-border-sm me-2"></span>
+            Completing Registration...
+          </span>
+        </button>
+
+      </form>
+    </div>
+
+    <!-- REGISTRATION COMPLETED -->
+    <div class="status-section success-section" *ngIf="registrationCompleted">
+
+      <div class="status-icon success-icon">
+        <i class="fa fa-check"></i>
+      </div>
+
+      <h3>Registration Completed!</h3>
+
+      <p>{{ successMessage }}</p>
+
+      <div class="approval-notice">
+        <i class="fa fa-clock"></i>
+        <div>
+          <strong>Awaiting Administrator Approval</strong>
+          <span>
+            Your account is registered but cannot be used to log in
+            until an administrator approves it.
+          </span>
+        </div>
+      </div>
+
+      <button class="btn btn-primary w-100" (click)="goToLogin()">
+        Go to Login
+      </button>
+    </div>
+
+    <div class="footer-text">
+      © {{ 2026 }} CrediCore. Secure Lending Management.
+    </div>
+
+  </div>
+</div>

@@ -1,0 +1,236 @@
+.invitation-page {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 35px 15px;
+  background: #f3f6fb;
+}
+
+.invitation-card {
+  width: 100%;
+  max-width: 480px;
+  padding: 35px;
+  background: #ffffff;
+  border: 1px solid #e6ebf2;
+  border-radius: 14px;
+  box-shadow: 0 12px 35px rgba(25, 55, 100, 0.08);
+}
+
+.brand-header {
+  text-align: center;
+  margin-bottom: 30px;
+}
+
+.brand-icon {
+  width: 58px;
+  height: 58px;
+  margin: 0 auto 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 15px;
+  background: #eaf2ff;
+  color: #1455a0;
+  font-size: 25px;
+}
+
+.brand-header h2 {
+  margin: 0;
+  color: #163b70;
+  font-weight: 800;
+  letter-spacing: 0.5px;
+}
+
+.brand-header p {
+  margin: 5px 0 0;
+  color: #7b8798;
+  font-size: 13px;
+}
+
+.welcome-section {
+  margin-bottom: 22px;
+}
+
+.welcome-section h3,
+.status-section h3 {
+  color: #183b68;
+  font-size: 21px;
+  font-weight: 700;
+  margin-bottom: 8px;
+}
+
+.welcome-section p,
+.status-section p {
+  color: #6c7888;
+  font-size: 14px;
+  line-height: 1.6;
+}
+
+.staff-details {
+  padding: 16px;
+  margin-bottom: 24px;
+  border: 1px solid #e5ebf3;
+  border-radius: 9px;
+  background: #f9fbfe;
+}
+
+.detail-row {
+  display: flex;
+  justify-content: space-between;
+  gap: 15px;
+  padding: 9px 0;
+  border-bottom: 1px solid #e9eef5;
+  font-size: 13px;
+}
+
+.detail-row:last-child {
+  border-bottom: none;
+}
+
+.detail-row span {
+  color: #778397;
+}
+
+.detail-row strong {
+  color: #263b58;
+  text-align: right;
+  overflow-wrap: anywhere;
+}
+
+.form-group {
+  margin-bottom: 18px;
+}
+
+.form-group label {
+  display: block;
+  margin-bottom: 7px;
+  color: #34445b;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.form-control {
+  min-height: 45px;
+  border: 1px solid #dce3ed;
+  border-radius: 7px;
+  font-size: 14px;
+}
+
+.form-control:focus {
+  border-color: #3478cb;
+  box-shadow: 0 0 0 3px rgba(52, 120, 203, 0.1);
+}
+
+.security-note {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  margin: 20px 0;
+  color: #64748b;
+  font-size: 12px;
+}
+
+.security-note i {
+  color: #21865a;
+}
+
+.submit-button {
+  min-height: 47px;
+  font-weight: 600;
+  background: #1558a6;
+  border-color: #1558a6;
+}
+
+.submit-button:hover {
+  background: #104783;
+}
+
+.status-section {
+  text-align: center;
+  padding: 15px 0;
+}
+
+.status-section .spinner-border {
+  margin-bottom: 15px;
+}
+
+.status-icon {
+  width: 62px;
+  height: 62px;
+  margin: 0 auto 18px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  font-size: 25px;
+}
+
+.error-icon {
+  color: #bd3434;
+  background: #fff0f0;
+}
+
+.success-icon {
+  color: #168451;
+  background: #e8f8ef;
+}
+
+.error-message {
+  margin-bottom: 22px;
+  color: #b52e36 !important;
+}
+
+.approval-notice {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  text-align: left;
+  padding: 15px;
+  margin: 22px 0;
+  border: 1px solid #f0dfb5;
+  border-radius: 9px;
+  background: #fffaf0;
+  color: #946a19;
+}
+
+.approval-notice i {
+  margin-top: 3px;
+}
+
+.approval-notice strong,
+.approval-notice span {
+  display: block;
+}
+
+.approval-notice strong {
+  font-size: 13px;
+  margin-bottom: 5px;
+}
+
+.approval-notice span {
+  font-size: 12px;
+  line-height: 1.5;
+}
+
+.footer-text {
+  text-align: center;
+  margin-top: 28px;
+  color: #9aa5b4;
+  font-size: 11px;
+}
+
+@media (max-width: 480px) {
+  .invitation-card {
+    padding: 25px 20px;
+  }
+
+  .detail-row {
+    flex-direction: column;
+    gap: 4px;
+  }
+
+  .detail-row strong {
+    text-align: left;
+  }
+}

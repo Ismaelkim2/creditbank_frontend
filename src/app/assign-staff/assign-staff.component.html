@@ -55,8 +55,10 @@
         </span>
 
         <h3>
-          {{ getCompletedRegistrationCount() }}
-        </h3>
+  {{ isOnboardingOnly
+      ? getCompletedRegistrationCount()
+      : staffList.length }}
+</h3>
       </div>
     </div>
 

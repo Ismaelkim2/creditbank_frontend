@@ -288,4 +288,22 @@ analyzeCreditBatch(
   }
 
 
+  validateStaffInvitation(token: string): Observable<any> {
+  return this.http.get<any>(
+    `${this.apiUrl}/auth/invitations/validate`,
+    { params: { token } }
+  );
+}
+
+completeStaffInvitation(payload: {
+  token: string;
+  newPassword: string;
+  confirmPassword: string;
+}): Observable<any> {
+  return this.http.post<any>(
+    `${this.apiUrl}/auth/invitations/complete`,
+    payload
+  );
+}
+
 }

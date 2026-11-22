@@ -4,15 +4,16 @@ import { Observable, of, map, BehaviorSubject, tap } from 'rxjs';
 import { Loan } from '../../models/loan.model';
 import { Account } from '../../models/User.model';
 import { LoanAssessmentResponse } from '../../models/LoanAssessmentResponse';
+import { environment } from '../../environments/environment.prod';
 
 @Injectable({
   providedIn: 'root'
 })
 export class LoanService {
 
-  private baseUrl = 'http://localhost:8080/api/loans';
-  private settingsUrl = 'http://localhost:8080/api/settings';
-  private apiUrl = 'http://localhost:8080/api';
+private readonly apiUrl = environment.apiUrl;
+private readonly baseUrl = `${this.apiUrl}/loans`;
+private readonly settingsUrl = `${this.apiUrl}/settings`;
 
   constructor(private http: HttpClient) {}
 
@@ -48,12 +49,6 @@ getLoans(): Observable<Loan[]> {
   );
 }
 
-rejectLoan(id: number, reason: string): Observable<any> {
-  return this.http.patch<any>(
-    `${this.apiUrl}/${id}/reject`,
-    { reason }
-  );
-}
 
 
 createStaff(data: any) {
@@ -123,17 +118,6 @@ rejectLoanWithReason(
 
 
 
-  downloadLoanReceipt(loanId: number): Observable<Blob> {
-
-  return this.http.get(
-    `${this.apiUrl}/api/loans/${loanId}/receipt`,
-    {
-      responseType: 'blob'
-    }
-  );
-
-}
-
   // ===============================
   // REPAYMENTS
   // ===============================
@@ -189,6 +173,31 @@ addLoan(payload: any): Observable<Loan> {
   return this.http.post<Loan>(`${this.baseUrl}`, payload);
 }
 
+rejectLoan(id: number, reason: string): Observable<any> {
+  return this.http.patch<any>(
+    `${this.baseUrl}/${id}/reject`,
+    { reason }
+  );
+}
+
+downloadLoanReceipt(loanId: number): Observable<Blob> {
+  return this.http.get(
+    `${this.baseUrl}/${loanId}/receipt`,
+    { responseType: 'blob' }
+  );
+}
+
+getCreditIntelligenceByNationalId(
+  nationalId: string,
+  body: any
+): Observable<LoanAssessmentResponse> {
+  return this.http.post<LoanAssessmentResponse>(
+    `${this.apiUrl}/credit-intelligence/analyze/${nationalId}`,
+    body
+  );
+}
+
+
 
 getAllStaff() {
   return this.http.get<any[]>(`${this.baseUrl}/staff`);
@@ -219,16 +228,6 @@ getLoanDetailsByNationalId(nationalId: string): Observable<Loan[]> {
   return this.http.get<Loan[]>(`${this.baseUrl}/by-nationalId/${nationalId}`);
 }
 
-getCreditIntelligenceByNationalId(
-  nationalId: string,
-  body: any
-): Observable<LoanAssessmentResponse> {
-
-  return this.http.post<LoanAssessmentResponse>(
-    `http://localhost:8080/api/credit-intelligence/analyze/${nationalId}`,
-    body
-  );
-}
 
 getCreditIntelligence(accountId: number, payload: any): Observable<any> {
   return this.http.post<any>(

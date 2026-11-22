@@ -95,14 +95,14 @@ export class ProfileComponent implements OnInit {
 
     const storedUser = this.authService.getUser();
 
-    // Display cached user details immediately.
+    // Display cached details immediately.
     if (storedUser) {
       this.patchUser(storedUser);
     }
 
     const cachedNationalId = storedUser?.nationalId;
 
-    // Always refresh user details from the backend.
+    // Refresh authenticated user details from backend.
     this.authService.getLoggedInUser().subscribe({
 
       next: (resp: any) => {
@@ -131,7 +131,7 @@ export class ProfileComponent implements OnInit {
           error
         );
 
-        // Retain cached information if backend refresh fails.
+        // Retain cached information if refresh fails.
         if (cachedNationalId) {
           this.getAccountDetails(cachedNationalId);
         } else {
@@ -149,23 +149,37 @@ export class ProfileComponent implements OnInit {
       return;
     }
 
-    // Preserve the actual user profile photo.
+    const isDefaultImage = (
+      url: string | null | undefined
+    ): boolean => {
+
+      if (!url || typeof url !== 'string') {
+        return true;
+      }
+
+      return (
+        url.includes('default-user.png') ||
+        url.includes('default-user.jpg')
+      );
+    };
+
+    // Preserve the existing Cloudinary URL when the
+    // backend response contains only a default image.
     const profilePhoto =
-      data.userImageUrl ||
-      data.imageUrl ||
-      this.user.userImageUrl ||
-      this.user.imageUrl ||
-      'assets/default-user.png';
+      !isDefaultImage(data.userImageUrl)
+        ? data.userImageUrl
+        : !isDefaultImage(data.imageUrl)
+          ? data.imageUrl
+          : !isDefaultImage(this.user.userImageUrl)
+            ? this.user.userImageUrl
+            : !isDefaultImage(this.user.imageUrl)
+              ? this.user.imageUrl
+              : 'assets/default-user.png';
 
     this.user = {
       ...this.user,
       ...data,
-
-      userImageUrl:
-        data.userImageUrl ||
-        this.user.userImageUrl ||
-        '',
-
+      userImageUrl: profilePhoto,
       imageUrl: profilePhoto
     };
 
@@ -277,10 +291,21 @@ export class ProfileComponent implements OnInit {
               acct.phoneNumber || this.user.phoneNumber;
 
             // Account photo is only a fallback.
-            if (!this.user.userImageUrl) {
+            const accountPhoto = acct.imageUrl;
 
-              this.user.imageUrl =
-                acct.imageUrl || this.user.imageUrl;
+            const currentPhoto =
+              this.user.userImageUrl ||
+              this.user.imageUrl;
+
+            if (
+              !currentPhoto ||
+              currentPhoto.includes('default-user.png') ||
+              currentPhoto.includes('default-user.jpg')
+            ) {
+
+              if (accountPhoto) {
+                this.user.imageUrl = accountPhoto;
+              }
             }
           }
 
@@ -310,7 +335,7 @@ export class ProfileComponent implements OnInit {
       return;
     }
 
-    // Validate file size.
+    // Validate file size: maximum 5 MB.
     if (file.size > 5 * 1024 * 1024) {
 
       alert('Image must not exceed 5 MB.');
@@ -373,7 +398,7 @@ export class ProfileComponent implements OnInit {
           // Update authentication session.
           this.authService.updateProfileImage(imageUrl);
 
-          // Display permanent Cloudinary URL.
+          // Display permanent Cloudinary image.
           this.imagePreview = null;
           this.uploadProgress = 100;
 
@@ -417,6 +442,21 @@ export class ProfileComponent implements OnInit {
     input.value = '';
   }
 
+  /* ================= PROFILE IMAGE ERROR HANDLING ================= */
+
+  onProfileImageError(event: Event): void {
+
+    const img = event.target as HTMLImageElement;
+
+    const fallbackImage = 'assets/default-user.png';
+
+    // Prevent repeated image error events.
+    img.onerror = null;
+
+    // Only use the local Angular asset.
+    img.src = fallbackImage;
+  }
+
   /* ================= EDIT PROFILE ================= */
 
   openEditModal(): void {
@@ -449,7 +489,10 @@ export class ProfileComponent implements OnInit {
 
       error: (error) => {
 
-        console.error('Profile update failed:', error);
+        console.error(
+          'Profile update failed:',
+          error
+        );
 
         this.saving = false;
       }
@@ -499,7 +542,10 @@ export class ProfileComponent implements OnInit {
 
         error: (error) => {
 
-          console.error('Password change failed:', error);
+          console.error(
+            'Password change failed:',
+            error
+          );
 
           this.changing = false;
         }
@@ -546,7 +592,10 @@ export class ProfileComponent implements OnInit {
 
         error: (error) => {
 
-          console.error('Activity loading failed:', error);
+          console.error(
+            'Activity loading failed:',
+            error
+          );
 
           this.activityLoading = false;
         }
@@ -600,7 +649,13 @@ export class ProfileComponent implements OnInit {
       return 'assets/default-user.png';
     }
 
+    // Base64 preview.
     if (img.startsWith('data:')) {
+      return img;
+    }
+
+    // Keep local Angular assets on the frontend.
+    if (img.startsWith('assets/')) {
       return img;
     }
 
@@ -616,7 +671,7 @@ export class ProfileComponent implements OnInit {
 
         const parsedUrl = new URL(img);
 
-        // Legacy localhost image URLs.
+        // Legacy localhost URLs are redirected to configured backend.
         if (
           parsedUrl.hostname === 'localhost' ||
           parsedUrl.hostname === '127.0.0.1'
@@ -629,7 +684,7 @@ export class ProfileComponent implements OnInit {
         return img;
       }
 
-      // Legacy relative image paths.
+      // Legacy relative backend image paths.
       return new URL(
         img.replace(/^\/+/, ''),
         `${backendOrigin}/`

@@ -30,12 +30,12 @@
     <!-- PROFILE PHOTO -->
     <div class="profile-photo-wrapper">
 
-        <img
-            [src]="profileImage"
-            alt="User Profile Photo"
-            class="profile-photo"
-            (error)="user.imageUrl = 'assets/default-user.png'"
-        >
+   <img
+    [src]="profileImage"
+    alt="User Profile Photo"
+    class="profile-photo"
+    (error)="onProfileImageError($event)"
+>
 
         <div class="online-status"></div>
 

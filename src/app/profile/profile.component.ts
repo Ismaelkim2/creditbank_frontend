@@ -21,6 +21,7 @@ export class ProfileComponent implements OnInit {
     branch: '',
     accountNumber: '',
     lastLogin: '',
+    userImageUrl: '',
     imageUrl: 'assets/default-user.png'
   };
 
@@ -64,7 +65,7 @@ export class ProfileComponent implements OnInit {
     this.loadUserDetails();
   }
 
-  /** ================= INIT FORMS ================= */
+  /* ================= INIT FORMS ================= */
 
   private initForms(): void {
 
@@ -88,40 +89,84 @@ export class ProfileComponent implements OnInit {
     });
   }
 
-  /** ================= LOAD USER DETAILS ================= */
+  /* ================= LOAD USER DETAILS ================= */
 
   private loadUserDetails(): void {
 
     const storedUser = this.authService.getUser();
 
-    if (storedUser?.nationalId) {
+    // Display cached user details immediately.
+    if (storedUser) {
       this.patchUser(storedUser);
-      this.getAccountDetails(storedUser.nationalId);
-      return;
     }
 
+    const cachedNationalId = storedUser?.nationalId;
+
+    // Always refresh user details from the backend.
     this.authService.getLoggedInUser().subscribe({
-      next: (resp) => {
+
+      next: (resp: any) => {
+
+        if (!resp) {
+          this.loading = false;
+          return;
+        }
+
         this.patchUser(resp);
-        this.getAccountDetails(resp.nationalId);
+
+        const nationalId =
+          resp.nationalId || cachedNationalId;
+
+        if (nationalId) {
+          this.getAccountDetails(nationalId);
+        } else {
+          this.loading = false;
+        }
       },
-      error: () => {
-        this.loading = false;
+
+      error: (error) => {
+
+        console.error(
+          'Unable to refresh profile details:',
+          error
+        );
+
+        // Retain cached information if backend refresh fails.
+        if (cachedNationalId) {
+          this.getAccountDetails(cachedNationalId);
+        } else {
+          this.loading = false;
+        }
       }
     });
   }
 
+  /* ================= PATCH USER DETAILS ================= */
+
   private patchUser(data: any): void {
+
+    if (!data) {
+      return;
+    }
+
+    // Preserve the actual user profile photo.
+    const profilePhoto =
+      data.userImageUrl ||
+      data.imageUrl ||
+      this.user.userImageUrl ||
+      this.user.imageUrl ||
+      'assets/default-user.png';
 
     this.user = {
       ...this.user,
       ...data,
 
-      // User profile photo takes priority.
-      imageUrl:
+      userImageUrl:
         data.userImageUrl ||
-        data.imageUrl ||
-        'assets/default-user.png'
+        this.user.userImageUrl ||
+        '',
+
+      imageUrl: profilePhoto
     };
 
     // SECURITY
@@ -197,6 +242,7 @@ export class ProfileComponent implements OnInit {
         'Profile Management'
       ];
 
+    // Update edit form.
     this.editForm.patchValue({
       name: this.user.name,
       phoneNumber: this.user.phoneNumber,
@@ -204,39 +250,56 @@ export class ProfileComponent implements OnInit {
     });
   }
 
-  /** ================= ACCOUNT DETAILS ================= */
+  /* ================= ACCOUNT DETAILS ================= */
 
   private getAccountDetails(nationalId: string): void {
+
+    if (!nationalId) {
+      this.loading = false;
+      return;
+    }
 
     this.accountService
       .getAccountDetailsByNationalId(nationalId)
       .subscribe({
+
         next: (acct: any) => {
 
           if (acct) {
 
-            this.user.accountNumber = acct.accountNumber;
-            this.user.branch = acct.branch;
-            this.user.phoneNumber = acct.phoneNumber;
+            this.user.accountNumber =
+              acct.accountNumber || this.user.accountNumber;
 
-            // Never overwrite an uploaded user profile photo
-            // with the account photograph.
-            this.user.imageUrl =
-              this.user.userImageUrl ||
-              acct.imageUrl ||
-              this.user.imageUrl;
+            this.user.branch =
+              acct.branch || this.user.branch;
+
+            this.user.phoneNumber =
+              acct.phoneNumber || this.user.phoneNumber;
+
+            // Account photo is only a fallback.
+            if (!this.user.userImageUrl) {
+
+              this.user.imageUrl =
+                acct.imageUrl || this.user.imageUrl;
+            }
           }
 
           this.loading = false;
         },
 
-        error: () => {
+        error: (error) => {
+
+          console.error(
+            'Unable to load account details:',
+            error
+          );
+
           this.loading = false;
         }
       });
   }
 
-  /** ================= CLOUDINARY PROFILE PHOTO UPLOAD ================= */
+  /* ================= CLOUDINARY PROFILE PHOTO UPLOAD ================= */
 
   onImageSelected(event: Event): void {
 
@@ -247,14 +310,16 @@ export class ProfileComponent implements OnInit {
       return;
     }
 
-    // Validate file size (maximum 5 MB).
+    // Validate file size.
     if (file.size > 5 * 1024 * 1024) {
+
       alert('Image must not exceed 5 MB.');
+
       input.value = '';
       return;
     }
 
-    // Validate supported image types.
+    // Validate image format.
     const allowedTypes = [
       'image/jpeg',
       'image/png',
@@ -262,25 +327,25 @@ export class ProfileComponent implements OnInit {
     ];
 
     if (!allowedTypes.includes(file.type.toLowerCase())) {
+
       alert('Only JPG, PNG and WEBP images are allowed.');
+
       input.value = '';
       return;
     }
 
-    // Prevent another upload while one is in progress.
+    // Prevent simultaneous uploads.
     if (this.uploadProgress === 0) {
+
       input.value = '';
       return;
     }
 
-    // Show an immediate local preview.
     const reader = new FileReader();
 
     reader.onload = () => {
 
       this.imagePreview = reader.result as string;
-
-      // Begin Cloudinary upload after preview is ready.
       this.uploadProgress = 0;
 
       this.authService.uploadProfileImage(file).subscribe({
@@ -290,31 +355,40 @@ export class ProfileComponent implements OnInit {
           const imageUrl = response?.userImageUrl;
 
           if (!imageUrl) {
+
             this.imagePreview = null;
             this.uploadProgress = -1;
 
-            alert('Upload completed, but no image URL was returned.');
+            alert(
+              'Upload completed, but no image URL was returned.'
+            );
+
             return;
           }
 
-          // Update the component.
+          // Update component user details.
           this.user.userImageUrl = imageUrl;
           this.user.imageUrl = imageUrl;
 
-          // Update local authentication session.
+          // Update authentication session.
           this.authService.updateProfileImage(imageUrl);
 
-          // Display the permanent Cloudinary image.
+          // Display permanent Cloudinary URL.
           this.imagePreview = null;
-
           this.uploadProgress = 100;
 
-          console.log('Profile photo uploaded:', imageUrl);
+          console.log(
+            'Profile photo uploaded:',
+            imageUrl
+          );
         },
 
         error: (error) => {
 
-          console.error('Profile image upload failed:', error);
+          console.error(
+            'Profile image upload failed:',
+            error
+          );
 
           this.imagePreview = null;
           this.uploadProgress = -1;
@@ -339,11 +413,11 @@ export class ProfileComponent implements OnInit {
 
     reader.readAsDataURL(file);
 
-    // Allow selecting the same file again later.
+    // Allow selecting the same file again.
     input.value = '';
   }
 
-  /** ================= EDIT PROFILE ================= */
+  /* ================= EDIT PROFILE ================= */
 
   openEditModal(): void {
     this.editing = true;
@@ -355,7 +429,9 @@ export class ProfileComponent implements OnInit {
 
   saveProfile(): void {
 
-    if (this.editForm.invalid) return;
+    if (this.editForm.invalid) {
+      return;
+    }
 
     this.saving = true;
 
@@ -371,13 +447,16 @@ export class ProfileComponent implements OnInit {
         Object.assign(this.user, payload);
       },
 
-      error: () => {
+      error: (error) => {
+
+        console.error('Profile update failed:', error);
+
         this.saving = false;
       }
     });
   }
 
-  /** ================= CHANGE PASSWORD ================= */
+  /* ================= CHANGE PASSWORD ================= */
 
   openChangePasswordModal(): void {
     this.changingPassword = true;
@@ -393,33 +472,41 @@ export class ProfileComponent implements OnInit {
 
   changePassword(): void {
 
-    if (this.passwordForm.invalid) return;
+    if (this.passwordForm.invalid) {
+      return;
+    }
 
     if (
       this.passwordForm.value.newPassword !==
       this.passwordForm.value.confirmPassword
     ) {
+
       alert('Passwords do not match!');
       return;
     }
 
     this.changing = true;
 
-    this.accountService.changePassword(this.passwordForm.value).subscribe({
+    this.accountService
+      .changePassword(this.passwordForm.value)
+      .subscribe({
 
-      next: () => {
+        next: () => {
 
-        this.changing = false;
-        this.changingPassword = false;
-      },
+          this.changing = false;
+          this.changingPassword = false;
+        },
 
-      error: () => {
-        this.changing = false;
-      }
-    });
+        error: (error) => {
+
+          console.error('Password change failed:', error);
+
+          this.changing = false;
+        }
+      });
   }
 
-  /** ================= ACTIVITY PANEL ================= */
+  /* ================= ACTIVITY PANEL ================= */
 
   fetchActivity(): void {
 
@@ -432,7 +519,9 @@ export class ProfileComponent implements OnInit {
 
   loadMoreActivities(): void {
 
-    if (this.activityEnd) return;
+    if (this.activityEnd || this.activityLoading) {
+      return;
+    }
 
     this.activityLoading = true;
 
@@ -440,9 +529,9 @@ export class ProfileComponent implements OnInit {
       .getUserActivity(this.activityPage, this.activityQ)
       .subscribe({
 
-        next: (resp) => {
+        next: (resp: any[]) => {
 
-          if (resp.length === 0) {
+          if (!resp || resp.length === 0) {
 
             this.activityEnd = true;
 
@@ -455,30 +544,40 @@ export class ProfileComponent implements OnInit {
           this.activityLoading = false;
         },
 
-        error: () => {
+        error: (error) => {
+
+          console.error('Activity loading failed:', error);
+
           this.activityLoading = false;
         }
       });
   }
 
-  /** ================= BACK NAVIGATION ================= */
+  /* ================= BACK NAVIGATION ================= */
 
   goBack(): void {
 
     const role = this.authService.getRole();
 
     if (role === 'ADMIN') {
+
       this.router.navigate(['/dashboard']);
 
     } else if (role === 'DATA_MANAGER') {
+
       this.router.navigate(['/data-manager-dashboard']);
 
+    } else if (role === 'TENANT_AGENT') {
+
+      this.router.navigate(['/app/tenant-agent-dashboard']);
+
     } else {
+
       this.router.navigate(['/applicant-dashboard']);
     }
   }
 
-  /** ================= ROLE ACCESSORS ================= */
+  /* ================= ROLE ACCESSORS ================= */
 
   get isApplicant(): boolean {
     return this.authService.getRole() === 'APPLICANT';
@@ -488,14 +587,14 @@ export class ProfileComponent implements OnInit {
     return this.authService.getRole() === 'ADMIN';
   }
 
-  /** ================= PROFILE IMAGE DISPLAY ================= */
+  /* ================= PROFILE IMAGE DISPLAY ================= */
 
   get profileImage(): string {
 
     const img =
       this.imagePreview ||
-      this.user.imageUrl ||
-      this.user.userImageUrl;
+      this.user.userImageUrl ||
+      this.user.imageUrl;
 
     if (!img) {
       return 'assets/default-user.png';
@@ -509,6 +608,7 @@ export class ProfileComponent implements OnInit {
 
       const backendOrigin = new URL(environment.apiUrl).origin;
 
+      // Absolute URLs.
       if (
         img.startsWith('http://') ||
         img.startsWith('https://')
@@ -516,15 +616,16 @@ export class ProfileComponent implements OnInit {
 
         const parsedUrl = new URL(img);
 
-        // Legacy localhost URLs are redirected to the configured backend.
+        // Legacy localhost image URLs.
         if (
           parsedUrl.hostname === 'localhost' ||
           parsedUrl.hostname === '127.0.0.1'
         ) {
+
           return `${backendOrigin}${parsedUrl.pathname}${parsedUrl.search}${parsedUrl.hash}`;
         }
 
-        // Cloudinary HTTPS URLs are returned unchanged.
+        // Cloudinary URLs remain unchanged.
         return img;
       }
 

@@ -83,44 +83,37 @@ export class StaffInvitationComponent implements OnInit {
   }
 
   validateInvitation(): void {
-    this.isLoading = true;
-    this.errorMessage = '';
-    this.isValidInvitation = false;
+  this.isLoading = true;
+  this.errorMessage = '';
+  this.successMessage = '';
+  this.isValidInvitation = false;
+  this.registrationCompleted = false;
 
-    this.loanService.validateStaffInvitation(this.token).subscribe({
-      next: (response: any) => {
-        const data = response?.data ?? response;
+  this.loanService.validateStaffInvitation(this.token).subscribe({
+    next: (response: any) => {
+      this.staffName = response?.name || '';
+      this.staffEmail = response?.email || '';
+      this.staffRole = response?.role || '';
 
-        this.staffName =
-          data?.name ||
-          data?.staffName ||
-          data?.fullName ||
-          '';
+      this.isValidInvitation = response?.valid === true;
+      this.isLoading = false;
 
-        this.staffEmail =
-          data?.email ||
-          data?.staffEmail ||
-          '';
-
-        this.staffRole =
-          data?.role ||
-          data?.staffRole ||
-          '';
-
-        this.isValidInvitation = true;
-        this.isLoading = false;
-      },
-      error: (error) => {
-        this.isLoading = false;
-        this.isValidInvitation = false;
-
+      if (!this.isValidInvitation) {
         this.errorMessage =
-          error?.error?.message ||
-          error?.error?.error ||
-          'This invitation is invalid, expired, or has already been used. Please contact your administrator for a new invitation.';
+          'This invitation is invalid, expired, or has already been used. Please contact your administrator.';
       }
-    });
-  }
+    },
+    error: (error) => {
+      this.isLoading = false;
+      this.isValidInvitation = false;
+
+      this.errorMessage =
+        error?.error?.message ||
+        error?.error?.error ||
+        'This invitation is invalid, expired, or has already been used. Please contact your administrator for a new invitation.';
+    }
+  });
+}
 
   completeRegistration(): void {
     if (this.invitationForm.invalid || !this.isValidInvitation || this.isSubmitting) {

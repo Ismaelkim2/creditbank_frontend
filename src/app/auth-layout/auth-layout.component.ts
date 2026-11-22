@@ -1,19 +1,22 @@
-import { Component } from '@angular/core';
-import { AppRoutingModule } from "../app-routing.module";
+
+import {
+  Component,
+  OnInit,
+  OnDestroy,
+  ChangeDetectorRef
+} from '@angular/core';
 
 @Component({
   selector: 'app-auth-layout',
   templateUrl: './auth-layout.component.html',
-  styleUrls: ['./auth-layout.component.css'],
-
+  styleUrls: ['./auth-layout.component.css']
 })
-export class AuthLayoutComponent {
+export class AuthLayoutComponent implements OnInit, OnDestroy {
 
   currentSlide = 0;
-
   currentTime = '';
 
-  slides = [
+  slides: string[] = [
     'assets/login/slide1.jpg',
     'assets/login/slide2.jpg',
     'assets/login/slide3.jpg',
@@ -22,96 +25,86 @@ export class AuthLayoutComponent {
     'assets/login/slide6.jpg'
   ];
 
-  private sliderInterval: any;
-  private clockInterval: any;
+  private sliderInterval: ReturnType<typeof setInterval> | null = null;
+  private clockInterval: ReturnType<typeof setInterval> | null = null;
 
+  constructor(
+    private cdr: ChangeDetectorRef
+  ) {}
 
-   ngOnInit(): void {
+  ngOnInit(): void {
     this.preloadImages();
     this.startSlider();
     this.startClock();
   }
 
   ngOnDestroy(): void {
-    clearInterval(this.sliderInterval);
-    clearInterval(this.clockInterval);
+    if (this.sliderInterval) {
+      clearInterval(this.sliderInterval);
+      this.sliderInterval = null;
+    }
+
+    if (this.clockInterval) {
+      clearInterval(this.clockInterval);
+      this.clockInterval = null;
+    }
   }
 
+  // =====================================================
+  // IMAGE PRELOADER
+  // =====================================================
 
-  /*=====================================================
-IMAGE PRELOADER
-=====================================================*/
-
-private preloadImages(): void {
-
-    this.slides.forEach(image => {
-
-        const img = new Image();
-
-        img.src = image;
-
+  private preloadImages(): void {
+    this.slides.forEach((imageUrl: string) => {
+      const img = new Image();
+      img.src = imageUrl;
     });
+  }
 
-}
+  // =====================================================
+  // IMAGE SLIDER
+  // =====================================================
 
-/*=====================================================
-SLIDER
-=====================================================*/
-
-private startSlider(): void {
+  private startSlider(): void {
+    if (this.slides.length <= 1) {
+      return;
+    }
 
     this.sliderInterval = setInterval(() => {
+      this.currentSlide =
+        (this.currentSlide + 1) % this.slides.length;
 
-        this.currentSlide++;
-
-        if (this.currentSlide >= this.slides.length) {
-
-            this.currentSlide = 0;
-
-        }
-
+      this.cdr.markForCheck();
     }, 2000);
+  }
 
-}
+  // =====================================================
+  // LIVE CLOCK
+  // =====================================================
 
-/*=====================================================
-LIVE CLOCK
-=====================================================*/
-
-private startClock(): void {
-
+  private startClock(): void {
     this.updateClock();
 
     this.clockInterval = setInterval(() => {
-
-        this.updateClock();
-
+      this.updateClock();
     }, 1000);
+  }
 
-}
-
-private updateClock(): void {
-
+  private updateClock(): void {
     const now = new Date();
 
     this.currentTime = now.toLocaleString('en-GB', {
-
-        weekday: 'short',
-
-        day: '2-digit',
-
-        month: 'short',
-
-        year: 'numeric',
-
-        hour: '2-digit',
-
-        minute: '2-digit',
-
-        second: '2-digit'
-
+      weekday: 'short',
+      day: '2-digit',
+      month: 'short',
+      year: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit',
+      second: '2-digit',
+      hour12: false
     });
 
-}
+    this.cdr.markForCheck();
+  }
 
 }

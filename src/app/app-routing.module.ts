@@ -45,9 +45,11 @@ import { TenantDirectoryComponent } from './tenant-directory/tenant-directory.co
 import { TenantRemindersComponent } from './tenant-reminders/tenant-reminders.component';
 import { TenantCalendarComponent } from './tenant-calendar/tenant-calendar.component';
 import { TenantPortfolioActivityComponent } from './tenant-portfolio-activity/tenant-portfolio-activity.component';
+
 import { StaffInvitationComponent } from './staff-invitation/staff-invitation.component';
 
 const routes: Routes = [
+
   // =====================================================
   // ROOT
   // =====================================================
@@ -58,18 +60,21 @@ const routes: Routes = [
   },
 
   // =====================================================
-  // PUBLIC ROUTES
+  // PUBLIC STAFF INVITATION
+  // IMPORTANT: Keep outside AuthLayoutComponent and AuthGuard.
+  // =====================================================
+  {
+    path: 'staff-invitation',
+    component: StaffInvitationComponent
+  },
+
+  // =====================================================
+  // PUBLIC AUTHENTICATION ROUTES
   // =====================================================
   {
     path: '',
     component: AuthLayoutComponent,
     children: [
-
-      {
-  path: 'staff-invitation',
-  component: StaffInvitationComponent
-},
-
       {
         path: 'login',
         component: LoginComponent
@@ -85,6 +90,9 @@ const routes: Routes = [
     ]
   },
 
+  // =====================================================
+  // UNAUTHORIZED
+  // =====================================================
   {
     path: 'unauthorized',
     component: UnauthorizedComponent
@@ -98,6 +106,7 @@ const routes: Routes = [
     component: LayoutComponent,
     canActivate: [AuthGuard],
     children: [
+
       // Default application route
       {
         path: '',
@@ -127,7 +136,6 @@ const routes: Routes = [
       // TENANT / PROPERTY DIRECTORY ROUTES
       // =====================================================
 
-      // Property directory
       {
         path: 'tenant/properties',
         component: TenantDirectoryComponent,
@@ -138,7 +146,6 @@ const routes: Routes = [
         }
       },
 
-      // Property registration
       {
         path: 'tenant/properties/register',
         component: TenantPropertyRegistrationComponent,
@@ -148,7 +155,6 @@ const routes: Routes = [
         }
       },
 
-      // Unit directory MUST remain separate from unit management
       {
         path: 'tenant/units/directory',
         component: TenantDirectoryComponent,
@@ -159,7 +165,7 @@ const routes: Routes = [
         }
       },
 
-            {
+      {
         path: 'tenant/reminders',
         component: TenantRemindersComponent,
         canActivate: [AuthGuard],
@@ -169,7 +175,6 @@ const routes: Routes = [
         }
       },
 
-      // Existing unit management page
       {
         path: 'tenant/units',
         component: TenantUnitManagementComponent,
@@ -179,7 +184,6 @@ const routes: Routes = [
         }
       },
 
-      // Tenant / resident directory
       {
         path: 'tenant/tenants',
         component: TenantDirectoryComponent,
@@ -190,7 +194,6 @@ const routes: Routes = [
         }
       },
 
-      // Tenant registration
       {
         path: 'tenant/register',
         component: TenantRegistrationComponent,
@@ -200,7 +203,6 @@ const routes: Routes = [
         }
       },
 
-      // Lease management
       {
         path: 'tenant/leases',
         component: TenantLeaseManagementComponent,
@@ -210,7 +212,6 @@ const routes: Routes = [
         }
       },
 
-      // Rent management
       {
         path: 'tenant/rent',
         component: TenantRentManagementComponent,
@@ -221,22 +222,22 @@ const routes: Routes = [
       },
 
       {
-  path: 'tenant/calendar',
-  component: TenantCalendarComponent,
-  canActivate: [AuthGuard],
-  data: {
-    roles: ['TENANT_AGENT', 'ADMIN']
-  }
-},
+        path: 'tenant/calendar',
+        component: TenantCalendarComponent,
+        canActivate: [AuthGuard],
+        data: {
+          roles: ['TENANT_AGENT', 'ADMIN']
+        }
+      },
 
-{
-  path: 'tenant/portfolio-activity',
-  component: TenantPortfolioActivityComponent,
-   canActivate: [AuthGuard],
-  data: {
-    roles: ['TENANT_AGENT', 'ADMIN']
-  }
-},
+      {
+        path: 'tenant/portfolio-activity',
+        component: TenantPortfolioActivityComponent,
+        canActivate: [AuthGuard],
+        data: {
+          roles: ['TENANT_AGENT', 'ADMIN']
+        }
+      },
 
       // =====================================================
       // ADMIN + DATA MANAGER ROUTES
@@ -286,7 +287,7 @@ const routes: Routes = [
       {
         path: 'user-profile',
         component: ProfileComponent,
-       canActivate: [AuthGuard],
+        canActivate: [AuthGuard],
         data: {
           roles: ['TENANT_AGENT', 'ADMIN']
         }

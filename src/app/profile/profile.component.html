@@ -24,116 +24,108 @@
 
                 <div class="col-xl-8 col-lg-8">
 
-                    <div class="d-flex align-items-center flex-wrap">
+                   
+<div class="d-flex align-items-center flex-wrap">
 
-                        <!--=================================
-                        PROFILE PHOTO
-                        =================================-->
+    <!-- PROFILE PHOTO -->
+    <div class="profile-photo-wrapper">
 
-                       profile-photo-wrapper
-                        <!--=================================
-                        USER DETAILS
-                        =================================-->
+        <img
+            [src]="profileImage"
+            alt="User Profile Photo"
+            class="profile-photo"
+            (error)="user.imageUrl = 'assets/default-user.png'"
+        >
 
-                        <div class="profile-identity">
+        <div class="online-status"></div>
 
-                            <div class="d-flex align-items-center flex-wrap mb-2">
+        <label
+            for="profileImageUpload"
+            class="profile-photo-edit"
+            title="Change profile photo">
+            <i class="fas fa-camera"></i>
+        </label>
 
-                                <h2 class="employee-name mb-0">
+        <input
+            type="file"
+            id="profileImageUpload"
+            accept="image/jpeg,image/png,image/webp"
+            hidden
+            (change)="onImageSelected($event)"
+        >
 
-                                    {{user.name || 'Employee Name'}}
+        <div
+            class="profile-photo-uploading"
+            *ngIf="uploadProgress >= 0 && uploadProgress < 100">
+            <i class="fas fa-spinner fa-spin"></i>
+        </div>
 
-                                </h2>
+    </div>
 
-                                <span class="badge bg-success ms-3">
+    <!-- USER DETAILS -->
+    <div class="profile-identity">
 
-                                    <i class="fas fa-check-circle me-1"></i>
+        <div class="d-flex align-items-center flex-wrap mb-2">
 
-                                    Active
+            <h2 class="employee-name mb-0">
+                {{user.name || 'Employee Name'}}
+            </h2>
 
-                                </span>
+            <span class="badge bg-success ms-3">
+                <i class="fas fa-check-circle me-1"></i>
+                Active
+            </span>
 
-                                <span class="badge bg-primary ms-2">
+            <span class="badge bg-primary ms-2">
+                Verified Identity
+            </span>
 
-                                    Verified Identity
+        </div>
 
-                                </span>
+        <div class="employee-role">
+            <i class="fas fa-briefcase me-2"></i>
+            {{authService.getRole()}}
+        </div>
 
-                            </div>
+        <div class="employee-department mt-2">
+            <i class="fas fa-building me-2"></i>
+            Digital Lending Department
+        </div>
 
-                            <div class="employee-role">
+        <div class="employee-branch mt-2">
+            <i class="fas fa-map-marker-alt me-2"></i>
+            {{user.branch || 'Head Office'}}
+        </div>
 
-                                <i class="fas fa-briefcase me-2"></i>
+        <!-- PROFILE TAGS -->
+        <div class="profile-tags mt-4">
 
-                                {{authService.getRole()}}
+            <span class="enterprise-tag">
+                <i class="fas fa-id-badge"></i>
+                Employee ID
+                <strong>{{user.accountNumber || 'EQB-000001'}}</strong>
+            </span>
 
-                            </div>
+            <span class="enterprise-tag">
+                <i class="fas fa-user-shield"></i>
+                {{authService.getRole()}}
+            </span>
 
-                            <div class="employee-department mt-2">
+            <span class="enterprise-tag">
+                <i class="fas fa-university"></i>
+                CrediCore
+            </span>
 
-                                <i class="fas fa-building me-2"></i>
+            <span class="enterprise-tag">
+                <i class="fas fa-globe-africa"></i>
+                Kenya Region
+            </span>
 
-                                Digital Lending Department
+        </div>
 
-                            </div>
+    </div>
 
-                            <div class="employee-branch mt-2">
-
-                                <i class="fas fa-map-marker-alt me-2"></i>
-
-                                {{user.branch || 'Head Office'}}
-
-                            </div>
-
-                            <!--==============================
-                            PROFILE TAGS
-                            ==============================-->
-
-                            <div class="profile-tags mt-4">
-
-                                <span class="enterprise-tag">
-
-                                    <i class="fas fa-id-badge"></i>
-
-                                    Employee ID
-
-                                    <strong>
-
-                                        {{user.accountNumber || 'EQB-000001'}}
-
-                                    </strong>
-
-                                </span>
-
-                                <span class="enterprise-tag">
-
-                                    <i class="fas fa-user-shield"></i>
-
-                                    {{authService.getRole()}}
-
-                                </span>
-
-                                <span class="enterprise-tag">
-
-                                    <i class="fas fa-university"></i>
-
-                                    CrediCore
-
-                                </span>
-
-                                <span class="enterprise-tag">
-
-                                    <i class="fas fa-globe-africa"></i>
-
-                                    Kenya Region
-
-                                </span>
-
-                            </div>
-
-                        </div>
-
-                    </div>
+</div>
 
                 </div>
 

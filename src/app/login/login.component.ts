@@ -76,17 +76,6 @@ private clockInterval: any;
   }
 
 
-// ngOnInit(): void {
-
-//     this.preloadImages();
-
-//     this.startSlider();
-
-//     this.startClock();
-
-// }
-
-
 ngOnDestroy(): void {
 
     if (this.sliderInterval) {

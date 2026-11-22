@@ -1,9 +1,14 @@
 
 import { Component, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
+import {
+  FormBuilder,
+  FormGroup,
+  Validators
+} from '@angular/forms';
+
 import { AuthService } from '../services/auth-service.service';
 import { AccountService } from '../services/account.service';
-import { Router } from '@angular/router';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { environment } from '../../environments/environment';
 
 @Component({
@@ -13,6 +18,9 @@ import { environment } from '../../environments/environment';
 })
 export class ProfileComponent implements OnInit {
 
+  private readonly defaultImage = 'assets/default-user.png';
+  private readonly maxImageSize = 5 * 1024 * 1024;
+
   user: any = {
     name: '',
     email: '',
@@ -20,18 +28,19 @@ export class ProfileComponent implements OnInit {
     phoneNumber: '',
     branch: '',
     accountNumber: '',
-    lastLogin: '',
+    role: '',
+    lastLogin: null,
     userImageUrl: '',
-    imageUrl: 'assets/default-user.png'
+    imageUrl: this.defaultImage
   };
 
-  // UI states
+  // Page states
   loading = true;
   openActivityPanel = false;
   editing = false;
   changingPassword = false;
 
-  // Image upload
+  // Profile image
   imagePreview: string | null = null;
   uploadProgress = -1;
 
@@ -46,10 +55,11 @@ export class ProfileComponent implements OnInit {
   editForm!: FormGroup;
   passwordForm!: FormGroup;
 
-  // Saving states
+  // Operation states
   saving = false;
   changing = false;
 
+  // Notifications
   notifications: any[] = [];
   notificationsCount = 0;
 
@@ -65,7 +75,68 @@ export class ProfileComponent implements OnInit {
     this.loadUserDetails();
   }
 
-  /* ================= INIT FORMS ================= */
+  /* =====================================================
+     ROLE ACCESSORS
+  ===================================================== */
+
+  get role(): string {
+    return (
+      this.user?.role ||
+      this.authService.getRole() ||
+      ''
+    ).toString().toUpperCase();
+  }
+
+  get roleLabel(): string {
+    const labels: { [key: string]: string } = {
+      ADMIN: 'Administrator',
+      DATA_MANAGER: 'Credit Manager',
+      APPLICANT: 'Credit Customer',
+      TENANT_AGENT: 'Tenant Management Agent'
+    };
+
+    return labels[this.role] || 'Platform User';
+  }
+
+  get isApplicant(): boolean {
+    return this.role === 'APPLICANT';
+  }
+
+  get isAdmin(): boolean {
+    return this.role === 'ADMIN';
+  }
+
+  get isDataManager(): boolean {
+    return this.role === 'DATA_MANAGER';
+  }
+
+  get isTenantAgent(): boolean {
+    return this.role === 'TENANT_AGENT';
+  }
+
+  get isStaff(): boolean {
+    return [
+      'ADMIN',
+      'DATA_MANAGER',
+      'TENANT_AGENT'
+    ].includes(this.role);
+  }
+
+  get displayName(): string {
+    return this.user?.name || 'User Profile';
+  }
+
+  get accountStatusLabel(): string {
+    return this.user?.accountStatus || 'Not available';
+  }
+
+  get branchLabel(): string {
+    return this.user?.branch || 'Not available';
+  }
+
+  /* =====================================================
+     INITIALIZE FORMS
+  ===================================================== */
 
   private initForms(): void {
 
@@ -76,7 +147,12 @@ export class ProfileComponent implements OnInit {
     });
 
     this.passwordForm = this.fb.group({
-      currentPassword: ['', Validators.required],
+
+      currentPassword: [
+        '',
+        Validators.required
+      ],
+
       newPassword: [
         '',
         [
@@ -85,63 +161,79 @@ export class ProfileComponent implements OnInit {
           Validators.pattern(/^(?=.*[A-Za-z])(?=.*\d).+$/)
         ]
       ],
-      confirmPassword: ['', Validators.required]
+
+      confirmPassword: [
+        '',
+        Validators.required
+      ]
+
     });
   }
 
-  /* ================= LOAD USER DETAILS ================= */
+  /* =====================================================
+     LOAD USER DETAILS
+  ===================================================== */
 
   private loadUserDetails(): void {
 
     const storedUser = this.authService.getUser();
 
-    // Display cached details immediately.
+    // Show cached profile immediately.
     if (storedUser) {
       this.patchUser(storedUser);
     }
 
-    const cachedNationalId = storedUser?.nationalId;
-
-    // Refresh authenticated user details from backend.
     this.authService.getLoggedInUser().subscribe({
 
-      next: (resp: any) => {
+      next: (response: any) => {
 
-        if (!resp) {
-          this.loading = false;
+        if (!response) {
+          this.finishLoading();
           return;
         }
 
-        this.patchUser(resp);
+        this.patchUser(response);
 
-        const nationalId =
-          resp.nationalId || cachedNationalId;
-
-        if (nationalId) {
-          this.getAccountDetails(nationalId);
+        // Credit account details are only relevant
+        // to applicants in the current role structure.
+        if (
+          this.isApplicant &&
+          this.user.nationalId
+        ) {
+          this.getAccountDetails(this.user.nationalId);
         } else {
-          this.loading = false;
+          this.finishLoading();
         }
       },
 
-      error: (error) => {
+      error: (error: any) => {
 
         console.error(
-          'Unable to refresh profile details:',
+          'Unable to load profile details:',
           error
         );
 
-        // Retain cached information if refresh fails.
-        if (cachedNationalId) {
-          this.getAccountDetails(cachedNationalId);
+        // Retain cached information if the request fails.
+        if (
+          this.isApplicant &&
+          this.user.nationalId
+        ) {
+          this.getAccountDetails(this.user.nationalId);
         } else {
-          this.loading = false;
+          this.finishLoading();
         }
       }
+
     });
   }
 
-  /* ================= PATCH USER DETAILS ================= */
+  private finishLoading(): void {
+    this.loading = false;
+  }
+
+  /* =====================================================
+     PATCH USER DETAILS
+  ===================================================== */
 
   private patchUser(data: any): void {
 
@@ -149,127 +241,67 @@ export class ProfileComponent implements OnInit {
       return;
     }
 
-    const isDefaultImage = (
-      url: string | null | undefined
-    ): boolean => {
+    const isValidImage = (url: any): boolean => {
 
-      if (!url || typeof url !== 'string') {
-        return true;
+      if (
+        !url ||
+        typeof url !== 'string' ||
+        !url.trim()
+      ) {
+        return false;
       }
 
-      return (
+      return !(
         url.includes('default-user.png') ||
         url.includes('default-user.jpg')
       );
     };
 
-    // Preserve the existing Cloudinary URL when the
-    // backend response contains only a default image.
+    // Prefer the latest valid backend image.
+    // Preserve an existing Cloudinary image if the
+    // response only contains a default placeholder.
     const profilePhoto =
-      !isDefaultImage(data.userImageUrl)
+      isValidImage(data.userImageUrl)
         ? data.userImageUrl
-        : !isDefaultImage(data.imageUrl)
+        : isValidImage(data.imageUrl)
           ? data.imageUrl
-          : !isDefaultImage(this.user.userImageUrl)
+          : isValidImage(this.user.userImageUrl)
             ? this.user.userImageUrl
-            : !isDefaultImage(this.user.imageUrl)
+            : isValidImage(this.user.imageUrl)
               ? this.user.imageUrl
-              : 'assets/default-user.png';
+              : this.defaultImage;
 
     this.user = {
       ...this.user,
       ...data,
+      role: data.role || this.user.role || this.authService.getRole(),
       userImageUrl: profilePhoto,
       imageUrl: profilePhoto
     };
 
-    // SECURITY
-    this.user.failedAttempts =
-      this.user.failedAttempts ?? 0;
+    // Do not manufacture security, compliance,
+    // employment or audit information here.
+    // Only values returned by the backend are retained.
 
-    this.user.mfaEnabled =
-      this.user.mfaEnabled ?? true;
+    if (this.editForm) {
 
-    this.user.passwordChangedAt =
-      this.user.passwordChangedAt ?? new Date();
+      this.editForm.patchValue({
+        name: this.user.name || '',
+        phoneNumber: this.user.phoneNumber || '',
+        branch: this.user.branch || ''
+      });
 
-    // COMPLIANCE
-    this.user.accountStatus =
-      this.user.accountStatus ?? 'ACTIVE';
-
-    this.user.kycStatus =
-      this.user.kycStatus ?? 'Verified';
-
-    this.user.riskLevel =
-      this.user.riskLevel ?? 'LOW';
-
-    this.user.complianceScore =
-      this.user.complianceScore ?? 100;
-
-    this.user.createdDate =
-      this.user.createdDate ?? new Date('2024-03-12');
-
-    this.user.kycCompletedDate =
-      this.user.kycCompletedDate ?? new Date('2024-03-13');
-
-    this.user.updatedAt =
-      this.user.updatedAt ?? new Date();
-
-    this.user.createdBy =
-      this.user.createdBy ?? 'System Administrator';
-
-    this.user.approvedBy =
-      this.user.approvedBy ?? 'Branch Manager';
-
-    this.user.modifiedBy =
-      this.user.modifiedBy ?? 'Profile Owner';
-
-    // ACTIVE SESSIONS
-    this.user.sessions =
-      this.user.sessions ?? [
-        {
-          device: 'Desktop',
-          browser: 'Chrome 138',
-          location: 'Nakuru, Kenya',
-          lastSeen: 'Now',
-          current: true
-        },
-        {
-          device: 'Mobile',
-          browser: 'Android App',
-          location: 'Nairobi',
-          lastSeen: 'Yesterday',
-          current: false
-        }
-      ];
-
-    // PERMISSIONS
-    this.user.permissions =
-      this.user.permissions ?? [
-        'Loan Approval',
-        'Loan Review',
-        'Customer Management',
-        'Account Opening',
-        'Credit Scoring',
-        'Reporting',
-        'Notifications',
-        'Profile Management'
-      ];
-
-    // Update edit form.
-    this.editForm.patchValue({
-      name: this.user.name,
-      phoneNumber: this.user.phoneNumber,
-      branch: this.user.branch
-    });
+    }
   }
 
-  /* ================= ACCOUNT DETAILS ================= */
+  /* =====================================================
+     CREDIT ACCOUNT DETAILS
+  ===================================================== */
 
   private getAccountDetails(nationalId: string): void {
 
-    if (!nationalId) {
-      this.loading = false;
+    if (!nationalId || !this.isApplicant) {
+      this.finishLoading();
       return;
     }
 
@@ -277,54 +309,59 @@ export class ProfileComponent implements OnInit {
       .getAccountDetailsByNationalId(nationalId)
       .subscribe({
 
-        next: (acct: any) => {
+        next: (account: any) => {
 
-          if (acct) {
+          if (account) {
 
-            this.user.accountNumber =
-              acct.accountNumber || this.user.accountNumber;
+            this.user = {
+              ...this.user,
 
-            this.user.branch =
-              acct.branch || this.user.branch;
+              accountNumber:
+                account.accountNumber ||
+                this.user.accountNumber,
 
-            this.user.phoneNumber =
-              acct.phoneNumber || this.user.phoneNumber;
+              branch:
+                account.branch ||
+                this.user.branch,
 
-            // Account photo is only a fallback.
-            const accountPhoto = acct.imageUrl;
+              phoneNumber:
+                account.phoneNumber ||
+                this.user.phoneNumber
+            };
 
+            // Account photo is a fallback only.
             const currentPhoto =
               this.user.userImageUrl ||
               this.user.imageUrl;
 
             if (
-              !currentPhoto ||
-              currentPhoto.includes('default-user.png') ||
-              currentPhoto.includes('default-user.jpg')
+              (!currentPhoto ||
+                currentPhoto === this.defaultImage) &&
+              account.imageUrl
             ) {
-
-              if (accountPhoto) {
-                this.user.imageUrl = accountPhoto;
-              }
+              this.user.imageUrl = account.imageUrl;
             }
           }
 
-          this.loading = false;
+          this.finishLoading();
         },
 
-        error: (error) => {
+        error: (error: any) => {
 
           console.error(
-            'Unable to load account details:',
+            'Unable to load credit account details:',
             error
           );
 
-          this.loading = false;
+          this.finishLoading();
         }
+
       });
   }
 
-  /* ================= CLOUDINARY PROFILE PHOTO UPLOAD ================= */
+  /* =====================================================
+     PROFILE IMAGE UPLOAD
+  ===================================================== */
 
   onImageSelected(event: Event): void {
 
@@ -335,8 +372,12 @@ export class ProfileComponent implements OnInit {
       return;
     }
 
-    // Validate file size: maximum 5 MB.
-    if (file.size > 5 * 1024 * 1024) {
+    if (this.uploadProgress === 0) {
+      input.value = '';
+      return;
+    }
+
+    if (file.size > this.maxImageSize) {
 
       alert('Image must not exceed 5 MB.');
 
@@ -344,7 +385,6 @@ export class ProfileComponent implements OnInit {
       return;
     }
 
-    // Validate image format.
     const allowedTypes = [
       'image/jpeg',
       'image/png',
@@ -354,13 +394,6 @@ export class ProfileComponent implements OnInit {
     if (!allowedTypes.includes(file.type.toLowerCase())) {
 
       alert('Only JPG, PNG and WEBP images are allowed.');
-
-      input.value = '';
-      return;
-    }
-
-    // Prevent simultaneous uploads.
-    if (this.uploadProgress === 0) {
 
       input.value = '';
       return;
@@ -385,30 +418,25 @@ export class ProfileComponent implements OnInit {
             this.uploadProgress = -1;
 
             alert(
-              'Upload completed, but no image URL was returned.'
+              'The upload response did not contain a profile image URL.'
             );
 
             return;
           }
 
-          // Update component user details.
-          this.user.userImageUrl = imageUrl;
-          this.user.imageUrl = imageUrl;
+          this.user = {
+            ...this.user,
+            userImageUrl: imageUrl,
+            imageUrl: imageUrl
+          };
 
-          // Update authentication session.
           this.authService.updateProfileImage(imageUrl);
 
-          // Display permanent Cloudinary image.
           this.imagePreview = null;
           this.uploadProgress = 100;
-
-          console.log(
-            'Profile photo uploaded:',
-            imageUrl
-          );
         },
 
-        error: (error) => {
+        error: (error: any) => {
 
           console.error(
             'Profile image upload failed:',
@@ -425,6 +453,7 @@ export class ProfileComponent implements OnInit {
 
           alert(message);
         }
+
       });
     };
 
@@ -438,56 +467,78 @@ export class ProfileComponent implements OnInit {
 
     reader.readAsDataURL(file);
 
-    // Allow selecting the same file again.
+    // Allow the same file to be selected again.
     input.value = '';
   }
 
-  /* ================= PROFILE IMAGE ERROR HANDLING ================= */
+  /* =====================================================
+     PROFILE IMAGE ERROR HANDLING
+  ===================================================== */
 
   onProfileImageError(event: Event): void {
 
     const img = event.target as HTMLImageElement;
 
-    const fallbackImage = 'assets/default-user.png';
-
-    // Prevent repeated image error events.
     img.onerror = null;
-
-    // Only use the local Angular asset.
-    img.src = fallbackImage;
+    img.src = this.defaultImage;
   }
 
-  /* ================= EDIT PROFILE ================= */
+  /* =====================================================
+     EDIT PROFILE
+  ===================================================== */
 
   openEditModal(): void {
+
+    this.editForm.patchValue({
+      name: this.user.name || '',
+      phoneNumber: this.user.phoneNumber || '',
+      branch: this.user.branch || ''
+    });
+
     this.editing = true;
   }
 
   closeEditModal(): void {
-    this.editing = false;
+
+    if (!this.saving) {
+      this.editing = false;
+    }
   }
 
   saveProfile(): void {
 
-    if (this.editForm.invalid) {
+    if (this.editForm.invalid || this.saving) {
+
+      this.editForm.markAllAsTouched();
       return;
     }
 
     this.saving = true;
 
-    const payload = this.editForm.value;
+    const payload = {
+      name: this.editForm.value.name?.trim(),
+      phoneNumber: this.editForm.value.phoneNumber?.trim(),
+      branch: this.editForm.value.branch?.trim()
+    };
 
     this.accountService.updateProfile(payload).subscribe({
 
-      next: () => {
+      next: (response: any) => {
 
         this.saving = false;
         this.editing = false;
 
-        Object.assign(this.user, payload);
+        // Use returned backend values where available.
+        this.user = {
+          ...this.user,
+          ...payload,
+          ...(response && typeof response === 'object'
+            ? response
+            : {})
+        };
       },
 
-      error: (error) => {
+      error: (error: any) => {
 
         console.error(
           'Profile update failed:',
@@ -495,52 +546,71 @@ export class ProfileComponent implements OnInit {
         );
 
         this.saving = false;
+
+        const message =
+          error?.error?.message ||
+          error?.error?.detail ||
+          'Unable to update your profile. Please try again.';
+
+        alert(message);
       }
+
     });
   }
 
-  /* ================= CHANGE PASSWORD ================= */
+  /* =====================================================
+     CHANGE PASSWORD
+  ===================================================== */
 
   openChangePasswordModal(): void {
+
+    this.passwordForm.reset();
     this.changingPassword = true;
   }
 
-  LoanSetting(): void {
-    this.router.navigate(['/app/settings']);
-  }
-
   closeChangePasswordModal(): void {
-    this.changingPassword = false;
+
+    if (!this.changing) {
+      this.changingPassword = false;
+      this.passwordForm.reset();
+    }
   }
 
   changePassword(): void {
 
-    if (this.passwordForm.invalid) {
+    if (this.passwordForm.invalid || this.changing) {
+
+      this.passwordForm.markAllAsTouched();
       return;
     }
 
+    const formValue = this.passwordForm.value;
+
     if (
-      this.passwordForm.value.newPassword !==
-      this.passwordForm.value.confirmPassword
+      formValue.newPassword !==
+      formValue.confirmPassword
     ) {
 
-      alert('Passwords do not match!');
+      alert('New password and confirmation do not match.');
       return;
     }
 
     this.changing = true;
 
     this.accountService
-      .changePassword(this.passwordForm.value)
+      .changePassword(formValue)
       .subscribe({
 
         next: () => {
 
           this.changing = false;
           this.changingPassword = false;
+          this.passwordForm.reset();
+
+          alert('Your password has been changed successfully.');
         },
 
-        error: (error) => {
+        error: (error: any) => {
 
           console.error(
             'Password change failed:',
@@ -548,11 +618,29 @@ export class ProfileComponent implements OnInit {
           );
 
           this.changing = false;
+
+          const message =
+            error?.error?.message ||
+            error?.error?.detail ||
+            'Unable to change your password. Please try again.';
+
+          alert(message);
         }
+
       });
   }
 
-  /* ================= ACTIVITY PANEL ================= */
+  /* =====================================================
+     LOAN SETTINGS
+  ===================================================== */
+
+  LoanSetting(): void {
+    this.router.navigate(['/app/settings']);
+  }
+
+  /* =====================================================
+     USER ACTIVITY
+  ===================================================== */
 
   fetchActivity(): void {
 
@@ -565,7 +653,10 @@ export class ProfileComponent implements OnInit {
 
   loadMoreActivities(): void {
 
-    if (this.activityEnd || this.activityLoading) {
+    if (
+      this.activityEnd ||
+      this.activityLoading
+    ) {
       return;
     }
 
@@ -575,22 +666,30 @@ export class ProfileComponent implements OnInit {
       .getUserActivity(this.activityPage, this.activityQ)
       .subscribe({
 
-        next: (resp: any[]) => {
+        next: (response: any) => {
 
-          if (!resp || resp.length === 0) {
+          const records = Array.isArray(response)
+            ? response
+            : response?.content || [];
+
+          if (records.length === 0) {
 
             this.activityEnd = true;
 
           } else {
 
-            this.activities.push(...resp);
+            this.activities = [
+              ...this.activities,
+              ...records
+            ];
+
             this.activityPage++;
           }
 
           this.activityLoading = false;
         },
 
-        error: (error) => {
+        error: (error: any) => {
 
           console.error(
             'Activity loading failed:',
@@ -599,94 +698,82 @@ export class ProfileComponent implements OnInit {
 
           this.activityLoading = false;
         }
+
       });
   }
 
-  /* ================= BACK NAVIGATION ================= */
+  /* =====================================================
+     BACK NAVIGATION
+  ===================================================== */
 
   goBack(): void {
 
-    const role = this.authService.getRole();
+    const routes: { [key: string]: string } = {
+      ADMIN: '/dashboard',
+      DATA_MANAGER: '/data-manager-dashboard',
+      TENANT_AGENT: '/app/tenant-agent-dashboard',
+      APPLICANT: '/applicant-dashboard'
+    };
 
-    if (role === 'ADMIN') {
-
-      this.router.navigate(['/dashboard']);
-
-    } else if (role === 'DATA_MANAGER') {
-
-      this.router.navigate(['/data-manager-dashboard']);
-
-    } else if (role === 'TENANT_AGENT') {
-
-      this.router.navigate(['/app/tenant-agent-dashboard']);
-
-    } else {
-
-      this.router.navigate(['/applicant-dashboard']);
-    }
+    this.router.navigate([
+      routes[this.role] || '/login'
+    ]);
   }
 
-  /* ================= ROLE ACCESSORS ================= */
-
-  get isApplicant(): boolean {
-    return this.authService.getRole() === 'APPLICANT';
-  }
-
-  get isAdmin(): boolean {
-    return this.authService.getRole() === 'ADMIN';
-  }
-
-  /* ================= PROFILE IMAGE DISPLAY ================= */
+  /* =====================================================
+     PROFILE IMAGE URL RESOLUTION
+  ===================================================== */
 
   get profileImage(): string {
 
-    const img =
+    const image =
       this.imagePreview ||
       this.user.userImageUrl ||
       this.user.imageUrl;
 
-    if (!img) {
-      return 'assets/default-user.png';
+    if (!image) {
+      return this.defaultImage;
     }
 
-    // Base64 preview.
-    if (img.startsWith('data:')) {
-      return img;
+    if (image.startsWith('data:')) {
+      return image;
     }
 
-    // Keep local Angular assets on the frontend.
-    if (img.startsWith('assets/')) {
-      return img;
+    if (image.startsWith('assets/')) {
+      return image;
     }
 
     try {
 
-      const backendOrigin = new URL(environment.apiUrl).origin;
+      const backendOrigin =
+        new URL(environment.apiUrl).origin;
 
-      // Absolute URLs.
       if (
-        img.startsWith('http://') ||
-        img.startsWith('https://')
+        image.startsWith('http://') ||
+        image.startsWith('https://')
       ) {
 
-        const parsedUrl = new URL(img);
+        const parsedUrl = new URL(image);
 
-        // Legacy localhost URLs are redirected to configured backend.
+        // Redirect old localhost image URLs to the
+        // configured backend while preserving Cloudinary.
         if (
           parsedUrl.hostname === 'localhost' ||
           parsedUrl.hostname === '127.0.0.1'
         ) {
-
-          return `${backendOrigin}${parsedUrl.pathname}${parsedUrl.search}${parsedUrl.hash}`;
+          return (
+            `${backendOrigin}` +
+            `${parsedUrl.pathname}` +
+            `${parsedUrl.search}` +
+            `${parsedUrl.hash}`
+          );
         }
 
-        // Cloudinary URLs remain unchanged.
-        return img;
+        return image;
       }
 
-      // Legacy relative backend image paths.
       return new URL(
-        img.replace(/^\/+/, ''),
+        image.replace(/^\/+/, ''),
         `${backendOrigin}/`
       ).toString();
 
@@ -694,11 +781,10 @@ export class ProfileComponent implements OnInit {
 
       console.error(
         'Unable to resolve profile image URL:',
-        img,
         error
       );
 
-      return 'assets/default-user.png';
+      return this.defaultImage;
     }
   }
 

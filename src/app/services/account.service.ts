@@ -4,6 +4,7 @@ import { Observable } from 'rxjs';
 
 import { Account } from '../../models/User.model';
 import { environment } from '../../environments/environment';
+import { AuthService } from './auth-service.service';
 
 @Injectable({
     providedIn: 'root'
@@ -18,45 +19,46 @@ export class AccountService {
     private locationsUrl = `${environment.apiUrl}/locations`;
 
     constructor(
-        private http: HttpClient
+        private http: HttpClient,
+         private authService: AuthService
            ) {}
 
-    private getHeaders(): HttpHeaders {
 
-        const token = sessionStorage.getItem('token');
+   private getHeaders(): HttpHeaders {
 
-        let headers = new HttpHeaders({
-            'Content-Type': 'application/json'
-        });
+  const token = this.authService.getToken();
 
-        if (token) {
-            headers = headers.set(
-                'Authorization',
-                `Bearer ${token}`
-            );
-        }
+  let headers = new HttpHeaders({
+    'Content-Type': 'application/json'
+  });
 
-        return headers;
-    }
+  if (token) {
+    headers = headers.set(
+      'Authorization',
+      `Bearer ${token}`
+    );
+  }
 
+  return headers;
+}
    
+
  
-    private getMultipartHeaders(): HttpHeaders {
+   private getMultipartHeaders(): HttpHeaders {
 
-        const token = sessionStorage.getItem('token');
+  const token = this.authService.getToken();
 
-        let headers = new HttpHeaders();
+  let headers = new HttpHeaders();
 
-        if (token) {
-            headers = headers.set(
-                'Authorization',
-                `Bearer ${token}`
-            );
-        }
+  if (token) {
+    headers = headers.set(
+      'Authorization',
+      `Bearer ${token}`
+    );
+  }
 
-        return headers;
-    }
-
+  return headers;
+}
 
 
     getAccountDetailsByNationalId(

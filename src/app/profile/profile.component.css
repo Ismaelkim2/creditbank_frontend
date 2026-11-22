@@ -1316,3 +1316,151 @@
   }
 
 }
+
+
+
+/* =====================================================
+   PROFILE MODALS
+===================================================== */
+
+.profile-modal-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 99999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  background: rgba(15, 23, 42, 0.60);
+  overflow-y: auto;
+}
+
+.profile-modal {
+  width: 100%;
+  max-width: 520px;
+  max-height: calc(100vh - 40px);
+  overflow-y: auto;
+  background: #ffffff;
+  border-radius: 14px;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.22);
+  animation: profileModalEnter 0.2s ease-out;
+}
+
+.profile-modal-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 15px;
+  padding: 22px 24px;
+  border-bottom: 1px solid #e9edf3;
+}
+
+.profile-modal-header h4 {
+  margin: 0 0 6px;
+  color: #173b70;
+  font-size: 20px;
+  font-weight: 700;
+}
+
+.profile-modal-header p {
+  font-size: 13px;
+}
+
+.profile-modal-close {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 34px;
+  height: 34px;
+  border: 0;
+  border-radius: 50%;
+  background: #f1f4f8;
+  color: #526174;
+  cursor: pointer;
+}
+
+.profile-modal-close:hover {
+  background: #e5ebf3;
+  color: #173b70;
+}
+
+.profile-modal-body {
+  padding: 24px;
+}
+
+.profile-modal-body .form-label {
+  color: #34445a;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.profile-modal-body .form-control {
+  min-height: 44px;
+  border: 1px solid #dce3ec;
+  border-radius: 7px;
+  font-size: 14px;
+}
+
+.profile-modal-body .form-control:focus {
+  border-color: #3578c9;
+  box-shadow: 0 0 0 3px rgba(53, 120, 201, 0.12);
+}
+
+.profile-modal-body .form-control[readonly] {
+  background: #f5f7fa;
+  color: #64748b;
+}
+
+.profile-modal-footer {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  padding: 18px 24px;
+  border-top: 1px solid #e9edf3;
+  background: #fafbfd;
+  border-radius: 0 0 14px 14px;
+}
+
+.profile-modal-footer .btn {
+  min-width: 125px;
+  min-height: 40px;
+  font-weight: 600;
+}
+
+@keyframes profileModalEnter {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@media (max-width: 576px) {
+  .profile-modal-backdrop {
+    padding: 12px;
+    align-items: center;
+  }
+
+  .profile-modal {
+    max-height: calc(100vh - 24px);
+  }
+
+  .profile-modal-header,
+  .profile-modal-body {
+    padding: 18px;
+  }
+
+  .profile-modal-footer {
+    padding: 15px 18px;
+  }
+
+  .profile-modal-footer .btn {
+    min-width: 0;
+    flex: 1;
+  }
+}
+

@@ -505,53 +505,54 @@ export class ProfileComponent implements OnInit {
     }
   }
 
-  saveProfile(): void {
 
-    if (this.editForm.invalid || this.saving) {
+saveProfile(): void {
+  if (this.editForm.invalid || this.saving) {
+    this.editForm.markAllAsTouched();
+    return;
+  }
 
-      this.editForm.markAllAsTouched();
-      return;
+  this.saving = true;
+
+  const payload = {
+    name: this.editForm.value.name?.trim(),
+    phoneNumber: this.editForm.value.phoneNumber?.trim() || ''
+  };
+
+  this.accountService.updateProfile(payload).subscribe({
+    next: (response: any) => {
+      const updatedUser = {
+        ...this.user,
+        ...(response || {}),
+        name: response?.name || payload.name,
+        phoneNumber: response?.phoneNumber ?? payload.phoneNumber
+      };
+
+      this.user = updatedUser;
+
+      // Keep the local authenticated user in sync.
+      this.authService.updateCurrentUser(updatedUser);
+
+      this.saving = false;
+      this.editing = false;
+
+      this.editForm.markAsPristine();
+    },
+
+    error: (error: any) => {
+      console.error('Profile update failed:', error);
+
+      this.saving = false;
+
+      const message =
+        error?.error?.message ||
+        error?.error?.detail ||
+        'Unable to update your profile. Please try again.';
+
+      alert(message);
     }
-
-    this.saving = true;
-
-const payload = {
-  name: this.editForm.value.name?.trim(),
-  phoneNumber: this.editForm.value.phoneNumber?.trim()
-};
-
-this.accountService.updateProfile(payload).subscribe({
-
-  next: (response: any) => {
-
-    this.saving = false;
-    this.editing = false;
-
-    this.user = {
-      ...this.user,
-      ...response
-    };
-
-    this.authService.updateCurrentUser(response);
-
-  },
-
-  error: (error: any) => {
-
-    console.error('Profile update failed:', error);
-
-    this.saving = false;
-
-    const message =
-      error?.error?.message ||
-      error?.error?.detail ||
-      'Unable to update your profile. Please try again.';
-
-    alert(message);
-  }
-
-});
-  }
+  });
+}
 
   /* =====================================================
      CHANGE PASSWORD

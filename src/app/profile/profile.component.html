@@ -1186,4 +1186,267 @@
 
   </div>
 
+
+<!-- =====================================================
+     EDIT PROFILE MODAL
+====================================================== -->
+<div class="profile-modal-backdrop"
+     *ngIf="editing"
+     (click)="closeEditModal()">
+
+  <div class="profile-modal"
+       role="dialog"
+       aria-modal="true"
+       aria-labelledby="editProfileTitle"
+       (click)="$event.stopPropagation()">
+
+    <div class="profile-modal-header">
+      <div>
+        <h4 id="editProfileTitle">
+          <i class="fas fa-user-edit text-primary me-2"></i>
+          Edit Profile
+        </h4>
+        <p class="mb-0 text-muted">
+          Update your personal contact information.
+        </p>
+      </div>
+
+      <button type="button"
+              class="profile-modal-close"
+              aria-label="Close"
+              [disabled]="saving"
+              (click)="closeEditModal()">
+        <i class="fas fa-times"></i>
+      </button>
+    </div>
+
+    <form [formGroup]="editForm" (ngSubmit)="saveProfile()">
+
+      <div class="profile-modal-body">
+
+        <div class="mb-3">
+          <label class="form-label">Full Name</label>
+          <input type="text"
+                 class="form-control"
+                 formControlName="name"
+                 placeholder="Enter your full name"
+                 maxlength="150">
+
+          <small class="text-danger"
+                 *ngIf="editForm.get('name')?.touched &&
+                        editForm.get('name')?.hasError('required')">
+            Full name is required.
+          </small>
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label">Email Address</label>
+          <input type="email"
+                 class="form-control"
+                 [value]="user.email || ''"
+                 readonly>
+
+          <small class="text-muted">
+            Your registered email address cannot be changed here.
+          </small>
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label">Phone Number</label>
+          <input type="tel"
+                 class="form-control"
+                 formControlName="phoneNumber"
+                 placeholder="Enter your phone number"
+                 maxlength="30">
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label">Branch</label>
+          <input type="text"
+                 class="form-control"
+                 [value]="user.branch || 'Not available'"
+                 readonly>
+
+          <small class="text-muted">
+            Branch information is managed through your account record.
+          </small>
+        </div>
+
+      </div>
+
+      <div class="profile-modal-footer">
+
+        <button type="button"
+                class="btn btn-light"
+                [disabled]="saving"
+                (click)="closeEditModal()">
+          Cancel
+        </button>
+
+        <button type="submit"
+                class="btn btn-primary"
+                [disabled]="saving || editForm.invalid">
+
+          <i class="fas fa-spinner fa-spin me-2"
+             *ngIf="saving"></i>
+
+          <i class="fas fa-save me-2"
+             *ngIf="!saving"></i>
+
+          {{ saving ? 'Saving Changes...' : 'Save Changes' }}
+
+        </button>
+
+      </div>
+
+    </form>
+
+  </div>
+</div>
+
+
+<!-- =====================================================
+     CHANGE PASSWORD MODAL
+====================================================== -->
+<div class="profile-modal-backdrop"
+     *ngIf="changingPassword"
+     (click)="closeChangePasswordModal()">
+
+  <div class="profile-modal"
+       role="dialog"
+       aria-modal="true"
+       aria-labelledby="changePasswordTitle"
+       (click)="$event.stopPropagation()">
+
+    <div class="profile-modal-header">
+      <div>
+        <h4 id="changePasswordTitle">
+          <i class="fas fa-lock text-primary me-2"></i>
+          Change Password
+        </h4>
+
+        <p class="mb-0 text-muted">
+          Enter your current password and choose a new one.
+        </p>
+      </div>
+
+      <button type="button"
+              class="profile-modal-close"
+              aria-label="Close"
+              [disabled]="changing"
+              (click)="closeChangePasswordModal()">
+        <i class="fas fa-times"></i>
+      </button>
+    </div>
+
+    <form [formGroup]="passwordForm"
+          (ngSubmit)="changePassword()">
+
+      <div class="profile-modal-body">
+
+        <div class="mb-3">
+          <label class="form-label">Current Password</label>
+
+          <input type="password"
+                 class="form-control"
+                 formControlName="currentPassword"
+                 autocomplete="current-password"
+                 placeholder="Enter current password">
+
+          <small class="text-danger"
+                 *ngIf="passwordForm.get('currentPassword')?.touched &&
+                        passwordForm.get('currentPassword')?.invalid">
+            Current password is required.
+          </small>
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label">New Password</label>
+
+          <input type="password"
+                 class="form-control"
+                 formControlName="newPassword"
+                 autocomplete="new-password"
+                 placeholder="Enter new password">
+
+          <small class="text-muted">
+            Minimum 8 characters, including at least one letter and one number.
+          </small>
+
+          <small class="text-danger d-block"
+                 *ngIf="passwordForm.get('newPassword')?.touched &&
+                        passwordForm.get('newPassword')?.hasError('required')">
+            New password is required.
+          </small>
+
+          <small class="text-danger d-block"
+                 *ngIf="passwordForm.get('newPassword')?.touched &&
+                        passwordForm.get('newPassword')?.hasError('minlength')">
+            Password must contain at least 8 characters.
+          </small>
+
+          <small class="text-danger d-block"
+                 *ngIf="passwordForm.get('newPassword')?.touched &&
+                        passwordForm.get('newPassword')?.hasError('pattern')">
+            Include at least one letter and one number.
+          </small>
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label">Confirm New Password</label>
+
+          <input type="password"
+                 class="form-control"
+                 formControlName="confirmPassword"
+                 autocomplete="new-password"
+                 placeholder="Confirm your new password">
+
+          <small class="text-danger"
+                 *ngIf="passwordForm.get('confirmPassword')?.touched &&
+                        passwordForm.get('confirmPassword')?.invalid">
+            Please confirm your new password.
+          </small>
+
+          <small class="text-danger"
+                 *ngIf="passwordForm.get('confirmPassword')?.touched &&
+                        passwordForm.get('confirmPassword')?.value &&
+                        passwordForm.get('newPassword')?.value !==
+                        passwordForm.get('confirmPassword')?.value">
+            Passwords do not match.
+          </small>
+        </div>
+
+      </div>
+
+      <div class="profile-modal-footer">
+
+        <button type="button"
+                class="btn btn-light"
+                [disabled]="changing"
+                (click)="closeChangePasswordModal()">
+          Cancel
+        </button>
+
+        <button type="submit"
+                class="btn btn-primary"
+                [disabled]="changing || passwordForm.invalid">
+
+          <i class="fas fa-spinner fa-spin me-2"
+             *ngIf="changing"></i>
+
+          <i class="fas fa-key me-2"
+             *ngIf="!changing"></i>
+
+          {{ changing ? 'Updating Password...' : 'Update Password' }}
+
+        </button>
+
+      </div>
+
+    </form>
+
+  </div>
+</div>
+
+
 </div>

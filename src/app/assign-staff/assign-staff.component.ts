@@ -1,3 +1,4 @@
+
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { LoanService } from '../services/loan.service';
@@ -21,10 +22,20 @@ export class AssignStaffComponent implements OnInit {
 
   isLoading = false;
   isAssigning = false;
+  isSavingStaff = false;
 
   searchText = '';
 
   staffForm!: FormGroup;
+
+  invitationResult: any = null;
+  isRegenerating = false;
+
+  readonly staffRoles = [
+    { value: 'ADMIN', label: 'Administrator' },
+    { value: 'DATA_MANAGER', label: 'Data Manager' },
+    { value: 'TENANT_AGENT', label: 'Tenant Agent' }
+  ];
 
   constructor(
     private route: ActivatedRoute,
@@ -36,46 +47,46 @@ export class AssignStaffComponent implements OnInit {
 
   ngOnInit(): void {
 
-    // Staff onboarding form
     this.staffForm = this.fb.group({
       name: ['', Validators.required],
       email: ['', [Validators.required, Validators.email]],
+      nationalId: ['', Validators.required],
       phone: ['', Validators.required],
-      department: ['Loans']
+      department: ['Loans', Validators.required],
+      role: ['DATA_MANAGER', Validators.required],
+      sendEmail: [false]
     });
 
-    // Get loan ID from query params
-   this.route.queryParams.subscribe(params => {
+    this.route.queryParams.subscribe(params => {
 
-  const mode = params['mode'];
+      this.isOnboardingOnly = params['mode'] === 'onboard';
 
-  if (mode === 'onboard') {
+      if (this.isOnboardingOnly) {
+        this.loadStaffOnly();
+        return;
+      }
 
-    this.isOnboardingOnly = true;
+      this.loanId = Number(params['loanId']);
 
-    this.loadStaffOnly();
+      if (!this.loanId) {
+        this.router.navigate(['/app/dashboard']);
+        return;
+      }
 
-    return;
+      this.loadData();
+    });
   }
 
-  this.loanId = Number(params['loanId']);
-
-  if (!this.loanId) {
-
-    this.router.navigate(['/app/dashboard']);
-    return;
-  }
-
-  this.loadData();
-});
-  }
+  // ==========================================
+  // LOAN ASSIGNMENT
+  // ==========================================
 
   loadData(): void {
 
     this.isLoading = true;
 
     this.loanService.getLoanById(this.loanId).subscribe({
-      next: (loan) => {
+      next: loan => {
         this.loan = loan;
       },
       error: () => {
@@ -83,9 +94,14 @@ export class AssignStaffComponent implements OnInit {
       }
     });
 
+    // Keep using the original loan staff endpoint.
     this.loanService.getAllStaff().subscribe({
-      next: (staff) => {
-        this.staffList = staff || [];
+      next: staff => {
+        this.staffList = (staff || []).map((item: any) => ({
+          ...item,
+          id: item.id ?? item.staffId
+        }));
+
         this.isLoading = false;
       },
       error: () => {
@@ -98,7 +114,7 @@ export class AssignStaffComponent implements OnInit {
   assign(): void {
 
     if (!this.selectedStaffId) {
-      alert('Please select a staff member');
+      alert('Please select a staff member.');
       return;
     }
 
@@ -107,27 +123,40 @@ export class AssignStaffComponent implements OnInit {
     this.loanService
       .assignStaffToLoan(this.loanId, this.selectedStaffId)
       .subscribe({
-        next: () => {
 
+        next: () => {
           this.isAssigning = false;
 
-          alert('Staff assigned successfully');
+          alert('Staff assigned successfully.');
 
           this.router.navigate(['/app/customer-details'], {
             queryParams: { loanId: this.loanId }
           });
         },
+
         error: () => {
           this.isAssigning = false;
-          alert('Failed to assign staff');
+          alert('Failed to assign staff.');
         }
       });
   }
 
+  // ==========================================
+  // STAFF ONBOARDING
+  // ==========================================
+
   openStaffModal(content: any): void {
 
+    this.invitationResult = null;
+
     this.staffForm.reset({
-      department: 'Loans'
+      name: '',
+      email: '',
+      nationalId: '',
+      phone: '',
+      department: 'Loans',
+      role: 'DATA_MANAGER',
+      sendEmail: false
     });
 
     this.modalService.open(content, {
@@ -140,53 +169,88 @@ export class AssignStaffComponent implements OnInit {
   saveStaff(modal: any): void {
 
     if (this.staffForm.invalid) {
-
       this.staffForm.markAllAsTouched();
       return;
     }
 
-    this.loanService.createStaff(this.staffForm.value)
-      .subscribe({
+    this.isSavingStaff = true;
 
-        next: () => {
+    const payload = {
+      name: this.staffForm.value.name.trim(),
+      email: this.staffForm.value.email.trim(),
+      nationalId: this.staffForm.value.nationalId.trim(),
+      phone: this.staffForm.value.phone.trim(),
+      department: this.staffForm.value.department.trim(),
+      role: this.staffForm.value.role,
+      sendEmail: this.staffForm.value.sendEmail === true
+    };
 
-          modal.close();
+    this.loanService.createStaffInvitation(payload).subscribe({
 
-          alert('Staff created successfully');
+      next: response => {
 
-          // Reload staff list
-          this.loanService.getAllStaff()
-            .subscribe(data => {
-              this.staffList = data || [];
-            });
-        },
+        this.isSavingStaff = false;
 
-        error: () => {
-          alert('Failed to create staff');
+        this.invitationResult = response;
+
+        modal.close();
+
+        this.loadStaffOnly();
+
+        // Invitation link remains available in the component
+        // so the administrator can copy or share it.
+        if (!this.getInvitationUrl()) {
+          alert(
+            'Staff account created, but the invitation URL was not returned by the server.'
+          );
         }
-      });
+      },
+
+      error: error => {
+
+        this.isSavingStaff = false;
+
+        const message =
+          error?.error?.message ||
+          error?.error?.error ||
+          'Failed to create staff invitation.';
+
+        alert(message);
+      }
+    });
   }
+
+  // ==========================================
+  // STAFF DIRECTORY
+  // ==========================================
 
   loadStaffOnly(): void {
 
-  this.isLoading = true;
+    this.isLoading = true;
 
-  this.loanService.getAllStaff().subscribe({
-    next: (staff) => {
+    this.loanService.getStaffDirectory().subscribe({
 
-      this.staffList = staff || [];
-      this.isLoading = false;
+      next: staff => {
 
-    },
-    error: () => {
+        this.staffList = (staff || []).map((item: any) => ({
+          ...item,
+          id: item.staffId ?? item.id
+        }));
 
-      this.staffList = [];
-      this.isLoading = false;
+        this.isLoading = false;
+      },
 
-    }
-  });
+      error: error => {
 
-}
+        this.staffList = [];
+        this.isLoading = false;
+
+        console.error('Unable to load staff directory:', error);
+
+        alert('Unable to load the staff directory.');
+      }
+    });
+  }
 
   filteredStaff(): any[] {
 
@@ -195,7 +259,155 @@ export class AssignStaffComponent implements OnInit {
     return this.staffList.filter(staff =>
       (staff.name || '').toLowerCase().includes(text) ||
       (staff.email || '').toLowerCase().includes(text) ||
-      (staff.phone || '').toLowerCase().includes(text)
+      (staff.phone || '').toLowerCase().includes(text) ||
+      (staff.role || '').toLowerCase().includes(text) ||
+      (staff.department || '').toLowerCase().includes(text)
     );
   }
+
+  // ==========================================
+  // INVITATION MANAGEMENT
+  // ==========================================
+
+  getInvitationUrl(): string {
+
+    if (!this.invitationResult) {
+      return '';
+    }
+
+    return (
+      this.invitationResult.invitationUrl ||
+      this.invitationResult.invitationLink ||
+      this.invitationResult.registrationUrl ||
+      this.invitationResult.link ||
+      ''
+    );
+  }
+
+  copyInvitationLink(): void {
+
+    const url = this.getInvitationUrl();
+
+    if (!url) {
+      alert('No invitation link is available.');
+      return;
+    }
+
+    if (navigator.clipboard?.writeText) {
+
+      navigator.clipboard.writeText(url)
+        .then(() => alert('Invitation link copied successfully.'))
+        .catch(() => this.copyInvitationFallback(url));
+
+    } else {
+      this.copyInvitationFallback(url);
+    }
+  }
+
+  private copyInvitationFallback(url: string): void {
+
+    const textArea = document.createElement('textarea');
+
+    textArea.value = url;
+    textArea.style.position = 'fixed';
+    textArea.style.opacity = '0';
+
+    document.body.appendChild(textArea);
+
+    textArea.select();
+
+    try {
+      document.execCommand('copy');
+      alert('Invitation link copied.');
+    } catch {
+      alert('Unable to copy automatically. Please copy the link manually.');
+    }
+
+    document.body.removeChild(textArea);
+  }
+
+  regenerateInvitation(staff: any, sendEmail: boolean = false): void {
+
+    if (!staff.userId) {
+      alert('This staff member does not have a linked login account.');
+      return;
+    }
+
+    if (staff.registrationCompleted) {
+      alert('This staff member has already completed registration.');
+      return;
+    }
+
+    if (!confirm('Generate a new invitation? The previous invitation will become invalid.')) {
+      return;
+    }
+
+    this.isRegenerating = true;
+
+    this.loanService.regenerateStaffInvitation(
+      staff.userId,
+      sendEmail
+    ).subscribe({
+
+      next: response => {
+
+        this.isRegenerating = false;
+
+        this.invitationResult = response;
+
+        if (this.getInvitationUrl()) {
+          alert('New invitation generated successfully. Copy and share the link.');
+        } else {
+          alert('Invitation generated, but no invitation URL was returned.');
+        }
+
+        this.loadStaffOnly();
+      },
+
+      error: error => {
+
+        this.isRegenerating = false;
+
+        alert(
+          error?.error?.message ||
+          'Unable to regenerate staff invitation.'
+        );
+      }
+    });
+  }
+
+  // ==========================================
+  // INVITATION DISPLAY HELPERS
+  // ==========================================
+
+  getRegistrationStatus(staff: any): string {
+
+    return staff.registrationCompleted
+      ? 'COMPLETED'
+      : 'NOT COMPLETED';
+  }
+
+  getApprovalStatus(staff: any): string {
+
+    return staff.status || 'PENDING';
+  }
+
+  getCompletedRegistrationCount(): number {
+  return this.staffList.filter(
+    staff => staff.registrationCompleted === true
+  ).length;
+}
+
+getPendingApprovalCount(): number {
+  return this.staffList.filter(
+    staff => staff.status === 'PENDING'
+  ).length;
+}
+
+getPendingInvitationCount(): number {
+  return this.staffList.filter(
+    staff => staff.invitationPending === true
+  ).length;
+}
+
 }

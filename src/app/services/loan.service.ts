@@ -253,5 +253,40 @@ analyzeCreditBatch(
 }
 
 
+  // ==========================================
+  // STAFF ONBOARDING AND ADMINISTRATION
+  // ==========================================
+
+  // Create staff account and generate invitation
+  createStaffInvitation(data: any): Observable<any> {
+    return this.http.post<any>(
+      `${this.apiUrl}/auth/admin/staff`,
+      data
+    );
+  }
+
+  // Get staff directory with linked user information
+  getStaffDirectory(): Observable<any[]> {
+    return this.http.get<any[]>(
+      `${this.apiUrl}/auth/admin/staff`
+    );
+  }
+
+  // Regenerate invitation for pending staff
+  regenerateStaffInvitation(
+    userId: number,
+    sendEmail: boolean = false
+  ): Observable<any> {
+    return this.http.post<any>(
+      `${this.apiUrl}/auth/admin/staff/${userId}/invitation`,
+      {},
+      {
+        params: {
+          sendEmail: String(sendEmail)
+        }
+      }
+    );
+  }
+
 
 }

@@ -1,3 +1,4 @@
+
 <link rel="stylesheet"
 href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
 
@@ -6,396 +7,395 @@ href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/
 
 <div class="register-wrapper">
 
-    <!-- Background Decorations -->
-
     <div class="floating-circle circle-one"></div>
     <div class="floating-circle circle-two"></div>
 
     <div class="register-card animate__animated animate__fadeInRight">
 
-        <!-- ===========================================
-                    LOGO SECTION
-        ============================================ -->
+        <!-- LOGO -->
 
         <div class="logo-section">
 
             <img
                 src="assets/creditbank.png"
-                class="register-logo">
+                class="register-logo"
+                alt="CreditBank Logo">
 
             <h2>Create Account</h2>
 
             <p>
-
-                Register securely to access CreditBank Digital Banking
-                Services.
-
+                Create your independent CreditBank profile
+                to access our digital financial services.
             </p>
 
         </div>
-
-        <!-- ===========================================
-                    FORM
-        ============================================ -->
 
         <form
             [formGroup]="registerForm"
             (ngSubmit)="onSubmit()"
             novalidate>
 
-            <!-- ROLE -->
+            <!-- FULL NAME -->
 
-           <div class="input-group-custom">
+            <div class="input-group-custom">
 
-    <label>Select Role</label>
+                <label>Full Name</label>
 
-    <div
-        class="input-box"
-        [class.invalid]="submitted && f['role'].invalid">
+                <div
+                    class="input-box"
+                    [class.invalid]="submitted && f['name'].invalid">
 
-        <i class="bi bi-person-badge-fill"></i>
+                    <i class="bi bi-person-fill"></i>
 
-        <select formControlName="role">
+                    <input
+                        type="text"
+                        placeholder="Enter your full name"
+                        formControlName="name"
+                        autocomplete="name">
 
-            <option value="">Choose role</option>
+                </div>
 
-            <option value="APPLICANT">Applicant</option>
+                <small class="validation-error"
+                    *ngIf="submitted && f['name'].errors?.['required']">
+                    Full name is required.
+                </small>
 
-            <option value="DATA_MANAGER">Data Manager</option>
+                <small class="validation-error"
+                    *ngIf="submitted && f['name'].errors?.['minlength']">
+                    Name must contain at least 2 characters.
+                </small>
 
-            <option value="TENANT_AGENT">Tenant Agent</option>
+            </div>
 
-            <option value="ADMIN">Administrator</option>
+            <!-- EMAIL -->
 
-        </select>
+            <div class="input-group-custom">
 
-    </div>
+                <label>Email Address</label>
 
-    <small
-        class="validation-error"
-        *ngIf="submitted && f['role'].errors?.['required']">
+                <div
+                    class="input-box"
+                    [class.invalid]="submitted && f['email'].invalid">
 
-        Role is required.
+                    <i class="bi bi-envelope-fill"></i>
 
-    </small>
+                    <input
+                        type="email"
+                        placeholder="Enter your email address"
+                        formControlName="email"
+                        autocomplete="email">
 
-</div>
+                </div>
+
+                <small class="validation-error"
+                    *ngIf="submitted && f['email'].errors?.['required']">
+                    Email address is required.
+                </small>
+
+                <small class="validation-error"
+                    *ngIf="submitted && f['email'].errors?.['email']">
+                    Enter a valid email address.
+                </small>
+
+            </div>
+
             <!-- NATIONAL ID -->
 
-           <div class="input-group-custom">
+            <div class="input-group-custom">
 
-    <label>National ID</label>
+                <label>National ID</label>
 
-    <div
-        class="input-box"
-        [class.invalid]="submitted && f['nationalId'].invalid">
+                <div
+                    class="input-box"
+                    [class.invalid]="submitted && f['nationalId'].invalid">
 
-        <i class="bi bi-credit-card-2-front-fill"></i>
+                    <i class="bi bi-credit-card-2-front-fill"></i>
 
-        <input
-            type="number"
-            placeholder="Enter National ID"
-            formControlName="nationalId">
+                    <input
+                        type="text"
+                        inputmode="numeric"
+                        maxlength="8"
+                        placeholder="Enter National ID"
+                        formControlName="nationalId"
+                        autocomplete="off">
 
-    </div>
+                </div>
 
-    <small
-        class="validation-error"
-        *ngIf="submitted && f['nationalId'].errors?.['required']">
+                <small class="validation-error"
+                    *ngIf="submitted && f['nationalId'].errors?.['required']">
+                    National ID is required.
+                </small>
 
-        National ID is required.
+                <small class="validation-error"
+                    *ngIf="submitted && f['nationalId'].errors?.['pattern']">
+                    National ID must contain 7 or 8 digits.
+                </small>
 
-    </small>
+            </div>
 
-    <small
-        class="validation-error"
-        *ngIf="submitted && f['nationalId'].errors?.['minlength']">
+            <!-- PHONE NUMBER -->
 
-        National ID must be at least 7 digits.
+            <div class="input-group-custom">
 
-    </small>
+                <label>Phone Number</label>
 
-    <small
-        class="validation-error"
-        *ngIf="submitted && f['nationalId'].errors?.['maxlength']">
+                <div
+                    class="input-box"
+                    [class.invalid]="submitted && f['phoneNumber'].invalid">
 
-        National ID cannot exceed 8 digits.
+                    <i class="bi bi-telephone-fill"></i>
 
-    </small>
+                    <input
+                        type="tel"
+                        placeholder="e.g. 0712345678"
+                        formControlName="phoneNumber"
+                        autocomplete="tel">
 
-</div>
+                </div>
+
+                <small class="validation-error"
+                    *ngIf="submitted && f['phoneNumber'].errors?.['required']">
+                    Phone number is required.
+                </small>
+
+                <small class="validation-error"
+                    *ngIf="submitted && f['phoneNumber'].errors?.['pattern']">
+                    Enter a valid phone number.
+                </small>
+
+            </div>
 
             <!-- PASSWORD -->
 
-           <div class="input-group-custom">
+            <div class="input-group-custom">
 
-    <label>Password</label>
+                <label>Password</label>
 
-    <div
-        class="input-box"
-        [class.invalid]="submitted && f['password'].invalid">
+                <div
+                    class="input-box"
+                    [class.invalid]="submitted && f['password'].invalid">
+
+                    <i class="bi bi-lock-fill"></i>
+
+                    <input
+                        [type]="showPassword ? 'text' : 'password'"
+                        formControlName="password"
+                        placeholder="Create password"
+                        autocomplete="new-password">
+
+                    <button
+                        type="button"
+                        class="password-btn"
+                        (click)="togglePassword()">
+
+                        <i
+                            class="bi"
+                            [class.bi-eye]="!showPassword"
+                            [class.bi-eye-slash]="showPassword">
+                        </i>
+
+                    </button>
+
+                </div>
+
+                <small class="validation-error"
+                    *ngIf="submitted && f['password'].errors?.['required']">
+                    Password is required.
+                </small>
 
-        <i class="bi bi-lock-fill"></i>
+                <small class="validation-error"
+                    *ngIf="submitted && f['password'].errors?.['minlength']">
+                    Password must contain at least 8 characters.
+                </small>
 
-        <input
+                <small class="validation-error"
+                    *ngIf="submitted && f['password'].errors?.['pattern']">
+                    Password must contain letters and numbers.
+                </small>
 
-            [type]="showPassword ? 'text':'password'"
+                <!-- PASSWORD STRENGTH -->
 
-            formControlName="password"
+                <div
+                    class="password-strength-wrapper"
+                    *ngIf="f['password'].value">
 
-            placeholder="Create password">
+                    <div class="strength-header">
+
+                        <span>Password Strength</span>
 
-        <button
+                        <span
+                            class="strength-badge"
+                            [ngClass]="{
+                                weak: passwordStrength === 'Weak',
+                                medium: passwordStrength === 'Medium',
+                                strong: passwordStrength === 'Strong'
+                            }">
 
-            type="button"
+                            {{ passwordStrength }}
 
-            class="password-btn"
+                        </span>
 
-            (click)="togglePassword()">
+                    </div>
+
+                    <div class="strength-meter">
 
-            <i
+                        <div
+                            class="strength-fill"
+                            [ngClass]="{
+                                weak: passwordStrength === 'Weak',
+                                medium: passwordStrength === 'Medium',
+                                strong: passwordStrength === 'Strong'
+                            }">
+                        </div>
 
-                class="bi"
+                    </div>
 
-                [class.bi-eye]="!showPassword"
+                    <ul class="password-checklist">
 
-                [class.bi-eye-slash]="showPassword">
-
-            </i>
-
-        </button>
-
-    </div>
-
-    <small
-        class="validation-error"
-        *ngIf="submitted && f['password'].errors?.['required']">
-
-        Password is required.
-
-    </small>
-
-    <small
-        class="validation-error"
-        *ngIf="submitted && f['password'].errors?.['minlength']">
-
-        Password must contain at least 8 characters.
-
-    </small>
-
-    <!-- Password Strength -->
-<div
-    class="password-strength-wrapper"
-    *ngIf="f['password'].value">
-
-    <div class="strength-header">
-
-        <span>Password Strength</span>
-
-        <span
-            class="strength-badge"
-
-            [ngClass]="{
-
-                weak: passwordStrength==='Weak',
-
-                medium: passwordStrength==='Medium',
-
-                strong: passwordStrength==='Strong'
-
-            }">
-
-            {{passwordStrength}}
-
-        </span>
-
-    </div>
-
-    <div class="strength-meter">
-
-        <div
-
-            class="strength-fill"
-
-            [ngClass]="{
-
-                weak: passwordStrength==='Weak',
-
-                medium: passwordStrength==='Medium',
-
-                strong: passwordStrength==='Strong'
-
-            }">
-
-        </div>
-
-    </div>
-
-    <ul class="password-checklist">
-
-        <li [class.valid]="passwordHasLength">
-
-            <i class="bi"
-               [class.bi-check-circle-fill]="passwordHasLength"
-               [class.bi-circle]="!passwordHasLength"></i>
-
-            Minimum 8 characters
-
-        </li>
-
-        <li [class.valid]="passwordHasUpper">
-
-            <i class="bi"
-               [class.bi-check-circle-fill]="passwordHasUpper"
-               [class.bi-circle]="!passwordHasUpper"></i>
-
-            Uppercase letter
-
-        </li>
-
-        <li [class.valid]="passwordHasLower">
-
-            <i class="bi"
-               [class.bi-check-circle-fill]="passwordHasLower"
-               [class.bi-circle]="!passwordHasLower"></i>
-
-            Lowercase letter
-
-        </li>
-
-        <li [class.valid]="passwordHasNumber">
-
-            <i class="bi"
-               [class.bi-check-circle-fill]="passwordHasNumber"
-               [class.bi-circle]="!passwordHasNumber"></i>
-
-            Number
-
-        </li>
-
-        <li [class.valid]="passwordHasSpecial">
-
-            <i class="bi"
-               [class.bi-check-circle-fill]="passwordHasSpecial"
-               [class.bi-circle]="!passwordHasSpecial"></i>
-
-            Special character
-
-        </li>
-
-    </ul>
-
-</div>
-
-</div>
-
-            <!-- CONFIRM -->
-
-         <div class="input-group-custom">
-
-    <label>Confirm Password</label>
-
-    <div
-        class="input-box"
-        [class.invalid]="submitted &&
-        (f['confirmPassword'].invalid || passwordsDoNotMatch())">
-
-        <i class="bi bi-shield-lock-fill"></i>
-
-        <input
-
-            [type]="showConfirmPassword ? 'text':'password'"
-
-            formControlName="confirmPassword"
-
-            placeholder="Confirm password">
-
-        <button
-
-            type="button"
-
-            class="password-btn"
-
-            (click)="toggleConfirmPassword()">
-
-            <i
-
-                class="bi"
-
-                [class.bi-eye]="!showConfirmPassword"
-
-                [class.bi-eye-slash]="showConfirmPassword">
-
-            </i>
-
-        </button>
-
-    </div>
-
-    <small
-        class="validation-error"
-        *ngIf="submitted && f['confirmPassword'].errors?.['required']">
-
-        Please confirm your password.
-
-    </small>
-
-    <small
-        class="validation-error"
-        *ngIf="submitted &&
-        !f['confirmPassword'].errors?.['required'] &&
-        passwordsDoNotMatch()">
-
-        Passwords do not match.
-
-    </small>
-
-</div>
+                        <li [class.valid]="passwordHasLength">
+                            <i class="bi"
+                                [class.bi-check-circle-fill]="passwordHasLength"
+                                [class.bi-circle]="!passwordHasLength">
+                            </i>
+                            Minimum 8 characters
+                        </li>
+
+                        <li [class.valid]="passwordHasUpper">
+                            <i class="bi"
+                                [class.bi-check-circle-fill]="passwordHasUpper"
+                                [class.bi-circle]="!passwordHasUpper">
+                            </i>
+                            Uppercase letter
+                        </li>
+
+                        <li [class.valid]="passwordHasLower">
+                            <i class="bi"
+                                [class.bi-check-circle-fill]="passwordHasLower"
+                                [class.bi-circle]="!passwordHasLower">
+                            </i>
+                            Lowercase letter
+                        </li>
+
+                        <li [class.valid]="passwordHasNumber">
+                            <i class="bi"
+                                [class.bi-check-circle-fill]="passwordHasNumber"
+                                [class.bi-circle]="!passwordHasNumber">
+                            </i>
+                            Number
+                        </li>
+
+                        <li [class.valid]="passwordHasSpecial">
+                            <i class="bi"
+                                [class.bi-check-circle-fill]="passwordHasSpecial"
+                                [class.bi-circle]="!passwordHasSpecial">
+                            </i>
+                            Special character
+                        </li>
+
+                    </ul>
+
+                </div>
+
+            </div>
+
+            <!-- CONFIRM PASSWORD -->
+
+            <div class="input-group-custom">
+
+                <label>Confirm Password</label>
+
+                <div
+                    class="input-box"
+                    [class.invalid]="submitted &&
+                    (f['confirmPassword'].invalid || passwordsDoNotMatch())">
+
+                    <i class="bi bi-shield-lock-fill"></i>
+
+                    <input
+                        [type]="showConfirmPassword ? 'text' : 'password'"
+                        formControlName="confirmPassword"
+                        placeholder="Confirm password"
+                        autocomplete="new-password">
+
+                    <button
+                        type="button"
+                        class="password-btn"
+                        (click)="toggleConfirmPassword()">
+
+                        <i
+                            class="bi"
+                            [class.bi-eye]="!showConfirmPassword"
+                            [class.bi-eye-slash]="showConfirmPassword">
+                        </i>
+
+                    </button>
+
+                </div>
+
+                <small class="validation-error"
+                    *ngIf="submitted && f['confirmPassword'].errors?.['required']">
+                    Please confirm your password.
+                </small>
+
+                <small class="validation-error"
+                    *ngIf="submitted &&
+                    !f['confirmPassword'].errors?.['required'] &&
+                    passwordsDoNotMatch()">
+                    Passwords do not match.
+                </small>
+
+            </div>
+
+            <!-- ACCOUNT TYPE INFORMATION -->
+
+            <div class="alert alert-info small">
+                <i class="bi bi-info-circle-fill me-2"></i>
+                Public registration creates an Applicant profile.
+                Staff accounts are created by authorized administrators.
+            </div>
 
             <!-- ERROR -->
 
             <div
-
                 *ngIf="registrationError"
-
                 class="error-box animate__animated animate__shakeX">
 
                 <i class="bi bi-exclamation-circle-fill"></i>
 
-                {{registrationError}}
+                {{ registrationError }}
 
             </div>
 
+            <!-- SUCCESS -->
+
             <div
-    *ngIf="registrationSuccess"
-    class="success-box animate__animated animate__fadeIn">
+                *ngIf="registrationSuccess"
+                class="success-box animate__animated animate__fadeIn">
 
-    <i class="bi bi-check-circle-fill"></i>
+                <i class="bi bi-check-circle-fill"></i>
 
-    {{registrationSuccess}}
+                {{ registrationSuccess }}
 
-</div>
+            </div>
 
-            <!-- REGISTER -->
+            <!-- REGISTER BUTTON -->
 
             <button
-
+                type="submit"
                 class="register-btn"
-
                 [disabled]="loading">
 
                 <span *ngIf="!loading">
 
                     <i class="bi bi-person-plus-fill"></i>
 
-                    Create Account
+                    Create Applicant Account
 
                 </span>
 
                 <span *ngIf="loading">
 
-                    <span
-                        class="spinner-border spinner-border-sm me-2">
+                    <span class="spinner-border spinner-border-sm me-2">
                     </span>
 
                     Creating Account...
@@ -406,23 +406,13 @@ href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/
 
         </form>
 
-        <!-- ===========================================
-                    FOOTER
-        ============================================ -->
+        <!-- FOOTER -->
 
         <div class="register-footer">
 
-            <span>
+            <span>Already have an account?</span>
 
-                Already have an account?
-
-            </span>
-
-            <a routerLink="/login">
-
-                Login
-
-            </a>
+            <a routerLink="/login">Login</a>
 
         </div>
 

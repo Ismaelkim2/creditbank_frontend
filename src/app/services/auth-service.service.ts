@@ -174,12 +174,21 @@ export class AuthService {
 
   /** ================= REGISTRATION ================= */
 
-  register(payload: any): Observable<any> {
-    return this.http.post(
-      `${this.baseUrl}/register`,
-      payload
-    );
-  }
+/** ================= APPLICANT REGISTRATION ================= */
+
+register(payload: {
+  name: string;
+  email: string;
+  nationalId: string;
+  phoneNumber: string;
+  password: string;
+}): Observable<any> {
+
+  return this.http.post(
+    `${this.baseUrl}/register`,
+    payload
+  );
+}
 
 
 /** ================= LOGGED-IN USER ================= */

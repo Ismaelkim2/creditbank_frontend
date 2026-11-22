@@ -1,4 +1,9 @@
-<div class="assignment-dashboard" *ngIf="!isLoading" >
+
+<!-- ==========================================
+     STAFF MANAGEMENT / LOAN ASSIGNMENT
+=========================================== -->
+
+<div class="assignment-dashboard" *ngIf="!isLoading">
 
   <!-- HEADER -->
   <div class="dashboard-header">
@@ -6,11 +11,15 @@
     <div>
       <h2>
         <i class="fa fa-users"></i>
-        Staff Assignment Center
+        {{ isOnboardingOnly ? 'Staff Management Center' : 'Staff Assignment Center' }}
       </h2>
 
       <p>
-        Allocate relationship managers and loan officers to customer facilities
+        {{
+          isOnboardingOnly
+            ? 'Manage staff accounts, invitations, roles and onboarding progress.'
+            : 'Allocate relationship managers and loan officers to customer facilities.'
+        }}
       </p>
     </div>
 
@@ -30,7 +39,6 @@
   </div>
 
   <!-- KPI CARDS -->
-
   <div class="row g-4 mb-4">
 
     <div class="col-lg-3 col-md-6">
@@ -42,30 +50,135 @@
 
     <div class="col-lg-3 col-md-6">
       <div class="metric-card">
-        <span>Available Officers</span>
-        <h3>{{ staffList.length }}</h3>
+        <span>
+          {{ isOnboardingOnly ? 'Completed Registration' : 'Available Officers' }}
+        </span>
+
+        <h3>
+          {{ getCompletedRegistrationCount() }}
+        </h3>
       </div>
     </div>
 
-    <div class="col-lg-3 col-md-6">
-      <div class="metric-card">
-        <span>Facility Amount</span>
-        <h3>{{ loan?.amount | currency:'KES':'symbol':'1.0-0' }}</h3>
-      </div>
-    </div>
+    <ng-container *ngIf="!isOnboardingOnly">
 
-    <div class="col-lg-3 col-md-6">
-      <div class="metric-card">
-        <span>Facility ID</span>
-        <h3>#{{ loan?.id }}</h3>
+      <div class="col-lg-3 col-md-6">
+        <div class="metric-card">
+          <span>Facility Amount</span>
+          <h3>{{ loan?.amount | currency:'KES':'symbol':'1.0-0' }}</h3>
+        </div>
       </div>
+
+      <div class="col-lg-3 col-md-6">
+        <div class="metric-card">
+          <span>Facility ID</span>
+          <h3>#{{ loan?.id }}</h3>
+        </div>
+      </div>
+
+    </ng-container>
+
+    <ng-container *ngIf="isOnboardingOnly">
+
+      <div class="col-lg-3 col-md-6">
+        <div class="metric-card">
+          <span>Pending Approval</span>
+         
+           <h3>{{ getPendingApprovalCount() }}</h3>
+         
+        </div>
+      </div>
+
+      <div class="col-lg-3 col-md-6">
+        <div class="metric-card">
+          <span>Invitations Pending</span>
+          <h3>{{ getPendingInvitationCount() }}</h3>
+        </div>
+      </div>
+
+    </ng-container>
+
+  </div>
+
+  <!-- INVITATION RESULT -->
+  <div class="card border-0 shadow-sm mb-4"
+       *ngIf="invitationResult">
+
+    <div class="card-body">
+
+      <div class="d-flex justify-content-between align-items-center flex-wrap gap-2">
+
+        <div>
+          <h5 class="mb-1 text-success">
+            <i class="fa fa-check-circle me-2"></i>
+            Staff Invitation Generated
+          </h5>
+
+          <p class="text-muted mb-0">
+            Share this secure link with the staff member.
+            It expires after 24 hours and can only be used once.
+          </p>
+        </div>
+
+        <span class="badge bg-success">
+          {{ invitationResult.deliveryStatus || 'GENERATED' }}
+        </span>
+
+      </div>
+
+      <div class="mt-3" *ngIf="getInvitationUrl(); else missingInvitationUrl">
+
+        <label class="form-label fw-semibold">
+          Invitation Link
+        </label>
+
+        <div class="input-group">
+
+          <input
+            type="text"
+            class="form-control"
+            [value]="getInvitationUrl()"
+            readonly>
+
+          <button
+            class="btn btn-primary"
+            type="button"
+            (click)="copyInvitationLink()">
+
+            <i class="fa fa-copy me-2"></i>
+            Copy Link
+
+          </button>
+
+        </div>
+
+        <small class="text-muted d-block mt-2">
+          The raw invitation link is displayed only when it is generated.
+          Store or share it securely.
+        </small>
+
+      </div>
+
+      <ng-template #missingInvitationUrl>
+        <div class="alert alert-warning mt-3 mb-0">
+          The server did not return an invitation URL. Check the response
+          from the staff onboarding endpoint.
+        </div>
+      </ng-template>
+
+      <div *ngIf="invitationResult.emailError"
+           class="alert alert-warning mt-3 mb-0">
+
+        Email delivery failed. You can still share the invitation link manually.
+
+      </div>
+
     </div>
 
   </div>
 
   <!-- CUSTOMER PROFILE -->
-
-  <div class="loan-profile-card"  *ngIf="!isOnboardingOnly">
+  <div class="loan-profile-card" *ngIf="!isOnboardingOnly">
 
     <div class="customer-avatar">
       {{ loan?.applicantName?.charAt(0) }}
@@ -99,27 +212,25 @@
   </div>
 
   <!-- SEARCH BAR -->
-
   <div class="search-wrapper">
 
     <i class="fa fa-search"></i>
 
     <input
       type="text"
-      placeholder="Search by name, email, phone or department..."
+      placeholder="Search by name, email, phone, role or department..."
       [(ngModel)]="searchText">
 
   </div>
 
   <!-- STAFF GRID -->
-
   <div class="staff-grid">
 
     <div
       class="staff-card"
       *ngFor="let staff of filteredStaff()"
-      (click)="selectedStaffId = staff.id"
-      [class.selected]="selectedStaffId === staff.id">
+      (click)="!isOnboardingOnly && (selectedStaffId = staff.id)"
+      [class.selected]="!isOnboardingOnly && selectedStaffId === staff.id">
 
       <div class="staff-top">
 
@@ -132,7 +243,7 @@
           <h5>{{ staff.name }}</h5>
 
           <span class="role-badge">
-            {{ staff.department || 'Loan Officer' }}
+            {{ staff.role || staff.department || 'Staff Member' }}
           </span>
 
         </div>
@@ -151,12 +262,57 @@
           {{ staff.phone }}
         </p>
 
+        <p *ngIf="staff.department">
+          <i class="fa fa-building"></i>
+          {{ staff.department }}
+        </p>
+
       </div>
 
-      <div class="availability">
+      <!-- ADMIN STAFF STATUS -->
+      <ng-container *ngIf="isOnboardingOnly">
+
+        <div class="mt-3 d-flex flex-wrap gap-2">
+
+          <span
+            class="badge"
+            [ngClass]="staff.registrationCompleted ? 'bg-success' : 'bg-warning text-dark'">
+
+            {{ getRegistrationStatus(staff) }}
+
+          </span>
+
+          <span
+            class="badge"
+            [ngClass]="staff.status === 'APPROVED' ? 'bg-success' : 'bg-secondary'">
+
+            {{ getApprovalStatus(staff) }}
+
+          </span>
+
+        </div>
+
+        <div class="mt-3" *ngIf="!staff.registrationCompleted && staff.userId">
+
+          <button
+            type="button"
+            class="btn btn-outline-primary btn-sm"
+            [disabled]="isRegenerating"
+            (click)="regenerateInvitation(staff, false); $event.stopPropagation()">
+
+            <i class="fa fa-refresh me-1"></i>
+            Regenerate Invitation
+
+          </button>
+
+        </div>
+
+      </ng-container>
+
+      <!-- LOAN ASSIGNMENT STATUS -->
+      <div class="availability" *ngIf="!isOnboardingOnly">
 
         <span class="online-dot"></span>
-
         Available for Assignment
 
       </div>
@@ -165,36 +321,53 @@
 
   </div>
 
-  <!-- ACTION -->
+  <!-- EMPTY STATE -->
+  <div class="text-center py-5"
+       *ngIf="staffList.length === 0">
 
+    <i class="fa fa-users fa-3x text-muted mb-3"></i>
+
+    <h5>No Staff Records Found</h5>
+
+    <p class="text-muted">
+      Create a staff account to get started.
+    </p>
+
+  </div>
+
+  <!-- LOAN ASSIGNMENT ACTION -->
   <button
+    *ngIf="!isOnboardingOnly"
     class="assign-btn"
     (click)="assign()"
     [disabled]="isAssigning || !selectedStaffId">
 
     <i class="fa fa-check-circle me-2"></i>
 
-    {{ isAssigning
-      ? 'Assigning Officer...'
-      : 'Assign Selected Officer' }}
+    {{
+      isAssigning
+        ? 'Assigning Officer...'
+        : 'Assign Selected Officer'
+    }}
 
   </button>
 
 </div>
 
 <!-- LOADER -->
-
 <div *ngIf="isLoading" class="loading-state">
 
   <div class="spinner-border text-primary"></div>
 
   <h5 class="mt-3">
-    Loading Staff Assignment Center...
+    {{ isOnboardingOnly ? 'Loading Staff Directory...' : 'Loading Staff Assignment Center...' }}
   </h5>
 
 </div>
 
-<!-- STAFF ONBOARDING MODAL -->
+<!-- ==========================================
+     STAFF ONBOARDING MODAL
+=========================================== -->
 
 <ng-template #staffModal let-modal>
 
@@ -202,7 +375,7 @@
 
     <h5>
       <i class="fa fa-user-plus me-2"></i>
-      Staff Onboarding
+      Administrator Staff Onboarding
     </h5>
 
     <button
@@ -214,33 +387,89 @@
 
   <div class="modal-body">
 
+    <div class="alert alert-info">
+
+      <i class="fa fa-info-circle me-2"></i>
+
+      Staff accounts are created by an administrator.
+      The staff member will receive an invitation to complete registration.
+      Approval is a separate administrator action.
+
+    </div>
+
     <form [formGroup]="staffForm">
 
       <div class="row">
 
         <div class="col-md-6 mb-3">
-          <label class="form-label">Full Name</label>
+
+          <label class="form-label">Full Name *</label>
+
           <input
             class="form-control"
-            formControlName="name">
+            formControlName="name"
+            placeholder="Enter full name">
+
+          <small class="text-danger"
+                 *ngIf="staffForm.get('name')?.touched && staffForm.get('name')?.invalid">
+            Full name is required.
+          </small>
+
         </div>
 
         <div class="col-md-6 mb-3">
-          <label class="form-label">Email Address</label>
+
+          <label class="form-label">Email Address *</label>
+
           <input
+            type="email"
             class="form-control"
-            formControlName="email">
+            formControlName="email"
+            placeholder="Enter email address">
+
+          <small class="text-danger"
+                 *ngIf="staffForm.get('email')?.touched && staffForm.get('email')?.invalid">
+            Enter a valid email address.
+          </small>
+
         </div>
 
         <div class="col-md-6 mb-3">
-          <label class="form-label">Phone Number</label>
+
+          <label class="form-label">National ID *</label>
+
           <input
             class="form-control"
-            formControlName="phone">
+            formControlName="nationalId"
+            placeholder="Enter national ID">
+
+          <small class="text-danger"
+                 *ngIf="staffForm.get('nationalId')?.touched && staffForm.get('nationalId')?.invalid">
+            National ID is required.
+          </small>
+
         </div>
 
         <div class="col-md-6 mb-3">
-          <label class="form-label">Department</label>
+
+          <label class="form-label">Phone Number *</label>
+
+          <input
+            type="tel"
+            class="form-control"
+            formControlName="phone"
+            placeholder="Enter phone number">
+
+          <small class="text-danger"
+                 *ngIf="staffForm.get('phone')?.touched && staffForm.get('phone')?.invalid">
+            Phone number is required.
+          </small>
+
+        </div>
+
+        <div class="col-md-6 mb-3">
+
+          <label class="form-label">Department *</label>
 
           <select
             class="form-select"
@@ -251,8 +480,57 @@
             <option value="Customer Service">Customer Service</option>
             <option value="Credit Risk">Credit Risk</option>
             <option value="Operations">Operations</option>
+            <option value="Property Management">Property Management</option>
+            <option value="Administration">Administration</option>
 
           </select>
+
+        </div>
+
+        <div class="col-md-6 mb-3">
+
+          <label class="form-label">System Role *</label>
+
+          <select
+            class="form-select"
+            formControlName="role">
+
+            <option
+              *ngFor="let role of staffRoles"
+              [value]="role.value">
+
+              {{ role.label }}
+
+            </option>
+
+          </select>
+
+          <small class="text-muted">
+            The selected role determines system access.
+          </small>
+
+        </div>
+
+        <div class="col-12 mb-3">
+
+          <div class="form-check">
+
+            <input
+              class="form-check-input"
+              type="checkbox"
+              id="sendStaffEmail"
+              formControlName="sendEmail">
+
+            <label class="form-check-label" for="sendStaffEmail">
+              Send invitation by email
+            </label>
+
+          </div>
+
+          <small class="text-muted">
+            If email delivery fails, the invitation link will still be
+            generated for manual sharing.
+          </small>
 
         </div>
 
@@ -266,6 +544,7 @@
 
     <button
       class="btn btn-light"
+      type="button"
       (click)="modal.dismiss()">
 
       Cancel
@@ -274,10 +553,21 @@
 
     <button
       class="btn btn-success"
+      type="button"
       (click)="saveStaff(modal)"
-      [disabled]="staffForm.invalid">
+      [disabled]="staffForm.invalid || isSavingStaff">
 
-      Create Staff
+      <span
+        *ngIf="isSavingStaff"
+        class="spinner-border spinner-border-sm me-2">
+      </span>
+
+      <i
+        *ngIf="!isSavingStaff"
+        class="fa fa-user-plus me-2">
+      </i>
+
+      {{ isSavingStaff ? 'Creating Invitation...' : 'Create Staff & Generate Invitation' }}
 
     </button>
 

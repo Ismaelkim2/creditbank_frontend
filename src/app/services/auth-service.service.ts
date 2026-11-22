@@ -2,7 +2,7 @@
 import { Injectable, Inject, PLATFORM_ID } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Router } from '@angular/router';
-import { BehaviorSubject, Observable, of } from 'rxjs';
+import { BehaviorSubject, Observable, of,tap } from 'rxjs';
 import { isPlatformBrowser } from '@angular/common';
 import { environment } from '../../environments/environment';
 
@@ -181,25 +181,52 @@ export class AuthService {
     );
   }
 
-  /** ================= LOGGED-IN USER ================= */
 
-  getLoggedInUser(): Observable<AuthUser> {
+/** ================= LOGGED-IN USER ================= */
 
-    const user = this.getCurrentUser();
+getLoggedInUser(): Observable<AuthUser> {
 
-    if (user) {
-      return of(user);
-    }
-
-    return this.http.get<AuthUser>(
-      `${this.baseUrl}/me`,
-      {
-        headers: {
-          Authorization: `Bearer ${this.getToken()}`
-        }
+  return this.http.get<AuthUser>(
+    `${this.baseUrl}/me`,
+    {
+      headers: {
+        Authorization: `Bearer ${this.getToken()}`
       }
-    );
+    }
+  ).pipe(
+    tap((user: AuthUser) => {
+      if (user) {
+        this.updateCurrentUser(user);
+      }
+    })
+  );
+}
+
+
+/** ================= UPDATE CURRENT USER CACHE ================= */
+
+updateCurrentUser(userData: Partial<AuthUser>): void {
+
+  if (!isPlatformBrowser(this.platformId) || !userData) {
+    return;
   }
+
+  const currentUser = this.getCurrentUser();
+
+  const updatedUser = {
+    ...(currentUser || {} as AuthUser),
+    ...userData,
+    token: currentUser?.token || this.getToken()
+  } as AuthUser;
+
+  localStorage.setItem(
+    this.userKey,
+    JSON.stringify(updatedUser)
+  );
+
+  this.userSubject.next(updatedUser);
+}
+
 
   /** ================= USER RESOLUTION ================= */
 

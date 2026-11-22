@@ -515,47 +515,42 @@ export class ProfileComponent implements OnInit {
 
     this.saving = true;
 
-    const payload = {
-      name: this.editForm.value.name?.trim(),
-      phoneNumber: this.editForm.value.phoneNumber?.trim(),
-      branch: this.editForm.value.branch?.trim()
+const payload = {
+  name: this.editForm.value.name?.trim(),
+  phoneNumber: this.editForm.value.phoneNumber?.trim()
+};
+
+this.accountService.updateProfile(payload).subscribe({
+
+  next: (response: any) => {
+
+    this.saving = false;
+    this.editing = false;
+
+    this.user = {
+      ...this.user,
+      ...response
     };
 
-    this.accountService.updateProfile(payload).subscribe({
+    this.authService.updateCurrentUser(response);
 
-      next: (response: any) => {
+  },
 
-        this.saving = false;
-        this.editing = false;
+  error: (error: any) => {
 
-        // Use returned backend values where available.
-        this.user = {
-          ...this.user,
-          ...payload,
-          ...(response && typeof response === 'object'
-            ? response
-            : {})
-        };
-      },
+    console.error('Profile update failed:', error);
 
-      error: (error: any) => {
+    this.saving = false;
 
-        console.error(
-          'Profile update failed:',
-          error
-        );
+    const message =
+      error?.error?.message ||
+      error?.error?.detail ||
+      'Unable to update your profile. Please try again.';
 
-        this.saving = false;
+    alert(message);
+  }
 
-        const message =
-          error?.error?.message ||
-          error?.error?.detail ||
-          'Unable to update your profile. Please try again.';
-
-        alert(message);
-      }
-
-    });
+});
   }
 
   /* =====================================================
@@ -597,8 +592,10 @@ export class ProfileComponent implements OnInit {
 
     this.changing = true;
 
-    this.accountService
-      .changePassword(formValue)
+   this.accountService.changePassword({
+  currentPassword: formValue.currentPassword,
+  newPassword: formValue.newPassword
+})
       .subscribe({
 
         next: () => {

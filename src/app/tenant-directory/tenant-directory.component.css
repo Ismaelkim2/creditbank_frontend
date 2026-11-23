@@ -2345,3 +2345,533 @@
     max-height: 155px !important;
   }
 }
+
+
+
+/* ============================================================
+   CREDICORE | PREMIUM UNIT DIRECTORY IMAGE SYSTEM
+   Targets the exact Angular HTML classes supplied
+   Main register thumbnails + expanded unit profile
+   Responsive | Compact | Overflow protected
+============================================================ */
+
+/* ------------------------------------------------------------
+   1. MAIN UNIT REGISTER PHOTO
+------------------------------------------------------------ */
+
+.tenant-directory .directory-table .directory-unit-photo {
+    position: relative !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+
+    width: 68px !important;
+    min-width: 68px !important;
+    max-width: 68px !important;
+
+    height: 56px !important;
+    min-height: 56px !important;
+    max-height: 56px !important;
+
+    padding: 0 !important;
+    margin: 0 !important;
+
+    overflow: hidden !important;
+
+    background: #f0f5fc !important;
+    border: 1px solid #dce6f3 !important;
+    border-radius: 8px !important;
+
+    box-shadow: 0 2px 6px rgba(20, 45, 80, .06) !important;
+
+    box-sizing: border-box !important;
+}
+
+/* Actual register photograph */
+.tenant-directory .directory-table .directory-unit-photo img {
+    position: absolute !important;
+    inset: 0 !important;
+
+    display: block !important;
+
+    width: 100% !important;
+    min-width: 0 !important;
+    max-width: 100% !important;
+
+    height: 100% !important;
+    min-height: 0 !important;
+    max-height: 100% !important;
+
+    padding: 0 !important;
+    margin: 0 !important;
+
+    object-fit: cover !important;
+    object-position: center !important;
+
+    border: 0 !important;
+    border-radius: inherit !important;
+
+    box-sizing: border-box !important;
+}
+
+/* Register image placeholder */
+.tenant-directory .directory-unit-photo-placeholder {
+    position: absolute !important;
+    inset: 0 !important;
+
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    justify-content: center !important;
+    gap: 3px !important;
+
+    width: 100% !important;
+    height: 100% !important;
+
+    padding: 4px !important;
+    overflow: hidden !important;
+
+    color: #6e829e !important;
+    background: linear-gradient(145deg, #f5f8fd, #e9f0fa) !important;
+
+    text-align: center !important;
+    box-sizing: border-box !important;
+}
+
+.tenant-directory .directory-unit-photo-placeholder i {
+    color: #3972bb !important;
+    font-size: 15px !important;
+}
+
+.tenant-directory .directory-unit-photo-placeholder span {
+    font-size: 7px !important;
+    line-height: 1.2 !important;
+    overflow-wrap: anywhere !important;
+}
+
+/* ------------------------------------------------------------
+   2. EXPANDED UNIT DETAIL LAYOUT
+------------------------------------------------------------ */
+
+.tenant-directory .unit-detail-panel {
+    display: grid !important;
+
+    grid-template-columns: minmax(0, 300px) minmax(0, 1fr) !important;
+
+    align-items: start !important;
+    gap: 17px !important;
+
+    width: 100% !important;
+    max-width: 100% !important;
+    min-width: 0 !important;
+
+    padding: 15px !important;
+
+    overflow: hidden !important;
+    box-sizing: border-box !important;
+}
+
+/* ------------------------------------------------------------
+   3. UNIT PROFILE IMAGE CARD
+------------------------------------------------------------ */
+
+.tenant-directory .unit-detail-hero {
+    display: flex !important;
+    flex-direction: column !important;
+
+    width: 100% !important;
+    min-width: 0 !important;
+    max-width: 300px !important;
+
+    height: auto !important;
+    min-height: 0 !important;
+
+    padding: 0 !important;
+    margin: 0 !important;
+
+    overflow: hidden !important;
+
+    background: #ffffff !important;
+    border: 1px solid #e0e8f2 !important;
+    border-radius: 11px !important;
+
+    box-shadow: 0 3px 12px rgba(25, 48, 79, .07) !important;
+
+    box-sizing: border-box !important;
+}
+
+/* ------------------------------------------------------------
+   4. EXPANDED UNIT IMAGE FRAME
+------------------------------------------------------------ */
+
+.tenant-directory .unit-detail-image-wrapper {
+    position: relative !important;
+    display: block !important;
+
+    width: 100% !important;
+    min-width: 0 !important;
+    max-width: 300px !important;
+
+    height: 185px !important;
+    min-height: 185px !important;
+    max-height: 185px !important;
+
+    padding: 0 !important;
+    margin: 0 !important;
+
+    overflow: hidden !important;
+
+    background: #edf2f8 !important;
+
+    box-sizing: border-box !important;
+}
+
+/* The actual expanded photograph */
+.tenant-directory .unit-detail-image-wrapper img,
+.tenant-directory img.unit-detail-image {
+    position: absolute !important;
+    inset: 0 !important;
+
+    display: block !important;
+
+    width: 100% !important;
+    min-width: 0 !important;
+    max-width: 100% !important;
+
+    height: 100% !important;
+    min-height: 0 !important;
+    max-height: 100% !important;
+
+    padding: 0 !important;
+    margin: 0 !important;
+
+    object-fit: cover !important;
+    object-position: center !important;
+
+    border: 0 !important;
+    border-radius: 0 !important;
+
+    box-sizing: border-box !important;
+}
+
+/* ------------------------------------------------------------
+   5. IMAGE PLACEHOLDER
+------------------------------------------------------------ */
+
+.tenant-directory .unit-detail-image-placeholder {
+    position: absolute !important;
+    inset: 0 !important;
+
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    justify-content: center !important;
+    gap: 8px !important;
+
+    width: 100% !important;
+    height: 100% !important;
+
+    padding: 15px !important;
+    margin: 0 !important;
+
+    overflow: hidden !important;
+
+    color: #718198 !important;
+    text-align: center !important;
+
+    background: linear-gradient(145deg, #f5f8fd, #e9f0f8) !important;
+
+    box-sizing: border-box !important;
+}
+
+.tenant-directory .unit-detail-image-placeholder i {
+    color: #3b73bd !important;
+    font-size: 29px !important;
+}
+
+.tenant-directory .unit-detail-image-placeholder strong {
+    color: #415a78 !important;
+    font-size: 11px !important;
+    font-weight: 750 !important;
+}
+
+.tenant-directory .unit-detail-image-placeholder small {
+    color: #8796a9 !important;
+    font-size: 9px !important;
+    line-height: 1.5 !important;
+}
+
+/* ------------------------------------------------------------
+   6. UNIT IMAGE CAPTION
+------------------------------------------------------------ */
+
+.tenant-directory .unit-detail-image-caption {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: space-between !important;
+    gap: 8px !important;
+
+    width: 100% !important;
+    min-width: 0 !important;
+
+    padding: 11px 12px !important;
+    margin: 0 !important;
+
+    background: #ffffff !important;
+    border-top: 1px solid #edf1f6 !important;
+
+    box-sizing: border-box !important;
+}
+
+.tenant-directory .unit-detail-image-caption > div {
+    min-width: 0 !important;
+}
+
+.tenant-directory .unit-image-eyebrow {
+    display: block !important;
+    margin-bottom: 4px !important;
+
+    color: #3470bd !important;
+    font-size: 8px !important;
+    font-weight: 850 !important;
+    letter-spacing: .9px !important;
+}
+
+.tenant-directory .unit-detail-image-caption h5 {
+    margin: 0 0 4px !important;
+
+    color: #183657 !important;
+    font-size: 13px !important;
+    font-weight: 800 !important;
+}
+
+.tenant-directory .unit-detail-image-caption p {
+    margin: 0 !important;
+
+    color: #78899e !important;
+    font-size: 9px !important;
+    line-height: 1.5 !important;
+    overflow-wrap: anywhere !important;
+}
+
+.tenant-directory .unit-image-code {
+    flex-shrink: 0 !important;
+
+    padding: 5px 7px !important;
+
+    color: #1956a6 !important;
+    font-size: 8px !important;
+    font-weight: 800 !important;
+
+    white-space: nowrap !important;
+
+    background: #edf4ff !important;
+    border: 1px solid #dce9fa !important;
+    border-radius: 6px !important;
+}
+
+/* ------------------------------------------------------------
+   7. UNIT INFORMATION PANEL
+------------------------------------------------------------ */
+
+.tenant-directory .unit-information-section {
+    width: 100% !important;
+    min-width: 0 !important;
+    max-width: 100% !important;
+
+    padding: 16px !important;
+
+    overflow: hidden !important;
+
+    background: #ffffff !important;
+    border: 1px solid #e1e9f2 !important;
+    border-radius: 11px !important;
+
+    box-shadow: 0 2px 8px rgba(25, 48, 79, .04) !important;
+
+    box-sizing: border-box !important;
+}
+
+.tenant-directory .unit-information-section h6 {
+    padding-bottom: 11px !important;
+    margin: 0 0 12px !important;
+
+    color: #193957 !important;
+    font-size: 12px !important;
+    font-weight: 800 !important;
+
+    border-bottom: 1px solid #edf1f6 !important;
+}
+
+.tenant-directory .unit-information-section h6 i {
+    color: #2367bd !important;
+}
+
+/* Unit information grid */
+.tenant-directory .unit-information-section .detail-grid {
+    display: grid !important;
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+    gap: 8px !important;
+
+    width: 100% !important;
+    min-width: 0 !important;
+}
+
+.tenant-directory .unit-information-section .detail-grid > div {
+    min-width: 0 !important;
+    padding: 9px 10px !important;
+
+    background: #f8fafd !important;
+    border: 1px solid #e9eef5 !important;
+    border-radius: 7px !important;
+
+    box-sizing: border-box !important;
+}
+
+.tenant-directory .unit-information-section .detail-grid > div span {
+    font-size: 8px !important;
+}
+
+.tenant-directory .unit-information-section .detail-grid > div strong {
+    font-size: 10px !important;
+    overflow-wrap: anywhere !important;
+}
+
+/* ------------------------------------------------------------
+   8. UNIT DESCRIPTION
+------------------------------------------------------------ */
+
+.tenant-directory .unit-information-section .detail-notes {
+    padding: 11px !important;
+    margin-top: 10px !important;
+
+    background: #f7f9fc !important;
+    border: 1px solid #e8edf4 !important;
+    border-radius: 8px !important;
+}
+
+.tenant-directory .unit-information-section .detail-notes p {
+    margin: 5px 0 0 !important;
+
+    color: #5b6e84 !important;
+    font-size: 10px !important;
+    line-height: 1.6 !important;
+}
+
+/* ------------------------------------------------------------
+   9. UNIT ACTION BUTTONS
+------------------------------------------------------------ */
+
+.tenant-directory .unit-information-section .detail-action-strip {
+    display: flex !important;
+    flex-wrap: wrap !important;
+    gap: 7px !important;
+
+    padding-top: 11px !important;
+    margin-top: 11px !important;
+
+    border-top: 1px solid #edf1f6 !important;
+}
+
+.tenant-directory .unit-information-section .detail-action-strip .btn {
+    min-height: 30px !important;
+    padding: 5px 9px !important;
+
+    font-size: 9px !important;
+    font-weight: 700 !important;
+    border-radius: 6px !important;
+}
+
+/* ------------------------------------------------------------
+   10. TABLE IMAGE COLUMN
+------------------------------------------------------------ */
+
+.tenant-directory .directory-table th:first-child,
+.tenant-directory .directory-table td:first-child {
+    width: 90px !important;
+    min-width: 90px !important;
+    max-width: 90px !important;
+    padding-right: 10px !important;
+    padding-left: 13px !important;
+    vertical-align: middle !important;
+}
+
+/* ------------------------------------------------------------
+   11. TABLET
+------------------------------------------------------------ */
+
+@media (max-width: 900px) {
+    .tenant-directory .unit-detail-panel {
+        grid-template-columns: minmax(0, 260px) minmax(0, 1fr) !important;
+        gap: 12px !important;
+    }
+
+    .tenant-directory .unit-detail-hero {
+        max-width: 260px !important;
+    }
+
+    .tenant-directory .unit-detail-image-wrapper {
+        max-width: 260px !important;
+        height: 170px !important;
+        min-height: 170px !important;
+        max-height: 170px !important;
+    }
+}
+
+/* ------------------------------------------------------------
+   12. MOBILE
+------------------------------------------------------------ */
+
+@media (max-width: 768px) {
+    .tenant-directory .unit-detail-panel {
+        grid-template-columns: minmax(0, 1fr) !important;
+        gap: 11px !important;
+        padding: 10px !important;
+    }
+
+    .tenant-directory .unit-detail-hero {
+        width: 100% !important;
+        max-width: 100% !important;
+    }
+
+    .tenant-directory .unit-detail-image-wrapper {
+        width: 100% !important;
+        max-width: 100% !important;
+        height: 190px !important;
+        min-height: 190px !important;
+        max-height: 190px !important;
+    }
+
+    .tenant-directory .unit-information-section {
+        padding: 12px !important;
+    }
+}
+
+/* ------------------------------------------------------------
+   13. SMALL PHONES
+------------------------------------------------------------ */
+
+@media (max-width: 480px) {
+    .tenant-directory .directory-unit-photo {
+        width: 58px !important;
+        min-width: 58px !important;
+        max-width: 58px !important;
+        height: 49px !important;
+        min-height: 49px !important;
+        max-height: 49px !important;
+    }
+
+    .tenant-directory .unit-detail-image-wrapper {
+        height: 165px !important;
+        min-height: 165px !important;
+        max-height: 165px !important;
+    }
+
+    .tenant-directory .unit-information-section .detail-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+    }
+
+    .tenant-directory .unit-detail-image-caption {
+        padding: 9px !important;
+    }
+}

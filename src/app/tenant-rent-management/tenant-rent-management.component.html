@@ -1,762 +1,769 @@
 
-<div class="rent-page container-fluid py-4">
+<div class="rent-page container-fluid py-3 py-lg-4">
 
-  <!-- =========================================================
-       HEADER
-  ========================================================== -->
-  <div class="rent-header d-flex flex-wrap justify-content-between align-items-center gap-3 mb-4">
-    <div>
+  <!-- PAGE HEADER -->
+  <header class="rent-header">
+    <div class="rent-heading-copy">
       <div class="rent-eyebrow">
-        <i class="fas fa-wallet me-2"></i> PROPERTY FINANCE
+        <i class="fas fa-wallet"></i>
+        PROPERTY FINANCE
       </div>
-
-      <h2 class="rent-title mb-1">Manage Rent</h2>
-
-      <p class="rent-subtitle mb-0">
-        Monitor rent charges, record collections, track tenant credit
-        and reconcile outstanding balances.
+      <h2 class="rent-title">Rent Management</h2>
+      <p class="rent-subtitle">
+        Manage rent charges, record tenant collections, monitor outstanding
+        balances and reconcile payments.
       </p>
     </div>
 
     <button
       type="button"
-      class="btn btn-outline-primary rent-refresh"
+      class="btn rent-refresh"
       (click)="loadData()"
       [disabled]="loading">
-
-      <i class="fas fa-sync-alt me-2" [class.fa-spin]="loading"></i>
-      {{ loading ? 'Refreshing...' : 'Refresh rent data' }}
+      <i class="fas fa-sync-alt" [class.fa-spin]="loading"></i>
+      {{ loading ? 'Refreshing...' : 'Refresh data' }}
     </button>
+  </header>
+
+  <!-- FEEDBACK -->
+  <div *ngIf="pageError" class="alert alert-danger rent-alert" role="alert">
+    <i class="fas fa-exclamation-circle"></i>
+    <span>{{ pageError }}</span>
+    <button type="button" class="btn-close ms-auto"
+      aria-label="Dismiss" (click)="pageError = ''"></button>
   </div>
 
-  <!-- =========================================================
-       GLOBAL FEEDBACK
-  ========================================================== -->
-  <div
-    *ngIf="pageError"
-    class="alert alert-danger rent-alert"
-    role="alert">
-
-    <i class="fas fa-exclamation-circle me-2"></i>
-    {{ pageError }}
-
-    <button
-      type="button"
-      class="btn-close float-end"
-      aria-label="Dismiss"
-      (click)="pageError = ''">
-    </button>
+  <div *ngIf="paymentSuccess" class="alert alert-success rent-alert" role="status">
+    <i class="fas fa-check-circle"></i>
+    <span>{{ paymentSuccess }}</span>
+    <button type="button" class="btn-close ms-auto"
+      aria-label="Dismiss" (click)="paymentSuccess = ''"></button>
   </div>
 
-  <div
-    *ngIf="paymentSuccess"
-    class="alert alert-success rent-alert"
-    role="status">
-
-    <i class="fas fa-check-circle me-2"></i>
-    {{ paymentSuccess }}
-
-    <button
-      type="button"
-      class="btn-close float-end"
-      aria-label="Dismiss"
-      (click)="paymentSuccess = ''">
-    </button>
+  <div *ngIf="reversalSuccess" class="alert alert-success rent-alert" role="status">
+    <i class="fas fa-check-circle"></i>
+    <span>{{ reversalSuccess }}</span>
+    <button type="button" class="btn-close ms-auto"
+      aria-label="Dismiss" (click)="reversalSuccess = ''"></button>
   </div>
 
-  <div
-    *ngIf="reversalSuccess"
-    class="alert alert-success rent-alert"
-    role="status">
+  <!-- FINANCIAL OVERVIEW -->
+  <section class="rent-overview" aria-label="Rent financial overview">
 
-    <i class="fas fa-check-circle me-2"></i>
-    {{ reversalSuccess }}
-
-    <button
-      type="button"
-      class="btn-close float-end"
-      aria-label="Dismiss"
-      (click)="reversalSuccess = ''">
-    </button>
-  </div>
-
-  <!-- =========================================================
-       FINANCIAL OVERVIEW
-  ========================================================== -->
-  <div class="row g-3 mb-4">
-
-    <!-- Total rent charged -->
-    <div class="col-6 col-md-4 col-xl">
-      <div class="rent-stat-card">
-        <div class="rent-stat-icon stat-blue">
+    <div class="rent-stat-card">
+      <div class="rent-stat-top">
+        <span class="rent-stat-icon stat-blue">
           <i class="fas fa-file-invoice-dollar"></i>
-        </div>
-
-        <div class="rent-stat-content">
-          <span class="rent-stat-label">Total charged</span>
-
-          <h3>
-            {{ totalCharged | currency:'KES':'symbol':'1.2-2' }}
-          </h3>
-
-          <small>{{ charges.length }} charge records</small>
-        </div>
+        </span>
+        <span class="rent-stat-caption">CHARGES</span>
+      </div>
+      <div class="rent-stat-label">Total rent charged</div>
+      <div class="rent-stat-value">
+        {{ totalCharged | currency:'KES':'symbol':'1.2-2' }}
+      </div>
+      <div class="rent-stat-foot">
+        {{ charges.length }} charge records
       </div>
     </div>
 
-    <!-- Amount applied to charges -->
-    <div class="col-6 col-md-4 col-xl">
-      <div class="rent-stat-card">
-        <div class="rent-stat-icon stat-green">
+    <div class="rent-stat-card">
+      <div class="rent-stat-top">
+        <span class="rent-stat-icon stat-green">
           <i class="fas fa-hand-holding-usd"></i>
-        </div>
-
-        <div class="rent-stat-content">
-          <span class="rent-stat-label">Allocated to rent</span>
-
-          <h3>
-            {{ totalAllocated | currency:'KES':'symbol':'1.2-2' }}
-          </h3>
-
-          <small>Applied to rent charges</small>
-        </div>
+        </span>
+        <span class="rent-stat-caption">COLLECTIONS</span>
       </div>
+      <div class="rent-stat-label">Allocated to rent</div>
+      <div class="rent-stat-value">
+        {{ totalAllocated | currency:'KES':'symbol':'1.2-2' }}
+      </div>
+      <div class="rent-stat-foot">Applied against rent charges</div>
     </div>
 
-    <!-- Unpaid rent -->
-    <div class="col-6 col-md-4 col-xl">
-      <div class="rent-stat-card">
-        <div class="rent-stat-icon stat-amber">
+    <div class="rent-stat-card">
+      <div class="rent-stat-top">
+        <span class="rent-stat-icon stat-amber">
           <i class="fas fa-hourglass-half"></i>
-        </div>
-
-        <div class="rent-stat-content">
-          <span class="rent-stat-label">Outstanding balance</span>
-
-          <h3>
-            {{ totalOutstanding | currency:'KES':'symbol':'1.2-2' }}
-          </h3>
-
-          <small>Unpaid rent charges</small>
-        </div>
+        </span>
+        <span class="rent-stat-caption">OUTSTANDING</span>
       </div>
+      <div class="rent-stat-label">Outstanding balance</div>
+      <div class="rent-stat-value">
+        {{ totalOutstanding | currency:'KES':'symbol':'1.2-2' }}
+      </div>
+      <div class="rent-stat-foot">Unpaid rent charges</div>
     </div>
 
-    <!-- Overdue rent -->
-    <div class="col-6 col-md-4 col-xl">
-      <div class="rent-stat-card">
-        <div class="rent-stat-icon stat-red">
+    <div class="rent-stat-card">
+      <div class="rent-stat-top">
+        <span class="rent-stat-icon stat-red">
           <i class="fas fa-calendar-times"></i>
-        </div>
-
-        <div class="rent-stat-content">
-          <span class="rent-stat-label">Overdue balance</span>
-
-          <h3>
-            {{ overdueBalance | currency:'KES':'symbol':'1.2-2' }}
-          </h3>
-
-          <small>{{ overdueCharges.length }} overdue charges</small>
-        </div>
+        </span>
+        <span class="rent-stat-caption">OVERDUE</span>
+      </div>
+      <div class="rent-stat-label">Overdue balance</div>
+      <div class="rent-stat-value">
+        {{ overdueBalance | currency:'KES':'symbol':'1.2-2' }}
+      </div>
+      <div class="rent-stat-foot">
+        {{ overdueCharges.length }} overdue charge records
       </div>
     </div>
 
-    <!-- Available tenant credit -->
-    <div class="col-6 col-md-4 col-xl">
-      <div class="rent-stat-card rent-credit-stat">
-        <div class="rent-stat-icon stat-credit">
+    <div class="rent-stat-card rent-stat-credit">
+      <div class="rent-stat-top">
+        <span class="rent-stat-icon stat-purple">
           <i class="fas fa-piggy-bank"></i>
-        </div>
-
-        <div class="rent-stat-content">
-          <span class="rent-stat-label">Available tenant credit</span>
-
-          <h3>
-            {{ totalAvailableCredit | currency:'KES':'symbol':'1.2-2' }}
-          </h3>
-
-          <small>
-            {{ paymentsWithAvailableCredit.length }}
-            payment(s) with excess funds
-          </small>
-        </div>
+        </span>
+        <span class="rent-stat-caption">TENANT CREDIT</span>
+      </div>
+      <div class="rent-stat-label">Available tenant credit</div>
+      <div class="rent-stat-value">
+        {{ totalAvailableCredit | currency:'KES':'symbol':'1.2-2' }}
+      </div>
+      <div class="rent-stat-foot">
+        {{ paymentsWithAvailableCredit.length }} payment(s) with excess funds
       </div>
     </div>
 
-  </div>
+  </section>
 
-  <!-- =========================================================
-       CREDIT EXPLANATION
-  ========================================================== -->
-  <div
+  <!-- TENANT CREDIT NOTICE -->
+  <section
     *ngIf="paymentsWithAvailableCredit.length > 0"
-    class="rent-credit-notice mb-4"
+    class="rent-credit-notice"
     role="status">
 
     <div class="rent-credit-notice-icon">
       <i class="fas fa-wallet"></i>
     </div>
 
-    <div class="flex-grow-1">
-      <h6 class="mb-1">Unallocated tenant payments detected</h6>
-
-      <p class="mb-1">
-        There is
-        <strong>
-          {{ totalAvailableCredit | currency:'KES':'symbol':'1.2-2' }}
-        </strong>
-        in recorded payments that has not yet been allocated to rent charges.
+    <div class="rent-credit-notice-content">
+      <strong>Unallocated tenant payments</strong>
+      <p>
+        {{ totalAvailableCredit | currency:'KES':'symbol':'1.2-2' }}
+        is currently available as tenant credit and has not yet been applied
+        to rent charges.
       </p>
-
       <small>
-        Review the Payments register to identify the tenant and payment
-        reference. Unallocated credit is not the same as rent already paid.
+        Review the payment register to identify the relevant tenant,
+        transaction reference and available balance.
       </small>
     </div>
 
     <button
       type="button"
-      class="btn btn-outline-success btn-sm rent-credit-action"
+      class="btn rent-credit-action"
       (click)="setView('PAYMENTS')">
-
-      <i class="fas fa-arrow-right me-1"></i>
-      Review credit
+      View payments
+      <i class="fas fa-arrow-right"></i>
     </button>
-  </div>
-
-  <!-- =========================================================
-       RECORD PAYMENT
-  ========================================================== -->
-  <section class="rent-panel mb-4">
-
-    <div class="rent-panel-header">
-      <div class="d-flex align-items-center gap-3">
-
-        <div class="rent-heading-icon">
-          <i class="fas fa-money-bill-wave"></i>
-        </div>
-
-        <div>
-          <h4 class="mb-1">Record rent payment</h4>
-
-          <p class="mb-0">
-            Record the actual amount received against a tenant's lease.
-            Excess payments can be carried forward by the backend allocation process.
-          </p>
-        </div>
-      </div>
-
-      <span class="rent-required-note">* Required</span>
-    </div>
-
-    <div
-      *ngIf="paymentError"
-      class="alert alert-danger mx-3 mt-3 mb-0"
-      role="alert">
-
-      <i class="fas fa-exclamation-triangle me-2"></i>
-      {{ paymentError }}
-    </div>
-
-    <form
-      [formGroup]="paymentForm"
-      (ngSubmit)="recordPayment()"
-      novalidate>
-
-      <div class="rent-form-body">
-
-        <div class="row g-3">
-
-          <!-- Lease selection -->
-          <div class="col-12 col-lg-6">
-
-            <label for="rentLeaseId" class="form-label">
-              Active lease *
-            </label>
-
-            <select
-              id="rentLeaseId"
-              class="form-select"
-              formControlName="leaseId"
-              [class.is-invalid]="isInvalid(paymentForm, 'leaseId')"
-              (change)="selectLeaseForPayment($any($event.target).value)">
-
-              <option [ngValue]="null">Select a lease</option>
-
-              <option
-                *ngFor="let lease of activeLeases"
-                [ngValue]="lease.id">
-
-                {{ lease.leaseCode }} — {{ lease.tenantName }}
-                — {{ lease.propertyName }} / Unit {{ lease.unitNumber }}
-              </option>
-            </select>
-
-            <div class="invalid-feedback">
-              Select an active lease.
-            </div>
-
-            <small class="rent-field-hint">
-              Only active leases are offered for new payment entries.
-            </small>
-          </div>
-
-          <!-- Payment reference -->
-          <div class="col-12 col-lg-6">
-
-            <label for="paymentReference" class="form-label">
-              Payment reference *
-            </label>
-
-            <input
-              id="paymentReference"
-              type="text"
-              maxlength="100"
-              class="form-control"
-              formControlName="paymentReference"
-              [class.is-invalid]="isInvalid(paymentForm, 'paymentReference')"
-              placeholder="e.g. M-Pesa receipt or bank transaction reference">
-
-            <div class="invalid-feedback">
-              Enter a payment reference of no more than 100 characters.
-            </div>
-
-            <small class="rent-field-hint">
-              Use the actual transaction reference. References must be unique per owner.
-            </small>
-          </div>
-
-          <!-- Amount received -->
-          <div class="col-12 col-md-6 col-xl-4">
-
-            <label for="paymentAmount" class="form-label">
-              Amount received (KES) *
-            </label>
-
-            <div class="input-group">
-              <span class="input-group-text">KES</span>
-
-              <input
-                id="paymentAmount"
-                type="number"
-                min="0.01"
-                step="0.01"
-                class="form-control"
-                formControlName="amount"
-                [class.is-invalid]="isInvalid(paymentForm, 'amount')"
-                placeholder="0.00">
-            </div>
-
-            <div
-              *ngIf="isInvalid(paymentForm, 'amount')"
-              class="rent-field-error">
-
-              Enter an amount greater than zero.
-            </div>
-
-            <small class="rent-field-hint">
-              Enter the actual amount received. It may exceed monthly rent
-              or the current outstanding balance.
-            </small>
-          </div>
-
-          <!-- Payment method -->
-          <div class="col-12 col-md-6 col-xl-4">
-
-            <label for="paymentMethod" class="form-label">
-              Payment method *
-            </label>
-
-            <select
-              id="paymentMethod"
-              class="form-select"
-              formControlName="paymentMethod"
-              [class.is-invalid]="isInvalid(paymentForm, 'paymentMethod')">
-
-              <option
-                *ngFor="let method of paymentMethods"
-                [ngValue]="method.value">
-
-                {{ method.label }}
-              </option>
-            </select>
-
-            <div class="invalid-feedback">
-              Select a payment method.
-            </div>
-          </div>
-
-          <!-- Notes -->
-          <div class="col-12 col-xl-4">
-
-            <label for="paymentNotes" class="form-label">
-              Notes
-            </label>
-
-            <input
-              id="paymentNotes"
-              type="text"
-              maxlength="1000"
-              class="form-control"
-              formControlName="notes"
-              placeholder="Optional reconciliation note">
-
-            <small class="rent-field-hint">
-              Maximum 1,000 characters.
-            </small>
-          </div>
-
-        </div>
-
-        <div class="rent-payment-guidance mt-3">
-          <i class="fas fa-info-circle me-2"></i>
-
-          <span>
-            The system should allocate payments to eligible rent charges
-            in the configured order and retain any unallocated remainder
-            as tenant credit. Verify the receipt before posting.
-          </span>
-        </div>
-
-        <div class="rent-form-footer">
-
-          <div class="rent-security-note">
-            <i class="fas fa-shield-alt me-2"></i>
-            Verify receipt details before posting. Never enter card PINs or passwords.
-          </div>
-
-          <button
-            type="submit"
-            class="btn btn-primary rent-submit"
-            [disabled]="savingPayment || loading">
-
-            <span
-              *ngIf="savingPayment"
-              class="spinner-border spinner-border-sm me-2">
-            </span>
-
-            <i
-              *ngIf="!savingPayment"
-              class="fas fa-check me-2">
-            </i>
-
-            {{ savingPayment ? 'Recording payment...' : 'Record payment' }}
-          </button>
-
-        </div>
-      </div>
-    </form>
   </section>
 
+  <!-- RECORD PAYMENT: SINGLE COLLAPSIBLE FORM -->
+  <section class="rent-panel rent-entry-panel">
 
-<!-- =========================================================
-     COLLAPSIBLE RECORD PAYMENT SECTION
-     Hidden by default; opens only when requested.
-========================================================== -->
+    <details class="rent-payment-disclosure">
 
-<section class="rent-panel rent-payment-panel mb-4">
-
-  <!-- PAYMENT PANEL HEADER -->
-  <div class="rent-panel-header rent-payment-header">
-
-    <div class="rent-panel-heading">
-      <div class="rent-heading-icon">
-        <i class="fas fa-money-bill-transfer"></i>
-      </div>
-
-      <div>
-        <h4>Rent payment collection</h4>
-        <p>
-          Record verified tenant payments and track how funds are allocated.
-        </p>
-      </div>
-    </div>
-
-    <span class="rent-secure-label">
-      <i class="fas fa-shield-alt"></i>
-      Financial transaction
-    </span>
-
-  </div>
-
-  <!-- PAYMENT FORM DISCLOSURE -->
-  <details class="rent-payment-disclosure">
-
-    <summary class="rent-payment-toggle">
-
-      <span class="rent-toggle-leading">
-        <span class="rent-toggle-icon">
+      <summary class="rent-payment-toggle">
+        <span class="rent-entry-icon">
           <i class="fas fa-plus"></i>
         </span>
 
-        <span class="rent-toggle-copy">
-          <strong>Record a payment</strong>
+        <span class="rent-entry-copy">
+          <strong>Record a rent payment</strong>
           <small>
-            Enter a received amount, transaction reference and payment method.
+            Add a verified tenant payment using its transaction reference.
           </small>
         </span>
-      </span>
 
-      <span class="rent-toggle-action">
-        <span class="rent-toggle-open-text">Open payment form</span>
-        <span class="rent-toggle-close-text">Close payment form</span>
-        <i class="fas fa-chevron-down"></i>
-      </span>
+        <span class="rent-entry-action">
+          <span class="rent-open-label">Open payment form</span>
+          <span class="rent-close-label">Close payment form</span>
+          <i class="fas fa-chevron-down"></i>
+        </span>
+      </summary>
 
-    </summary>
+      <div class="rent-form-content">
 
-    <!-- FORM CONTENT -->
-    <div class="rent-payment-form-content">
-
-      <div class="rent-form-intro">
-        <div>
-          <h5>New rent payment</h5>
-          <p>
-            Enter the details exactly as shown on the payment receipt.
-          </p>
+        <div class="rent-form-heading">
+          <div>
+            <h4>New payment entry</h4>
+            <p>
+              Enter the payment details exactly as shown on the receipt.
+            </p>
+          </div>
+          <span class="rent-required-note">* Required fields</span>
         </div>
 
-        <span class="rent-required-note">
-          <span>*</span> Required fields
+        <div *ngIf="paymentError" class="alert alert-danger rent-inline-alert"
+          role="alert">
+          <i class="fas fa-exclamation-triangle"></i>
+          {{ paymentError }}
+        </div>
+
+        <form
+          [formGroup]="paymentForm"
+          (ngSubmit)="recordPayment()"
+          novalidate>
+
+          <div class="rent-form-grid">
+
+            <!-- LEASE -->
+            <div class="rent-field rent-field-wide">
+              <label for="rentLeaseId">
+                Tenant and active lease <span>*</span>
+              </label>
+
+              <select
+                id="rentLeaseId"
+                class="form-select"
+                formControlName="leaseId"
+                [class.is-invalid]="isInvalid(paymentForm, 'leaseId')"
+                (change)="selectLeaseForPayment($any($event.target).value)">
+
+                <option [ngValue]="null">Select an active lease</option>
+
+                <option
+                  *ngFor="let lease of activeLeases"
+                  [ngValue]="lease.id">
+                  {{ lease.leaseCode }} — {{ lease.tenantName }}
+                  — {{ lease.propertyName }} / Unit {{ lease.unitNumber }}
+                </option>
+              </select>
+
+              <div class="invalid-feedback">Select an active lease.</div>
+              <small>Only active leases are available for new payments.</small>
+            </div>
+
+            <!-- REFERENCE -->
+            <div class="rent-field rent-field-wide">
+              <label for="paymentReference">
+                Transaction reference <span>*</span>
+              </label>
+
+              <input
+                id="paymentReference"
+                type="text"
+                maxlength="100"
+                class="form-control"
+                formControlName="paymentReference"
+                [class.is-invalid]="isInvalid(paymentForm, 'paymentReference')"
+                placeholder="e.g. M-Pesa receipt or bank transaction ID">
+
+              <div class="invalid-feedback">
+                Enter a valid payment reference of no more than 100 characters.
+              </div>
+              <small>Use the original transaction reference for reconciliation.</small>
+            </div>
+
+            <!-- AMOUNT -->
+            <div class="rent-field">
+              <label for="paymentAmount">
+                Amount received (KES) <span>*</span>
+              </label>
+
+              <div class="input-group">
+                <span class="input-group-text">KES</span>
+                <input
+                  id="paymentAmount"
+                  type="number"
+                  min="0.01"
+                  step="0.01"
+                  class="form-control"
+                  formControlName="amount"
+                  [class.is-invalid]="isInvalid(paymentForm, 'amount')"
+                  placeholder="0.00">
+              </div>
+
+              <div *ngIf="isInvalid(paymentForm, 'amount')" class="rent-field-error">
+                Enter an amount greater than zero.
+              </div>
+              <small>
+                Record the actual amount received, including advance or excess rent.
+              </small>
+            </div>
+
+            <!-- METHOD -->
+            <div class="rent-field">
+              <label for="paymentMethod">
+                Payment method <span>*</span>
+              </label>
+
+              <select
+                id="paymentMethod"
+                class="form-select"
+                formControlName="paymentMethod"
+                [class.is-invalid]="isInvalid(paymentForm, 'paymentMethod')">
+
+                <option
+                  *ngFor="let method of paymentMethods"
+                  [ngValue]="method.value">
+                  {{ method.label }}
+                </option>
+              </select>
+
+              <div class="invalid-feedback">Select a payment method.</div>
+              <small>Choose the channel through which funds were received.</small>
+            </div>
+
+            <!-- NOTES -->
+            <div class="rent-field">
+              <label for="paymentNotes">Payment notes</label>
+              <input
+                id="paymentNotes"
+                type="text"
+                maxlength="1000"
+                class="form-control"
+                formControlName="notes"
+                placeholder="Optional reconciliation note">
+              <small>Optional. Maximum 1,000 characters.</small>
+            </div>
+
+          </div>
+
+          <div class="rent-allocation-guidance">
+            <span class="rent-guidance-icon">
+              <i class="fas fa-calculator"></i>
+            </span>
+            <div>
+              <strong>Payment allocation and tenant credit</strong>
+              <p>
+                Payments are allocated to eligible rent charges according
+                to the system's allocation rules. Any unallocated remainder
+                is retained as tenant credit for future rent.
+              </p>
+            </div>
+          </div>
+
+          <div class="rent-form-footer">
+            <div class="rent-security-note">
+              <i class="fas fa-shield-alt"></i>
+              Verify the transaction before posting. Never enter a PIN or password.
+            </div>
+
+            <button
+              type="submit"
+              class="btn rent-submit"
+              [disabled]="savingPayment || loading">
+
+              <span
+                *ngIf="savingPayment"
+                class="spinner-border spinner-border-sm">
+              </span>
+
+              <i *ngIf="!savingPayment" class="fas fa-check-circle"></i>
+
+              {{ savingPayment ? 'Recording payment...' : 'Post payment' }}
+            </button>
+          </div>
+
+        </form>
+      </div>
+    </details>
+  </section>
+
+  <!-- RENT REGISTER -->
+  <section class="rent-panel rent-register-panel">
+
+    <div class="rent-register-header">
+      <div>
+        <div class="rent-section-eyebrow">FINANCIAL RECORDS</div>
+        <h3>Rent register</h3>
+        <p>Review charges and trace every recorded tenant payment.</p>
+      </div>
+
+      <div class="rent-view-tabs" role="tablist" aria-label="Rent register view">
+
+        <button
+          type="button"
+          role="tab"
+          [attr.aria-selected]="activeView === 'CHARGES'"
+          [class.active]="activeView === 'CHARGES'"
+          (click)="setView('CHARGES')">
+          <i class="fas fa-file-invoice"></i>
+          <span>Charges</span>
+          <span class="rent-tab-count">{{ charges.length }}</span>
+        </button>
+
+        <button
+          type="button"
+          role="tab"
+          [attr.aria-selected]="activeView === 'PAYMENTS'"
+          [class.active]="activeView === 'PAYMENTS'"
+          (click)="setView('PAYMENTS')">
+          <i class="fas fa-receipt"></i>
+          <span>Payments</span>
+          <span class="rent-tab-count">{{ payments.length }}</span>
+          <span
+            *ngIf="paymentsWithAvailableCredit.length > 0"
+            class="rent-tab-credit-count">
+            {{ paymentsWithAvailableCredit.length }}
+          </span>
+        </button>
+
+      </div>
+    </div>
+
+    <!-- CHARGES REGISTER -->
+    <ng-container *ngIf="activeView === 'CHARGES'">
+
+      <div class="rent-toolbar">
+        <div class="rent-search">
+          <i class="fas fa-search"></i>
+          <input
+            type="search"
+            class="form-control"
+            [(ngModel)]="chargeSearch"
+            [ngModelOptions]="{standalone: true}"
+            placeholder="Search tenant, property, unit or lease..."
+            aria-label="Search rent charges">
+        </div>
+
+        <select
+          class="form-select rent-filter"
+          [(ngModel)]="chargeFilter"
+          [ngModelOptions]="{standalone: true}"
+          aria-label="Filter rent charges">
+          <option value="ALL">All charge statuses</option>
+          <option value="OPEN">Open</option>
+          <option value="PARTIALLY_PAID">Partially paid</option>
+          <option value="OVERDUE">Overdue</option>
+          <option value="PAID">Paid</option>
+        </select>
+      </div>
+
+      <div *ngIf="loading" class="rent-loading">
+        <span class="spinner-border spinner-border-sm"></span>
+        Loading rent charges...
+      </div>
+
+      <div *ngIf="!loading && filteredCharges.length === 0" class="rent-empty">
+        <span class="rent-empty-icon"><i class="fas fa-file-invoice-dollar"></i></span>
+        <h4>No rent charges found</h4>
+        <p>
+          No charge records match your current search or filter.
+        </p>
+      </div>
+
+      <div
+        *ngIf="!loading && filteredCharges.length > 0"
+        class="table-responsive rent-table-wrap">
+
+        <table class="table rent-table align-middle mb-0">
+          <thead>
+            <tr>
+              <th>LEASE / TENANT</th>
+              <th>PROPERTY / UNIT</th>
+              <th>RENTAL PERIOD</th>
+              <th>DUE DATE</th>
+              <th class="text-end">CHARGED</th>
+              <th class="text-end">PAID</th>
+              <th class="text-end">BALANCE</th>
+              <th>STATUS</th>
+            </tr>
+          </thead>
+
+          <tbody>
+            <tr *ngFor="let charge of filteredCharges; trackBy: trackCharge">
+
+              <td>
+                <strong class="rent-primary-text">{{ charge.leaseCode }}</strong>
+                <small>{{ charge.tenantName }}</small>
+              </td>
+
+              <td>
+                <strong class="rent-primary-text">{{ charge.propertyName }}</strong>
+                <small>Unit {{ charge.unitNumber }}</small>
+              </td>
+
+              <td>
+                <span>{{ charge.periodStart | date:'dd MMM yyyy' }}</span>
+                <small>to {{ charge.periodEnd | date:'dd MMM yyyy' }}</small>
+              </td>
+
+              <td>
+                <span [class.rent-date-overdue]="charge.status === 'OVERDUE'">
+                  {{ charge.dueDate | date:'dd MMM yyyy' }}
+                </span>
+              </td>
+
+              <td class="text-end rent-money">
+                {{ charge.amount | currency:'KES':'symbol':'1.2-2' }}
+              </td>
+
+              <td class="text-end">
+                {{ charge.paidAmount | currency:'KES':'symbol':'1.2-2' }}
+              </td>
+
+              <td
+                class="text-end rent-balance"
+                [class.balance-clear]="charge.balance <= 0">
+                {{ charge.balance | currency:'KES':'symbol':'1.2-2' }}
+              </td>
+
+              <td>
+                <span class="rent-status"
+                  [ngClass]="chargeStatusClass(charge.status)">
+                  {{ charge.status.replace('_', ' ') }}
+                </span>
+              </td>
+
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div *ngIf="!loading && filteredCharges.length > 0" class="rent-register-footer">
+        <span>{{ filteredCharges.length }} matching charge records</span>
+        <span>
+          Overdue balance:
+          <strong>{{ overdueBalance | currency:'KES':'symbol':'1.2-2' }}</strong>
         </span>
       </div>
 
-      <div *ngIf="paymentError"
-           class="rent-form-error"
-           role="alert">
+    </ng-container>
 
-        <i class="fas fa-exclamation-circle"></i>
-        <span>{{ paymentError }}</span>
+    <!-- PAYMENTS REGISTER -->
+    <ng-container *ngIf="activeView === 'PAYMENTS'">
 
+      <div class="rent-toolbar">
+        <div class="rent-search">
+          <i class="fas fa-search"></i>
+          <input
+            type="search"
+            class="form-control"
+            [(ngModel)]="paymentSearch"
+            [ngModelOptions]="{standalone: true}"
+            placeholder="Search reference, tenant or lease..."
+            aria-label="Search rent payments">
+        </div>
+
+        <select
+          class="form-select rent-filter"
+          [(ngModel)]="paymentFilter"
+          [ngModelOptions]="{standalone: true}"
+          aria-label="Filter payment status">
+          <option value="ALL">All payment statuses</option>
+          <option value="POSTED">Posted</option>
+          <option value="REVERSED">Reversed</option>
+        </select>
       </div>
 
-      <form [formGroup]="paymentForm"
-            (ngSubmit)="recordPayment()"
-            novalidate>
-
-        <div class="rent-payment-fields">
-
-          <!-- ACTIVE LEASE -->
-          <div class="rent-field rent-field-wide">
-            <label for="rentLeaseId" class="form-label">
-              Tenant and lease <span>*</span>
-            </label>
-
-            <select id="rentLeaseId"
-                    class="form-select"
-                    formControlName="leaseId"
-                    [class.is-invalid]="isInvalid(paymentForm, 'leaseId')"
-                    (change)="selectLeaseForPayment($any($event.target).value)">
-
-              <option [ngValue]="null">Select an active lease</option>
-
-              <option *ngFor="let lease of activeLeases"
-                      [ngValue]="lease.id">
-
-                {{ lease.leaseCode }} — {{ lease.tenantName }}
-                — {{ lease.propertyName }} / Unit {{ lease.unitNumber }}
-
-              </option>
-            </select>
-
-            <div class="invalid-feedback">
-              Select an active lease.
-            </div>
-
-            <small class="rent-field-hint">
-              Only active tenancy agreements are available.
-            </small>
-          </div>
-
-          <!-- PAYMENT REFERENCE -->
-          <div class="rent-field rent-field-wide">
-            <label for="paymentReference" class="form-label">
-              Transaction reference <span>*</span>
-            </label>
-
-            <input id="paymentReference"
-                   type="text"
-                   maxlength="100"
-                   class="form-control"
-                   formControlName="paymentReference"
-                   [class.is-invalid]="isInvalid(paymentForm, 'paymentReference')"
-                   placeholder="Enter M-Pesa receipt, bank reference or transaction ID">
-
-            <div class="invalid-feedback">
-              Enter a valid payment reference.
-            </div>
-
-            <small class="rent-field-hint">
-              Use the original transaction reference for accurate reconciliation.
-            </small>
-          </div>
-
-          <!-- AMOUNT -->
-          <div class="rent-field">
-            <label for="paymentAmount" class="form-label">
-              Amount received <span>*</span>
-            </label>
-
-            <div class="input-group rent-money-input">
-              <span class="input-group-text">KES</span>
-
-              <input id="paymentAmount"
-                     type="number"
-                     min="0.01"
-                     step="0.01"
-                     class="form-control"
-                     formControlName="amount"
-                     [class.is-invalid]="isInvalid(paymentForm, 'amount')"
-                     placeholder="0.00">
-            </div>
-
-            <div *ngIf="isInvalid(paymentForm, 'amount')"
-                 class="rent-field-error">
-              Enter an amount greater than zero.
-            </div>
-
-            <small class="rent-field-hint">
-              Record the actual amount received, including advance rent or excess payments.
-            </small>
-          </div>
-
-          <!-- PAYMENT METHOD -->
-          <div class="rent-field">
-            <label for="paymentMethod" class="form-label">
-              Payment method <span>*</span>
-            </label>
-
-            <select id="paymentMethod"
-                    class="form-select"
-                    formControlName="paymentMethod"
-                    [class.is-invalid]="isInvalid(paymentForm, 'paymentMethod')">
-
-              <option *ngFor="let method of paymentMethods"
-                      [ngValue]="method.value">
-                {{ method.label }}
-              </option>
-
-            </select>
-
-            <div class="invalid-feedback">
-              Select the payment method.
-            </div>
-
-            <small class="rent-field-hint">
-              Choose the channel through which funds were received.
-            </small>
-          </div>
-
-          <!-- NOTES -->
-          <div class="rent-field rent-field-notes">
-            <label for="paymentNotes" class="form-label">
-              Payment notes
-            </label>
-
-            <input id="paymentNotes"
-                   type="text"
-                   maxlength="1000"
-                   class="form-control"
-                   formControlName="notes"
-                   placeholder="Optional notes for reconciliation">
-
-            <small class="rent-field-hint">
-              Optional. Maximum 1,000 characters.
-            </small>
-          </div>
-
-        </div>
-
-        <!-- FINANCIAL GUIDANCE -->
-        <div class="rent-allocation-guidance">
-          <div class="rent-guidance-icon">
-            <i class="fas fa-calculator"></i>
-          </div>
-
+      <!-- PAYMENT REGISTER SUMMARY -->
+      <div class="rent-payment-summary">
+        <div class="rent-payment-summary-item">
+          <span class="rent-summary-icon summary-blue">
+            <i class="fas fa-receipt"></i>
+          </span>
           <div>
-            <strong>How payment allocation works</strong>
-            <p>
-              Payments should be applied to eligible outstanding rent charges
-              according to the system's allocation rules. Any remaining amount
-              should be retained as tenant credit for future rent.
-            </p>
+            <small>Recorded payments</small>
+            <strong>{{ payments.length }}</strong>
           </div>
         </div>
 
-        <!-- FORM FOOTER -->
-        <div class="rent-payment-footer">
-
-          <div class="rent-security-note">
-            <i class="fas fa-shield-alt"></i>
-            <span>
-              Verify the transaction before recording. Never enter a PIN or password.
-            </span>
+        <div class="rent-payment-summary-item">
+          <span class="rent-summary-icon summary-green">
+            <i class="fas fa-check-circle"></i>
+          </span>
+          <div>
+            <small>Posted payments</small>
+            <strong>{{ payments.length }}</strong>
           </div>
-
-          <div class="rent-payment-actions">
-
-            <button type="reset"
-                    class="btn rent-cancel-payment-btn"
-                    [disabled]="savingPayment">
-              Clear entries
-            </button>
-
-            <button type="submit"
-                    class="btn rent-submit"
-                    [disabled]="savingPayment || loading">
-
-              <span *ngIf="savingPayment"
-                    class="spinner-border spinner-border-sm me-2">
-              </span>
-
-              <i *ngIf="!savingPayment"
-                 class="fas fa-check-circle me-2">
-              </i>
-
-              {{ savingPayment ? 'Recording payment...' : 'Post payment' }}
-
-            </button>
-
-          </div>
-
         </div>
 
-      </form>
+        <div class="rent-payment-summary-item">
+          <span class="rent-summary-icon summary-purple">
+            <i class="fas fa-wallet"></i>
+          </span>
+          <div>
+            <small>Available tenant credit</small>
+            <strong class="rent-summary-credit">
+              {{ totalAvailableCredit | currency:'KES':'symbol':'1.2-2' }}
+            </strong>
+          </div>
+        </div>
+      </div>
 
-    </div>
+      <div *ngIf="loading" class="rent-loading">
+        <span class="spinner-border spinner-border-sm"></span>
+        Loading recorded payments...
+      </div>
 
-  </details>
+      <div *ngIf="!loading && filteredPayments.length === 0" class="rent-empty">
+        <span class="rent-empty-icon"><i class="fas fa-receipt"></i></span>
+        <h4>No recorded payments found</h4>
+        <p>
+          Payments successfully recorded in the system will appear here.
+          Try changing your search or status filter.
+        </p>
+      </div>
 
-</section>
+      <div
+        *ngIf="!loading && filteredPayments.length > 0"
+        class="table-responsive rent-table-wrap">
 
+        <table class="table rent-table rent-payment-table align-middle mb-0">
+          <thead>
+            <tr>
+              <th>DATE RECEIVED</th>
+              <th>TRANSACTION REFERENCE</th>
+              <th>TENANT / LEASE</th>
+              <th>METHOD</th>
+              <th class="text-end">AMOUNT RECEIVED</th>
+              <th class="text-end">AVAILABLE CREDIT</th>
+              <th>STATUS</th>
+              <th>ALLOCATIONS</th>
+              <th>ACTION</th>
+            </tr>
+          </thead>
 
-  <!-- =========================================================
-       PAYMENT REVERSAL PANEL
-  ========================================================== -->
+          <tbody>
+            <tr *ngFor="let payment of filteredPayments; trackBy: trackPayment">
+
+              <td>
+                <strong class="rent-primary-text">
+                  {{ payment.receivedAt | date:'dd MMM yyyy' }}
+                </strong>
+                <small>{{ payment.receivedAt | date:'HH:mm' }}</small>
+              </td>
+
+              <td>
+                <strong class="rent-reference">
+                  {{ payment.paymentReference }}
+                </strong>
+
+                <small *ngIf="payment.notes">{{ payment.notes }}</small>
+
+                <small *ngIf="payment.reversalReason"
+                  class="rent-reversal-note">
+                  Reversal: {{ payment.reversalReason }}
+                </small>
+              </td>
+
+              <td>
+                <strong class="rent-primary-text">{{ payment.tenantName }}</strong>
+                <small>{{ payment.leaseCode }}</small>
+              </td>
+
+              <td>
+                <span class="rent-method">
+                  {{ paymentMethodLabel(payment.paymentMethod) }}
+                </span>
+              </td>
+
+              <td class="text-end rent-money">
+                {{ payment.amount | currency:'KES':'symbol':'1.2-2' }}
+              </td>
+
+              <td class="text-end">
+                <ng-container *ngIf="unallocatedCredit(payment) > 0; else noCredit">
+                  <span class="rent-credit-pill">
+                    {{ unallocatedCredit(payment) |
+                      currency:'KES':'symbol':'1.2-2' }}
+                  </span>
+                  <small class="rent-credit-caption">Available credit</small>
+                </ng-container>
+
+                <ng-template #noCredit>
+                  <span *ngIf="payment.status === 'REVERSED'" class="rent-muted">
+                    Reversed
+                  </span>
+                  <span *ngIf="payment.status === 'POSTED'" class="rent-muted">
+                    Fully allocated
+                  </span>
+                </ng-template>
+              </td>
+
+              <td>
+                <span class="rent-status"
+                  [ngClass]="paymentStatusClass(payment.status)">
+                  {{ payment.status }}
+                </span>
+              </td>
+
+              <td>
+                <details
+                  class="rent-allocation-details"
+                  *ngIf="payment.allocations?.length; else noAllocation">
+
+                  <summary>
+                    <i class="fas fa-list-ul"></i>
+                    {{ payment.allocations.length }} allocation(s)
+                  </summary>
+
+                  <div class="rent-allocation-list">
+                    <div *ngFor="let allocation of payment.allocations">
+                      <span>
+                        <strong>{{ allocation.rentalPeriod }}</strong>
+                        <small>Charge #{{ allocation.chargeId }}</small>
+                      </span>
+                      <strong>
+                        {{ allocation.amount | currency:'KES':'symbol':'1.2-2' }}
+                      </strong>
+                    </div>
+                  </div>
+                </details>
+
+                <ng-template #noAllocation>
+                  <span class="rent-muted">
+                    {{ payment.status === 'REVERSED' ? 'Payment reversed' : 'No allocation yet' }}
+                  </span>
+                </ng-template>
+              </td>
+
+              <td>
+                <button
+                  *ngIf="payment.status === 'POSTED'"
+                  type="button"
+                  class="btn rent-reverse-btn"
+                  (click)="beginReversal(payment)"
+                  [disabled]="reversingPayment">
+                  <i class="fas fa-undo"></i>
+                  Reverse
+                </button>
+
+                <span *ngIf="payment.status === 'REVERSED'" class="rent-muted">
+                  Reversed
+                </span>
+              </td>
+
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div *ngIf="!loading && filteredPayments.length > 0" class="rent-register-footer">
+        <span>{{ filteredPayments.length }} matching payment records</span>
+        <span>
+          Available credit:
+          <strong>{{ totalAvailableCredit | currency:'KES':'symbol':'1.2-2' }}</strong>
+        </span>
+      </div>
+
+    </ng-container>
+
+  </section>
+
+  <!-- PAYMENT REVERSAL -->
   <section
     *ngIf="selectedPaymentForReversal as selectedPayment"
-    class="rent-panel reversal-panel mt-4">
+    class="rent-panel reversal-panel">
 
-    <div class="rent-panel-header">
-
+    <div class="rent-reversal-header">
       <div>
-        <h4 class="mb-1">Reverse payment</h4>
-
-        <p class="mb-0">
-          Reference
-          <strong>{{ selectedPayment.paymentReference }}</strong>
-
+        <div class="rent-section-eyebrow">FINANCIAL CONTROL</div>
+        <h3>Reverse payment</h3>
+        <p>
+          Reference <strong>{{ selectedPayment.paymentReference }}</strong>
           · {{ selectedPayment.tenantName }}
-
-          · {{ selectedPayment.amount |
-               currency:'KES':'symbol':'1.2-2' }}
+          · {{ selectedPayment.amount | currency:'KES':'symbol':'1.2-2' }}
         </p>
-
-        <small class="rent-field-hint">
-          Available unallocated credit on this payment:
+        <small>
+          Available unallocated credit:
           <strong>
             {{ unallocatedCredit(selectedPayment) |
-               currency:'KES':'symbol':'1.2-2' }}
+              currency:'KES':'symbol':'1.2-2' }}
           </strong>
         </small>
       </div>
@@ -768,81 +775,68 @@
         (click)="cancelReversal()"
         [disabled]="reversingPayment">
       </button>
-
     </div>
 
     <div class="reversal-warning">
-      <i class="fas fa-exclamation-triangle me-2"></i>
-
-      Reversals affect financial records. Verify the payment and provide
-      a clear audit reason before proceeding.
+      <i class="fas fa-exclamation-triangle"></i>
+      Reversing a payment affects financial records. Confirm the transaction
+      and provide a clear reason for the audit trail.
     </div>
 
-    <div
-      *ngIf="reversalError"
-      class="alert alert-danger mx-3 mt-3 mb-0"
+    <div *ngIf="reversalError" class="alert alert-danger rent-inline-alert"
       role="alert">
-
       {{ reversalError }}
     </div>
 
     <form
       [formGroup]="reversalForm"
       (ngSubmit)="confirmReversal()"
-      class="rent-form-body">
+      class="rent-reversal-form">
 
-      <label for="reversalReason" class="form-label">
-        Reason for reversal *
-      </label>
+      <div class="rent-field">
+        <label for="reversalReason">Reason for reversal <span>*</span></label>
+        <textarea
+          id="reversalReason"
+          rows="3"
+          maxlength="500"
+          class="form-control"
+          formControlName="reason"
+          [class.is-invalid]="isInvalid(reversalForm, 'reason')"
+          placeholder="Explain why this payment must be reversed...">
+        </textarea>
 
-      <textarea
-        id="reversalReason"
-        rows="3"
-        maxlength="500"
-        class="form-control"
-        formControlName="reason"
-        [class.is-invalid]="isInvalid(reversalForm, 'reason')"
-        placeholder="Explain why this payment must be reversed...">
-      </textarea>
+        <div class="invalid-feedback">
+          A reason is required and must not exceed 500 characters.
+        </div>
 
-      <div class="invalid-feedback">
-        A reason is required and must not exceed 500 characters.
+        <small>
+          {{ reversalForm.get('reason')?.value?.length || 0 }}/500 characters
+        </small>
       </div>
 
-      <small class="rent-field-hint">
-        {{ reversalForm.get('reason')?.value?.length || 0 }}/500 characters
-      </small>
-
       <div class="rent-form-footer">
-
         <span class="rent-security-note">
-          This action should only be used for a verified correction.
+          <i class="fas fa-shield-alt"></i>
+          Use this action only for a verified correction.
         </span>
 
-        <div class="d-flex flex-wrap gap-2">
-
+        <div class="rent-reversal-actions">
           <button
             type="button"
-            class="btn btn-light border"
+            class="btn rent-cancel-btn"
             (click)="cancelReversal()"
             [disabled]="reversingPayment">
-
             Cancel
           </button>
 
           <button
             type="submit"
-            class="btn btn-danger"
+            class="btn rent-confirm-reversal"
             [disabled]="reversingPayment">
-
-            <span
-              *ngIf="reversingPayment"
-              class="spinner-border spinner-border-sm me-2">
-            </span>
-
+            <span *ngIf="reversingPayment"
+              class="spinner-border spinner-border-sm"></span>
             {{ reversingPayment ? 'Reversing...' : 'Confirm reversal' }}
           </button>
-
         </div>
       </div>
     </form>

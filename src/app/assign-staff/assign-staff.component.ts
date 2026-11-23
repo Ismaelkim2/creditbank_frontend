@@ -192,6 +192,8 @@ export class AssignStaffComponent implements OnInit {
         this.isSavingStaff = false;
 
         this.invitationResult = response;
+        console.log('Staff invitation response:', response);
+console.log('Generated invitation URL:', this.getInvitationUrl());
 
         modal.close();
 
@@ -265,44 +267,69 @@ export class AssignStaffComponent implements OnInit {
     );
   }
 
-  // ==========================================
-  // INVITATION MANAGEMENT
-  // ==========================================
+getInvitationUrl(): string {
+  if (!this.invitationResult) {
+    return '';
+  }
 
-  getInvitationUrl(): string {
+  const rawUrl =
+    this.invitationResult.invitationUrl ||
+    this.invitationResult.invitationLink ||
+    this.invitationResult.registrationUrl ||
+    this.invitationResult.link ||
+    '';
 
-    if (!this.invitationResult) {
+  if (!rawUrl || typeof rawUrl !== 'string') {
+    return '';
+  }
+
+  try {
+    const parsedUrl = new URL(rawUrl);
+
+    // An invitation must contain a token.
+    const token = parsedUrl.searchParams.get('token');
+
+    if (!token || !token.trim()) {
+      console.error('Invalid invitation URL: missing token.', rawUrl);
       return '';
     }
 
-    return (
-      this.invitationResult.invitationUrl ||
-      this.invitationResult.invitationLink ||
-      this.invitationResult.registrationUrl ||
-      this.invitationResult.link ||
-      ''
-    );
+    if (parsedUrl.pathname !== '/staff-invitation') {
+      console.error('Unexpected invitation path:', parsedUrl.pathname);
+      return '';
+    }
+
+    return parsedUrl.toString();
+
+  } catch (error) {
+    console.error('Invalid invitation URL returned by backend:', rawUrl);
+    return '';
+  }
+}
+
+async copyInvitationLink(): Promise<void> {
+  const url = this.getInvitationUrl();
+
+  if (!url) {
+    alert('Invalid invitation link. Please generate a new invitation.');
+    return;
   }
 
-  copyInvitationLink(): void {
-
-    const url = this.getInvitationUrl();
-
-    if (!url) {
-      alert('No invitation link is available.');
+  try {
+    if (navigator.clipboard?.writeText) {
+      await navigator.clipboard.writeText(url);
+    } else {
+      this.copyInvitationFallback(url);
       return;
     }
 
-    if (navigator.clipboard?.writeText) {
+    alert('Invitation link copied successfully. Share the complete link with the staff member.');
 
-      navigator.clipboard.writeText(url)
-        .then(() => alert('Invitation link copied successfully.'))
-        .catch(() => this.copyInvitationFallback(url));
-
-    } else {
-      this.copyInvitationFallback(url);
-    }
+  } catch (error) {
+    console.error('Clipboard error:', error);
+    this.copyInvitationFallback(url);
   }
+}
 
   private copyInvitationFallback(url: string): void {
 

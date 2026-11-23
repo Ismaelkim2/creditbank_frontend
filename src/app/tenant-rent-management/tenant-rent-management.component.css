@@ -1,737 +1,1412 @@
 
+/* =========================================================
+   RENT MANAGEMENT
+   Premium Financial Operations Interface
+========================================================= */
+
 :host {
   display: block;
-  color: #25364b;
-  --rent-primary: #175cd3;
-  --rent-primary-dark: #1249a8;
-  --rent-border: #e3eaf3;
-  --rent-muted: #6b7b90;
+  min-width: 0;
+  width: 100%;
 }
 
 .rent-page {
-  max-width: 1800px;
-  min-height: 100%;
-  margin: 0 auto;
-  background: #f5f8fc;
+  --rent-primary: #174ea6;
+  --rent-primary-dark: #123d82;
+  --rent-primary-light: #edf4ff;
+
+  --rent-navy: #172b4d;
+  --rent-text: #34445b;
+  --rent-muted: #718096;
+
+  --rent-border: #e2e9f1;
+  --rent-background: #f5f7fb;
+  --rent-surface: #ffffff;
+
+  --rent-green: #16845b;
+  --rent-green-light: #eaf8f1;
+
+  --rent-amber: #b7791f;
+  --rent-amber-light: #fff6e6;
+
+  --rent-red: #c03945;
+  --rent-red-light: #fff0f1;
+
+  --rent-purple: #7055b7;
+  --rent-purple-light: #f2edff;
+
+  padding: 22px 24px 20px;
+  min-width: 0;
+  color: var(--rent-text);
+  background: var(--rent-background);
+  font-family: Inter, "Segoe UI", Roboto, Arial, sans-serif;
+  font-size: 13px;
 }
 
+/* =========================================================
+   PAGE HEADER
+========================================================= */
+
 .rent-header {
-  padding: 4px 0 8px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 19px;
 }
 
 .rent-eyebrow {
-  margin-bottom: 8px;
+  margin-bottom: 6px;
   color: var(--rent-primary);
-  font-size: 11px;
+  font-size: 10px;
   font-weight: 800;
-  letter-spacing: 1.2px;
+  letter-spacing: 1.1px;
 }
 
 .rent-title {
-  color: #152b4a;
-  font-size: clamp(24px, 3vw, 31px);
-  font-weight: 750;
-  letter-spacing: -0.6px;
+  margin: 0;
+  color: var(--rent-navy);
+  font-size: 25px;
+  font-weight: 800;
+  letter-spacing: -.6px;
 }
 
 .rent-subtitle {
+  margin-top: 5px;
   color: var(--rent-muted);
-  font-size: 13px;
-  line-height: 1.6;
+  font-size: 12px;
+  line-height: 1.5;
 }
 
 .rent-refresh {
-  padding: 10px 15px;
-  border-radius: 9px;
-  font-size: 12px;
+  min-height: 37px;
+  padding: 8px 13px;
+  color: var(--rent-primary);
+  background: #fff;
+  border: 1px solid #cad8ea;
+  border-radius: 7px;
+  font-size: 11.5px;
   font-weight: 700;
 }
 
+.rent-refresh:hover:not(:disabled) {
+  color: var(--rent-primary-dark);
+  background: var(--rent-primary-light);
+  border-color: #a9c4e9;
+}
+
+/* =========================================================
+   GLOBAL FEEDBACK
+========================================================= */
+
 .rent-alert {
-  border: 0;
-  border-radius: 10px;
-  font-size: 13px;
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  padding: 11px 13px;
+  margin-bottom: 13px;
+  border-radius: 7px;
+  font-size: 12px;
+}
+
+.rent-alert .btn-close {
+  margin-left: auto;
+  font-size: 10px;
+}
+
+.rent-alert.alert-danger {
+  color: #9e2934;
+  background: var(--rent-red-light);
+  border: 1px solid #f1d0d3;
+}
+
+.rent-alert.alert-success {
+  color: #176b4d;
+  background: var(--rent-green-light);
+  border: 1px solid #ccebd9;
+}
+
+/* =========================================================
+   FINANCIAL KPI GRID
+========================================================= */
+
+.rent-page > .row {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 11px;
+  margin: 0 0 16px !important;
+}
+
+.rent-page > .row > [class*="col-"] {
+  width: auto;
+  max-width: none;
+  padding: 0;
 }
 
 .rent-stat-card {
   display: flex;
   align-items: center;
-  gap: 13px;
+  gap: 11px;
   height: 100%;
-  min-height: 116px;
-  padding: 18px;
-  background: #fff;
+  min-height: 91px;
+  min-width: 0;
+  padding: 13px;
+  background: var(--rent-surface);
   border: 1px solid var(--rent-border);
-  border-radius: 13px;
-  box-shadow: 0 3px 12px rgba(20, 45, 80, 0.035);
-  transition: border-color 0.18s ease, transform 0.18s ease;
+  border-radius: 9px;
+  box-shadow: 0 2px 7px rgba(25, 48, 84, .035);
+  transition: border-color .18s ease, transform .18s ease;
 }
 
 .rent-stat-card:hover {
-  border-color: #c5d8f6;
-  transform: translateY(-2px);
+  border-color: #c7d7eb;
+  transform: translateY(-1px);
 }
 
 .rent-stat-icon {
   display: flex;
   align-items: center;
   justify-content: center;
-  flex: 0 0 43px;
-  width: 43px;
-  height: 43px;
-  border-radius: 12px;
-  font-size: 16px;
+  flex: 0 0 39px;
+  width: 39px;
+  height: 39px;
+  border-radius: 9px;
+  font-size: 15px;
 }
 
 .stat-blue {
-  color: #175cd3;
-  background: #eaf2ff;
+  color: #2361b5;
+  background: #edf4ff;
 }
 
 .stat-green {
-  color: #167647;
-  background: #e5f7ed;
+  color: #16845b;
+  background: #eaf8f1;
 }
 
 .stat-amber {
-  color: #9a650b;
-  background: #fff3d8;
+  color: #b7791f;
+  background: #fff6e6;
 }
 
 .stat-red {
-  color: #b42318;
-  background: #ffebe9;
+  color: #c03945;
+  background: #fff0f1;
+}
+
+.stat-credit {
+  color: #7055b7;
+  background: #f2edff;
 }
 
 .rent-stat-content {
+  flex: 1;
   min-width: 0;
 }
 
 .rent-stat-label {
   display: block;
-  margin-bottom: 5px;
-  color: #64748b;
-  font-size: 11px;
-  font-weight: 650;
+  margin-bottom: 4px;
+  color: var(--rent-muted);
+  font-size: 10px;
+  font-weight: 700;
+  line-height: 1.35;
 }
 
 .rent-stat-card h3 {
-  margin: 0 0 5px;
-  color: #172b49;
-  font-size: clamp(18px, 2vw, 24px);
-  font-weight: 750;
-  line-height: 1.25;
-  overflow-wrap: anywhere;
+  overflow: hidden;
+  margin: 0;
+  color: var(--rent-navy);
+  font-size: clamp(15px, 1.3vw, 20px);
+  font-weight: 800;
+  line-height: 1.3;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .rent-stat-card small {
   display: block;
-  color: #8592a5;
-  font-size: 10px;
+  margin-top: 3px;
+  color: #8996a7;
+  font-size: 9.5px;
+  line-height: 1.35;
+}
+
+.rent-credit-stat h3 {
+  color: var(--rent-purple);
+}
+
+/* =========================================================
+   TENANT CREDIT NOTICE
+========================================================= */
+
+.rent-credit-notice {
+  display: flex;
+  align-items: center;
+  gap: 13px;
+  padding: 13px 15px;
+  background: #f2fbf6;
+  border: 1px solid #ccebd9;
+  border-radius: 8px;
+}
+
+.rent-credit-notice-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 36px;
+  width: 36px;
+  height: 36px;
+  color: var(--rent-green);
+  background: #e2f5e9;
+  border-radius: 9px;
+  font-size: 15px;
+}
+
+.rent-credit-notice h6 {
+  color: #176b4d;
+  font-size: 12px;
+  font-weight: 800;
+}
+
+.rent-credit-notice p {
+  color: #436c58;
+  font-size: 11px;
   line-height: 1.5;
 }
 
-.rent-panel {
-  overflow: hidden;
-  background: #fff;
-  border: 1px solid var(--rent-border);
-  border-radius: 14px;
-  box-shadow: 0 3px 14px rgba(20, 45, 80, 0.035);
+.rent-credit-notice small {
+  color: #718e7d;
+  font-size: 10px;
+  line-height: 1.4;
 }
 
-.rent-panel-header,
-.rent-register-header {
+.rent-credit-action {
+  flex-shrink: 0;
+  border-radius: 6px;
+  font-size: 10.5px;
+  font-weight: 700;
+}
+
+/* =========================================================
+   GENERAL PANELS
+========================================================= */
+
+.rent-panel {
+  min-width: 0;
+  margin-bottom: 16px;
+  overflow: visible;
+  background: var(--rent-surface);
+  border: 1px solid var(--rent-border);
+  border-radius: 9px;
+  box-shadow: 0 2px 8px rgba(25, 48, 84, .035);
+}
+
+.rent-panel-header {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 16px;
-  padding: 20px 23px;
-  border-bottom: 1px solid #edf1f6;
+  gap: 14px;
+  min-height: 64px;
+  padding: 13px 16px;
+  border-bottom: 1px solid var(--rent-border);
 }
 
-.rent-panel-header h4,
-.rent-register-header h4 {
-  color: #183456;
-  font-size: 16px;
-  font-weight: 750;
-}
-
-.rent-panel-header p,
-.rent-register-header p {
-  color: var(--rent-muted);
-  font-size: 12px;
-  line-height: 1.6;
+.rent-panel-heading {
+  display: flex;
+  align-items: center;
+  gap: 11px;
+  min-width: 0;
 }
 
 .rent-heading-icon {
   display: flex;
   align-items: center;
   justify-content: center;
-  flex: 0 0 43px;
-  width: 43px;
-  height: 43px;
-  border-radius: 12px;
+  flex: 0 0 37px;
+  width: 37px;
+  height: 37px;
   color: var(--rent-primary);
-  background: #edf4ff;
-  font-size: 17px;
+  background: var(--rent-primary-light);
+  border-radius: 9px;
+  font-size: 15px;
+}
+
+.rent-panel-header h4,
+.rent-register-header h4 {
+  margin: 0 0 3px;
+  color: var(--rent-navy);
+  font-size: 14px;
+  font-weight: 800;
+}
+
+.rent-panel-header p,
+.rent-register-header p {
+  margin: 0;
+  color: var(--rent-muted);
+  font-size: 11px;
+  line-height: 1.45;
 }
 
 .rent-required-note {
-  color: #78879a;
-  font-size: 11px;
+  color: var(--rent-muted);
+  font-size: 10px;
+  font-weight: 700;
   white-space: nowrap;
 }
 
-.rent-form-body {
-  padding: 22px 23px;
+.rent-required-note span,
+.rent-field .form-label span {
+  color: var(--rent-red);
 }
 
-.rent-form-body .form-label {
-  margin-bottom: 7px;
-  color: #33465f;
-  font-size: 12px;
-  font-weight: 700;
+/* =========================================================
+   PAYMENT DISCLOSURE
+========================================================= */
+
+.rent-payment-disclosure {
+  width: 100%;
 }
 
-.rent-form-body .form-control,
-.rent-form-body .form-select,
-.rent-form-body .input-group-text {
-  min-height: 43px;
-  border-color: #dce4ef;
-  border-radius: 8px;
-  color: #26374c;
+.rent-payment-toggle {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 15px;
+  min-height: 72px;
+  padding: 13px 16px;
+  color: var(--rent-text);
+  background: #fbfcfe;
+  cursor: pointer;
+  list-style: none;
+  transition: background .18s ease;
+}
+
+.rent-payment-toggle::-webkit-details-marker {
+  display: none;
+}
+
+.rent-payment-toggle:hover {
+  background: #f4f8ff;
+}
+
+.rent-toggle-leading {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-width: 0;
+}
+
+.rent-toggle-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 38px;
+  width: 38px;
+  height: 38px;
+  color: #fff;
+  background: var(--rent-primary);
+  border-radius: 9px;
+  font-size: 14px;
+  transition: transform .18s ease, background .18s ease;
+}
+
+.rent-toggle-copy {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  gap: 3px;
+}
+
+.rent-toggle-copy strong {
+  color: var(--rent-navy);
+  font-size: 12.5px;
+  font-weight: 800;
+}
+
+.rent-toggle-copy small {
+  color: var(--rent-muted);
+  font-size: 10.5px;
+  line-height: 1.4;
+}
+
+.rent-toggle-action {
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+  padding: 8px 11px;
+  color: var(--rent-primary);
+  background: #fff;
+  border: 1px solid #cbd9ed;
+  border-radius: 6px;
+  font-size: 10.5px;
+  font-weight: 800;
+  white-space: nowrap;
+}
+
+.rent-toggle-action i {
+  font-size: 10px;
+  transition: transform .2s ease;
+}
+
+.rent-toggle-close-text {
+  display: none;
+}
+
+.rent-payment-disclosure[open] .rent-payment-toggle {
+  background: #f5f8fd;
+  border-bottom: 1px solid var(--rent-border);
+}
+
+.rent-payment-disclosure[open] .rent-toggle-icon {
+  color: var(--rent-primary);
+  background: #dceaff;
+}
+
+.rent-payment-disclosure[open] .rent-toggle-icon i {
+  transform: rotate(45deg);
+}
+
+.rent-payment-disclosure[open] .rent-toggle-open-text {
+  display: none;
+}
+
+.rent-payment-disclosure[open] .rent-toggle-close-text {
+  display: inline;
+}
+
+.rent-payment-disclosure[open] .rent-toggle-action i {
+  transform: rotate(180deg);
+}
+
+.rent-payment-form-content {
+  padding: 17px;
+  animation: rentFormReveal .2s ease-out;
+}
+
+@keyframes rentFormReveal {
+  from {
+    opacity: 0;
+    transform: translateY(-5px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.rent-form-intro {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 15px;
+}
+
+.rent-form-intro h5 {
+  margin: 0 0 4px;
+  color: var(--rent-navy);
   font-size: 13px;
-  box-shadow: none;
+  font-weight: 800;
 }
 
-.rent-form-body .input-group-text {
-  background: #f5f8fc;
-  color: #596b82;
+.rent-form-intro p {
+  margin: 0;
+  color: var(--rent-muted);
+  font-size: 10.5px;
+}
+
+/* =========================================================
+   PAYMENT FORM FIELDS
+========================================================= */
+
+.rent-payment-fields {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 15px;
+}
+
+.rent-field {
+  min-width: 0;
+}
+
+.rent-field-wide {
+  grid-column: span 1;
+}
+
+.rent-field-notes {
+  min-width: 0;
+}
+
+.rent-field .form-label {
+  display: block;
+  margin-bottom: 5px;
+  color: #33445c;
   font-size: 11px;
   font-weight: 700;
 }
 
-.rent-form-body .form-control:focus,
-.rent-form-body .form-select:focus {
-  border-color: #76a5f4;
-  box-shadow: 0 0 0 3px rgba(23, 92, 211, 0.09);
+.rent-field .form-control,
+.rent-field .form-select {
+  width: 100%;
+  min-height: 38px;
+  padding: 8px 10px;
+  color: #26364b;
+  background: #fff;
+  border: 1px solid #d8e1ec;
+  border-radius: 6px;
+  font-size: 11.5px;
+  box-shadow: none;
 }
 
-.rent-form-body textarea.form-control {
-  min-height: 88px;
-  resize: vertical;
+.rent-field .form-control:focus,
+.rent-field .form-select:focus {
+  border-color: #76a4df;
+  box-shadow: 0 0 0 3px rgba(35, 97, 181, .10);
+  outline: none;
+}
+
+.rent-field .form-control::placeholder {
+  color: #9aa7b7;
+}
+
+.rent-field .form-control.is-invalid,
+.rent-field .form-select.is-invalid {
+  border-color: #d76570;
+}
+
+.rent-field .invalid-feedback {
+  font-size: 10px;
+}
+
+.rent-money-input .input-group-text {
+  display: flex;
+  align-items: center;
+  padding: 8px 10px;
+  color: #52657e;
+  background: #f4f7fb;
+  border: 1px solid #d8e1ec;
+  border-radius: 6px 0 0 6px;
+  font-size: 10.5px;
+  font-weight: 800;
+}
+
+.rent-money-input .form-control {
+  min-width: 0;
+  border-radius: 0 6px 6px 0;
 }
 
 .rent-field-hint {
   display: block;
-  margin-top: 6px;
-  color: #8290a3;
-  font-size: 10px;
-  line-height: 1.55;
+  margin-top: 5px;
+  color: #8794a5;
+  font-size: 9.8px;
+  line-height: 1.45;
 }
 
 .rent-field-error {
-  margin-top: 5px;
-  color: #c62828;
-  font-size: 11px;
+  margin-top: 4px;
+  color: var(--rent-red);
+  font-size: 10px;
+  font-weight: 600;
 }
 
-.rent-form-footer {
+/* =========================================================
+   PAYMENT ALLOCATION EXPLANATION
+========================================================= */
+
+.rent-allocation-guidance {
   display: flex;
-  flex-wrap: wrap;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 12px 13px;
+  margin-top: 16px;
+  background: #f1f6fd;
+  border: 1px solid #dce8f7;
+  border-radius: 7px;
+}
+
+.rent-guidance-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 29px;
+  width: 29px;
+  height: 29px;
+  color: var(--rent-primary);
+  background: #e0ebfa;
+  border-radius: 7px;
+  font-size: 12px;
+}
+
+.rent-allocation-guidance strong {
+  display: block;
+  margin-bottom: 3px;
+  color: #294c7b;
+  font-size: 11px;
+  font-weight: 800;
+}
+
+.rent-allocation-guidance p {
+  margin: 0;
+  color: #637a99;
+  font-size: 10.5px;
+  line-height: 1.55;
+}
+
+/* =========================================================
+   PAYMENT FORM FOOTER
+========================================================= */
+
+.rent-payment-footer {
+  display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 15px;
-  margin-top: 22px;
-  padding-top: 18px;
-  border-top: 1px solid #edf1f6;
+  gap: 14px;
+  padding-top: 15px;
+  margin-top: 15px;
+  border-top: 1px solid #edf1f5;
 }
 
 .rent-security-note {
-  color: #718096;
-  font-size: 11px;
-  line-height: 1.6;
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  color: #7c899a;
+  font-size: 10px;
+  line-height: 1.45;
 }
 
 .rent-security-note i {
-  color: #16804a;
+  color: var(--rent-green);
+  font-size: 12px;
 }
 
+.rent-payment-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-shrink: 0;
+}
+
+.rent-cancel-payment-btn,
 .rent-submit {
-  min-height: 42px;
-  padding: 10px 17px;
-  border-radius: 8px;
-  border-color: var(--rent-primary);
-  background: var(--rent-primary);
-  font-size: 12px;
+  min-height: 37px;
+  padding: 8px 14px;
+  border-radius: 6px;
+  font-size: 11px;
   font-weight: 700;
 }
 
-.rent-submit:hover:not(:disabled) {
-  border-color: var(--rent-primary-dark);
-  background: var(--rent-primary-dark);
+.rent-cancel-payment-btn {
+  color: #526176;
+  background: #fff;
+  border: 1px solid #d8e1ec;
 }
 
-.rent-submit:disabled {
-  opacity: 0.7;
+.rent-cancel-payment-btn:hover:not(:disabled) {
+  background: #f4f7fb;
 }
+
+.rent-submit {
+  color: #fff;
+  background: var(--rent-primary);
+  border: 1px solid var(--rent-primary);
+}
+
+.rent-submit:hover:not(:disabled) {
+  color: #fff;
+  background: var(--rent-primary-dark);
+  border-color: var(--rent-primary-dark);
+}
+
+.rent-submit:disabled,
+.rent-cancel-payment-btn:disabled {
+  opacity: .6;
+  cursor: not-allowed;
+}
+
+.rent-form-error {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  padding: 10px 12px;
+  margin-bottom: 13px;
+  color: #9e2934;
+  background: var(--rent-red-light);
+  border: 1px solid #f1d0d3;
+  border-radius: 6px;
+  font-size: 11px;
+}
+
+/* =========================================================
+   REGISTER HEADER
+========================================================= */
 
 .rent-register-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
   flex-wrap: wrap;
-  padding-bottom: 16px;
+  gap: 13px;
+  padding: 14px 16px;
+  border-bottom: 1px solid var(--rent-border);
 }
 
 .rent-view-tabs {
   display: flex;
-  flex-wrap: wrap;
-  gap: 5px;
+  align-items: center;
+  gap: 4px;
   padding: 4px;
-  border: 1px solid #e8edf5;
-  border-radius: 10px;
-  background: #f6f8fc;
+  background: #f2f5f9;
+  border: 1px solid #e6ebf2;
+  border-radius: 8px;
 }
 
 .rent-view-tabs button {
-  padding: 9px 12px;
-  border: 0;
-  border-radius: 7px;
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  min-height: 32px;
+  padding: 6px 11px;
+  color: #65758a;
   background: transparent;
-  color: #617188;
-  font-size: 11px;
+  border: 1px solid transparent;
+  border-radius: 6px;
+  font-size: 10.5px;
   font-weight: 700;
   white-space: nowrap;
+  transition: all .16s ease;
 }
 
-.rent-view-tabs button.active {
-  background: #fff;
-  color: var(--rent-primary);
-  box-shadow: 0 1px 4px rgba(15, 35, 65, 0.1);
-}
-
-.rent-view-tabs button span {
+.rent-view-tabs button > span:not(.rent-tab-credit-count) {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  min-width: 21px;
-  height: 20px;
-  margin-left: 5px;
+  min-width: 19px;
+  height: 19px;
   padding: 0 5px;
-  border-radius: 10px;
-  background: #eaf2ff;
-  color: #175cd3;
-  font-size: 10px;
+  color: #687991;
+  background: #e6ebf2;
+  border-radius: 20px;
+  font-size: 9px;
 }
+
+.rent-view-tabs button.active {
+  color: var(--rent-primary);
+  background: #fff;
+  border-color: #dce6f3;
+  box-shadow: 0 1px 3px rgba(25, 48, 84, .07);
+}
+
+.rent-view-tabs button.active > span:not(.rent-tab-credit-count) {
+  color: var(--rent-primary);
+  background: var(--rent-primary-light);
+}
+
+.rent-tab-credit-count {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 17px;
+  height: 17px;
+  padding: 0 5px;
+  color: #fff;
+  background: var(--rent-purple);
+  border-radius: 20px;
+  font-size: 9px;
+  font-weight: 800;
+}
+
+/* =========================================================
+   SEARCH AND FILTER
+========================================================= */
 
 .rent-toolbar {
   display: flex;
   align-items: center;
-  gap: 12px;
-  padding: 16px 22px;
-  border-bottom: 1px solid #edf1f6;
+  gap: 10px;
+  padding: 12px 15px;
+  background: #fbfcfe;
+  border-bottom: 1px solid var(--rent-border);
 }
-
-/* =========================================================
-   CREDITBANK — PREMIUM RENT CHARGES SEARCH
-========================================================= */
 
 .rent-search {
   position: relative;
-  display: flex;
-  align-items: center;
-  flex: 1 1 280px;
-  min-width: 0;
-  height: 46px;
-  background: #ffffff;
-  border: 1px solid #dce5f0;
-  border-radius: 11px;
-  overflow: hidden;
-  transition:
-    border-color 0.25s ease,
-    box-shadow 0.25s ease,
-    background 0.25s ease;
+  flex: 1;
+  min-width: 180px;
 }
 
-/* SEARCH ICON */
-.rent-search .rent-search-icon {
+.rent-search > i,
+.rent-search-icon {
   position: absolute;
-  left: 15px;
-  top: 0;
-  bottom: 0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: #8292a8;
-  font-size: 13px;
+  top: 50%;
+  left: 12px;
+  z-index: 2;
+  color: #8b99aa;
+  font-size: 11px;
+  transform: translateY(-50%);
   pointer-events: none;
-  transition: color 0.25s ease;
 }
 
-/* INPUT */
+.rent-search .form-control,
+.rent-filter {
+  min-height: 36px;
+  padding: 7px 10px;
+  color: #34445b;
+  background: #fff;
+  border: 1px solid #d8e1ec;
+  border-radius: 6px;
+  font-size: 11px;
+  box-shadow: none;
+}
+
 .rent-search .form-control {
-  width: 100%;
-  height: 100%;
-  min-height: 0;
-  margin: 0;
-  padding: 0 15px 0 43px !important;
-  border: none !important;
-  border-radius: inherit;
-  outline: none !important;
-  background: transparent !important;
-  color: #26374c;
-  font-size: 12.5px;
-  font-weight: 500;
-  box-shadow: none !important;
-  appearance: none;
-  -webkit-appearance: none;
+  padding-left: 34px;
+}
+
+.rent-search .form-control:focus,
+.rent-filter:focus {
+  border-color: #76a4df;
+  box-shadow: 0 0 0 3px rgba(35, 97, 181, .09);
 }
 
 .rent-search .form-control::placeholder {
-  color: #9aa8b9;
-  font-size: 12px;
-  font-weight: 400;
-  opacity: 1;
-}
-
-/* FOCUS */
-.rent-search:focus-within {
-  border-color: #4385ed;
-  background: #ffffff;
-  box-shadow:
-    0 0 0 3px rgba(37, 99, 235, 0.09),
-    0 4px 12px rgba(37, 99, 235, 0.05);
-}
-
-.rent-search:focus-within .rent-search-icon {
-  color: #2563eb;
-}
-
-/* HOVER */
-.rent-search:hover {
-  border-color: #b8c9df;
-}
-
-/* KEEP FILTERS VISUALLY CONSISTENT */
-.rent-filter {
-  min-height: 46px;
-  border: 1px solid #dce5f0;
-  border-radius: 11px;
-  background-color: #ffffff;
-  color: #26374c;
-  font-size: 12.5px;
-  font-weight: 500;
-  box-shadow: none;
-  transition: border-color 0.25s ease, box-shadow 0.25s ease;
-}
-
-.rent-filter:focus {
-  border-color: #4385ed;
-  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.09);
-  outline: none;
-}
-
-/* RESPONSIVE */
-@media (max-width: 768px) {
-  .rent-search {
-    flex-basis: 100%;
-    width: 100%;
-    height: 44px;
-    border-radius: 10px;
-  }
-
-  .rent-filter {
-    min-height: 44px;
-  }
+  color: #9aa7b7;
 }
 
 .rent-filter {
-  flex: 0 0 200px;
-  width: 200px;
+  width: 205px;
+  flex: 0 0 205px;
 }
 
-.rent-loading {
-  padding: 22px;
-  color: #52647d;
-  font-size: 12px;
-}
+/* =========================================================
+   FINANCIAL TABLES
+========================================================= */
 
 .rent-table-wrap {
   width: 100%;
+  overflow-x: auto;
+  overflow-y: visible;
+  scrollbar-width: thin;
+  scrollbar-color: #c8d4e3 #f3f6fa;
 }
 
 .rent-table {
-  min-width: 1120px;
+  width: 100%;
+  min-width: 1050px;
+  margin: 0;
+  color: var(--rent-text);
   font-size: 11px;
+  border-collapse: separate;
+  border-spacing: 0;
 }
 
 .rent-table thead th {
-  padding: 14px 13px;
-  border-bottom: 1px solid #e6ecf4;
-  background: #f8fafd;
-  color: #718096;
+  padding: 11px 11px;
+  color: #65758a;
+  background: #f6f8fb;
+  border-bottom: 1px solid #e4eaf1;
   font-size: 9px;
   font-weight: 800;
-  letter-spacing: 0.4px;
+  letter-spacing: .35px;
   white-space: nowrap;
 }
 
 .rent-table tbody td {
-  padding: 15px 13px;
-  border-color: #edf1f6;
-  color: #43536a;
+  padding: 11px 11px;
+  border-bottom: 1px solid #edf1f5;
   vertical-align: middle;
 }
 
-.rent-table tbody tr:hover {
-  background: #fbfdff;
+.rent-table tbody tr {
+  transition: background .15s ease;
 }
 
-.rent-table small {
-  display: block;
-  margin-top: 4px;
-  color: #8491a4;
-  font-size: 10px;
-  line-height: 1.5;
-  overflow-wrap: anywhere;
+.rent-table tbody tr:hover {
+  background: #f8faff;
+}
+
+.rent-table tbody tr:last-child td {
+  border-bottom: 0;
 }
 
 .rent-primary-text {
-  color: #24364e;
-  font-weight: 750;
-  line-height: 1.5;
-  overflow-wrap: anywhere;
+  color: #2b405d;
+  font-size: 11px;
+  font-weight: 800;
+  white-space: nowrap;
+}
+
+.rent-table td small {
+  display: block;
+  margin-top: 3px;
+  color: #8491a3;
+  font-size: 9.5px;
+  line-height: 1.4;
 }
 
 .rent-money {
-  color: #203b60 !important;
-  font-weight: 750;
+  color: #176b4d;
+  font-size: 11px;
+  font-weight: 800;
   white-space: nowrap;
 }
 
 .rent-balance {
-  color: #b42318 !important;
-  font-weight: 750;
+  color: #b7791f;
+  font-size: 11px;
+  font-weight: 800;
   white-space: nowrap;
 }
 
 .rent-balance.balance-clear {
-  color: #16804a !important;
+  color: var(--rent-green);
 }
 
 .rent-date-overdue {
-  color: #b42318;
-  font-weight: 700;
+  color: var(--rent-red);
+  font-weight: 800;
+  white-space: nowrap;
 }
+
+/* =========================================================
+   STATUS PILLS
+========================================================= */
 
 .rent-status {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  padding: 6px 9px;
+  padding: 5px 8px;
+  border: 1px solid transparent;
   border-radius: 20px;
   font-size: 9px;
   font-weight: 800;
   white-space: nowrap;
 }
 
-.rent-status-paid {
-  background: #e5f7ed;
-  color: #167647;
+.rent-status.status-paid,
+.rent-status.PAID,
+.rent-status.POSTED {
+  color: #14734e;
+  background: #eaf8f1;
+  border-color: #ccebd9;
 }
 
-.rent-status-open {
-  background: #eaf2ff;
-  color: #175cd3;
+.rent-status.status-open,
+.rent-status.OPEN {
+  color: #526b8d;
+  background: #edf4ff;
+  border-color: #dce8fa;
 }
 
-.rent-status-partial {
-  background: #fff3d8;
-  color: #9a650b;
+.rent-status.status-partial,
+.rent-status.PARTIALLY_PAID {
+  color: #96601a;
+  background: #fff6e5;
+  border-color: #f2dfb6;
 }
 
-.rent-status-overdue {
-  background: #ffebe9;
-  color: #b42318;
+.rent-status.status-overdue,
+.rent-status.OVERDUE {
+  color: #b33340;
+  background: #fff0f1;
+  border-color: #f1d0d3;
 }
 
-.rent-status-reversed {
-  background: #edf0f5;
-  color: #5c6678;
+.rent-status.status-reversed,
+.rent-status.REVERSED {
+  color: #64748b;
+  background: #f0f3f7;
+  border-color: #dce3eb;
 }
 
-.rent-reversal-note {
-  color: #b42318 !important;
-}
+/* =========================================================
+   TENANT CREDIT
+========================================================= */
 
-.rent-reverse-btn {
-  border-radius: 7px;
+.rent-credit-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 5px 8px;
+  color: #6547a5;
+  background: var(--rent-purple-light);
+  border: 1px solid #e0d6fa;
+  border-radius: 5px;
   font-size: 10px;
-  font-weight: 700;
+  font-weight: 800;
+  white-space: nowrap;
 }
+
+.rent-credit-caption {
+  color: #8979b0 !important;
+  font-size: 9px !important;
+}
+
+/* =========================================================
+   PAYMENT ALLOCATION DETAILS
+========================================================= */
 
 .rent-allocation-details {
-  min-width: 130px;
-  max-width: 210px;
+  position: relative;
+  min-width: 105px;
 }
 
 .rent-allocation-details summary {
   color: var(--rent-primary);
   cursor: pointer;
   font-size: 10px;
-  font-weight: 700;
+  font-weight: 800;
+  white-space: nowrap;
+}
+
+.rent-allocation-details summary:hover {
+  color: var(--rent-primary-dark);
+  text-decoration: underline;
 }
 
 .rent-allocation-list {
-  display: grid;
-  gap: 7px;
-  margin-top: 9px;
-  padding: 10px;
-  border: 1px solid #e5ebf3;
-  border-radius: 8px;
-  background: #f8fafd;
+  min-width: 210px;
+  max-width: 280px;
+  padding: 9px;
+  margin-top: 7px;
+  background: #fff;
+  border: 1px solid var(--rent-border);
+  border-radius: 7px;
+  box-shadow: 0 5px 18px rgba(25, 48, 84, .10);
 }
 
 .rent-allocation-list > div {
   display: grid;
-  gap: 3px;
+  grid-template-columns: 1fr auto;
+  gap: 4px 8px;
+  padding: 7px 0;
+  border-bottom: 1px solid #edf1f5;
 }
 
-.rent-allocation-list span,
-.rent-allocation-list strong,
-.rent-allocation-list small {
+.rent-allocation-list > div:last-child {
+  border-bottom: 0;
+}
+
+.rent-allocation-list span {
+  color: #53647b;
   font-size: 10px;
 }
 
 .rent-allocation-list strong {
-  color: #203b60;
+  color: var(--rent-green);
+  font-size: 10px;
+}
+
+.rent-allocation-list small {
+  grid-column: 1 / -1;
+  margin: 0;
+  font-size: 9px;
+}
+
+/* =========================================================
+   REVERSAL ACTION
+========================================================= */
+
+.rent-reverse-btn {
+  padding: 5px 8px;
+  border-radius: 5px;
+  font-size: 9.5px;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.rent-reversal-note {
+  color: var(--rent-red) !important;
+}
+
+/* =========================================================
+   PAYMENT REGISTER SUMMARY
+========================================================= */
+
+.rent-payment-summary {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 10px;
+  padding: 12px 15px;
+  background: #fbfcfe;
+  border-bottom: 1px solid var(--rent-border);
+}
+
+.rent-payment-summary > div {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 10px 12px;
+  background: #fff;
+  border: 1px solid #e7edf4;
+  border-radius: 7px;
+}
+
+.rent-summary-label {
+  color: var(--rent-muted);
+  font-size: 10px;
+  font-weight: 700;
+}
+
+.rent-payment-summary strong {
+  color: var(--rent-navy);
+  font-size: 15px;
+  font-weight: 800;
+  overflow-wrap: anywhere;
+}
+
+.rent-payment-summary .rent-summary-credit {
+  color: var(--rent-purple);
+}
+
+/* =========================================================
+   EMPTY AND LOADING STATES
+========================================================= */
+
+.rent-loading {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 16px;
+  color: #526b8d;
+  font-size: 11px;
 }
 
 .rent-empty {
-  padding: 46px 20px;
+  padding: 34px 15px;
   text-align: center;
 }
 
 .rent-empty > i {
-  display: inline-flex;
+  display: flex;
   align-items: center;
   justify-content: center;
-  width: 55px;
-  height: 55px;
-  margin-bottom: 13px;
-  border-radius: 15px;
-  background: #edf4ff;
-  color: #175cd3;
-  font-size: 22px;
+  width: 46px;
+  height: 46px;
+  margin: 0 auto 10px;
+  color: #6385b4;
+  background: #eff5fd;
+  border: 1px solid #dfeafa;
+  border-radius: 12px;
+  font-size: 18px;
 }
 
 .rent-empty h5 {
-  color: #253a57;
-  font-size: 15px;
-  font-weight: 750;
+  margin: 0 0 5px;
+  color: var(--rent-navy);
+  font-size: 13px;
+  font-weight: 800;
 }
 
 .rent-empty p {
-  max-width: 440px;
+  max-width: 430px;
   margin: 0 auto;
-  color: #8290a3;
-  font-size: 12px;
+  color: var(--rent-muted);
+  font-size: 10.5px;
   line-height: 1.6;
 }
+
+/* =========================================================
+   REGISTER FOOTER
+========================================================= */
 
 .rent-register-footer {
   display: flex;
   justify-content: space-between;
-  flex-wrap: wrap;
-  gap: 10px;
-  padding: 13px 22px;
-  border-top: 1px solid #edf1f6;
-  color: #8390a2;
+  gap: 12px;
+  padding: 10px 15px;
+  color: #77869a;
+  background: #fbfcfe;
+  border-top: 1px solid #edf1f5;
   font-size: 10px;
 }
 
-.reversal-panel {
-  border-color: #f0c5c2;
+/* =========================================================
+   REVERSAL PANEL
+========================================================= */
+
+.reversal-panel .rent-panel-header {
+  padding: 13px 16px;
+}
+
+.reversal-panel .rent-form-body {
+  padding: 15px 16px;
 }
 
 .reversal-warning {
-  padding: 13px 22px;
-  background: #fff8f7;
-  border-bottom: 1px solid #f7e2e0;
-  color: #9f3029;
-  font-size: 12px;
-  line-height: 1.6;
+  padding: 11px 14px;
+  margin: 13px 16px 0;
+  color: #94621c;
+  background: #fff8e9;
+  border: 1px solid #f2dfb6;
+  border-radius: 6px;
+  font-size: 10.5px;
+  line-height: 1.5;
 }
 
-@media (max-width: 767.98px) {
-  .rent-page {
-    padding-right: 12px;
-    padding-left: 12px;
-  }
+.reversal-panel .form-control {
+  min-height: 76px;
+  border-color: #d8e1ec;
+  border-radius: 6px;
+  font-size: 11px;
+}
 
-  .rent-header {
-    align-items: flex-start !important;
-  }
+.reversal-panel .rent-form-footer {
+  margin-top: 12px;
+}
 
-  .rent-refresh {
-    width: 100%;
-  }
+/* =========================================================
+   ACCESSIBILITY
+========================================================= */
 
-  .rent-stat-card {
-    min-height: 104px;
-    gap: 9px;
-    padding: 12px;
-  }
+.rent-page button:focus-visible,
+.rent-page input:focus-visible,
+.rent-page select:focus-visible,
+.rent-page textarea:focus-visible,
+.rent-page summary:focus-visible {
+  outline: 3px solid rgba(35, 97, 181, .20);
+  outline-offset: 2px;
+}
 
-  .rent-stat-icon {
-    flex-basis: 34px;
-    width: 34px;
-    height: 34px;
-    border-radius: 9px;
-    font-size: 13px;
+.rent-page button:disabled {
+  cursor: not-allowed;
+}
+
+/* =========================================================
+   TABLET RESPONSIVENESS
+========================================================= */
+
+@media (max-width: 1200px) {
+  .rent-page > .row {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
   }
 
   .rent-stat-card h3 {
     font-size: 17px;
   }
 
+  .rent-payment-fields {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+/* =========================================================
+   MOBILE RESPONSIVENESS
+========================================================= */
+
+@media (max-width: 767.98px) {
+  .rent-page {
+    padding: 15px 12px;
+  }
+
+  .rent-header {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .rent-header .rent-refresh {
+    width: 100%;
+  }
+
+  .rent-title {
+    font-size: 22px;
+  }
+
+  .rent-subtitle {
+    font-size: 11px;
+  }
+
+  .rent-page > .row {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 8px;
+  }
+
+  .rent-stat-card {
+    min-height: 83px;
+    gap: 8px;
+    padding: 10px;
+  }
+
+  .rent-stat-icon {
+    flex-basis: 33px;
+    width: 33px;
+    height: 33px;
+    font-size: 13px;
+  }
+
+  .rent-stat-label {
+    font-size: 9.5px;
+  }
+
+  .rent-stat-card h3 {
+    font-size: 15px;
+  }
+
   .rent-stat-card small {
     font-size: 9px;
   }
 
-  .rent-panel-header,
+  .rent-panel-header {
+    padding: 11px 12px;
+  }
+
+  .rent-payment-toggle {
+    align-items: flex-start;
+    padding: 12px;
+  }
+
+  .rent-toggle-copy small {
+    max-width: 220px;
+  }
+
+  .rent-toggle-action {
+    padding: 7px 8px;
+    font-size: 9px;
+  }
+
+  .rent-payment-form-content {
+    padding: 13px 12px;
+  }
+
+  .rent-payment-fields {
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+
+  .rent-field-wide {
+    grid-column: auto;
+  }
+
+  .rent-payment-footer {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .rent-payment-actions {
+    width: 100%;
+  }
+
+  .rent-payment-actions button {
+    flex: 1;
+  }
+
+  .rent-credit-notice {
+    align-items: flex-start;
+    flex-wrap: wrap;
+  }
+
+  .rent-credit-action {
+    margin-left: 49px;
+  }
+
   .rent-register-header {
     align-items: flex-start;
-    padding: 16px;
-  }
-
-  .rent-form-body {
-    padding: 17px;
-  }
-
-  .rent-required-note {
-    display: none;
-  }
-
-  .rent-form-footer {
-    align-items: stretch;
-  }
-
-  .rent-security-note {
-    flex-basis: 100%;
-  }
-
-  .rent-submit {
-    width: 100%;
-  }
-
-  .rent-toolbar {
-    align-items: stretch;
     flex-direction: column;
-    padding: 14px;
-  }
-
-  .rent-filter {
-    flex-basis: auto;
-    width: 100%;
+    padding: 12px;
   }
 
   .rent-view-tabs {
@@ -740,203 +1415,110 @@
 
   .rent-view-tabs button {
     flex: 1;
-    padding: 9px 7px;
+    justify-content: center;
+    padding: 6px;
   }
 
-  .rent-register-footer {
-    padding: 13px 15px;
+  .rent-toolbar {
+    align-items: stretch;
     flex-direction: column;
-  }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .rent-stat-card {
-    transition: none;
+    padding: 11px 12px;
   }
 
-  .rent-stat-card:hover {
-    transform: none;
-  }
-}
-
-
-/* =========================================================
-   AVAILABLE TENANT CREDIT
-========================================================= */
-
-.rent-credit-stat {
-  border: 1px solid #b7e4ce;
-  background: linear-gradient(145deg, #ffffff 0%, #f0fbf5 100%);
-}
-
-.stat-credit {
-  color: #087443;
-  background: #d9f5e6;
-  border: 1px solid #b7e4ce;
-}
-
-.rent-credit-notice {
-  display: flex;
-  align-items: center;
-  gap: 14px;
-  padding: 16px 18px;
-  border: 1px solid #b7e4ce;
-  border-left: 4px solid #138754;
-  border-radius: 12px;
-  background: #f2fbf5;
-  color: #244b37;
-}
-
-.rent-credit-notice-icon {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex: 0 0 42px;
-  width: 42px;
-  height: 42px;
-  border-radius: 10px;
-  background: #d9f5e6;
-  color: #087443;
-  font-size: 1.1rem;
-}
-
-.rent-credit-notice h6 {
-  color: #08663c;
-  font-weight: 700;
-}
-
-.rent-credit-notice p {
-  color: #244b37;
-  overflow-wrap: anywhere;
-}
-
-.rent-credit-notice small {
-  color: #547461;
-  line-height: 1.5;
-}
-
-.rent-credit-action {
-  flex-shrink: 0;
-  font-weight: 600;
-}
-
-.rent-credit-pill {
-  display: inline-flex;
-  align-items: center;
-  gap: 5px;
-  padding: 6px 9px;
-  border: 1px solid #a8dfc1;
-  border-radius: 7px;
-  background: #e9f9ef;
-  color: #087443;
-  font-size: 0.82rem;
-  font-weight: 700;
-  white-space: nowrap;
-}
-
-.rent-credit-caption {
-  color: #47745c;
-  font-size: 0.72rem;
-  line-height: 1.4;
-}
-
-.rent-tab-credit-count {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  min-width: 20px;
-  height: 20px;
-  margin-left: 5px;
-  padding: 0 5px;
-  border-radius: 20px;
-  background: #d9f5e6;
-  color: #087443;
-  font-size: 0.72rem;
-  font-weight: 700;
-}
-
-.rent-payment-guidance {
-  display: flex;
-  align-items: flex-start;
-  padding: 12px 14px;
-  border: 1px solid #d7e7f7;
-  border-radius: 9px;
-  background: #f4f8fd;
-  color: #365775;
-  font-size: 0.86rem;
-  line-height: 1.55;
-}
-
-.rent-payment-guidance i {
-  margin-top: 3px;
-  color: #1769aa;
-}
-
-.rent-payment-summary {
-  display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 12px;
-  margin: 0 0 18px;
-}
-
-.rent-payment-summary > div {
-  display: flex;
-  flex-direction: column;
-  gap: 5px;
-  min-width: 0;
-  padding: 14px 16px;
-  border: 1px solid #e1e8f0;
-  border-radius: 10px;
-  background: #ffffff;
-}
-
-.rent-summary-label {
-  color: #64748b;
-  font-size: 0.78rem;
-  font-weight: 600;
-}
-
-.rent-payment-summary strong {
-  color: #1e293b;
-  font-size: 1.05rem;
-  overflow-wrap: anywhere;
-}
-
-.rent-payment-summary .rent-summary-credit {
-  color: #087443;
-}
-
-@media (max-width: 767.98px) {
-  .rent-credit-notice {
-    align-items: flex-start;
-    flex-wrap: wrap;
+  .rent-search,
+  .rent-filter {
+    width: 100%;
+    flex-basis: auto;
   }
 
-  .rent-credit-notice > div:nth-child(2) {
-    flex: 1 1 calc(100% - 60px);
-    min-width: 0;
-  }
-
-  .rent-credit-action {
-    margin-left: 56px;
+  .rent-table {
+    min-width: 950px;
   }
 
   .rent-payment-summary {
     grid-template-columns: 1fr;
   }
 
-  .rent-credit-pill {
-    white-space: normal;
-    overflow-wrap: anywhere;
+  .rent-register-footer {
+    flex-direction: column;
   }
 }
+
+/* =========================================================
+   SMALL MOBILE
+========================================================= */
+
+@media (max-width: 420px) {
+  .rent-page {
+    padding: 12px 9px;
+  }
+
+  .rent-stat-card {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 6px;
+    padding: 9px;
+  }
+
+  .rent-stat-card h3 {
+    font-size: 14px;
+  }
+
+  .rent-payment-toggle {
+    gap: 8px;
+  }
+
+  .rent-toggle-leading {
+    gap: 8px;
+  }
+
+  .rent-toggle-icon {
+    flex-basis: 32px;
+    width: 32px;
+    height: 32px;
+  }
+
+  .rent-toggle-action {
+    gap: 5px;
+  }
+
+  .rent-toggle-open-text,
+  .rent-toggle-close-text {
+    display: none;
+  }
+
+  .rent-payment-actions {
+    flex-direction: column;
+  }
+
+  .rent-payment-actions button {
+    width: 100%;
+  }
+
+  .rent-form-intro {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .rent-credit-notice {
+    gap: 9px;
+  }
+
+  .rent-credit-action {
+    width: 100%;
+    margin-left: 0;
+  }
+}
+
+/* =========================================================
+   REDUCED MOTION
+========================================================= */
 
 @media (prefers-reduced-motion: reduce) {
-  .rent-credit-stat,
-  .rent-credit-pill,
-  .rent-credit-action {
-    animation: none !important;
-    transition: none !important;
+  .rent-page *,
+  .rent-page *::before,
+  .rent-page *::after {
+    animation-duration: .01ms !important;
+    transition-duration: .01ms !important;
   }
 }
-

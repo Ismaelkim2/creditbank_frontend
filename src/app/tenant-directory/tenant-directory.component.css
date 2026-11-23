@@ -2878,110 +2878,115 @@
 
 
 /* =========================================================
-   PROPERTY DIRECTORY — COLUMN COLLISION FIX
+   PROPERTY DIRECTORY — PREMIUM COLUMN WIDTHS
    ========================================================= */
 
-/* Allow the property table to use its required width */
 .tenant-directory .directory-table {
   width: 100%;
-  min-width: 1050px;
+  min-width: 1120px;
   table-layout: fixed;
   border-collapse: separate;
   border-spacing: 0;
 }
 
-/* Property details column */
+/* 1. PROPERTY DETAILS — PRIORITISE PROPERTY NAME */
 .tenant-directory .directory-table th:nth-child(1),
 .tenant-directory .directory-table td:nth-child(1) {
-  width: 250px;
-  min-width: 250px;
+  width: 340px;
+  min-width: 340px;
 }
 
-/* Property code column */
+/* 2. PROPERTY CODE */
 .tenant-directory .directory-table th:nth-child(2),
 .tenant-directory .directory-table td:nth-child(2) {
   width: 145px;
-  min-width: 145px;
 }
 
-/* Property type */
+/* 3. PROPERTY TYPE */
 .tenant-directory .directory-table th:nth-child(3),
 .tenant-directory .directory-table td:nth-child(3) {
   width: 125px;
 }
 
-/* Location */
+/* 4. LOCATION */
 .tenant-directory .directory-table th:nth-child(4),
 .tenant-directory .directory-table td:nth-child(4) {
   width: 145px;
 }
 
-/* Status */
+/* 5. STATUS */
 .tenant-directory .directory-table th:nth-child(5),
 .tenant-directory .directory-table td:nth-child(5) {
   width: 115px;
 }
 
-/* Date registered */
+/* 6. DATE REGISTERED */
 .tenant-directory .directory-table th:nth-child(6),
 .tenant-directory .directory-table td:nth-child(6) {
   width: 135px;
 }
 
-/* Actions */
+/* 7. ACTIONS */
 .tenant-directory .directory-table th:nth-child(7),
 .tenant-directory .directory-table td:nth-child(7) {
   width: 180px;
 }
 
-/* Keep property details content within its own column */
+/* PROPERTY DETAILS CONTENT */
 .tenant-directory .directory-table .record-primary {
   display: flex;
   align-items: center;
-  gap: 11px;
-  min-width: 0;
+  gap: 12px;
   width: 100%;
+  min-width: 0;
   overflow: hidden;
 }
 
-/* Prevent the property avatar from shrinking */
+/* PROPERTY IMAGE */
 .tenant-directory .directory-table .record-avatar {
-  flex: 0 0 42px;
-  width: 42px;
-  height: 42px;
+  flex: 0 0 44px;
+  width: 44px;
+  height: 44px;
 }
 
-/* Allow property name and address to wrap */
+/* PROPERTY NAME AND ADDRESS CONTAINER */
 .tenant-directory .directory-table .record-primary > span:last-child {
   display: flex;
   flex-direction: column;
+  justify-content: center;
   flex: 1 1 auto;
   min-width: 0;
   overflow: hidden;
 }
 
+/* PROPERTY NAME — KEEP IT COMPACT */
 .tenant-directory .directory-table .record-primary strong {
-  display: block;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  overflow: hidden;
   max-width: 100%;
   font-size: 13px;
-  font-weight: 700;
-  line-height: 1.4;
+  font-weight: 750;
+  line-height: 1.35;
   white-space: normal;
-  overflow-wrap: anywhere;
+  overflow-wrap: break-word;
 }
 
+/* PROPERTY ADDRESS — ONE LINE */
 .tenant-directory .directory-table .record-primary small {
   display: block;
-  max-width: 100%;
   margin-top: 3px;
+  max-width: 100%;
   color: #718096;
   font-size: 11px;
-  line-height: 1.4;
-  white-space: normal;
-  overflow-wrap: anywhere;
+  line-height: 1.35;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
-/* Property code must remain visually separate */
+/* PROPERTY CODE */
 .tenant-directory .directory-table .record-code {
   display: inline-flex;
   align-items: center;
@@ -2996,26 +3001,27 @@
   font-size: 11px;
   font-weight: 750;
   line-height: 1.4;
-  white-space: normal;
-  overflow-wrap: anywhere;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
-/* Header readability */
+/* TABLE HEADINGS */
 .tenant-directory .directory-table thead th {
-  white-space: normal;
-  vertical-align: middle;
   padding: 13px 12px;
   font-size: 11px;
   font-weight: 750;
-}
-
-/* Cell spacing */
-.tenant-directory .directory-table tbody td {
-  padding: 13px 12px;
+  white-space: normal;
   vertical-align: middle;
 }
 
-/* Prevent action controls from overflowing */
+/* TABLE ROWS */
+.tenant-directory .directory-table tbody td {
+  padding: 12px;
+  vertical-align: middle;
+}
+
+/* ACTION BUTTONS */
 .tenant-directory .directory-table .directory-row-actions {
   display: flex;
   align-items: center;
@@ -3024,7 +3030,7 @@
   white-space: nowrap;
 }
 
-/* Mobile/tablet horizontal scrolling */
+/* RESPONSIVE TABLE */
 .tenant-directory .table-responsive {
   width: 100%;
   overflow-x: auto;

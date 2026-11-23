@@ -1,9 +1,11 @@
-import { Component, OnInit } from '@angular/core';
+
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
-import { Subject, debounceTime } from 'rxjs';
+import { Subject, debounceTime, takeUntil, Observable } from 'rxjs';
 import { Router } from '@angular/router';
+
 import { environment } from '../../environments/environment.prod';
 
 interface User {
@@ -14,34 +16,44 @@ interface User {
   status: string;
 }
 
+type UserAction = 'delete' | 'suspend' | 'reactivate';
+
 @Component({
   selector: 'app-admin-approvals',
   templateUrl: './admin-approvals.component.html',
   styleUrls: ['./admin-approvals.component.css']
 })
-export class AdminApprovalsComponent implements OnInit {
+export class AdminApprovalsComponent implements OnInit, OnDestroy {
 
-  private baseUrl = `${environment.apiUrl}/auth`;
+  private readonly baseUrl = `${environment.apiUrl}/auth`;
+  private readonly destroy$ = new Subject<void>();
 
+  // USER DATA
   pendingUsers: User[] = [];
   allUsers: User[] = [];
   staffUsers: User[] = [];
   customers: User[] = [];
 
+  // FILTERED DATA
   filteredPending: User[] = [];
   filteredStaff: User[] = [];
   filteredCustomers: User[] = [];
 
+  // MESSAGES
   approvalMessage = '';
   successMessage = '';
   errorMessage = '';
 
+  // LOADING
   isLoading = false;
+  isSavingUser = false;
   processingUserId: number | null = null;
 
+  // EDIT FORM
   editUserForm!: FormGroup;
   selectedUserId: number | null = null;
 
+  // SEARCH
   searchSubject = new Subject<string>();
   searchTerm = '';
 
@@ -52,208 +64,518 @@ export class AdminApprovalsComponent implements OnInit {
     private router: Router
   ) {}
 
+  // ==========================================
+  // INITIALIZATION
+  // ==========================================
+
   ngOnInit(): void {
     this.initForm();
     this.initSearch();
+
     this.loadPendingUsers();
     this.loadAllUsers();
   }
 
-  private getHeaders(): HttpHeaders {
-    return new HttpHeaders({
-      Authorization: `Bearer ${sessionStorage.getItem('token')}`
-    });
+  ngOnDestroy(): void {
+    this.destroy$.next();
+    this.destroy$.complete();
   }
 
+  // ==========================================
+  // HTTP HEADERS
+  // ==========================================
+
+  private getHeaders(): HttpHeaders {
+    const token = sessionStorage.getItem('token');
+
+    let headers = new HttpHeaders();
+
+    if (token) {
+      headers = headers.set('Authorization', `Bearer ${token}`);
+    }
+
+    return headers;
+  }
+
+  // ==========================================
+  // STATISTICS
+  // ==========================================
+
+  get suspendedUsersCount(): number {
+    return this.allUsers.filter(
+      user => user.status === 'SUSPENDED'
+    ).length;
+  }
+
+  // ==========================================
   // FORM
-  initForm(): void {
+  // ==========================================
+
+  private initForm(): void {
     this.editUserForm = this.fb.group({
-      name: ['', Validators.required],
-      email: ['', [Validators.required, Validators.email]],
+      name: ['', [
+        Validators.required,
+        Validators.minLength(2)
+      ]],
+      email: ['', [
+        Validators.required,
+        Validators.email
+      ]],
       role: ['', Validators.required],
       status: ['', Validators.required]
     });
   }
 
+  // ==========================================
   // SEARCH
-  initSearch(): void {
-    this.searchSubject.pipe(debounceTime(300))
+  // ==========================================
+
+  private initSearch(): void {
+    this.searchSubject
+      .pipe(
+        debounceTime(300),
+        takeUntil(this.destroy$)
+      )
       .subscribe(term => {
-        this.searchTerm = term.toLowerCase();
+        this.searchTerm = term.trim().toLowerCase();
         this.applyFilter();
       });
   }
 
- onSearch(event: Event): void {
-  const value = (event.target as HTMLInputElement).value;
-  this.searchSubject.next(value);
-}
-  // FILTER
+  onSearch(event: Event): void {
+    const input = event.target as HTMLInputElement;
+    this.searchSubject.next(input.value || '');
+  }
+
+  // ==========================================
+  // FILTERING
+  // ==========================================
+
+  private matchesSearch(user: User, term: string): boolean {
+    if (!term) {
+      return true;
+    }
+
+    return (
+      (user.name || '').toLowerCase().includes(term) ||
+      (user.email || '').toLowerCase().includes(term) ||
+      (user.role || '').toLowerCase().includes(term) ||
+      (user.status || '').toLowerCase().includes(term)
+    );
+  }
+
   applyFilter(): void {
     const term = this.searchTerm;
 
-    this.filteredPending = this.pendingUsers.filter(u =>
-      u.name?.toLowerCase().includes(term) ||
-      u.email?.toLowerCase().includes(term)
+    this.filteredPending = this.pendingUsers.filter(user =>
+      this.matchesSearch(user, term)
     );
 
-    this.filteredStaff = this.staffUsers.filter(u =>
-      u.name?.toLowerCase().includes(term) ||
-      u.email?.toLowerCase().includes(term)
+    this.filteredStaff = this.staffUsers.filter(user =>
+      this.matchesSearch(user, term)
     );
 
-    this.filteredCustomers = this.customers.filter(u =>
-      u.name?.toLowerCase().includes(term) ||
-      u.email?.toLowerCase().includes(term)
+    // Pending customers appear in Pending Approvals only.
+    this.filteredCustomers = this.customers.filter(user =>
+      user.status !== 'PENDING' &&
+      this.matchesSearch(user, term)
     );
   }
 
-  // LOAD
+  // ==========================================
+  // LOAD PENDING USERS
+  // ==========================================
+
   loadPendingUsers(): void {
     this.isLoading = true;
 
-    this.http.get<any>(`${this.baseUrl}/users/pending`, {
-      headers: this.getHeaders()
-    }).subscribe(res => {
-      this.pendingUsers = res?.pendingUsers || [];
-      this.applyFilter();
-      this.isLoading = false;
+    this.http.get<any>(
+      `${this.baseUrl}/users/pending`,
+      { headers: this.getHeaders() }
+    )
+    .pipe(takeUntil(this.destroy$))
+    .subscribe({
+
+      next: response => {
+        const users = Array.isArray(response)
+          ? response
+          : response?.pendingUsers || [];
+
+        this.pendingUsers = users;
+        this.applyFilter();
+        this.isLoading = false;
+      },
+
+      error: error => {
+        console.error('Failed to load pending users:', error);
+
+        this.pendingUsers = [];
+        this.applyFilter();
+        this.isLoading = false;
+
+        this.approvalMessage =
+          error?.error?.message ||
+          'Unable to load pending users.';
+      }
+
     });
   }
+
+  // ==========================================
+  // LOAD ALL USERS
+  // ==========================================
 
   loadAllUsers(): void {
-    this.http.get<User[]>(`${this.baseUrl}/users/all`, {
-      headers: this.getHeaders()
-    }).subscribe(users => {
+    this.http.get<any>(
+      `${this.baseUrl}/users/all`,
+      { headers: this.getHeaders() }
+    )
+    .pipe(takeUntil(this.destroy$))
+    .subscribe({
 
-      this.allUsers = users || [];
+      next: response => {
+        const users: User[] = Array.isArray(response)
+          ? response
+          : response?.users || response?.data || [];
 
-      this.staffUsers = users.filter(u =>
-        u.role === 'ADMIN' || u.role === 'STAFF'
-      );
+        this.allUsers = users;
 
-      this.customers = users.filter(u =>
-        u.role === 'USER'
-      );
+        this.staffUsers = users.filter(user =>
+          ['ADMIN', 'DATA_MANAGER', 'TENANT_AGENT'].includes(user.role)
+        );
 
-      this.applyFilter();
+        this.customers = users.filter(user =>
+          user.role === 'APPLICANT'
+        );
+
+        this.applyFilter();
+      },
+
+      error: error => {
+        console.error('Failed to load users:', error);
+
+        this.allUsers = [];
+        this.staffUsers = [];
+        this.customers = [];
+
+        this.applyFilter();
+
+        this.approvalMessage =
+          error?.error?.message ||
+          'Unable to load user accounts.';
+      }
+
     });
   }
 
-  // ACTIONS
-  approveUser(id: number) {
-    this.process(id, 'approve');
+  // ==========================================
+  // STATUS BADGES
+  // ==========================================
+
+  getStatusClass(status: string): string {
+    switch (status) {
+      case 'APPROVED':
+        return 'bg-success';
+
+      case 'PENDING':
+        return 'bg-warning text-dark';
+
+      case 'SUSPENDED':
+        return 'bg-danger';
+
+      case 'REJECTED':
+        return 'bg-secondary';
+
+      default:
+        return 'bg-light text-dark';
+    }
   }
 
-  deleteUser(id: number) {
-    if (!confirm('Delete user?')) return;
-    this.process(id, 'delete');
-  }
+  // ==========================================
+  // APPROVE USER
+  // ==========================================
 
-  revertUser(id: number): void {
-
-  const confirmRevert = confirm('Revert this user back to pending status?');
-
-  if (!confirmRevert) return;
-
-  this.processingUserId = id;
-
-  this.http.put(
-    `${this.baseUrl}/revert/${id}`,
-    {}, // empty body
-    { headers: this.getHeaders() }
-  ).subscribe({
-    next: (res: any) => {
-
-      this.approvalMessage = res?.message || 'User reverted successfully';
-
-      // refresh all data
-      this.loadPendingUsers();
-      this.loadAllUsers();
-
-      this.processingUserId = null;
-    },
-
-    error: (err) => {
-      console.error(err);
-      this.approvalMessage = 'Failed to revert user';
-      this.processingUserId = null;
-    }
-  });
-}
-
-  private process(id: number, action: string): void {
-
-    this.processingUserId = id;
-
-    let req;
-
-    if (action === 'delete') {
-      req = this.http.delete(`${this.baseUrl}/delete/${id}`, {
-        headers: this.getHeaders()
-      });
-    } else {
-      req = this.http.put(`${this.baseUrl}/${action}/${id}`, {}, {
-        headers: this.getHeaders()
-      });
+  approveUser(user: User): void {
+    if (this.processingUserId !== null) {
+      return;
     }
 
-    req.subscribe({
-      next: () => {
-        this.approvalMessage = `User ${action} successful`;
-        this.loadPendingUsers();
-        this.loadAllUsers();
-        this.processingUserId = null;
+    const confirmed = confirm(
+      `Approve the account belonging to ${user.name}?`
+    );
+
+    if (!confirmed) {
+      return;
+    }
+
+    this.processingUserId = user.id;
+    this.approvalMessage = '';
+
+    this.http.put<any>(
+      `${this.baseUrl}/approve/${user.id}`,
+      {},
+      { headers: this.getHeaders() }
+    )
+    .pipe(takeUntil(this.destroy$))
+    .subscribe({
+
+      next: response => {
+        this.approvalMessage =
+          response?.message || 'User approved successfully.';
+
+        this.refreshUsers();
       },
-      error: () => {
-        this.approvalMessage = `Failed to ${action}`;
+
+      error: error => {
+        console.error('Approval failed:', error);
+
+        this.approvalMessage =
+          error?.error?.message || 'Failed to approve user.';
+
         this.processingUserId = null;
       }
+
     });
   }
 
-  // EDIT
+  // ==========================================
+  // SUSPEND USER
+  // ==========================================
+
+  suspendUser(user: User): void {
+    const confirmed = confirm(
+      `Suspend ${user.name}?\n\n` +
+      'The user will no longer be able to log in.'
+    );
+
+    if (!confirmed) {
+      return;
+    }
+
+    this.executeUserAction(
+      user,
+      'suspend',
+      'User account suspended successfully.'
+    );
+  }
+
+  // ==========================================
+  // REACTIVATE USER
+  // ==========================================
+
+  reactivateUser(user: User): void {
+    const confirmed = confirm(
+      `Reactivate ${user.name}?\n\n` +
+      'Confirm that the outstanding subscription payment has been received.'
+    );
+
+    if (!confirmed) {
+      return;
+    }
+
+    this.executeUserAction(
+      user,
+      'reactivate',
+      'User account reactivated successfully.'
+    );
+  }
+
+  // ==========================================
+  // DELETE USER
+  // ==========================================
+
+  deleteUser(user: User): void {
+    const confirmed = confirm(
+      `PERMANENT DELETION\n\n` +
+      `Are you sure you want to permanently delete ${user.name}?\n\n` +
+      'This action cannot be undone. Accounts linked to financial records may not be deleted.'
+    );
+
+    if (!confirmed) {
+      return;
+    }
+
+    this.executeUserAction(
+      user,
+      'delete',
+      'User permanently deleted successfully.'
+    );
+  }
+
+  // ==========================================
+  // COMMON USER ACTION
+  // ==========================================
+
+  private executeUserAction(
+    user: User,
+    action: UserAction,
+    successText: string
+  ): void {
+
+    if (this.processingUserId !== null) {
+      return;
+    }
+
+    this.processingUserId = user.id;
+    this.approvalMessage = '';
+
+    let request: Observable<any>;
+
+    if (action === 'delete') {
+      request = this.http.delete<any>(
+        `${this.baseUrl}/delete/${user.id}`,
+        { headers: this.getHeaders() }
+      );
+    } else {
+      request = this.http.put<any>(
+        `${this.baseUrl}/${action}/${user.id}`,
+        {},
+        { headers: this.getHeaders() }
+      );
+    }
+
+    request
+      .pipe(takeUntil(this.destroy$))
+      .subscribe({
+
+        next: response => {
+          this.approvalMessage =
+            response?.message || successText;
+
+          this.refreshUsers();
+        },
+
+        error: error => {
+          console.error(`Failed to ${action} user:`, error);
+
+          this.approvalMessage =
+            error?.error?.message ||
+            `Failed to ${action} user. Please try again.`;
+
+          this.processingUserId = null;
+        }
+
+      });
+  }
+
+  // ==========================================
+  // REFRESH USERS
+  // ==========================================
+
+  private refreshUsers(): void {
+    this.processingUserId = null;
+
+    this.loadPendingUsers();
+    this.loadAllUsers();
+  }
+
+  // ==========================================
+  // EDIT USER
+  // ==========================================
+
   openEditModal(user: User, content: any): void {
     this.selectedUserId = user.id;
 
-    this.editUserForm.patchValue(user);
+    this.successMessage = '';
+    this.errorMessage = '';
+
+    this.editUserForm.reset();
+
+    this.editUserForm.patchValue({
+      name: user.name,
+      email: user.email,
+      role: user.role,
+      status: user.status
+    });
 
     this.modalService.open(content, {
       size: 'lg',
-      centered: true
+      centered: true,
+      backdrop: 'static',
+      keyboard: false
     });
   }
+
+  // ==========================================
+  // SAVE USER
+  // ==========================================
 
   saveUser(modal: any): void {
+    if (!this.selectedUserId) {
+      this.errorMessage = 'No user selected.';
+      return;
+    }
 
-    if (!this.selectedUserId) return;
+    if (this.editUserForm.invalid) {
+      this.editUserForm.markAllAsTouched();
+      return;
+    }
 
-    this.http.put(
+    if (this.isSavingUser) {
+      return;
+    }
+
+    this.isSavingUser = true;
+    this.successMessage = '';
+    this.errorMessage = '';
+
+    this.http.put<any>(
       `${this.baseUrl}/edit/${this.selectedUserId}`,
-      this.editUserForm.value,
+      this.editUserForm.getRawValue(),
       { headers: this.getHeaders() }
-    ).subscribe(() => {
-      this.successMessage = 'Updated successfully';
-      modal.close();
-      this.loadAllUsers();
+    )
+    .pipe(takeUntil(this.destroy$))
+    .subscribe({
+
+      next: response => {
+        this.successMessage =
+          response?.message || 'User updated successfully.';
+
+        this.isSavingUser = false;
+        this.approvalMessage = this.successMessage;
+
+        modal.close();
+
+        this.selectedUserId = null;
+
+        this.loadAllUsers();
+        this.loadPendingUsers();
+      },
+
+      error: error => {
+        console.error('User update failed:', error);
+
+        this.errorMessage =
+          error?.error?.message ||
+          'Unable to update user. Please try again.';
+
+        this.isSavingUser = false;
+      }
+
     });
   }
 
+  // ==========================================
+  // CUSTOMER ONBOARDING
+  // ==========================================
 
   openOnboardUser(): void {
-  this.router.navigate(['/app/accountsopening'])
-}
+    this.router.navigate(['/app/accountsopening']);
+  }
 
-openOnboardStaff(): void {
+  // ==========================================
+  // STAFF ONBOARDING
+  // ==========================================
 
-  this.router.navigate(
-    ['/app/assign-staff'],
-    {
-      queryParams: {
-        mode: 'onboard'
+  openOnboardStaff(): void {
+    this.router.navigate(
+      ['/app/assign-staff'],
+      {
+        queryParams: {
+          mode: 'onboard'
+        }
       }
-    }
-  );
+    );
+  }
 
-}
 }

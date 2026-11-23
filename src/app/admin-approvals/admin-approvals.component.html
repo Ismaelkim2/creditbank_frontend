@@ -1,306 +1,999 @@
-<div class="main-container container">
 
-  <!-- HEADER -->
-  <!-- ================= TOP CONTROL BAR ================= -->
-<div class="top-bar d-flex flex-wrap justify-content-between align-items-center mb-4">
+<div class="user-management-page">
 
-  <!-- LEFT: TITLE -->
-  <div class="title-block">
-    <h3 class="fw-bold mb-0">User Management Dashboard</h3>
-    <small class="text-muted">Admin control center</small>
-  </div>
+  <!-- ==========================================
+       PREMIUM DASHBOARD HEADER
+  =========================================== -->
+  <section class="dashboard-hero">
 
-  <!-- CENTER: SEARCH -->
-  <div class="search-block">
-   <input type="text"
-       class="form-control search-input"
-       placeholder="Search users, email, role..."
-       (input)="onSearch($event)">
-  </div>
+    <div class="hero-content">
 
-  <!-- RIGHT: ACTIONS -->
-  <div class="action-block d-flex gap-2">
+      <div class="hero-eyebrow">
+        <span class="eyebrow-dot"></span>
+        CREDICORE ADMINISTRATION
+      </div>
 
-    <button class="btn btn-primary action-btn"
-            (click)="openOnboardUser()">
-      <i class="fa fa-user-plus me-1"></i> Onboard Customer
+      <div class="hero-title-row">
+        <div>
+          <h1>User Management</h1>
+          <p>
+            Manage your platform users, staff access, account approvals
+            and security controls from one central workspace.
+          </p>
+        </div>
+
+        <div class="hero-icon">
+          <i class="fa fa-users-cog"></i>
+        </div>
+      </div>
+
+      <div class="hero-footer">
+        <div class="hero-meta">
+          <i class="fa fa-shield-alt"></i>
+          Secure administration center
+        </div>
+
+        <div class="hero-meta">
+          <i class="fa fa-database"></i>
+          Centralized account management
+        </div>
+      </div>
+
+    </div>
+
+    <div class="hero-actions">
+
+      <button
+        type="button"
+        class="premium-btn premium-btn-white"
+        (click)="openOnboardUser()">
+
+        <i class="fa fa-user-plus"></i>
+        <span>Onboard Customer</span>
+
+      </button>
+
+      <button
+        type="button"
+        class="premium-btn premium-btn-outline"
+        (click)="openOnboardStaff()">
+
+        <i class="fa fa-user-shield"></i>
+        <span>Onboard Staff</span>
+
+      </button>
+
+    </div>
+
+  </section>
+
+
+  <!-- ==========================================
+       DASHBOARD OVERVIEW
+  =========================================== -->
+  <section class="overview-section">
+
+    <div class="section-heading">
+      <div>
+        <span class="section-kicker">PLATFORM OVERVIEW</span>
+        <h2>Account Insights</h2>
+        <p>Live overview of registered platform accounts.</p>
+      </div>
+
+      <div class="overview-indicator">
+        <span class="live-dot"></span>
+        Account overview
+      </div>
+    </div>
+
+
+    <div class="stats-grid">
+
+      <!-- PENDING -->
+      <div class="stat-card stat-pending">
+
+        <div class="stat-top">
+          <div class="stat-icon">
+            <i class="fa fa-hourglass-half"></i>
+          </div>
+
+          <span class="stat-label">REQUIRES ATTENTION</span>
+        </div>
+
+        <div class="stat-value">
+          {{ pendingUsers.length }}
+        </div>
+
+        <div class="stat-description">
+          <strong>Pending Approvals</strong>
+          <span>Accounts awaiting review</span>
+        </div>
+
+        <div class="stat-bottom">
+          <span>Approval queue</span>
+          <i class="fa fa-arrow-right"></i>
+        </div>
+
+      </div>
+
+
+      <!-- CUSTOMERS -->
+      <div class="stat-card stat-customers">
+
+        <div class="stat-top">
+          <div class="stat-icon">
+            <i class="fa fa-user-friends"></i>
+          </div>
+
+          <span class="stat-label">CUSTOMER BASE</span>
+        </div>
+
+        <div class="stat-value">
+          {{ customers.length }}
+        </div>
+
+        <div class="stat-description">
+          <strong>Customer Accounts</strong>
+          <span>Registered platform customers</span>
+        </div>
+
+        <div class="stat-bottom">
+          <span>Customer directory</span>
+          <i class="fa fa-arrow-right"></i>
+        </div>
+
+      </div>
+
+
+      <!-- STAFF -->
+      <div class="stat-card stat-staff">
+
+        <div class="stat-top">
+          <div class="stat-icon">
+            <i class="fa fa-user-shield"></i>
+          </div>
+
+          <span class="stat-label">WORKFORCE</span>
+        </div>
+
+        <div class="stat-value">
+          {{ staffUsers.length }}
+        </div>
+
+        <div class="stat-description">
+          <strong>Staff Members</strong>
+          <span>Platform administration personnel</span>
+        </div>
+
+        <div class="stat-bottom">
+          <span>Staff directory</span>
+          <i class="fa fa-arrow-right"></i>
+        </div>
+
+      </div>
+
+
+      <!-- SUSPENDED -->
+      <div class="stat-card stat-suspended">
+
+        <div class="stat-top">
+          <div class="stat-icon">
+            <i class="fa fa-user-lock"></i>
+          </div>
+
+          <span class="stat-label">SECURITY CONTROL</span>
+        </div>
+
+        <div class="stat-value">
+          {{ suspendedUsersCount }}
+        </div>
+
+        <div class="stat-description">
+          <strong>Suspended Accounts</strong>
+          <span>Restricted platform access</span>
+        </div>
+
+        <div class="stat-bottom">
+          <span>Access management</span>
+          <i class="fa fa-arrow-right"></i>
+        </div>
+
+      </div>
+
+    </div>
+
+  </section>
+
+
+  <!-- ==========================================
+       SEARCH AND CONTROL BAR
+  =========================================== -->
+  <section class="management-toolbar">
+
+    <div class="toolbar-title">
+      <div class="toolbar-icon">
+        <i class="fa fa-sliders-h"></i>
+      </div>
+
+      <div>
+        <h3>Account Directory</h3>
+        <p>Search and manage users across the platform.</p>
+      </div>
+    </div>
+
+    <div class="search-container">
+
+      <i class="fa fa-search search-icon"></i>
+
+      <input
+        type="text"
+        class="premium-search"
+        placeholder="Search by name, email, role or status..."
+        (input)="onSearch($event)">
+
+      <span class="search-shortcut">
+        <i class="fa fa-search"></i>
+      </span>
+
+    </div>
+
+  </section>
+
+
+  <!-- ==========================================
+       GLOBAL NOTIFICATION
+  =========================================== -->
+  <div
+    *ngIf="approvalMessage"
+    class="premium-alert"
+    role="alert">
+
+    <div class="alert-icon">
+      <i class="fa fa-info-circle"></i>
+    </div>
+
+    <div class="alert-message">
+      {{ approvalMessage }}
+    </div>
+
+    <button
+      type="button"
+      class="alert-close"
+      aria-label="Close"
+      (click)="approvalMessage = ''">
+
+      <i class="fa fa-times"></i>
+
     </button>
 
-    <button class="btn btn-dark action-btn"
-            (click)="openOnboardStaff()">
-      <i class="fa fa-user-shield me-1"></i> Onboard Staff
-    </button>
-
   </div>
 
-</div>
 
-  <!-- STATS -->
-  <div class="row mb-4">
+  <!-- ==========================================
+       STAFF MANAGEMENT
+  =========================================== -->
+  <section class="management-card">
 
-    <div class="col-md-4">
-      <div class="card p-3 text-center">
-        <h6>Pending Users</h6>
-        <h3>{{ filteredPending.length }}</h3>
+    <div class="management-card-header">
+
+      <div class="table-heading">
+
+        <div class="table-heading-icon staff-heading-icon">
+          <i class="fa fa-user-shield"></i>
+        </div>
+
+        <div>
+          <h3>Staff Management</h3>
+          <p>Manage employee accounts and platform permissions.</p>
+        </div>
+
       </div>
-    </div>
 
-    <div class="col-md-4">
-      <div class="card p-3 text-center">
-        <h6>Customers</h6>
-        <h3>{{ allUsers.length }}</h3>
+      <div class="table-header-right">
+
+        <span class="record-counter">
+          {{ filteredStaff.length }} Staff
+        </span>
+
+        <span class="section-status">
+          <span class="live-dot"></span>
+          Staff directory
+        </span>
+
       </div>
+
     </div>
 
-    <div class="col-md-4">
-      <div class="card p-3 text-center">
-        <h6>Staff</h6>
-        <h3>{{ filteredStaff.length }}</h3>
-      </div>
-    </div>
 
-  </div>
+    <div class="table-responsive">
 
-  <!-- MESSAGES -->
-  <div *ngIf="approvalMessage" class="alert alert-info alert-dismissible fade show">
-    {{ approvalMessage }}
-    <button class="btn-close" (click)="approvalMessage=''"></button>
-  </div>
+      <table class="premium-table">
 
-  <!-- SEARCH -->
-  <!-- <div class="mb-3 sticky-top bg-white py-2 shadow-sm rounded">
-    <input type="text" class="form-control"
-           placeholder="Search users..."
-           (input)="onSearch($event.target.value)">
-  </div> -->
-
-  <!-- STAFF -->
-  <div class="card mb-4 shadow-sm">
-    <div class="card-header bg-dark text-white">
-      Staff Management ({{ filteredStaff.length }})
-    </div>
-
-    <div class="card-body p-0">
-
-      <table class="table table-hover mb-0">
         <thead>
           <tr>
-            <th>Name</th><th>Email</th><th>Role</th><th>Status</th>
+            <th>STAFF MEMBER</th>
+            <th>EMAIL ADDRESS</th>
+            <th>ACCESS ROLE</th>
+            <th>ACCOUNT STATUS</th>
+            <th class="text-center">ACTIONS</th>
           </tr>
         </thead>
 
         <tbody>
+
           <tr *ngFor="let staff of filteredStaff">
-            <td>{{ staff.name }}</td>
-            <td>{{ staff.email }}</td>
-            <td><span class="badge bg-primary">{{ staff.role }}</span></td>
-            <td><span class="badge bg-success">{{ staff.status }}</span></td>
-          </tr>
-        </tbody>
-      </table>
-
-      <div *ngIf="filteredStaff.length === 0" class="text-center py-3 text-muted">
-        No staff found
-      </div>
-
-    </div>
-  </div>
-
-  <!-- PENDING -->
-  <div class="card mb-4 shadow-sm">
-    <div class="card-header bg-primary text-white">
-      Pending Approvals  ({{ filteredPending.length }})
-    </div>
-
-    <div class="card-body p-0">
-
-      <div *ngIf="isLoading" class="text-center py-5">
-        <i class="fa fa-spinner fa-spin fa-2x"></i>
-      </div>
-
-      <table class="table table-hover mb-0" *ngIf="!isLoading && filteredPending.length">
-
-        <thead>
-          <tr>
-            <th>Name</th><th>Email</th><th>Role</th><th>Status</th><th>Action</th>
-          </tr>
-        </thead>
-
-        <tbody>
-          <tr *ngFor="let user of filteredPending">
-            <td>{{ user.name }}</td>
-            <td>{{ user.email }}</td>
-            <td>{{ user.role }}</td>
-            <td><span class="badge bg-warning">{{ user.status }}</span></td>
 
             <td>
-              <button class="btn btn-success btn-sm me-2"
-                      (click)="approveUser(user.id)">
-                Approve
-              </button>
+              <div class="user-cell">
 
-              <button class="btn btn-danger btn-sm"
-                      (click)="deleteUser(user.id)">
-                Delete
-              </button>
+                <div class="user-avatar staff-avatar">
+                  {{ (staff.name || 'S').charAt(0).toUpperCase() }}
+                </div>
+
+                <div class="user-information">
+                  <strong>{{ staff.name }}</strong>
+                  <small>Staff account</small>
+                </div>
+
+              </div>
             </td>
+
+            <td>
+              <span class="email-text">{{ staff.email }}</span>
+            </td>
+
+            <td>
+              <span class="role-pill">
+                <i class="fa fa-shield-alt"></i>
+                {{ staff.role }}
+              </span>
+            </td>
+
+            <td>
+              <span
+                class="status-pill"
+                [ngClass]="getStatusClass(staff.status)">
+
+                <span class="status-dot"></span>
+                {{ staff.status }}
+
+              </span>
+            </td>
+
+            <td>
+              <div class="table-actions">
+
+                <button
+                  *ngIf="staff.status === 'APPROVED'"
+                  type="button"
+                  class="icon-action suspend-action"
+                  [disabled]="processingUserId === staff.id"
+                  (click)="suspendUser(staff)"
+                  title="Suspend staff">
+
+                  <i class="fa fa-ban"></i>
+
+                </button>
+
+                <button
+                  *ngIf="staff.status === 'SUSPENDED'"
+                  type="button"
+                  class="icon-action activate-action"
+                  [disabled]="processingUserId === staff.id"
+                  (click)="reactivateUser(staff)"
+                  title="Reactivate staff">
+
+                  <i class="fa fa-unlock"></i>
+
+                </button>
+
+                <button
+                  type="button"
+                  class="icon-action delete-action"
+                  [disabled]="processingUserId === staff.id"
+                  (click)="deleteUser(staff)"
+                  title="Permanently delete staff">
+
+                  <i class="fa fa-trash-alt"></i>
+
+                </button>
+
+                <span
+                  *ngIf="processingUserId === staff.id"
+                  class="action-spinner">
+
+                  <i class="fa fa-spinner fa-spin"></i>
+
+                </span>
+
+              </div>
+            </td>
+
           </tr>
+
+
+          <tr *ngIf="!isLoading && filteredStaff.length === 0">
+
+            <td colspan="5">
+              <div class="empty-state">
+                <div class="empty-icon">
+                  <i class="fa fa-users"></i>
+                </div>
+
+                <strong>No staff members found</strong>
+                <p>Staff accounts matching your search will appear here.</p>
+              </div>
+            </td>
+
+          </tr>
+
         </tbody>
+
       </table>
 
-      <div *ngIf="!isLoading && !filteredPending.length"
-           class="text-center py-3 text-muted">
-        No pending users
+    </div>
+
+    <div class="card-footer-note">
+      <i class="fa fa-lock"></i>
+      Staff account actions are restricted to authorized administrators.
+    </div>
+
+  </section>
+
+
+  <!-- ==========================================
+       PENDING APPROVALS
+  =========================================== -->
+  <section class="management-card pending-card">
+
+    <div class="management-card-header">
+
+      <div class="table-heading">
+
+        <div class="table-heading-icon pending-heading-icon">
+          <i class="fa fa-clipboard-check"></i>
+        </div>
+
+        <div>
+          <h3>Pending Approvals</h3>
+          <p>Review and authorize newly registered accounts.</p>
+        </div>
+
+      </div>
+
+      <div class="table-header-right">
+
+        <span class="record-counter pending-counter">
+          {{ filteredPending.length }} Awaiting Review
+        </span>
+
       </div>
 
     </div>
-  </div>
-
-  <!-- CUSTOMERS -->
- <!-- Current Users -->
-    <div class="card shadow-sm">
-      <div class="card-header bg-primary text-white">Current Users  ({{ allUsers.length }})</div>
-
-      <div class="card-body p-0">
-
-        <table class="table table-hover mb-0" *ngIf="allUsers.length > 0; else noAllUsers">
-          <thead>
-
-            <tr>
-              <th>Name</th>
-              <th>Email</th>
-              <th>Role</th>
-              <th>Status</th>
-              <th>Action</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr *ngFor="let user of allUsers">
-              <td>{{ user.name }}</td>
-              <td>{{ user.email }}</td>
-              <td>{{ user.role }}</td>
-              <td>
-                <span [ngClass]="{
-                  'badge bg-success': user.status === 'ACTIVE',
-                  'badge bg-warning text-dark': user.status === 'PENDING',
-                  'badge bg-danger': user.status === 'DISABLED'
-                }">{{ user.status }}</span>
-              </td>
-             <td>
-<!-- 
-<button class="btn-icon btn-success me-2"
-        (click)="approveUser(user.id)"
-        title="Approve">
-  <i class="fa fa-check"></i>
-</button> -->
 
 
-  <!-- EDIT -->
-  <button class="btn btn-primary btn-sm me-2"
-          (click)="openEditModal(user, editUserModal)"
-          title="Edit">
-    <i class="fa fa-pencil"></i>
-  </button>
+    <div *ngIf="isLoading" class="premium-loading">
 
-  <!-- REVERT -->
-  <button class="btn btn-warning btn-sm me-2"
-          [disabled]="processingUserId===user.id"
-          (click)="revertUser(user.id)"
-          title="Revert">
-    <i class="fa fa-undo"></i>
-  </button>
+      <div class="loading-spinner"></div>
 
-  
-  <!-- DELETE -->
-  <button class="btn btn-danger btn-sm "
-          [disabled]="processingUserId===user.id"
-          (click)="deleteUser(user.id)"
-          title="Delete">
-    <i class="fa fa-trash"></i>
-  </button>
+      <strong>Loading approval records...</strong>
+      <span>Please wait while account information is retrieved.</span>
+
+    </div>
 
 
-</td>
+    <div class="table-responsive" *ngIf="!isLoading">
 
-            </tr>
-          </tbody>
-        </table>
+      <table class="premium-table">
 
-        <ng-template #noAllUsers>
-          <div class="text-center text-muted py-4">
-            <i class="fa fa-info-circle fa-2x"></i>
-            <p class="mt-2">No users found.</p>
+        <thead>
+          <tr>
+            <th>APPLICANT</th>
+            <th>EMAIL ADDRESS</th>
+            <th>REQUESTED ROLE</th>
+            <th>ACCOUNT STATUS</th>
+            <th class="text-center">ACTIONS</th>
+          </tr>
+        </thead>
+
+        <tbody>
+
+          <tr *ngFor="let user of filteredPending">
+
+            <td>
+              <div class="user-cell">
+
+                <div class="user-avatar pending-avatar">
+                  {{ (user.name || 'U').charAt(0).toUpperCase() }}
+                </div>
+
+                <div class="user-information">
+                  <strong>{{ user.name }}</strong>
+                  <small>Registration request</small>
+                </div>
+
+              </div>
+            </td>
+
+            <td>
+              <span class="email-text">{{ user.email }}</span>
+            </td>
+
+            <td>
+              <span class="role-pill">
+                {{ user.role }}
+              </span>
+            </td>
+
+            <td>
+              <span
+                class="status-pill"
+                [ngClass]="getStatusClass(user.status)">
+
+                <span class="status-dot"></span>
+                {{ user.status }}
+
+              </span>
+            </td>
+
+            <td>
+              <div class="table-actions approval-actions">
+
+                <button
+                  type="button"
+                  class="approve-btn"
+                  [disabled]="processingUserId === user.id"
+                  (click)="approveUser(user)">
+
+                  <i class="fa fa-check-circle"></i>
+                  Approve
+
+                </button>
+
+                <button
+                  type="button"
+                  class="icon-action delete-action"
+                  [disabled]="processingUserId === user.id"
+                  (click)="deleteUser(user)"
+                  title="Delete request">
+
+                  <i class="fa fa-trash-alt"></i>
+
+                </button>
+
+                <span
+                  *ngIf="processingUserId === user.id"
+                  class="action-spinner">
+
+                  <i class="fa fa-spinner fa-spin"></i>
+
+                </span>
+
+              </div>
+            </td>
+
+          </tr>
+
+
+          <tr *ngIf="filteredPending.length === 0">
+
+            <td colspan="5">
+
+              <div class="empty-state success-empty">
+
+                <div class="empty-icon">
+                  <i class="fa fa-check-circle"></i>
+                </div>
+
+                <strong>All caught up!</strong>
+                <p>There are currently no pending account approvals.</p>
+
+              </div>
+
+            </td>
+
+          </tr>
+
+        </tbody>
+
+      </table>
+
+    </div>
+
+    <div class="card-footer-note">
+      <i class="fa fa-info-circle"></i>
+      Approval grants account access according to the assigned role and account status.
+    </div>
+
+  </section>
+
+
+  <!-- ==========================================
+       CUSTOMER ACCOUNTS
+  =========================================== -->
+  <section class="management-card customer-card">
+
+    <div class="management-card-header">
+
+      <div class="table-heading">
+
+        <div class="table-heading-icon customer-heading-icon">
+          <i class="fa fa-user-friends"></i>
+        </div>
+
+        <div>
+          <h3>Customer Accounts</h3>
+          <p>Manage customer profiles and account access.</p>
+        </div>
+
+      </div>
+
+      <div class="table-header-right">
+
+        <span class="record-counter">
+          {{ filteredCustomers.length }} Customers
+        </span>
+
+      </div>
+
+    </div>
+
+
+    <div class="table-responsive">
+
+      <table class="premium-table">
+
+        <thead>
+          <tr>
+            <th>CUSTOMER</th>
+            <th>EMAIL ADDRESS</th>
+            <th>ACCOUNT TYPE</th>
+            <th>ACCOUNT STATUS</th>
+            <th class="text-center">ACTIONS</th>
+          </tr>
+        </thead>
+
+        <tbody>
+
+          <tr *ngFor="let user of filteredCustomers">
+
+            <td>
+              <div class="user-cell">
+
+                <div class="user-avatar customer-avatar">
+                  {{ (user.name || 'C').charAt(0).toUpperCase() }}
+                </div>
+
+                <div class="user-information">
+                  <strong>{{ user.name }}</strong>
+                  <small>Customer profile</small>
+                </div>
+
+              </div>
+            </td>
+
+            <td>
+              <span class="email-text">{{ user.email }}</span>
+            </td>
+
+            <td>
+              <span class="role-pill customer-role">
+                <i class="fa fa-user"></i>
+                {{ user.role }}
+              </span>
+            </td>
+
+            <td>
+              <span
+                class="status-pill"
+                [ngClass]="getStatusClass(user.status)">
+
+                <span class="status-dot"></span>
+                {{ user.status }}
+
+              </span>
+            </td>
+
+            <td>
+              <div class="table-actions">
+
+                <button
+                  type="button"
+                  class="icon-action edit-action"
+                  [disabled]="processingUserId === user.id"
+                  (click)="openEditModal(user, editUserModal)"
+                  title="Edit customer">
+
+                  <i class="fa fa-pen"></i>
+
+                </button>
+
+                <button
+                  *ngIf="user.status === 'APPROVED'"
+                  type="button"
+                  class="icon-action suspend-action"
+                  [disabled]="processingUserId === user.id"
+                  (click)="suspendUser(user)"
+                  title="Suspend customer">
+
+                  <i class="fa fa-ban"></i>
+
+                </button>
+
+                <button
+                  *ngIf="user.status === 'SUSPENDED'"
+                  type="button"
+                  class="icon-action activate-action"
+                  [disabled]="processingUserId === user.id"
+                  (click)="reactivateUser(user)"
+                  title="Reactivate customer">
+
+                  <i class="fa fa-unlock"></i>
+
+                </button>
+
+                <button
+                  type="button"
+                  class="icon-action delete-action"
+                  [disabled]="processingUserId === user.id"
+                  (click)="deleteUser(user)"
+                  title="Permanently delete customer">
+
+                  <i class="fa fa-trash-alt"></i>
+
+                </button>
+
+                <span
+                  *ngIf="processingUserId === user.id"
+                  class="action-spinner">
+
+                  <i class="fa fa-spinner fa-spin"></i>
+
+                </span>
+
+              </div>
+            </td>
+
+          </tr>
+
+
+          <tr *ngIf="filteredCustomers.length === 0">
+
+            <td colspan="5">
+
+              <div class="empty-state">
+
+                <div class="empty-icon">
+                  <i class="fa fa-user-friends"></i>
+                </div>
+
+                <strong>No customer accounts found</strong>
+                <p>Registered customer accounts will appear here.</p>
+
+              </div>
+
+            </td>
+
+          </tr>
+
+        </tbody>
+
+      </table>
+
+    </div>
+
+    <div class="card-footer-note">
+      <i class="fa fa-shield-alt"></i>
+      Customer access and profile changes are recorded through authorized administration.
+    </div>
+
+  </section>
+
+
+  <!-- ==========================================
+       EDIT USER MODAL
+  =========================================== -->
+  <ng-template #editUserModal let-modal>
+
+    <div class="premium-modal">
+
+      <div class="premium-modal-header">
+
+        <div class="modal-heading-icon">
+          <i class="fa fa-user-edit"></i>
+        </div>
+
+        <div>
+          <h4>Edit User Profile</h4>
+          <p>Update account information and access settings.</p>
+        </div>
+
+        <button
+          type="button"
+          class="modal-close-btn"
+          aria-label="Close"
+          (click)="modal.dismiss()">
+
+          <i class="fa fa-times"></i>
+
+        </button>
+
+      </div>
+
+
+      <div class="premium-modal-body">
+
+        <form
+          [formGroup]="editUserForm"
+          (ngSubmit)="saveUser(modal)">
+
+          <div class="form-section-title">
+            <i class="fa fa-id-card"></i>
+            Personal Information
           </div>
-        </ng-template>
+
+          <div class="row g-3">
+
+            <div class="col-md-6">
+
+              <label class="premium-label">
+                Full Name <span>*</span>
+              </label>
+
+              <input
+                type="text"
+                class="premium-input"
+                formControlName="name"
+                placeholder="Enter full name">
+
+              <small
+                class="field-error"
+                *ngIf="editUserForm.get('name')?.touched &&
+                       editUserForm.get('name')?.hasError('required')">
+
+                Full name is required.
+
+              </small>
+
+            </div>
+
+
+            <div class="col-md-6">
+
+              <label class="premium-label">
+                Email Address <span>*</span>
+              </label>
+
+              <input
+                type="email"
+                class="premium-input"
+                formControlName="email"
+                placeholder="Enter email address">
+
+              <small
+                class="field-error"
+                *ngIf="editUserForm.get('email')?.touched &&
+                       editUserForm.get('email')?.invalid">
+
+                Enter a valid email address.
+
+              </small>
+
+            </div>
+
+          </div>
+
+
+          <div class="form-section-title access-section-title">
+            <i class="fa fa-shield-alt"></i>
+            Access & Permissions
+          </div>
+
+
+          <div class="row g-3">
+
+            <div class="col-md-6">
+
+              <label class="premium-label">
+                User Role <span>*</span>
+              </label>
+
+              <select
+                class="premium-input"
+                formControlName="role">
+
+                <option value="ADMIN">Administrator</option>
+                <option value="DATA_MANAGER">Credit Manager</option>
+                <option value="TENANT_AGENT">Tenant Agent</option>
+                <option value="APPLICANT">Applicant / Customer</option>
+
+              </select>
+
+            </div>
+
+
+            <div class="col-md-6">
+
+              <label class="premium-label">
+                Account Status <span>*</span>
+              </label>
+
+              <select
+                class="premium-input"
+                formControlName="status">
+
+                <option value="APPROVED">Approved / Active</option>
+                <option value="PENDING">Pending</option>
+                <option value="SUSPENDED">Suspended</option>
+                <option value="REJECTED">Rejected</option>
+
+              </select>
+
+            </div>
+
+          </div>
+
+
+          <div class="modal-security-note">
+
+            <i class="fa fa-exclamation-circle"></i>
+
+            <div>
+              <strong>Security notice</strong>
+              <p>
+                Role and status changes directly affect platform permissions
+                and login eligibility. Ensure the selected values are correct.
+              </p>
+            </div>
+
+          </div>
+
+
+          <div *ngIf="successMessage" class="modal-feedback success-feedback">
+            <i class="fa fa-check-circle"></i>
+            {{ successMessage }}
+          </div>
+
+          <div *ngIf="errorMessage" class="modal-feedback error-feedback">
+            <i class="fa fa-exclamation-circle"></i>
+            {{ errorMessage }}
+          </div>
+
+
+          <div class="premium-modal-footer">
+
+            <button
+              type="button"
+              class="modal-cancel-btn"
+              [disabled]="isSavingUser"
+              (click)="modal.dismiss()">
+
+              Cancel
+
+            </button>
+
+            <button
+              type="submit"
+              class="modal-save-btn"
+              [disabled]="editUserForm.invalid || isSavingUser">
+
+              <i
+                class="fa"
+                [ngClass]="isSavingUser ? 'fa-spinner fa-spin' : 'fa-save'">
+              </i>
+
+              {{ isSavingUser ? 'Saving Changes...' : 'Save Changes' }}
+
+            </button>
+
+          </div>
+
+        </form>
 
       </div>
+
     </div>
+
+  </ng-template>
 
 </div>
-
-<!-- ================= EDIT MODAL ================= -->
-<ng-template #editUserModal let-modal>
-
-  <div class="modal-header bg-primary text-white">
-    <h5 class="modal-title">Edit User</h5>
-    <button class="btn-close btn-close-white" (click)="modal.dismiss()"></button>
-  </div>
-
-  <div class="modal-body">
-
-    <form [formGroup]="editUserForm" (ngSubmit)="saveUser(modal)">
-
-      <div class="row g-3">
-
-        <div class="col-md-6">
-          <label>Name</label>
-          <input class="form-control" formControlName="name">
-        </div>
-
-        <div class="col-md-6">
-          <label>Email</label>
-          <input class="form-control" formControlName="email">
-        </div>
-
-        <div class="col-md-6">
-          <label>Role</label>
-          <select class="form-select" formControlName="role">
-            <option value="ADMIN">ADMIN</option>
-            <option value="USER">USER</option>
-            <option value="STAFF">STAFF</option>
-          </select>
-        </div>
-
-        <div class="col-md-6">
-          <label>Status</label>
-          <select class="form-select" formControlName="status">
-            <option value="ACTIVE">ACTIVE</option>
-            <option value="PENDING">PENDING</option>
-            <option value="DISABLED">DISABLED</option>
-          </select>
-        </div>
-
-      </div>
-
-      <div class="mt-3 d-flex gap-2">
-        <button class="btn btn-primary" type="submit">Save</button>
-        <button class="btn btn-secondary" type="button"
-                (click)="modal.dismiss()">Cancel</button>
-      </div>
-
-      <div class="mt-3">
-        <div *ngIf="successMessage" class="alert alert-success">
-          {{ successMessage }}
-        </div>
-
-        <div *ngIf="errorMessage" class="alert alert-danger">
-          {{ errorMessage }}
-        </div>
-      </div>
-
-    </form>
-
-  </div>
-
-</ng-template>
-

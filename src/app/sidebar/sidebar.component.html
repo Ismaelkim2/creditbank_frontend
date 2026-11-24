@@ -1,250 +1,787 @@
+```html
+<!-- ============================================================
+     CREDICORE — PREMIUM ENTERPRISE SIDEBAR
+     Property & Rental Management + Credit & Lending Management
+=============================================================== -->
 
-<div
+<aside
   class="sidebar"
   [class.active]="isMobileSidebarActive"
   [class.sidebar-collapsed]="isCollapsed"
+  [attr.aria-expanded]="!isCollapsed"
 >
-  <!-- Mobile overlay -->
+
+  <!-- MOBILE OVERLAY -->
   <div
     class="sidebar-overlay"
     *ngIf="isMobileSidebarActive"
-    (click)="closeSidebar(); $event.stopPropagation()"
-  ></div>
+    (click)="closeSidebar(); $event.stopPropagation()">
+  </div>
 
-  <!-- Brand -->
-  <div class="sidebar-brand px-3 py-4">
+  <!-- ==========================================================
+       BRAND HEADER
+  =========================================================== -->
+
+  <div class="sidebar-brand">
+
     <a
       [routerLink]="dashboardRoute"
-      class="d-flex align-items-center text-decoration-none"
-      (click)="closeSidebar()"
-    >
+      class="sidebar-brand-link"
+      (click)="closeSidebar()">
+
       <span class="sidebar-brand-icon">
         <i class="fa-solid fa-building-columns"></i>
       </span>
+
+      <span class="sidebar-brand-content" *ngIf="!isCollapsed">
+        <strong>CREDICORE</strong>
+        <small>Intelligent Management Platform</small>
+      </span>
+
     </a>
+
   </div>
 
-  <!-- Navigation -->
-  <nav class="flex-grow-1 sidebar-navigation">
-    <ul class="nav flex-column">
+  <!-- WORKSPACE LABEL -->
+  <div class="sidebar-workspace" *ngIf="!isCollapsed">
+    <span class="workspace-indicator"></span>
+    <span>WORKSPACE</span>
+  </div>
 
-      <!-- Dashboard: role-specific destination -->
+  <!-- ==========================================================
+       NAVIGATION
+  =========================================================== -->
+
+  <nav class="sidebar-navigation" aria-label="Main navigation">
+
+    <ul class="sidebar-menu">
+
+      <!-- ======================================================
+           DASHBOARD
+      ======================================================= -->
+
       <li
-        class="nav-item"
+        class="sidebar-item"
         routerLinkActive="active"
-        [routerLinkActiveOptions]="{ exact: true }"
-      >
+        [routerLinkActiveOptions]="{ exact: true }">
+
         <a
-          class="nav-link d-flex align-items-center"
+          class="sidebar-link"
           [routerLink]="dashboardRoute"
-          (click)="closeSidebar()"
-        >
-          <i class="fa-solid fa-house me-3"></i>
-          <span class="link-text" *ngIf="!isCollapsed">Dashboard</span>
+          routerLinkActive="active"
+          [routerLinkActiveOptions]="{ exact: true }"
+          title="Dashboard"
+          (click)="closeSidebar()">
+
+          <i class="fa-solid fa-house sidebar-icon"></i>
+
+          <span class="sidebar-link-text" *ngIf="!isCollapsed">
+            Dashboard
+          </span>
+
+          <span class="sidebar-active-indicator"></span>
+
         </a>
+
       </li>
 
-      <!-- ===================================== -->
-      <!-- TENANT AGENT: RENTAL MANAGEMENT ONLY -->
-      <!-- ===================================== -->
+
+      <!-- ======================================================
+           PROPERTY & RENTAL MANAGEMENT
+           TENANT AGENT ONLY
+      ======================================================= -->
+
       <ng-container *ngIf="isTenantAgent">
 
-        <li class="nav-item" routerLinkActive="active">
-          <a
-            class="nav-link d-flex align-items-center"
-            routerLink="/app/tenant/properties"
-            (click)="closeSidebar()"
-          >
-            <i class="fa-solid fa-building me-3"></i>
-            <span class="link-text" *ngIf="!isCollapsed">Properties</span>
-          </a>
+        <li class="sidebar-section-heading" *ngIf="!isCollapsed">
+          <span>PROPERTY MANAGEMENT</span>
         </li>
 
-        <li class="nav-item" routerLinkActive="active">
-          <a
-            class="nav-link d-flex align-items-center"
-            routerLink="/app/tenant/units/directory"
-            (click)="closeSidebar()"
-          >
-            <i class="fa-solid fa-door-open me-3"></i>
-            <span class="link-text" *ngIf="!isCollapsed">Manage Units</span>
-          </a>
-        </li>
+        <!-- PROPERTY OVERVIEW -->
 
-        <li class="nav-item" routerLinkActive="active">
-          <a
-            class="nav-link d-flex align-items-center"
-            routerLink="/app/tenant/tenants"
-            (click)="closeSidebar()"
-          >
-            <i class="fa-solid fa-users me-3"></i>
-            <span class="link-text" *ngIf="!isCollapsed">
-              Tenants / Residents
+        <li class="sidebar-item"
+            routerLinkActive="active">
+
+          <a class="sidebar-link"
+             routerLink="/app/tenant/properties"
+             routerLinkActive="active"
+             title="Property Portfolio"
+             (click)="closeSidebar()">
+
+            <i class="fa-solid fa-building sidebar-icon"></i>
+
+            <span class="sidebar-link-text" *ngIf="!isCollapsed">
+              Property Portfolio
             </span>
+
           </a>
         </li>
 
-        <li class="nav-item" routerLinkActive="active">
-          <a
-            class="nav-link d-flex align-items-center"
-            routerLink="/app/tenant/leases"
-            (click)="closeSidebar()"
-          >
-            <i class="fa-solid fa-file-signature me-3"></i>
-            <span class="link-text" *ngIf="!isCollapsed">
+
+        <!-- UNIT DIRECTORY -->
+
+        <li class="sidebar-item"
+            routerLinkActive="active">
+
+          <a class="sidebar-link"
+             routerLink="/app/tenant/units/directory"
+             routerLinkActive="active"
+             title="Units & Occupancy"
+             (click)="closeSidebar()">
+
+            <i class="fa-solid fa-door-open sidebar-icon"></i>
+
+            <span class="sidebar-link-text" *ngIf="!isCollapsed">
+              Units & Occupancy
+            </span>
+
+          </a>
+        </li>
+
+
+        <!-- TENANTS -->
+
+        <li class="sidebar-item"
+            routerLinkActive="active">
+
+          <a class="sidebar-link"
+             routerLink="/app/tenant/tenants"
+             routerLinkActive="active"
+             title="Tenants & Residents"
+             (click)="closeSidebar()">
+
+            <i class="fa-solid fa-users sidebar-icon"></i>
+
+            <span class="sidebar-link-text" *ngIf="!isCollapsed">
+              Tenants & Residents
+            </span>
+
+          </a>
+        </li>
+
+
+        <!-- LEASE MANAGEMENT -->
+
+        <li class="sidebar-item"
+            routerLinkActive="active">
+
+          <a class="sidebar-link"
+             routerLink="/app/tenant/leases"
+             routerLinkActive="active"
+             title="Lease Management"
+             (click)="closeSidebar()">
+
+            <i class="fa-solid fa-file-signature sidebar-icon"></i>
+
+            <span class="sidebar-link-text" *ngIf="!isCollapsed">
               Lease Management
             </span>
+
           </a>
         </li>
 
-        <li class="nav-item" routerLinkActive="active">
-          <a
-            class="nav-link d-flex align-items-center"
-            routerLink="/app/tenant/rent"
-            (click)="closeSidebar()"
-          >
-            <i class="fa-solid fa-wallet me-3"></i>
-            <span class="link-text" *ngIf="!isCollapsed">Manage Rent</span>
+
+        <!-- ==================================================
+             RENTAL FINANCIAL MANAGEMENT
+        =================================================== -->
+
+        <li class="sidebar-section-heading" *ngIf="!isCollapsed">
+          <span>RENTAL FINANCIALS</span>
+        </li>
+
+
+        <!-- RENT MANAGEMENT -->
+
+        <li class="sidebar-item"
+            routerLinkActive="active">
+
+          <a class="sidebar-link"
+             routerLink="/app/tenant/rent"
+             routerLinkActive="active"
+             title="Rent Management"
+             (click)="closeSidebar()">
+
+            <i class="fa-solid fa-wallet sidebar-icon"></i>
+
+            <span class="sidebar-link-text" *ngIf="!isCollapsed">
+              Rent Management
+            </span>
+
+          </a>
+        </li>
+
+
+        <!-- RENT COLLECTIONS -->
+
+        <li class="sidebar-item"
+            routerLinkActive="active">
+
+          <a class="sidebar-link"
+             routerLink="/app/tenant/rent-collections"
+             routerLinkActive="active"
+             title="Rent Collections"
+             (click)="closeSidebar()">
+
+            <i class="fa-solid fa-money-bill-transfer sidebar-icon"></i>
+
+            <span class="sidebar-link-text" *ngIf="!isCollapsed">
+              Rent Collections
+            </span>
+
+          </a>
+        </li>
+
+
+        <!-- RENT ARREARS -->
+
+        <li class="sidebar-item"
+            routerLinkActive="active">
+
+          <a class="sidebar-link"
+             routerLink="/app/tenant/rent-arrears"
+             routerLinkActive="active"
+             title="Rent Arrears & Due Dates"
+             (click)="closeSidebar()">
+
+            <i class="fa-solid fa-calendar-xmark sidebar-icon"></i>
+
+            <span class="sidebar-link-text" *ngIf="!isCollapsed">
+              Arrears & Due Dates
+            </span>
+
+          </a>
+        </li>
+
+
+        <!-- DEPOSITS AND PAYMENTS -->
+
+        <li class="sidebar-item"
+            routerLinkActive="active">
+
+          <a class="sidebar-link"
+             routerLink="/app/tenant/deposits"
+             routerLinkActive="active"
+             title="Deposits & Payments"
+             (click)="closeSidebar()">
+
+            <i class="fa-solid fa-piggy-bank sidebar-icon"></i>
+
+            <span class="sidebar-link-text" *ngIf="!isCollapsed">
+              Deposits & Payments
+            </span>
+
+          </a>
+        </li>
+
+
+        <!-- PROPERTY EXPENSES -->
+
+        <li class="sidebar-item"
+            routerLinkActive="active">
+
+          <a class="sidebar-link"
+             routerLink="/app/tenant/expenses"
+             routerLinkActive="active"
+             title="Property Expenses"
+             (click)="closeSidebar()">
+
+            <i class="fa-solid fa-receipt sidebar-icon"></i>
+
+            <span class="sidebar-link-text" *ngIf="!isCollapsed">
+              Property Expenses
+            </span>
+
+          </a>
+        </li>
+
+
+        <!-- FINANCIAL REPORTS -->
+
+        <li class="sidebar-item"
+            routerLinkActive="active">
+
+          <a class="sidebar-link"
+             routerLink="/app/tenant/financial-reports"
+             routerLinkActive="active"
+             title="Property Financial Reports"
+             (click)="closeSidebar()">
+
+            <i class="fa-solid fa-chart-pie sidebar-icon"></i>
+
+            <span class="sidebar-link-text" *ngIf="!isCollapsed">
+              Financial Reports
+            </span>
+
+          </a>
+        </li>
+
+
+        <!-- ==================================================
+             PROPERTY OPERATIONS
+        =================================================== -->
+
+        <li class="sidebar-section-heading" *ngIf="!isCollapsed">
+          <span>PROPERTY OPERATIONS</span>
+        </li>
+
+
+        <!-- MAINTENANCE -->
+
+        <li class="sidebar-item"
+            routerLinkActive="active">
+
+          <a class="sidebar-link"
+             routerLink="/app/tenant/maintenance"
+             routerLinkActive="active"
+             title="Maintenance Management"
+             (click)="closeSidebar()">
+
+            <i class="fa-solid fa-screwdriver-wrench sidebar-icon"></i>
+
+            <span class="sidebar-link-text" *ngIf="!isCollapsed">
+              Maintenance
+            </span>
+
+          </a>
+        </li>
+
+
+        <!-- REMINDERS -->
+
+        <li class="sidebar-item"
+            routerLinkActive="active">
+
+          <a class="sidebar-link"
+             routerLink="/app/tenant/reminders"
+             routerLinkActive="active"
+             title="Reminders & Notifications"
+             (click)="closeSidebar()">
+
+            <i class="fa-solid fa-bell sidebar-icon"></i>
+
+            <span class="sidebar-link-text" *ngIf="!isCollapsed">
+              Reminders & Notifications
+            </span>
+
           </a>
         </li>
 
       </ng-container>
 
-      <!-- ===================================== -->
-      <!-- CREDIT USERS: ADMIN / DATA_MANAGER -->
-      <!-- ===================================== -->
+
+      <!-- ======================================================
+           CREDIT & LENDING MANAGEMENT
+           ADMIN / DATA_MANAGER
+      ======================================================= -->
+
       <ng-container *ngIf="isCreditUser">
 
-        <li class="nav-item" routerLinkActive="active">
-          <a
-            class="nav-link d-flex align-items-center"
-            routerLink="/app/accounts"
-            (click)="closeSidebar()"
-          >
-            <i class="fa-solid fa-wallet me-3"></i>
-            <span class="link-text" *ngIf="!isCollapsed">
-              Members &amp; Accounts
+        <li class="sidebar-section-heading" *ngIf="!isCollapsed">
+          <span>CREDIT MANAGEMENT</span>
+        </li>
+
+
+        <!-- MEMBERS AND ACCOUNTS -->
+
+        <li class="sidebar-item"
+            routerLinkActive="active">
+
+          <a class="sidebar-link"
+             routerLink="/app/accounts"
+             routerLinkActive="active"
+             title="Members & Accounts"
+             (click)="closeSidebar()">
+
+            <i class="fa-solid fa-users sidebar-icon"></i>
+
+            <span class="sidebar-link-text" *ngIf="!isCollapsed">
+              Members & Accounts
             </span>
+
           </a>
         </li>
 
-        <li class="nav-item" routerLinkActive="active">
-          <a
-            class="nav-link d-flex align-items-center"
-            routerLink="/app/loans"
-            (click)="closeSidebar()"
-          >
-            <i class="fa-solid fa-list-check me-3"></i>
-            <span class="link-text" *ngIf="!isCollapsed">Loans</span>
+
+        <!-- LOANS -->
+
+        <li class="sidebar-item"
+            routerLinkActive="active">
+
+          <a class="sidebar-link"
+             routerLink="/app/loans"
+             routerLinkActive="active"
+             title="Loan Portfolio"
+             (click)="closeSidebar()">
+
+            <i class="fa-solid fa-hand-holding-dollar sidebar-icon"></i>
+
+            <span class="sidebar-link-text" *ngIf="!isCollapsed">
+              Loan Portfolio
+            </span>
+
           </a>
         </li>
 
-        <li class="nav-item" routerLinkActive="active">
-          <a
-            class="nav-link d-flex align-items-center"
-            routerLink="/app/transactions"
-            (click)="closeSidebar()"
-          >
-            <i class="fa-solid fa-arrow-right-arrow-left me-3"></i>
-            <span class="link-text" *ngIf="!isCollapsed">
+
+        <!-- TRANSACTIONS -->
+
+        <li class="sidebar-item"
+            routerLinkActive="active">
+
+          <a class="sidebar-link"
+             routerLink="/app/transactions"
+             routerLinkActive="active"
+             title="Transactions"
+             (click)="closeSidebar()">
+
+            <i class="fa-solid fa-arrow-right-arrow-left sidebar-icon"></i>
+
+            <span class="sidebar-link-text" *ngIf="!isCollapsed">
               Transactions
             </span>
+
           </a>
         </li>
 
-        <li class="nav-item" routerLinkActive="active">
-          <a
-            class="nav-link d-flex align-items-center"
-            routerLink="/app/statement"
-            (click)="closeSidebar()"
-          >
-            <i class="fa-solid fa-file-lines me-3"></i>
-            <span class="link-text" *ngIf="!isCollapsed">Statements</span>
-          </a>
-        </li>
 
-        <!-- Administrator-only -->
-        <li
-          class="nav-item"
-          routerLinkActive="active"
-          *ngIf="isAdmin"
-        >
-          <a
-            class="nav-link d-flex align-items-center"
-            routerLink="/app/management"
-            (click)="closeSidebar()"
-          >
-            <i class="fa-solid fa-user-gear me-3"></i>
-            <span class="link-text" *ngIf="!isCollapsed">
-              User Management
+        <!-- STATEMENTS -->
+
+        <li class="sidebar-item"
+            routerLinkActive="active">
+
+          <a class="sidebar-link"
+             routerLink="/app/statement"
+             routerLinkActive="active"
+             title="Account Statements"
+             (click)="closeSidebar()">
+
+            <i class="fa-solid fa-file-lines sidebar-icon"></i>
+
+            <span class="sidebar-link-text" *ngIf="!isCollapsed">
+              Account Statements
             </span>
+
+          </a>
+        </li>
+
+
+        <!-- REPAYMENTS AND COLLECTIONS -->
+
+        <li class="sidebar-item"
+            routerLinkActive="active">
+
+          <a class="sidebar-link"
+             routerLink="/app/repayments"
+             routerLinkActive="active"
+             title="Repayments & Collections"
+             (click)="closeSidebar()">
+
+            <i class="fa-solid fa-money-bill-wave sidebar-icon"></i>
+
+            <span class="sidebar-link-text" *ngIf="!isCollapsed">
+              Repayments & Collections
+            </span>
+
+          </a>
+        </li>
+
+
+        <!-- ==================================================
+             CREDIT INTELLIGENCE
+        =================================================== -->
+
+        <li class="sidebar-section-heading" *ngIf="!isCollapsed">
+          <span>CREDIT INTELLIGENCE</span>
+        </li>
+
+
+        <!-- AI CREDIT INTELLIGENCE -->
+
+        <li class="sidebar-item"
+            routerLinkActive="active">
+
+          <a class="sidebar-link"
+             routerLink="/app/credit-intelligence"
+             routerLinkActive="active"
+             title="AI Credit Intelligence"
+             (click)="closeSidebar()">
+
+            <i class="fa-solid fa-brain sidebar-icon"></i>
+
+            <span class="sidebar-link-text" *ngIf="!isCollapsed">
+              AI Credit Intelligence
+            </span>
+
+            <span class="sidebar-feature-tag" *ngIf="!isCollapsed">
+              AI
+            </span>
+
+          </a>
+        </li>
+
+
+        <!-- CREDIT RISK ANALYTICS -->
+
+        <li class="sidebar-item"
+            routerLinkActive="active">
+
+          <a class="sidebar-link"
+             routerLink="/app/credit-analytics"
+             routerLinkActive="active"
+             title="Credit Risk & Analytics"
+             (click)="closeSidebar()">
+
+            <i class="fa-solid fa-chart-line sidebar-icon"></i>
+
+            <span class="sidebar-link-text" *ngIf="!isCollapsed">
+              Credit Risk & Analytics
+            </span>
+
+          </a>
+        </li>
+
+
+        <!-- CREDIT FINANCIAL REPORTS -->
+
+        <li class="sidebar-item"
+            routerLinkActive="active">
+
+          <a class="sidebar-link"
+             routerLink="/app/credit-reports"
+             routerLinkActive="active"
+             title="Credit Financial Reports"
+             (click)="closeSidebar()">
+
+            <i class="fa-solid fa-chart-column sidebar-icon"></i>
+
+            <span class="sidebar-link-text" *ngIf="!isCollapsed">
+              Financial Reports
+            </span>
+
           </a>
         </li>
 
       </ng-container>
 
-      <!-- Shared: Profile -->
-      <li class="nav-item" routerLinkActive="active">
-        <a
-          class="nav-link d-flex align-items-center"
-          routerLink="/app/user-profile"
-          (click)="closeSidebar()"
-        >
-          <i class="fa-solid fa-circle-user me-3"></i>
-          <span class="link-text" *ngIf="!isCollapsed">My Profile</span>
+
+      <!-- ======================================================
+           ADMINISTRATION
+      ======================================================= -->
+
+      <ng-container *ngIf="isAdmin">
+
+        <li class="sidebar-section-heading" *ngIf="!isCollapsed">
+          <span>ADMINISTRATION</span>
+        </li>
+
+
+        <!-- USER MANAGEMENT -->
+
+        <li class="sidebar-item"
+            routerLinkActive="active">
+
+          <a class="sidebar-link"
+             routerLink="/app/management"
+             routerLinkActive="active"
+             title="User Management"
+             (click)="closeSidebar()">
+
+            <i class="fa-solid fa-user-gear sidebar-icon"></i>
+
+            <span class="sidebar-link-text" *ngIf="!isCollapsed">
+              User Management
+            </span>
+
+          </a>
+        </li>
+
+
+        <!-- ROLES AND PERMISSIONS -->
+
+        <li class="sidebar-item"
+            routerLinkActive="active">
+
+          <a class="sidebar-link"
+             routerLink="/app/roles-permissions"
+             routerLinkActive="active"
+             title="Roles & Permissions"
+             (click)="closeSidebar()">
+
+            <i class="fa-solid fa-shield-halved sidebar-icon"></i>
+
+            <span class="sidebar-link-text" *ngIf="!isCollapsed">
+              Roles & Permissions
+            </span>
+
+          </a>
+        </li>
+
+
+        <!-- AUDIT LOGS -->
+
+        <li class="sidebar-item"
+            routerLinkActive="active">
+
+          <a class="sidebar-link"
+             routerLink="/app/audit-logs"
+             routerLinkActive="active"
+             title="Audit Logs"
+             (click)="closeSidebar()">
+
+            <i class="fa-solid fa-clock-rotate-left sidebar-icon"></i>
+
+            <span class="sidebar-link-text" *ngIf="!isCollapsed">
+              Audit Logs
+            </span>
+
+          </a>
+        </li>
+
+
+        <!-- SYSTEM SETTINGS -->
+
+        <li class="sidebar-item"
+            routerLinkActive="active">
+
+          <a class="sidebar-link"
+             routerLink="/app/settings"
+             routerLinkActive="active"
+             title="System Settings"
+             (click)="closeSidebar()">
+
+            <i class="fa-solid fa-gear sidebar-icon"></i>
+
+            <span class="sidebar-link-text" *ngIf="!isCollapsed">
+              System Settings
+            </span>
+
+          </a>
+        </li>
+
+      </ng-container>
+
+
+      <!-- ======================================================
+           SHARED ACCOUNT NAVIGATION
+      ======================================================= -->
+
+      <li class="sidebar-section-heading" *ngIf="!isCollapsed">
+        <span>ACCOUNT</span>
+      </li>
+
+
+      <!-- MY PROFILE -->
+
+      <li class="sidebar-item"
+          routerLinkActive="active">
+
+        <a class="sidebar-link"
+           routerLink="/app/user-profile"
+           routerLinkActive="active"
+           title="My Profile"
+           (click)="closeSidebar()">
+
+          <i class="fa-solid fa-circle-user sidebar-icon"></i>
+
+          <span class="sidebar-link-text" *ngIf="!isCollapsed">
+            My Profile
+          </span>
+
         </a>
       </li>
 
-      <!-- Shared: Logout -->
-      <li class="nav-item mt-3">
-        <a
-          class="nav-link d-flex align-items-center logout-link"
-          href="javascript:void(0)"
-          (click)="logout(); $event.stopPropagation()"
-        >
-          <i class="fa-solid fa-right-from-bracket me-3"></i>
-          <span class="link-text" *ngIf="!isCollapsed">Log Out</span>
+
+      <!-- LOGOUT -->
+
+      <li class="sidebar-item sidebar-logout-item">
+
+        <a class="sidebar-link sidebar-logout-link"
+           href="javascript:void(0)"
+           title="Log Out"
+           (click)="logout(); $event.stopPropagation()">
+
+          <i class="fa-solid fa-right-from-bracket sidebar-icon"></i>
+
+          <span class="sidebar-link-text" *ngIf="!isCollapsed">
+            Log Out
+          </span>
+
         </a>
+
       </li>
 
     </ul>
+
   </nav>
 
-  <!-- Footer -->
-  <div class="sidebar-footer text-center py-3 mt-auto">
-    <ng-container *ngIf="!isCollapsed">
-      <span>&copy; 2026 {{ isTenantAgent ? 'Property Management' : 'CreditBank' }}</span>
-      <small class="d-block">
-        {{ isTenantAgent ? 'Rental Management' : 'Credit Management' }}
-      </small>
-    </ng-container>
 
-    <i
-      *ngIf="isCollapsed"
-      class="fa-solid fa-building-columns"
-    ></i>
+  <!-- ==========================================================
+       SIDEBAR FOOTER
+  =========================================================== -->
+
+  <div class="sidebar-footer">
+
+    <div class="sidebar-footer-brand" *ngIf="!isCollapsed">
+
+      <div class="footer-brand-icon">
+        <i class="fa-solid fa-shield-halved"></i>
+      </div>
+
+      <div class="footer-brand-content">
+        <strong>CrediCore Platform</strong>
+
+        <small>
+          {{ isTenantAgent
+            ? 'Property & Rental Management'
+            : 'Credit & Lending Management' }}
+        </small>
+
+        <span class="footer-version">
+          Enterprise Edition · 2026
+        </span>
+      </div>
+
+    </div>
+
+    <div class="sidebar-footer-collapsed" *ngIf="isCollapsed">
+      <i class="fa-solid fa-shield-halved"></i>
+    </div>
+
   </div>
 
-  <!-- Collapse button -->
+
+  <!-- ==========================================================
+       COLLAPSE CONTROL
+  =========================================================== -->
+
   <button
     type="button"
-    class="btn btn-primary collapse-btn position-absolute bottom-0 end-0 m-3 rounded-circle d-none d-sm-flex align-items-center justify-content-center"
+    class="sidebar-collapse-btn d-none d-sm-flex"
     (click)="toggleSidebar(); $event.stopPropagation()"
     [attr.aria-label]="isCollapsed ? 'Expand sidebar' : 'Collapse sidebar'"
-  >
-    <i
-      class="fa-solid fa-chevron-left"
-      [ngStyle]="{
-        transform: isCollapsed ? 'rotate(180deg)' : 'rotate(0deg)',
-        transition: 'transform 0.25s ease'
-      }"
-    ></i>
-  </button>
-</div>
+    [attr.title]="isCollapsed ? 'Expand sidebar' : 'Collapse sidebar'">
 
-<!-- Main content -->
-<div class="main-content">
-  <div class="body-content p-3">
+    <i
+      class="fa-solid"
+      [ngClass]="isCollapsed
+        ? 'fa-chevron-right'
+        : 'fa-chevron-left'">
+    </i>
+
+  </button>
+
+</aside>
+
+
+<!-- ============================================================
+     MAIN APPLICATION CONTENT
+=============================================================== -->
+
+<main class="main-content">
+
+  <div class="body-content">
     <router-outlet></router-outlet>
   </div>
-</div>
+
+</main>
+```

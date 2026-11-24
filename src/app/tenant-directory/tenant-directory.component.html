@@ -3,69 +3,81 @@
   <!-- =========================================================
        2. WORKSPACE NAVIGATION
   ========================================================== -->
-  <nav class="workspace-navigation"
-       aria-label="Rental management workspace">
+<nav class="workspace-navigation"
+     aria-label="Rental management workspace">
 
-<div class="d-lg-flex justify-content-between">
-  <div>
-    <a routerLink="/app/tenant/properties"
-       routerLinkActive="active"
-       [routerLinkActiveOptions]="{ exact: true }"
-       class="workspace-nav-item">
-      <i class="fa-solid fa-building"></i>
-      <span>Properties</span>
-      <small *ngIf="directoryType === 'properties'">
-        {{ totalRecords | number }}
-      </small>
-    </a>
+  <div class="d-flex flex-column flex-lg-row justify-content-between align-items-lg-center w-100 gap-3">
 
-    <a routerLink="/app/tenant/units/directory"
-       routerLinkActive="active"
-       [routerLinkActiveOptions]="{ exact: true }"
-       class="workspace-nav-item">
-      <i class="fa-solid fa-door-open"></i>
-      <span>Units</span>
-      <small *ngIf="directoryType === 'units'">
-        {{ totalRecords | number }}
-      </small>
-    </a>
+    <!-- Navigation links -->
+    <div class="d-flex flex-wrap align-items-center gap-2">
 
-    <a routerLink="/app/tenant/tenants"
-       routerLinkActive="active"
-       [routerLinkActiveOptions]="{ exact: true }"
-       class="workspace-nav-item">
-      <i class="fa-solid fa-users"></i>
-      <span>Tenants</span>
-      <small *ngIf="directoryType === 'tenants'">
-        {{ totalRecords | number }}
-      </small>
-    </a>
+      <a routerLink="/app/tenant/properties"
+         routerLinkActive="active"
+         [routerLinkActiveOptions]="{ exact: true }"
+         class="workspace-nav-item">
+        <i class="fa-solid fa-building"></i>
+        <span>Properties</span>
+        <small *ngIf="directoryType === 'properties'">
+          {{ totalRecords | number }}
+        </small>
+      </a>
 
-    <a routerLink="/app/tenant/rent"
-       routerLinkActive="active"
-       class="workspace-nav-item">
-      <i class="fa-solid fa-wallet"></i>
-      <span>Rent &amp; Payments</span>
-    </a>
+      <a routerLink="/app/tenant/units/directory"
+         routerLinkActive="active"
+         [routerLinkActiveOptions]="{ exact: true }"
+         class="workspace-nav-item">
+        <i class="fa-solid fa-door-open"></i>
+        <span>Units</span>
+        <small *ngIf="directoryType === 'units'">
+          {{ totalRecords | number }}
+        </small>
+      </a>
 
-    <a routerLink="/app/tenant/reminders"
-       routerLinkActive="active"
-       class="workspace-nav-item">
-      <i class="fa-solid fa-bell"></i>
-      <span>Reminders</span>
-    </a>
+      <a routerLink="/app/tenant/tenants"
+         routerLinkActive="active"
+         [routerLinkActiveOptions]="{ exact: true }"
+         class="workspace-nav-item">
+        <i class="fa-solid fa-users"></i>
+        <span>Tenants</span>
+        <small *ngIf="directoryType === 'tenants'">
+          {{ totalRecords | number }}
+        </small>
+      </a>
 
-    <a routerLink="/app/tenant/maintenance"
-       routerLinkActive="active"
-       class="workspace-nav-item">
-      <i class="fa-solid fa-screwdriver-wrench"></i>
-      <span>Maintenance</span>
-    </a>
+      <a routerLink="/app/tenant/rent"
+         routerLinkActive="active"
+         class="workspace-nav-item">
+        <i class="fa-solid fa-wallet"></i>
+        <span>Rent &amp; Payments</span>
+      </a>
+
+      <a routerLink="/app/tenant/reminders"
+         routerLinkActive="active"
+         class="workspace-nav-item">
+        <i class="fa-solid fa-bell"></i>
+        <span>Reminders</span>
+      </a>
+
+      <a routerLink="/app/tenant/maintenance"
+         routerLinkActive="active"
+         class="workspace-nav-item">
+        <i class="fa-solid fa-screwdriver-wrench"></i>
+        <span>Maintenance</span>
+      </a>
+
     </div>
 
-        <div class="directory-header-actions">
+    <!-- Right-side actions -->
+    <div class="directory-header-actions d-flex align-items-center gap-2 flex-shrink-0">
 
       <button type="button"
+              class="btn directory-primary-btn"
+              (click)="openRoute(registrationRoute)">
+        <i class="fa-solid fa-plus"></i>
+        <span>{{ registrationLabel }}</span>
+      </button>
+
+          <button type="button"
               class="btn directory-refresh-btn"
               (click)="refresh()"
               [disabled]="loading"
@@ -75,18 +87,11 @@
         <span>Refresh</span>
       </button>
 
-      <button type="button"
-              class="btn directory-primary-btn"
-              (click)="openRoute(registrationRoute)">
-        <i class="fa-solid fa-plus"></i>
-        <span>{{ registrationLabel }}</span>
-      </button>
-
-    </div>
     </div>
 
-  </nav>
+  </div>
 
+</nav>
 
   <!-- =========================================================
        3. CONTEXTUAL WORKSPACE INTRODUCTION

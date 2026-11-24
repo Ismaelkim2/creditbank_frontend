@@ -218,7 +218,7 @@
 }
 
 .directory-refresh-btn,
-.directory-primary-btn {
+.directory-primary-btn, .directory-refresh-btn {
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -231,28 +231,15 @@
   transition: all .22s ease;
 }
 
-.directory-refresh-btn {
-  color: #ffffff;
-  background: rgba(255,255,255,.13);
-  border: 1px solid rgba(255,255,255,.38);
-}
 
-.directory-refresh-btn:hover {
-  color: #ffffff;
-  background: rgba(255,255,255,.25);
-  border-color: #ffffff;
-  box-shadow: 0 5px 15px rgba(0,0,0,.13);
-  transform: translateY(-2px);
-}
-
-.directory-primary-btn {
+.directory-primary-btn,.directory-refresh-btn{
   color: #124a91;
   background: linear-gradient(135deg, #ffffff, #eaf3ff);
   border: 1px solid #ffffff;
   box-shadow: 0 5px 14px rgba(0,0,0,.14);
 }
 
-.directory-primary-btn:hover {
+.directory-primary-btn,.directory-refresh-btn:hover {
   color: #ffffff;
   background: linear-gradient(135deg, #0879df, #0754a9);
   border-color: #ffffff;

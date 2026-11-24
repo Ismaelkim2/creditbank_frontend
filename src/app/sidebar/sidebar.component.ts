@@ -10,7 +10,6 @@ import { Router } from '@angular/router';
 export class SidebarComponent implements OnInit {
 
   role = '';
-  isCollapsed = false;
 
   @Input() isMobileSidebarActive = false;
 
@@ -22,6 +21,32 @@ export class SidebarComponent implements OnInit {
   ngOnInit(): void {
     this.refreshRole();
   }
+
+  isCollapsed = true;
+
+expandSidebar(): void {
+  if (window.innerWidth >= 992) {
+    this.isCollapsed = false;
+  }
+}
+
+collapseSidebar(): void {
+  if (window.innerWidth >= 992) {
+    this.isCollapsed = true;
+  }
+}
+
+
+
+toggleMobileSidebar(): void {
+  this.isMobileSidebarActive = !this.isMobileSidebarActive;
+
+  if (this.isMobileSidebarActive) {
+    this.isCollapsed = false;
+  } else {
+    this.isCollapsed = true;
+  }
+}
 
   /**
    * Read and normalize the authenticated user's role.

@@ -1,14 +1,10 @@
-```html
-<!-- ============================================================
-     CREDICORE — PREMIUM ENTERPRISE SIDEBAR
-     Property & Rental Management + Credit & Lending Management
-=============================================================== -->
-
 <aside
   class="sidebar"
   [class.active]="isMobileSidebarActive"
   [class.sidebar-collapsed]="isCollapsed"
   [attr.aria-expanded]="!isCollapsed"
+  (mouseenter)="expandSidebar()"
+  (mouseleave)="collapseSidebar()"
 >
 
   <!-- MOBILE OVERLAY -->
@@ -784,4 +780,3 @@
   </div>
 
 </main>
-```

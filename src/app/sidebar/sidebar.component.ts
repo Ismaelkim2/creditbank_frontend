@@ -1,4 +1,5 @@
-import { Component, Input, OnInit } from '@angular/core';
+
+import { Component, Input, OnInit, HostListener } from '@angular/core';
 import { AuthService } from '../services/auth-service.service';
 import { Router } from '@angular/router';
 
@@ -13,6 +14,10 @@ export class SidebarComponent implements OnInit {
 
   @Input() isMobileSidebarActive = false;
 
+  isCollapsed = true;
+
+  private readonly desktopBreakpoint = 992;
+
   constructor(
     private authService: AuthService,
     private router: Router
@@ -20,37 +25,58 @@ export class SidebarComponent implements OnInit {
 
   ngOnInit(): void {
     this.refreshRole();
+    this.updateSidebarMode();
   }
-
-  isCollapsed = true;
-
-expandSidebar(): void {
-  if (window.innerWidth >= 992) {
-    this.isCollapsed = false;
-  }
-}
-
-collapseSidebar(): void {
-  if (window.innerWidth >= 992) {
-    this.isCollapsed = true;
-  }
-}
-
-
-
-toggleMobileSidebar(): void {
-  this.isMobileSidebarActive = !this.isMobileSidebarActive;
-
-  if (this.isMobileSidebarActive) {
-    this.isCollapsed = false;
-  } else {
-    this.isCollapsed = true;
-  }
-}
 
   /**
-   * Read and normalize the authenticated user's role.
-   * Supports ADMIN and ROLE_ADMIN formats.
+   * Keep desktop and mobile sidebar states independent.
+   */
+  @HostListener('window:resize')
+  onWindowResize(): void {
+    this.updateSidebarMode();
+  }
+
+  private updateSidebarMode(): void {
+    if (window.innerWidth < this.desktopBreakpoint) {
+      this.isCollapsed = false;
+    } else {
+      this.isMobileSidebarActive = false;
+      this.isCollapsed = true;
+    }
+  }
+
+  /**
+   * Desktop hover behaviour.
+   */
+  expandSidebar(): void {
+    if (window.innerWidth >= this.desktopBreakpoint) {
+      this.isCollapsed = false;
+    }
+  }
+
+  collapseSidebar(): void {
+    if (window.innerWidth >= this.desktopBreakpoint) {
+      this.isCollapsed = true;
+    }
+  }
+
+  /**
+   * Mobile drawer behaviour.
+   */
+  toggleMobileSidebar(): void {
+    if (window.innerWidth < this.desktopBreakpoint) {
+      this.isMobileSidebarActive = !this.isMobileSidebarActive;
+    }
+  }
+
+  closeSidebar(): void {
+    if (window.innerWidth < this.desktopBreakpoint) {
+      this.isMobileSidebarActive = false;
+    }
+  }
+
+  /**
+   * Normalize authenticated role.
    */
   private normalizeRole(value: string | null | undefined): string {
     return (value ?? '')
@@ -82,16 +108,14 @@ toggleMobileSidebar(): void {
       : '/app/dashboard';
   }
 
+  /**
+   * Retained for the existing collapse button.
+   * Desktop hover remains the primary interaction.
+   */
   toggleSidebar(): void {
-    this.isCollapsed = !this.isCollapsed;
-  }
-
-  closeSidebar(): void {
-    this.isMobileSidebarActive = false;
-  }
-
-  toggleSidebarMobile(): void {
-    this.isMobileSidebarActive = !this.isMobileSidebarActive;
+    if (window.innerWidth >= this.desktopBreakpoint) {
+      this.isCollapsed = !this.isCollapsed;
+    }
   }
 
   goToAdminApprovals(): void {

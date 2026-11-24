@@ -1,3 +1,5 @@
+
+
 :host {
   --sidebar-width: 286px;
   --sidebar-collapsed-width: 84px;
@@ -11,20 +13,12 @@
   --sidebar-heading: #8292ad;
 
   --sidebar-accent: #4389f5;
-  --sidebar-accent-light: #eaf2ff;
-  --sidebar-accent-soft: rgba(67, 137, 245, 0.15);
-
   --sidebar-hover: rgba(255, 255, 255, 0.065);
-  --sidebar-active: rgba(67, 137, 245, 0.18);
-
-  --sidebar-danger: #ff7c83;
-
-  --sidebar-transition: 0.25s ease;
+  --sidebar-transition: 0.22s ease;
 }
 
-
 /* =========================================================
-   2. SIDEBAR BASE
+   1. SIDEBAR BASE
    ========================================================= */
 
 .sidebar {
@@ -63,43 +57,37 @@
     box-shadow var(--sidebar-transition);
 }
 
-
 /* =========================================================
-   3. DESKTOP DEFAULT COMPACT MODE
+   2. DESKTOP SIDEBAR WIDTH
    ========================================================= */
 
 @media (min-width: 992px) {
 
-  .sidebar,
+  .sidebar {
+    width: var(--sidebar-width);
+    transform: translateX(0);
+  }
+
   .sidebar.sidebar-collapsed {
     width: var(--sidebar-collapsed-width);
   }
 
-  .sidebar.sidebar-collapsed {
+  /* Expanded sidebar overlays the application content */
+
+  .sidebar:not(.sidebar-collapsed) {
     z-index: 1060;
-  }
-
-  /* Expand when mouse enters sidebar */
-
-  .sidebar.sidebar-collapsed:hover,
-  .sidebar.sidebar-collapsed:focus-within {
-    width: var(--sidebar-width);
-
     box-shadow: 12px 0 35px rgba(7, 20, 42, 0.24);
   }
 
-  /* Keep dashboard positioned for compact sidebar.
-     Expanded navigation overlays the dashboard. */
+  /* Main content always reserves only the compact sidebar */
 
-  .sidebar.sidebar-collapsed ~ .main-content {
+  .main-content {
     margin-left: var(--sidebar-collapsed-width);
   }
-
 }
 
-
 /* =========================================================
-   4. BRAND HEADER
+   3. BRAND HEADER
    ========================================================= */
 
 .sidebar-brand {
@@ -142,11 +130,7 @@
 
   color: #fff;
 
-  background: linear-gradient(
-    135deg,
-    #4389f5,
-    #2461cb
-  );
+  background: linear-gradient(135deg, #4389f5, #2461cb);
 
   box-shadow: 0 5px 15px rgba(38, 104, 214, 0.3);
 
@@ -166,7 +150,6 @@
 
 .sidebar-brand-content strong {
   color: #fff;
-
   font-size: 17px;
   font-weight: 800;
   letter-spacing: 1.1px;
@@ -175,17 +158,14 @@
 
 .sidebar-brand-content small {
   color: #91a4c3;
-
   font-size: 10px;
   font-weight: 600;
   letter-spacing: 1.3px;
-
   text-transform: uppercase;
 }
 
-
 /* =========================================================
-   5. WORKSPACE INDICATOR
+   4. WORKSPACE
    ========================================================= */
 
 .sidebar-workspace {
@@ -199,7 +179,6 @@
   gap: 10px;
 
   background: rgba(255, 255, 255, 0.045);
-
   border: 1px solid rgba(255, 255, 255, 0.065);
   border-radius: 10px;
 }
@@ -211,7 +190,6 @@
   height: 9px;
 
   border-radius: 50%;
-
   background: #35c98b;
 
   box-shadow: 0 0 0 4px rgba(53, 201, 139, 0.12);
@@ -219,23 +197,21 @@
 
 .sidebar-workspace span:last-child {
   color: #cbd6e8;
-
   font-size: 11px;
   font-weight: 700;
   letter-spacing: 0.7px;
-
   text-transform: uppercase;
   white-space: nowrap;
 }
 
-
 /* =========================================================
-   6. NAVIGATION SCROLL AREA
+   5. NAVIGATION SCROLL AREA
    ========================================================= */
 
 .sidebar-navigation {
   flex: 1 1 auto;
   min-height: 0;
+  min-width: 0;
 
   padding: 8px 11px 18px;
 
@@ -263,14 +239,12 @@
   background: rgba(255, 255, 255, 0.3);
 }
 
-
 /* =========================================================
-   7. NAVIGATION SECTIONS
+   6. NAVIGATION SECTIONS
    ========================================================= */
 
 .sidebar-menu {
   list-style: none;
-
   margin: 0;
   padding: 0;
 }
@@ -298,16 +272,13 @@
   white-space: nowrap;
 }
 
-
 /* =========================================================
-   8. NAVIGATION ITEMS
+   7. NAVIGATION ITEMS
    ========================================================= */
 
 .sidebar-item {
   position: relative;
-
   list-style: none;
-
   margin: 3px 0;
   padding: 0;
 }
@@ -317,6 +288,7 @@
 
   min-height: 43px;
   width: 100%;
+  min-width: 0;
 
   display: flex;
   align-items: center;
@@ -330,23 +302,18 @@
   border: 1px solid transparent;
   border-radius: 9px;
 
+  overflow: hidden;
+
   transition:
     background var(--sidebar-transition),
     color var(--sidebar-transition),
-    border-color var(--sidebar-transition),
-    transform var(--sidebar-transition);
-
-  overflow: hidden;
+    border-color var(--sidebar-transition);
 }
 
 .sidebar-link:hover {
   color: #fff;
-
   background: var(--sidebar-hover);
-
   border-color: rgba(255, 255, 255, 0.045);
-
-  transform: translateX(2px);
 }
 
 .sidebar-link:focus-visible {
@@ -365,7 +332,6 @@
   justify-content: center;
 
   color: #9aabc5;
-
   font-size: 16px;
 
   transition: color var(--sidebar-transition);
@@ -390,9 +356,8 @@
   text-overflow: ellipsis;
 }
 
-
 /* =========================================================
-   9. ACTIVE NAVIGATION STATE
+   8. ACTIVE NAVIGATION
    ========================================================= */
 
 .sidebar-link.active,
@@ -425,13 +390,11 @@
   width: 3px;
 
   background: #65a2ff;
-
   border-radius: 5px 0 0 5px;
 }
 
-
 /* =========================================================
-   10. FEATURE TAGS
+   9. FEATURE TAG
    ========================================================= */
 
 .sidebar-feature-tag {
@@ -440,7 +403,6 @@
   padding: 3px 6px;
 
   color: #a9caff;
-
   background: rgba(67, 137, 245, 0.16);
 
   border: 1px solid rgba(104, 164, 255, 0.13);
@@ -454,15 +416,13 @@
   text-transform: uppercase;
 }
 
-
 /* =========================================================
-   11. LOGOUT
+   10. LOGOUT
    ========================================================= */
 
 .sidebar-logout-item {
   margin-top: 7px;
   padding-top: 10px;
-
   border-top: 1px solid var(--sidebar-border);
 }
 
@@ -476,9 +436,7 @@
 
 .sidebar-logout-link:hover {
   color: #fff;
-
   background: rgba(239, 76, 89, 0.13);
-
   border-color: rgba(239, 76, 89, 0.15);
 }
 
@@ -486,9 +444,8 @@
   color: #ff9ca2;
 }
 
-
 /* =========================================================
-   12. SIDEBAR FOOTER
+   11. FOOTER
    ========================================================= */
 
 .sidebar-footer {
@@ -498,7 +455,6 @@
   padding: 13px 14px 15px;
 
   border-top: 1px solid var(--sidebar-border);
-
   background: rgba(5, 14, 29, 0.23);
 }
 
@@ -519,11 +475,9 @@
   justify-content: center;
 
   color: #a9caff;
-
   background: rgba(67, 137, 245, 0.14);
 
   border-radius: 9px;
-
   font-size: 14px;
 }
 
@@ -537,7 +491,6 @@
 
 .footer-brand-content strong {
   color: #dce6f5;
-
   font-size: 11px;
   font-weight: 700;
 }
@@ -549,77 +502,28 @@
 
 .footer-version {
   display: block;
-
   margin-top: 9px;
 
   color: #6e7f99;
-
   font-size: 9px;
   font-weight: 600;
   letter-spacing: 0.7px;
-
   text-transform: uppercase;
 }
 
 .sidebar-footer-collapsed {
   display: none;
-
   justify-content: center;
   align-items: center;
 }
 
-
 /* =========================================================
-   13. COLLAPSE BUTTON
-   ========================================================= */
-
-.sidebar-collapse-btn {
-  position: absolute;
-
-  top: 21px;
-  right: -1px;
-
-  z-index: 5;
-
-  width: 27px;
-  height: 34px;
-
-  display: flex;
-  align-items: center;
-  justify-content: center;
-
-  color: #a9caff;
-
-  background: #1d3458;
-
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  border-radius: 8px 0 0 8px;
-
-  cursor: pointer;
-
-  transition:
-    background var(--sidebar-transition),
-    color var(--sidebar-transition);
-}
-
-.sidebar-collapse-btn:hover {
-  color: #fff;
-  background: #2b5ba0;
-}
-
-.sidebar-collapse-btn:focus-visible {
-  outline: 2px solid #82b4ff;
-  outline-offset: 2px;
-}
-
-
-/* =========================================================
-   14. DESKTOP COLLAPSED MODE
+   12. DESKTOP COLLAPSED STATE
+   Angular *ngIf controls text visibility.
+   CSS controls only positioning.
    ========================================================= */
 
 @media (min-width: 992px) {
-
-  /* Hide labels and decorative content by default */
 
   .sidebar.sidebar-collapsed .sidebar-brand {
     justify-content: center;
@@ -628,16 +532,6 @@
 
   .sidebar.sidebar-collapsed .sidebar-brand-link {
     justify-content: center;
-  }
-
-  .sidebar.sidebar-collapsed .sidebar-brand-content,
-  .sidebar.sidebar-collapsed .sidebar-workspace,
-  .sidebar.sidebar-collapsed .sidebar-section-heading,
-  .sidebar.sidebar-collapsed .sidebar-link-text,
-  .sidebar.sidebar-collapsed .sidebar-feature-tag,
-  .sidebar.sidebar-collapsed .sidebar-footer-brand,
-  .sidebar.sidebar-collapsed .footer-version {
-    display: none;
   }
 
   .sidebar.sidebar-collapsed .sidebar-navigation {
@@ -659,10 +553,6 @@
     font-size: 17px;
   }
 
-  .sidebar.sidebar-collapsed .sidebar-link:hover {
-    transform: none;
-  }
-
   .sidebar.sidebar-collapsed .sidebar-active-indicator {
     top: 8px;
     bottom: 8px;
@@ -676,98 +566,15 @@
     display: flex;
   }
 
-  /* Hover expansion restores the complete sidebar */
+  /* Hide manual toggle: hover is the desktop interaction */
 
-  .sidebar.sidebar-collapsed:hover .sidebar-brand,
-  .sidebar.sidebar-collapsed:focus-within .sidebar-brand {
-    justify-content: flex-start;
-    padding: 0 19px;
+  .sidebar-collapse-btn {
+    display: none !important;
   }
-
-  .sidebar.sidebar-collapsed:hover .sidebar-brand-link,
-  .sidebar.sidebar-collapsed:focus-within .sidebar-brand-link {
-    justify-content: flex-start;
-  }
-
-  .sidebar.sidebar-collapsed:hover .sidebar-brand-content,
-  .sidebar.sidebar-collapsed:focus-within .sidebar-brand-content {
-    display: flex;
-  }
-
-  .sidebar.sidebar-collapsed:hover .sidebar-workspace,
-  .sidebar.sidebar-collapsed:focus-within .sidebar-workspace {
-    display: flex;
-  }
-
-  .sidebar.sidebar-collapsed:hover .sidebar-section-heading,
-  .sidebar.sidebar-collapsed:focus-within .sidebar-section-heading {
-    display: flex;
-  }
-
-  .sidebar.sidebar-collapsed:hover .sidebar-link,
-  .sidebar.sidebar-collapsed:focus-within .sidebar-link {
-    justify-content: flex-start;
-    padding: 9px 11px;
-  }
-
-  .sidebar.sidebar-collapsed:hover .sidebar-link-text,
-  .sidebar.sidebar-collapsed:focus-within .sidebar-link-text {
-    display: block;
-  }
-
-  .sidebar.sidebar-collapsed:hover .sidebar-feature-tag,
-  .sidebar.sidebar-collapsed:focus-within .sidebar-feature-tag {
-    display: inline-flex;
-  }
-
-  .sidebar.sidebar-collapsed:hover .sidebar-icon,
-  .sidebar.sidebar-collapsed:focus-within .sidebar-icon {
-    width: 22px;
-    min-width: 22px;
-    font-size: 16px;
-  }
-
-  .sidebar.sidebar-collapsed:hover .sidebar-navigation,
-  .sidebar.sidebar-collapsed:focus-within .sidebar-navigation {
-    padding: 8px 11px 18px;
-  }
-
-  .sidebar.sidebar-collapsed:hover .sidebar-menu + .sidebar-menu,
-  .sidebar.sidebar-collapsed:focus-within .sidebar-menu + .sidebar-menu {
-    margin-top: 18px;
-  }
-
-  .sidebar.sidebar-collapsed:hover .sidebar-footer,
-  .sidebar.sidebar-collapsed:focus-within .sidebar-footer {
-    padding: 13px 14px 15px;
-  }
-
-  .sidebar.sidebar-collapsed:hover .sidebar-footer-brand,
-  .sidebar.sidebar-collapsed:focus-within .sidebar-footer-brand {
-    display: flex;
-  }
-
-  .sidebar.sidebar-collapsed:hover .footer-version,
-  .sidebar.sidebar-collapsed:focus-within .footer-version {
-    display: block;
-  }
-
-  .sidebar.sidebar-collapsed:hover .sidebar-footer-collapsed,
-  .sidebar.sidebar-collapsed:focus-within .sidebar-footer-collapsed {
-    display: none;
-  }
-
-  /* Hide the manual collapse button in automatic mode */
-
-  .sidebar.sidebar-collapsed .sidebar-collapse-btn {
-    display: none;
-  }
-
 }
 
-
 /* =========================================================
-   15. MAIN CONTENT POSITIONING
+   13. MAIN CONTENT
    ========================================================= */
 
 .main-content {
@@ -784,45 +591,33 @@
   min-height: 100vh;
 }
 
-
 /* =========================================================
-   16. MOBILE OVERLAY
+   14. MOBILE OVERLAY
+   This element must be OUTSIDE the aside.
    ========================================================= */
 
 .sidebar-overlay {
   display: none;
 }
 
-
-/* =========================================================
-   17. TABLET RESPONSIVENESS
-   ========================================================= */
-
 @media (max-width: 991.98px) {
 
-  /* Hide sidebar outside the viewport */
+  /* Drawer is hidden outside the screen */
 
   .sidebar,
   .sidebar.sidebar-collapsed {
     width: var(--sidebar-width);
+    max-width: 86vw;
 
     transform: translateX(-100%);
   }
 
-  /* Open drawer */
-
   .sidebar.active {
     transform: translateX(0);
+    z-index: 1060;
   }
 
-  /* Disable desktop hover expansion */
-
-  .sidebar.sidebar-collapsed:hover,
-  .sidebar.sidebar-collapsed:focus-within {
-    width: var(--sidebar-width);
-  }
-
-  /* Show full navigation even if collapsed class remains */
+  /* Disable desktop collapsed appearance */
 
   .sidebar.sidebar-collapsed .sidebar-brand {
     justify-content: flex-start;
@@ -831,21 +626,6 @@
 
   .sidebar.sidebar-collapsed .sidebar-brand-link {
     justify-content: flex-start;
-  }
-
-  .sidebar.sidebar-collapsed .sidebar-brand-content,
-  .sidebar.sidebar-collapsed .sidebar-link-text,
-  .sidebar.sidebar-collapsed .sidebar-feature-tag,
-  .sidebar.sidebar-collapsed .footer-version {
-    display: initial;
-  }
-
-  .sidebar.sidebar-collapsed .sidebar-workspace {
-    display: flex;
-  }
-
-  .sidebar.sidebar-collapsed .sidebar-section-heading {
-    display: flex;
   }
 
   .sidebar.sidebar-collapsed .sidebar-link {
@@ -859,37 +639,32 @@
     font-size: 16px;
   }
 
+  .sidebar.sidebar-collapsed .sidebar-navigation {
+    padding: 8px 11px 18px;
+  }
+
+  .sidebar.sidebar-collapsed .sidebar-menu + .sidebar-menu {
+    margin-top: 18px;
+  }
+
   .sidebar.sidebar-collapsed .sidebar-footer {
     padding: 13px 14px 15px;
   }
 
-  .sidebar.sidebar-collapsed .sidebar-footer-brand {
-    display: flex;
-  }
-
-  .sidebar.sidebar-collapsed .sidebar-footer-collapsed {
-    display: none;
-  }
-
-  /* No content offset on tablet/mobile */
+  /* No main-content offset on smaller screens */
 
   .main-content,
   .sidebar.sidebar-collapsed ~ .main-content {
-    margin-left: 0;
+    margin-left: 0 !important;
   }
 
-  /* Overlay is a fixed child of the drawer.
-     It is positioned outside the visible drawer area. */
+  /* Overlay is a sibling of the sidebar */
 
   .sidebar-overlay {
     position: fixed;
+    inset: 0;
 
-    top: 0;
-    left: min(var(--sidebar-width), 86vw);
-    right: 0;
-    bottom: 0;
-
-    z-index: 1040;
+    z-index: 1045;
 
     display: block;
 
@@ -904,23 +679,19 @@
       visibility var(--sidebar-transition);
   }
 
-  .sidebar.active .sidebar-overlay {
+  .sidebar.active + .sidebar-overlay {
     opacity: 1;
     visibility: visible;
     pointer-events: auto;
   }
 
-  /* No desktop collapse control on touch screens */
-
   .sidebar-collapse-btn {
-    display: none;
+    display: none !important;
   }
-
 }
 
-
 /* =========================================================
-   18. MOBILE RESPONSIVENESS
+   15. SMALL MOBILE
    ========================================================= */
 
 @media (max-width: 575.98px) {
@@ -949,12 +720,10 @@
   .sidebar-footer {
     padding-bottom: calc(13px + env(safe-area-inset-bottom));
   }
-
 }
 
-
 /* =========================================================
-   19. ACCESSIBILITY
+   16. ACCESSIBILITY
    ========================================================= */
 
 .sidebar a,
@@ -974,28 +743,24 @@
   .sidebar *,
   .main-content {
     scroll-behavior: auto !important;
-
     transition-duration: 0.01ms !important;
     animation-duration: 0.01ms !important;
     animation-iteration-count: 1 !important;
   }
-
 }
 
-
 /* =========================================================
-   20. PRINT
+   17. PRINT
    ========================================================= */
 
 @media print {
 
-  .sidebar {
+  .sidebar,
+  .sidebar-overlay {
     display: none !important;
   }
 
-  .main-content,
-  .sidebar.sidebar-collapsed ~ .main-content {
+  .main-content {
     margin-left: 0 !important;
   }
-
 }

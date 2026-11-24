@@ -1,3 +1,4 @@
+
 <aside
   class="sidebar"
   [class.active]="isMobileSidebarActive"
@@ -6,13 +7,6 @@
   (mouseenter)="expandSidebar()"
   (mouseleave)="collapseSidebar()"
 >
-
-  <!-- MOBILE OVERLAY -->
-  <div
-    class="sidebar-overlay"
-    *ngIf="isMobileSidebarActive"
-    (click)="closeSidebar(); $event.stopPropagation()">
-  </div>
 
   <!-- ==========================================================
        BRAND HEADER
@@ -767,6 +761,17 @@
   </button>
 
 </aside>
+
+<div
+  class="sidebar-overlay"
+  *ngIf="isMobileSidebarActive"
+  (click)="closeSidebar()">
+</div>
+
+<main class="main-content">
+  <div class="body-content">
+    <router-outlet></router-outlet>
+  </div>
 
 
 <!-- ============================================================

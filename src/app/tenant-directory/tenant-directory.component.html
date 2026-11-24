@@ -1,133 +1,241 @@
-
 <div class="tenant-directory container-fluid py-3 py-lg-4">
 
   <!-- =========================================================
-       1. DIRECTORY HEADER
+       1. PREMIUM WORKSPACE HEADER
   ========================================================== -->
   <header class="directory-header">
 
     <div class="directory-heading">
-      <span class="directory-eyebrow">
-        CREDITBANK RENTAL MANAGEMENT
-      </span>
+      <div class="directory-breadcrumb">
+        <span>PROPERTY FINANCE</span>
+        <i class="fa-solid fa-chevron-right"></i>
+        <span>RENTAL MANAGEMENT</span>
+        <i class="fa-solid fa-chevron-right"></i>
+        <strong>{{ pageTitle }}</strong>
+      </div>
 
-      <h2 class="directory-title mb-1">
-        <i class="fa-solid fa-building-user me-2"></i>
-        {{ pageTitle }}
-      </h2>
+      <div class="directory-title-row">
+        <span class="directory-title-icon">
+          <i class="fa-solid"
+             [ngClass]="directoryType === 'properties'
+               ? 'fa-building'
+               : directoryType === 'units'
+                 ? 'fa-door-open'
+                 : 'fa-users'">
+          </i>
+        </span>
 
-      <p class="directory-subtitle mb-0">
-        {{ pageDescription }}
-      </p>
+        <div>
+          <h2 class="directory-title mb-1">{{ pageTitle }}</h2>
+          <p class="directory-subtitle mb-0">{{ pageDescription }}</p>
+        </div>
+      </div>
     </div>
 
     <div class="directory-header-actions">
 
-      <!-- WORKSPACE NAVIGATION -->
-      <nav class="workspace-navigation" aria-label="Rental management navigation">
+      <button type="button"
+              class="btn directory-refresh-btn"
+              (click)="refresh()"
+              [disabled]="loading"
+              title="Refresh directory">
+        <i class="fa-solid fa-rotate"
+           [class.fa-spin]="loading"></i>
+        <span>Refresh</span>
+      </button>
 
-        <a routerLink="/app/tenant/properties"
-           routerLinkActive="active"
-           [routerLinkActiveOptions]="{ exact: true }"
-           class="workspace-nav-item"
-           title="View and manage properties">
-          <i class="fa-solid fa-building"></i>
-          <span>Properties</span>
-        </a>
-
-        <a routerLink="/app/tenant/units/directory"
-           routerLinkActive="active"
-           class="workspace-nav-item"
-           title="View and manage rental units">
-          <i class="fa-solid fa-door-open"></i>
-          <span>Units</span>
-        </a>
-
-        <a routerLink="/app/tenant/tenants"
-           routerLinkActive="active"
-           class="workspace-nav-item"
-           title="View and manage tenants">
-          <i class="fa-solid fa-users"></i>
-          <span>Tenants</span>
-        </a>
-
-        <a routerLink="/app/tenant/rent"
-           routerLinkActive="active"
-           class="workspace-nav-item"
-           title="Manage rent and payments">
-          <i class="fa-solid fa-wallet"></i>
-          <span>Rent &amp; Payments</span>
-        </a>
-
-        <a routerLink="/app/tenant/reminders"
-           routerLinkActive="active"
-           class="workspace-nav-item"
-           title="Manage tenant reminders">
-          <i class="fa-solid fa-bell"></i>
-          <span>Reminders</span>
-        </a>
-
-        <a routerLink="/app/tenant/maintenance"
-           routerLinkActive="active"
-           class="workspace-nav-item"
-           title="Manage maintenance requests">
-          <i class="fa-solid fa-screwdriver-wrench"></i>
-          <span>Maintenance</span>
-        </a>
-
-      </nav>
-
-      <!-- PRIMARY ACTION -->
-      <div class="directory-toolbar-actions">
-        <button
-          type="button"
-          class="btn directory-primary-btn"
-          (click)="openRoute(registrationRoute)">
-          <i class="fa-solid fa-plus"></i>
-          <span>{{ registrationLabel }}</span>
-        </button>
-      </div>
+      <button type="button"
+              class="btn directory-primary-btn"
+              (click)="openRoute(registrationRoute)">
+        <i class="fa-solid fa-plus"></i>
+        <span>{{ registrationLabel }}</span>
+      </button>
 
     </div>
   </header>
 
 
   <!-- =========================================================
-       2. NOTIFICATIONS
+       2. WORKSPACE NAVIGATION
   ========================================================== -->
+  <nav class="workspace-navigation"
+       aria-label="Rental management workspace">
 
-  <div
-    *ngIf="warningMessage"
-    class="alert alert-warning directory-alert d-flex align-items-start gap-2"
-    role="status">
+    <a routerLink="/app/tenant/properties"
+       routerLinkActive="active"
+       [routerLinkActiveOptions]="{ exact: true }"
+       class="workspace-nav-item">
+      <i class="fa-solid fa-building"></i>
+      <span>Properties</span>
+      <small *ngIf="directoryType === 'properties'">
+        {{ totalRecords | number }}
+      </small>
+    </a>
+
+    <a routerLink="/app/tenant/units/directory"
+       routerLinkActive="active"
+       [routerLinkActiveOptions]="{ exact: true }"
+       class="workspace-nav-item">
+      <i class="fa-solid fa-door-open"></i>
+      <span>Units</span>
+      <small *ngIf="directoryType === 'units'">
+        {{ totalRecords | number }}
+      </small>
+    </a>
+
+    <a routerLink="/app/tenant/tenants"
+       routerLinkActive="active"
+       [routerLinkActiveOptions]="{ exact: true }"
+       class="workspace-nav-item">
+      <i class="fa-solid fa-users"></i>
+      <span>Tenants</span>
+      <small *ngIf="directoryType === 'tenants'">
+        {{ totalRecords | number }}
+      </small>
+    </a>
+
+    <a routerLink="/app/tenant/rent"
+       routerLinkActive="active"
+       class="workspace-nav-item">
+      <i class="fa-solid fa-wallet"></i>
+      <span>Rent &amp; Payments</span>
+    </a>
+
+    <a routerLink="/app/tenant/reminders"
+       routerLinkActive="active"
+       class="workspace-nav-item">
+      <i class="fa-solid fa-bell"></i>
+      <span>Reminders</span>
+    </a>
+
+    <a routerLink="/app/tenant/maintenance"
+       routerLinkActive="active"
+       class="workspace-nav-item">
+      <i class="fa-solid fa-screwdriver-wrench"></i>
+      <span>Maintenance</span>
+    </a>
+
+  </nav>
+
+
+  <!-- =========================================================
+       3. CONTEXTUAL WORKSPACE INTRODUCTION
+  ========================================================== -->
+  <section class="workspace-welcome">
+
+    <div class="workspace-welcome-content">
+
+      <div class="workspace-welcome-copy">
+        <span class="workspace-eyebrow">
+          {{ directoryType === 'properties'
+            ? 'PROPERTY PORTFOLIO'
+            : directoryType === 'units'
+              ? 'UNIT INVENTORY'
+              : 'TENANT RELATIONSHIP MANAGEMENT' }}
+        </span>
+
+        <h3>
+          {{ directoryType === 'properties'
+            ? 'Manage your property portfolio'
+            : directoryType === 'units'
+              ? 'Manage your rental units'
+              : 'Manage your tenants' }}
+        </h3>
+
+        <p>
+          {{ directoryType === 'properties'
+            ? 'Maintain property records, monitor locations, organise your portfolio and access property-level operations.'
+            : directoryType === 'units'
+              ? 'Track unit availability, occupancy, rental rates, deposits and tenancy operations across your properties.'
+              : 'Maintain tenant profiles, access contact information and manage reminders, payments and tenancy records.' }}
+        </p>
+      </div>
+
+      <div class="workspace-welcome-actions">
+
+        <ng-container *ngIf="directoryType === 'properties'">
+          <button type="button"
+                  class="workspace-action-btn"
+                  (click)="openRoute('/app/tenant/units/directory')">
+            <i class="fa-solid fa-door-open"></i>
+            <span>View all units</span>
+          </button>
+
+          <button type="button"
+                  class="workspace-action-btn"
+                  (click)="openRoute('/app/tenant/maintenance')">
+            <i class="fa-solid fa-screwdriver-wrench"></i>
+            <span>Maintenance</span>
+          </button>
+        </ng-container>
+
+        <ng-container *ngIf="directoryType === 'units'">
+          <button type="button"
+                  class="workspace-action-btn"
+                  (click)="openRoute('/app/tenant/tenants')">
+            <i class="fa-solid fa-users"></i>
+            <span>View tenants</span>
+          </button>
+
+          <button type="button"
+                  class="workspace-action-btn"
+                  (click)="openRoute('/app/tenant/rent')">
+            <i class="fa-solid fa-wallet"></i>
+            <span>Rent management</span>
+          </button>
+        </ng-container>
+
+        <ng-container *ngIf="directoryType === 'tenants'">
+          <button type="button"
+                  class="workspace-action-btn"
+                  (click)="openRoute('/app/tenant/reminders')">
+            <i class="fa-solid fa-bell"></i>
+            <span>Manage reminders</span>
+          </button>
+
+          <button type="button"
+                  class="workspace-action-btn"
+                  (click)="openRoute('/app/tenant/rent')">
+            <i class="fa-solid fa-receipt"></i>
+            <span>Rent &amp; payments</span>
+          </button>
+        </ng-container>
+
+      </div>
+    </div>
+
+  </section>
+
+
+  <!-- =========================================================
+       4. NOTIFICATIONS
+  ========================================================== -->
+  <div *ngIf="warningMessage"
+       class="alert alert-warning directory-alert d-flex align-items-start gap-2"
+       role="status">
 
     <i class="fa-solid fa-triangle-exclamation mt-1"></i>
 
-    <div class="flex-grow-1">
-      {{ warningMessage }}
-    </div>
+    <div class="flex-grow-1">{{ warningMessage }}</div>
 
-    <button
-      type="button"
-      class="btn-close"
-      aria-label="Dismiss notice"
-      (click)="warningMessage = ''">
+    <button type="button"
+            class="btn-close"
+            aria-label="Dismiss notice"
+            (click)="warningMessage = ''">
     </button>
   </div>
 
-  <div
-    *ngIf="errorMessage"
-    class="alert alert-danger directory-alert"
-    role="alert">
+  <div *ngIf="errorMessage"
+       class="alert alert-danger directory-alert"
+       role="alert">
 
     <i class="fa-solid fa-circle-exclamation me-2"></i>
     {{ errorMessage }}
 
-    <button
-      type="button"
-      class="btn btn-sm btn-outline-danger ms-2"
-      (click)="refresh()"
-      [disabled]="loading">
+    <button type="button"
+            class="btn btn-sm btn-outline-danger ms-2"
+            (click)="refresh()"
+            [disabled]="loading">
       <i class="fa-solid fa-rotate me-1"></i>
       Try again
     </button>
@@ -135,36 +243,66 @@
 
 
   <!-- =========================================================
-       3. DIRECTORY OVERVIEW
+       5. OPERATIONAL OVERVIEW
   ========================================================== -->
+  <section class="directory-insights"
+           aria-label="Directory performance overview">
 
-  <section class="directory-insights mb-4"
-           aria-label="Directory overview">
+    <div class="section-heading-row">
+      <div>
+        <span class="section-eyebrow">AT A GLANCE</span>
+        <h5>
+          {{ directoryType === 'properties'
+            ? 'Property portfolio overview'
+            : directoryType === 'units'
+              ? 'Rental unit overview'
+              : 'Tenant overview' }}
+        </h5>
+        <p>Key figures and operational indicators for this workspace.</p>
+      </div>
+
+      <span class="overview-updated">
+        <i class="fa-solid fa-shield-halved"></i>
+        Live directory data
+      </span>
+    </div>
 
     <div class="insight-kpi-grid">
 
-      <!-- TOTAL RECORDS -->
       <article class="insight-kpi">
         <span class="insight-kpi-icon icon-blue">
-          <i class="fa-solid fa-database"></i>
+          <i class="fa-solid"
+             [ngClass]="directoryType === 'properties'
+               ? 'fa-building'
+               : directoryType === 'units'
+                 ? 'fa-door-open'
+                 : 'fa-users'">
+          </i>
         </span>
 
-        <div>
-          <span class="kpi-label">Total registered records</span>
+        <div class="insight-kpi-content">
+          <span class="kpi-label">
+            {{ directoryType === 'properties'
+              ? 'Registered properties'
+              : directoryType === 'units'
+                ? 'Registered units'
+                : 'Registered tenants' }}
+          </span>
+
           <strong class="insight-kpi-value">
             {{ totalRecords | number }}
           </strong>
-          <small>All records in this directory</small>
+
+          <small>Total records in this directory</small>
         </div>
       </article>
 
-      <!-- ACTIVE RECORDS -->
       <article class="insight-kpi">
         <span class="insight-kpi-icon icon-green">
           <i class="fa-solid fa-circle-check"></i>
         </span>
 
-        <div>
+        <div class="insight-kpi-content">
           <span class="kpi-label">
             {{ directoryType === 'units'
               ? 'Active or occupied units'
@@ -177,41 +315,39 @@
             {{ activeRecords | number }}
           </strong>
 
-          <small>{{ statusCoverage }}% of total records</small>
+          <small>{{ statusCoverage }}% of registered records</small>
         </div>
       </article>
 
-      <!-- ATTENTION RECORDS -->
       <article class="insight-kpi">
         <span class="insight-kpi-icon icon-amber">
           <i class="fa-solid fa-triangle-exclamation"></i>
         </span>
 
-        <div>
+        <div class="insight-kpi-content">
           <span class="kpi-label">Requires attention</span>
 
           <strong class="insight-kpi-value">
             {{ attentionRecords | number }}
           </strong>
 
-          <small>Records that may need follow-up</small>
+          <small>Records requiring follow-up</small>
         </div>
       </article>
 
-      <!-- FILTERED RECORDS -->
       <article class="insight-kpi">
         <span class="insight-kpi-icon icon-purple">
           <i class="fa-solid fa-filter"></i>
         </span>
 
-        <div>
-          <span class="kpi-label">Records found</span>
+        <div class="insight-kpi-content">
+          <span class="kpi-label">Matching records</span>
 
           <strong class="insight-kpi-value">
             {{ visibleRecords | number }}
           </strong>
 
-          <small>Matching your search and filters</small>
+          <small>Based on current search and filters</small>
         </div>
       </article>
 
@@ -222,7 +358,6 @@
     <div class="compact-chart-grid"
          *ngIf="directoryType === 'properties'">
 
-      <!-- PROPERTY TYPES -->
       <article class="insight-chart-card">
 
         <div class="compact-chart-title">
@@ -232,7 +367,7 @@
 
           <div>
             <h6>Properties by type</h6>
-            <small>Distribution of registered properties</small>
+            <small>Portfolio composition</small>
           </div>
         </div>
 
@@ -248,26 +383,23 @@
             </div>
 
             <div class="analytics-bar-track">
-              <span
-                class="analytics-bar-fill bar-blue"
-                [style.width.%]="item.percent">
+              <span class="analytics-bar-fill bar-blue"
+                    [style.width.%]="item.percent">
               </span>
             </div>
-
           </div>
         </div>
 
         <ng-template #noTypeData>
           <div class="analytics-empty">
             <i class="fa-solid fa-chart-pie"></i>
-            <span>Property type information will appear here.</span>
+            <span>Property type analytics will appear here.</span>
           </div>
         </ng-template>
 
       </article>
 
 
-      <!-- PROPERTY LOCATIONS -->
       <article class="insight-chart-card">
 
         <div class="compact-chart-title">
@@ -277,7 +409,7 @@
 
           <div>
             <h6>Properties by location</h6>
-            <small>Distribution across registered locations</small>
+            <small>Geographical portfolio distribution</small>
           </div>
         </div>
 
@@ -293,123 +425,185 @@
             </div>
 
             <div class="analytics-bar-track">
-              <span
-                class="analytics-bar-fill bar-teal"
-                [style.width.%]="item.percent">
+              <span class="analytics-bar-fill bar-teal"
+                    [style.width.%]="item.percent">
               </span>
             </div>
-
           </div>
         </div>
 
         <ng-template #noCountyData>
           <div class="analytics-empty">
             <i class="fa-solid fa-map-location-dot"></i>
-            <span>Location information will appear here.</span>
+            <span>Location analytics will appear here.</span>
           </div>
         </ng-template>
 
       </article>
-
     </div>
 
   </section>
 
 
   <!-- =========================================================
-       4. SEARCH AND FILTER
+       6. QUICK MANAGEMENT ACTIONS
   ========================================================== -->
+  <section class="workspace-quick-actions">
 
-  <section class="directory-toolbar mb-3"
-           aria-label="Search and filter records">
+    <div class="quick-actions-heading">
+      <div>
+        <span class="section-eyebrow">WORKSPACE TOOLS</span>
+        <h5>Quick management actions</h5>
+      </div>
+    </div>
+
+    <div class="quick-action-grid">
+
+      <button type="button"
+              class="quick-action-card"
+              (click)="openRoute(registrationRoute)">
+        <span class="quick-action-icon quick-blue">
+          <i class="fa-solid fa-plus"></i>
+        </span>
+        <span class="quick-action-copy">
+          <strong>{{ registrationLabel }}</strong>
+          <small>
+            {{ directoryType === 'properties'
+              ? 'Add a new property to your portfolio'
+              : directoryType === 'units'
+                ? 'Register a new rental unit'
+                : 'Create a new tenant profile' }}
+          </small>
+        </span>
+        <i class="fa-solid fa-arrow-up-right-from-square quick-action-arrow"></i>
+      </button>
+
+      <button type="button"
+              class="quick-action-card"
+              (click)="openRoute('/app/tenant/rent')">
+        <span class="quick-action-icon quick-green">
+          <i class="fa-solid fa-wallet"></i>
+        </span>
+        <span class="quick-action-copy">
+          <strong>Rent &amp; payments</strong>
+          <small>Manage rent charges and tenant collections</small>
+        </span>
+        <i class="fa-solid fa-arrow-up-right-from-square quick-action-arrow"></i>
+      </button>
+
+      <button type="button"
+              class="quick-action-card"
+              (click)="openRoute('/app/tenant/reminders')">
+        <span class="quick-action-icon quick-amber">
+          <i class="fa-solid fa-bell"></i>
+        </span>
+        <span class="quick-action-copy">
+          <strong>Tenant reminders</strong>
+          <small>Manage rent and tenancy follow-ups</small>
+        </span>
+        <i class="fa-solid fa-arrow-up-right-from-square quick-action-arrow"></i>
+      </button>
+
+      <button type="button"
+              class="quick-action-card"
+              (click)="openRoute('/app/tenant/maintenance')">
+        <span class="quick-action-icon quick-purple">
+          <i class="fa-solid fa-screwdriver-wrench"></i>
+        </span>
+        <span class="quick-action-copy">
+          <strong>Maintenance</strong>
+          <small>Track property and unit maintenance requests</small>
+        </span>
+        <i class="fa-solid fa-arrow-up-right-from-square quick-action-arrow"></i>
+      </button>
+
+    </div>
+  </section>
+
+
+  <!-- =========================================================
+       7. DIRECTORY SEARCH AND FILTERS
+  ========================================================== -->
+  <section class="directory-toolbar"
+           aria-label="Search and filter directory">
 
     <div class="directory-toolbar-intro">
-      <h6>Find a record</h6>
-      <small>Search the directory or filter records by status.</small>
+      <span class="section-eyebrow">RECORD MANAGEMENT</span>
+      <h5>
+        {{ directoryType === 'properties'
+          ? 'Property directory'
+          : directoryType === 'units'
+            ? 'Unit directory'
+            : 'Tenant directory' }}
+      </h5>
+      <small>Search, filter and manage your registered records.</small>
     </div>
 
     <div class="directory-search">
-
       <span class="directory-search-icon">
         <i class="fa-solid fa-magnifying-glass"></i>
       </span>
 
-      <input
-        type="search"
-        class="form-control"
-        [(ngModel)]="searchTerm"
-        (ngModelChange)="onFiltersChanged()"
-        [placeholder]="directoryType === 'properties'
-          ? 'Search by property name, code, town or county...'
-          : directoryType === 'units'
-            ? 'Search by unit number, property or unit type...'
-            : 'Search by tenant name, ID number, phone or email...'"
-        aria-label="Search directory records">
-
+      <input type="search"
+             class="form-control"
+             [(ngModel)]="searchTerm"
+             (ngModelChange)="onFiltersChanged()"
+             [placeholder]="directoryType === 'properties'
+               ? 'Search property name, code, town or county...'
+               : directoryType === 'units'
+                 ? 'Search unit number, property or unit type...'
+                 : 'Search tenant name, ID number, phone or email...'"
+             aria-label="Search directory">
     </div>
 
     <div class="directory-filter">
+      <label for="statusFilter">Record status</label>
 
-      <label for="statusFilter">Filter by status</label>
-
-      <select
-        id="statusFilter"
-        class="form-select"
-        [(ngModel)]="statusFilter"
-        (ngModelChange)="onFiltersChanged()">
+      <select id="statusFilter"
+              class="form-select"
+              [(ngModel)]="statusFilter"
+              (ngModelChange)="onFiltersChanged()">
 
         <option *ngFor="let option of statusOptions"
                 [value]="option.value">
           {{ option.label }}
         </option>
-
       </select>
-
     </div>
 
-    <button
-      type="button"
-      class="btn clear-filter-btn"
-      (click)="clearFilters()">
-
-      <i class="fa-solid fa-filter-circle-xmark me-1"></i>
-      Reset search
-
+    <button type="button"
+            class="btn clear-filter-btn"
+            (click)="clearFilters()">
+      <i class="fa-solid fa-filter-circle-xmark"></i>
+      <span>Reset filters</span>
     </button>
 
   </section>
 
 
   <!-- =========================================================
-       5. LOADING STATE
+       8. LOADING STATE
   ========================================================== -->
-
   <div *ngIf="loading" class="directory-loading">
 
     <div class="spinner-border text-primary" role="status">
       <span class="visually-hidden">Loading records...</span>
     </div>
 
-    <h6 class="mt-3 mb-1">Loading your directory</h6>
-
-    <p class="text-muted small mb-0">
-      Please wait while your records are retrieved.
-    </p>
+    <h6>Loading your workspace</h6>
+    <p>Please wait while your directory information is retrieved.</p>
 
   </div>
 
 
   <ng-container *ngIf="!loading">
 
-
     <!-- =======================================================
-         6. PROPERTY DIRECTORY
+         9. PROPERTY DIRECTORY
     ======================================================== -->
-
-    <section
-      *ngIf="directoryType === 'properties'"
-      class="directory-table-card"
-      aria-label="Property directory">
+    <section *ngIf="directoryType === 'properties'"
+             class="directory-table-card"
+             aria-label="Property directory">
 
       <div class="directory-table-heading">
 
@@ -419,28 +613,23 @@
           </span>
 
           <div>
-            <h5 class="mb-1">Property register</h5>
-            <p class="mb-0">
-              View property information, locations and operational status.
-            </p>
+            <h5>Property register</h5>
+            <p>Property profiles, locations, ownership and operational status.</p>
           </div>
         </div>
 
         <span class="directory-count">
-          <i class="fa-solid fa-list me-1"></i>
-          {{ filteredProperties.length }} properties found
+          {{ filteredProperties.length | number }} properties
         </span>
 
       </div>
 
-
       <div class="table-responsive">
-
         <table class="table directory-table align-middle mb-0">
 
           <thead>
             <tr>
-              <th>Property details</th>
+              <th>Property</th>
               <th>Property code</th>
               <th>Property type</th>
               <th>Location</th>
@@ -452,365 +641,219 @@
 
           <tbody>
 
-            <ng-container
-              *ngFor="let property of paginatedProperties; trackBy: trackById">
+            <ng-container *ngFor="let property of paginatedProperties; trackBy: trackById">
 
-              <!-- PROPERTY ROW -->
               <tr>
-
                 <td>
                   <div class="record-primary">
-
                     <span class="record-avatar property-avatar">
+                      <img *ngIf="property.imageUrl && !propertyImageErrors[property.id]"
+                           [src]="getPropertyImageUrl(property.imageUrl)"
+                           [alt]="property.name || 'Property image'"
+                           (error)="onPropertyImageError(property.id)">
 
-                      <img
-                        *ngIf="property.imageUrl && !propertyImageErrors[property.id]"
-                        [src]="getPropertyImageUrl(property.imageUrl)"
-                        [alt]="property.name || 'Property image'"
-                        class="property-list-image"
-                        (error)="onPropertyImageError(property.id)">
-
-                      <i
-                        *ngIf="!property.imageUrl || propertyImageErrors[property.id]"
-                        class="fa-solid fa-building">
-                      </i>
-
+                      <i *ngIf="!property.imageUrl || propertyImageErrors[property.id]"
+                         class="fa-solid fa-building"></i>
                     </span>
 
                     <span>
                       <strong>{{ property.name || 'Unnamed property' }}</strong>
                       <small>{{ property.address || 'Address not provided' }}</small>
                     </span>
-
                   </div>
                 </td>
 
+                <td><span class="record-code">{{ property.propertyCode || 'Not assigned' }}</span></td>
+                <td>{{ property.propertyType || 'Not specified' }}</td>
+
                 <td>
-                  <span class="record-code">
-                    {{ property.propertyCode || 'Not assigned' }}
-                  </span>
+                  <strong>{{ property.town || 'Not specified' }}</strong>
+                  <small class="d-block text-muted">{{ property.county || 'County not provided' }}</small>
                 </td>
 
                 <td>
-                  {{ property.propertyType || 'Not specified' }}
-                </td>
-
-                <td>
-                  <div>{{ property.town || 'Not specified' }}</div>
-                  <small class="text-muted">
-                    {{ property.county || 'County not provided' }}
-                  </small>
-                </td>
-
-                <td>
-                  <span class="status-badge"
-                        [ngClass]="statusClass(property.status)">
+                  <span class="status-badge" [ngClass]="statusClass(property.status)">
                     {{ property.status || 'UNKNOWN' }}
                   </span>
                 </td>
 
                 <td>
-                  {{ property.createdAt
-                    ? (property.createdAt | date:'dd MMM yyyy')
-                    : '—' }}
+                  {{ property.createdAt ? (property.createdAt | date:'dd MMM yyyy') : '—' }}
                 </td>
 
                 <td class="text-end">
-
                   <div class="directory-row-actions">
 
-                    <button
-                      type="button"
-                      class="btn btn-sm btn-outline-primary view-record-btn"
-                      (click)="toggleDetails(property.id)">
-
-                      <i
-                        class="fa-solid me-1"
-                        [ngClass]="isExpanded(property.id)
-                          ? 'fa-chevron-up'
-                          : 'fa-eye'">
-                      </i>
-
-                      {{ isExpanded(property.id) ? 'Hide details' : 'View details' }}
-
+                    <button type="button"
+                            class="btn btn-sm btn-outline-primary view-record-btn"
+                            (click)="toggleDetails(property.id)">
+                      <i class="fa-solid"
+                         [ngClass]="isExpanded(property.id) ? 'fa-chevron-up' : 'fa-eye'"></i>
+                      {{ isExpanded(property.id) ? 'Hide' : 'Profile' }}
                     </button>
 
                     <details class="record-action-menu">
-
-                      <summary aria-label="More property actions"
-                               title="More actions">
+                      <summary aria-label="More property actions">
                         <i class="fa-solid fa-ellipsis-vertical"></i>
                       </summary>
 
                       <div class="record-action-popover" role="menu">
-
                         <button type="button" role="menuitem"
                                 (click)="runRecordAction('view', property.id)">
-                          <i class="fa-regular fa-eye"></i>
-                          View property
+                          <i class="fa-regular fa-eye"></i> View property
                         </button>
 
                         <button type="button" role="menuitem"
                                 (click)="runRecordAction('edit', property.id)">
-                          <i class="fa-solid fa-pen"></i>
-                          Edit property
+                          <i class="fa-solid fa-pen"></i> Edit property
                         </button>
 
                         <button type="button" role="menuitem"
                                 (click)="runRecordAction('units', property.id)">
-                          <i class="fa-solid fa-door-open"></i>
-                          Manage rental units
+                          <i class="fa-solid fa-door-open"></i> Manage units
                         </button>
 
                         <button type="button" role="menuitem"
                                 (click)="runRecordAction('maintenance', property.id)">
-                          <i class="fa-solid fa-screwdriver-wrench"></i>
-                          Maintenance requests
+                          <i class="fa-solid fa-screwdriver-wrench"></i> Maintenance
                         </button>
-
                       </div>
-
                     </details>
-
                   </div>
-
                 </td>
-
               </tr>
 
-
-              <!-- EXPANDED PROPERTY DETAILS -->
               <tr *ngIf="isExpanded(property.id)" class="detail-row">
-
                 <td colspan="7">
-
                   <div class="record-detail-panel property-detail-panel">
 
                     <div class="property-detail-hero">
-
                       <div class="property-detail-image-wrapper">
+                        <img *ngIf="property.imageUrl && !propertyImageErrors[property.id]"
+                             [src]="getPropertyImageUrl(property.imageUrl)"
+                             [alt]="property.name || 'Property photograph'"
+                             class="property-detail-image"
+                             (error)="onPropertyImageError(property.id)">
 
-                        <img
-                          *ngIf="property.imageUrl && !propertyImageErrors[property.id]"
-                          [src]="getPropertyImageUrl(property.imageUrl)"
-                          [alt]="property.name || 'Property photograph'"
-                          class="property-detail-image"
-                          (error)="onPropertyImageError(property.id)">
-
-                        <div
-                          *ngIf="!property.imageUrl || propertyImageErrors[property.id]"
-                          class="property-detail-image-placeholder">
-
+                        <div *ngIf="!property.imageUrl || propertyImageErrors[property.id]"
+                             class="property-detail-image-placeholder">
                           <i class="fa-solid fa-building"></i>
-
                           <strong>No property photograph available</strong>
-
-                          <small>
-                            Add a property photograph to improve its presentation.
-                          </small>
-
+                          <small>Add a property photograph to improve its presentation.</small>
                         </div>
-
                       </div>
 
                       <div class="property-detail-image-caption">
-
                         <div>
-                          <span class="property-image-eyebrow">
-                            PROPERTY PROFILE
-                          </span>
-
+                          <span class="property-image-eyebrow">PROPERTY PROFILE</span>
                           <h5>{{ property.name || 'Unnamed property' }}</h5>
-
                           <p>
                             <i class="fa-solid fa-location-dot me-1"></i>
                             {{ property.address || property.town || 'Location not provided' }}
                           </p>
                         </div>
-
                         <span class="property-image-code">
                           {{ property.propertyCode || 'NO CODE' }}
                         </span>
-
                       </div>
-
                     </div>
 
-
                     <div class="property-information-section">
-
-                      <h6>
-                        <i class="fa-solid fa-circle-info me-2"></i>
-                        Property information
-                      </h6>
+                      <h6><i class="fa-solid fa-circle-info me-2"></i>Property information</h6>
 
                       <div class="detail-grid">
-
-                        <div>
-                          <span>Property ID</span>
-                          <strong>{{ property.id }}</strong>
-                        </div>
-
-                        <div>
-                          <span>Property code</span>
-                          <strong>{{ property.propertyCode || 'Not assigned' }}</strong>
-                        </div>
-
-                        <div>
-                          <span>Property type</span>
-                          <strong>{{ property.propertyType || 'Not specified' }}</strong>
-                        </div>
-
-                        <div>
-                          <span>Owner ID</span>
-                          <strong>{{ property.ownerId ?? '—' }}</strong>
-                        </div>
-
-                        <div>
-                          <span>Full address</span>
-                          <strong>{{ property.address || 'Not provided' }}</strong>
-                        </div>
-
-                        <div>
-                          <span>Town and county</span>
-                          <strong>
-                            {{ property.town || '—' }} / {{ property.county || '—' }}
-                          </strong>
-                        </div>
-
+                        <div><span>Property ID</span><strong>{{ property.id }}</strong></div>
+                        <div><span>Property code</span><strong>{{ property.propertyCode || '—' }}</strong></div>
+                        <div><span>Property type</span><strong>{{ property.propertyType || '—' }}</strong></div>
+                        <div><span>Owner ID</span><strong>{{ property.ownerId ?? '—' }}</strong></div>
+                        <div><span>Full address</span><strong>{{ property.address || '—' }}</strong></div>
+                        <div><span>Town and county</span><strong>{{ property.town || '—' }} / {{ property.county || '—' }}</strong></div>
+                        <div><span>Status</span><strong>{{ property.status || 'UNKNOWN' }}</strong></div>
                         <div>
                           <span>Last modified</span>
-                          <strong>
-                            {{ property.updatedAt
-                              ? (property.updatedAt | date:'dd MMM yyyy, HH:mm')
-                              : '—' }}
-                          </strong>
+                          <strong>{{ property.updatedAt ? (property.updatedAt | date:'dd MMM yyyy, HH:mm') : '—' }}</strong>
                         </div>
-
                       </div>
 
                       <div class="detail-notes">
                         <span>Property description</span>
-                        <p>
-                          {{ property.description || 'No property description has been provided.' }}
-                        </p>
+                        <p>{{ property.description || 'No property description has been provided.' }}</p>
                       </div>
 
                       <div class="detail-action-strip">
-
-                        <button
-                          type="button"
-                          class="btn btn-sm btn-outline-primary"
-                          (click)="runRecordAction('units', property.id)">
-                          <i class="fa-solid fa-door-open me-1"></i>
-                          Manage rental units
+                        <button type="button" class="btn btn-sm btn-outline-primary"
+                                (click)="runRecordAction('units', property.id)">
+                          <i class="fa-solid fa-door-open me-1"></i> Manage units
                         </button>
 
-                        <button
-                          type="button"
-                          class="btn btn-sm btn-outline-primary"
-                          (click)="runRecordAction('maintenance', property.id)">
-                          <i class="fa-solid fa-screwdriver-wrench me-1"></i>
-                          View maintenance
+                        <button type="button" class="btn btn-sm btn-outline-primary"
+                                (click)="runRecordAction('edit', property.id)">
+                          <i class="fa-solid fa-pen me-1"></i> Edit property
                         </button>
 
+                        <button type="button" class="btn btn-sm btn-outline-primary"
+                                (click)="runRecordAction('maintenance', property.id)">
+                          <i class="fa-solid fa-screwdriver-wrench me-1"></i> Maintenance
+                        </button>
                       </div>
-
                     </div>
 
                   </div>
-
                 </td>
-
               </tr>
 
             </ng-container>
 
-
-            <!-- PROPERTY EMPTY STATE -->
             <tr *ngIf="filteredProperties.length === 0">
-
               <td colspan="7">
-
                 <div class="directory-empty">
-
                   <i class="fa-solid fa-building"></i>
-
                   <h6>No properties found</h6>
-
-                  <p>
-                    No properties match your search. Try changing your search
-                    or status filter.
-                  </p>
-
-                  <button
-                    type="button"
-                    class="btn btn-primary btn-sm"
-                    (click)="openRoute('/app/tenant/properties/register')">
-
-                    <i class="fa-solid fa-plus me-1"></i>
-                    Register a property
-
+                  <p>No properties match your search or selected filters.</p>
+                  <button type="button" class="btn btn-primary btn-sm"
+                          (click)="openRoute('/app/tenant/properties/register')">
+                    <i class="fa-solid fa-plus me-1"></i> Register a property
                   </button>
-
                 </div>
-
               </td>
-
             </tr>
 
           </tbody>
-
         </table>
-
       </div>
-
     </section>
 
 
-
     <!-- =======================================================
-         7. UNIT DIRECTORY
+         10. UNIT DIRECTORY
     ======================================================== -->
-
-    <section
-      *ngIf="directoryType === 'units'"
-      class="directory-table-card"
-      aria-label="Unit directory">
+    <section *ngIf="directoryType === 'units'"
+             class="directory-table-card"
+             aria-label="Rental unit directory">
 
       <div class="directory-table-heading">
-
         <div class="directory-section-title">
-
           <span class="directory-section-icon">
             <i class="fa-solid fa-door-open"></i>
           </span>
 
           <div>
-            <h5 class="mb-1">Rental unit register</h5>
-            <p class="mb-0">
-              Monitor rental units, occupancy, deposits and monthly rent.
-            </p>
+            <h5>Rental unit register</h5>
+            <p>Unit inventory, property allocation, rental rates and occupancy status.</p>
           </div>
-
         </div>
 
         <span class="directory-count">
-          <i class="fa-solid fa-list me-1"></i>
-          {{ filteredUnits.length }} units found
+          {{ filteredUnits.length | number }} units
         </span>
-
       </div>
 
-
       <div class="table-responsive">
-
         <table class="table directory-table align-middle mb-0">
 
           <thead>
             <tr>
-              <th>Photograph</th>
-              <th>Unit details</th>
+              <th>Unit</th>
               <th>Property</th>
               <th>Unit type</th>
               <th>Floor</th>
@@ -823,43 +866,24 @@
 
           <tbody>
 
-            <ng-container
-              *ngFor="let unit of paginatedUnits; trackBy: trackById">
+            <ng-container *ngFor="let unit of paginatedUnits; trackBy: trackById">
 
-
-              <!-- UNIT MAIN ROW -->
               <tr>
-
-                <td>
-                  <div class="directory-unit-photo">
-
-                    <img
-                      *ngIf="unit.imageUrl && !unitImageErrors[unit.id]"
-                      [src]="getUnitImageUrl(unit.imageUrl)"
-                      [alt]="'Photograph of unit ' + (unit.unitNumber || unit.id)"
-                      loading="lazy"
-                      (error)="onUnitImageError(unit.id)">
-
-                    <div
-                      *ngIf="!unit.imageUrl || unitImageErrors[unit.id]"
-                      class="directory-unit-photo-placeholder">
-
-                      <i class="fa-solid fa-door-open"></i>
-
-                      <span>
-                        {{ unitImageErrors[unit.id]
-                          ? 'Image unavailable'
-                          : 'No photograph' }}
-                      </span>
-
-                    </div>
-
-                  </div>
-                </td>
-
-
                 <td>
                   <div class="record-primary">
+                    <span class="directory-unit-photo">
+                      <img *ngIf="unit.imageUrl && !unitImageErrors[unit.id]"
+                           [src]="getUnitImageUrl(unit.imageUrl)"
+                           [alt]="'Unit ' + (unit.unitNumber || unit.id)"
+                           loading="lazy"
+                           (error)="onUnitImageError(unit.id)">
+
+                      <span *ngIf="!unit.imageUrl || unitImageErrors[unit.id]"
+                            class="directory-unit-photo-placeholder">
+                        <i class="fa-solid fa-door-open"></i>
+                      </span>
+                    </span>
+
                     <span>
                       <strong>{{ unit.unitNumber || 'Unnamed unit' }}</strong>
                       <small>Unit ID: {{ unit.id }}</small>
@@ -867,379 +891,209 @@
                   </div>
                 </td>
 
-
                 <td>
                   <strong>{{ unit.propertyName || 'Property not specified' }}</strong>
-                  <small class="d-block text-muted">
-                    {{ unit.propertyCode || 'No property code' }}
-                  </small>
+                  <small class="d-block text-muted">{{ unit.propertyCode || 'No property code' }}</small>
                 </td>
 
-
                 <td>{{ unit.unitType || 'Not specified' }}</td>
-
                 <td>{{ unit.floor || 'Not specified' }}</td>
-
 
                 <td class="money-value">
                   {{ unit.depositAmount | currency:'KES ':'symbol':'1.2-2' }}
                 </td>
 
-
                 <td class="money-value">
                   {{ unit.monthlyRent | currency:'KES ':'symbol':'1.2-2' }}
                 </td>
 
-
                 <td>
-                  <span class="status-badge"
-                        [ngClass]="statusClass(unit.status)">
+                  <span class="status-badge" [ngClass]="statusClass(unit.status)">
                     {{ unit.status || 'UNKNOWN' }}
                   </span>
                 </td>
 
-
                 <td class="text-end">
-
                   <div class="directory-row-actions">
 
-                    <button
-                      type="button"
-                      class="btn btn-sm btn-outline-primary view-record-btn"
-                      (click)="toggleDetails(unit.id)">
-
-                      <i
-                        class="fa-solid me-1"
-                        [ngClass]="isExpanded(unit.id)
-                          ? 'fa-chevron-up'
-                          : 'fa-eye'">
-                      </i>
-
-                      {{ isExpanded(unit.id) ? 'Hide details' : 'View details' }}
-
+                    <button type="button"
+                            class="btn btn-sm btn-outline-primary view-record-btn"
+                            (click)="toggleDetails(unit.id)">
+                      <i class="fa-solid"
+                         [ngClass]="isExpanded(unit.id) ? 'fa-chevron-up' : 'fa-eye'"></i>
+                      {{ isExpanded(unit.id) ? 'Hide' : 'Profile' }}
                     </button>
 
-
                     <details class="record-action-menu">
-
-                      <summary aria-label="More unit actions"
-                               title="More actions">
+                      <summary aria-label="More unit actions">
                         <i class="fa-solid fa-ellipsis-vertical"></i>
                       </summary>
 
                       <div class="record-action-popover" role="menu">
-
                         <button type="button" role="menuitem"
                                 (click)="runRecordAction('view', unit.id)">
-                          <i class="fa-regular fa-eye"></i>
-                          View unit
+                          <i class="fa-regular fa-eye"></i> View unit
                         </button>
 
                         <button type="button" role="menuitem"
                                 (click)="runRecordAction('edit', unit.id)">
-                          <i class="fa-solid fa-pen"></i>
-                          Edit unit
+                          <i class="fa-solid fa-pen"></i> Edit unit
                         </button>
 
                         <button type="button" role="menuitem"
                                 (click)="runRecordAction('register-tenant', unit.id)">
-                          <i class="fa-solid fa-user-plus"></i>
-                          Register a tenant
+                          <i class="fa-solid fa-user-plus"></i> Register tenant
                         </button>
 
                         <button type="button" role="menuitem"
                                 (click)="runRecordAction('lease', unit.id)">
-                          <i class="fa-solid fa-file-contract"></i>
-                          Manage tenancy agreement
+                          <i class="fa-solid fa-file-contract"></i> Manage lease
                         </button>
 
                         <button type="button" role="menuitem"
                                 (click)="runRecordAction('maintenance', unit.id)">
-                          <i class="fa-solid fa-screwdriver-wrench"></i>
-                          Maintenance requests
+                          <i class="fa-solid fa-screwdriver-wrench"></i> Maintenance
                         </button>
-
                       </div>
-
                     </details>
-
                   </div>
-
                 </td>
-
               </tr>
 
-
-              <!-- EXPANDED UNIT DETAILS -->
               <tr *ngIf="isExpanded(unit.id)" class="detail-row">
-
-                <td colspan="9">
-
+                <td colspan="8">
                   <div class="record-detail-panel unit-detail-panel">
 
                     <div class="unit-detail-hero">
-
                       <div class="unit-detail-image-wrapper">
+                        <img *ngIf="unit.imageUrl && !unitImageErrors[unit.id]"
+                             [src]="getUnitImageUrl(unit.imageUrl)"
+                             [alt]="'Unit ' + (unit.unitNumber || unit.id)"
+                             class="unit-detail-image"
+                             loading="lazy"
+                             (error)="onUnitImageError(unit.id)">
 
-                        <img
-                          *ngIf="unit.imageUrl && !unitImageErrors[unit.id]"
-                          [src]="getUnitImageUrl(unit.imageUrl)"
-                          [alt]="'Photograph of unit ' + (unit.unitNumber || unit.id)"
-                          class="unit-detail-image"
-                          loading="lazy"
-                          (error)="onUnitImageError(unit.id)">
-
-                        <div
-                          *ngIf="!unit.imageUrl || unitImageErrors[unit.id]"
-                          class="unit-detail-image-placeholder">
-
+                        <div *ngIf="!unit.imageUrl || unitImageErrors[unit.id]"
+                             class="unit-detail-image-placeholder">
                           <i class="fa-solid fa-door-open"></i>
-
-                          <strong>
-                            {{ unitImageErrors[unit.id]
-                              ? 'Unit photograph unavailable'
-                              : 'No unit photograph uploaded' }}
-                          </strong>
-
-                          <small>
-                            Add a photograph through Unit Management.
-                          </small>
-
+                          <strong>No unit photograph available</strong>
+                          <small>Add a photograph through Unit Management.</small>
                         </div>
-
                       </div>
 
-
                       <div class="unit-detail-image-caption">
-
                         <div>
-                          <span class="unit-image-eyebrow">
-                            RENTAL UNIT PROFILE
-                          </span>
-
+                          <span class="unit-image-eyebrow">RENTAL UNIT PROFILE</span>
                           <h5>{{ unit.unitNumber || 'Unnamed unit' }}</h5>
-
                           <p>
                             <i class="fa-solid fa-building me-1"></i>
                             {{ unit.propertyName || 'Property not specified' }}
                           </p>
                         </div>
-
-                        <span class="unit-image-code">
-                          UNIT #{{ unit.id }}
-                        </span>
-
+                        <span class="unit-image-code">UNIT #{{ unit.id }}</span>
                       </div>
-
                     </div>
 
-
                     <div class="unit-information-section">
-
-                      <h6>
-                        <i class="fa-solid fa-circle-info me-2"></i>
-                        Unit information
-                      </h6>
+                      <h6><i class="fa-solid fa-circle-info me-2"></i>Unit information</h6>
 
                       <div class="detail-grid">
-
-                        <div>
-                          <span>Unit ID</span>
-                          <strong>{{ unit.id }}</strong>
-                        </div>
-
-                        <div>
-                          <span>Property ID</span>
-                          <strong>{{ unit.propertyId ?? '—' }}</strong>
-                        </div>
-
-                        <div>
-                          <span>Property name</span>
-                          <strong>{{ unit.propertyName || '—' }}</strong>
-                        </div>
-
-                        <div>
-                          <span>Property code</span>
-                          <strong>{{ unit.propertyCode || '—' }}</strong>
-                        </div>
-
-                        <div>
-                          <span>Unit number</span>
-                          <strong>{{ unit.unitNumber || '—' }}</strong>
-                        </div>
-
-                        <div>
-                          <span>Unit type</span>
-                          <strong>{{ unit.unitType || '—' }}</strong>
-                        </div>
-
-                        <div>
-                          <span>Floor</span>
-                          <strong>{{ unit.floor || '—' }}</strong>
-                        </div>
-
-                        <div>
-                          <span>Monthly rent</span>
-                          <strong>
-                            {{ unit.monthlyRent | currency:'KES ':'symbol':'1.0-2' }}
-                          </strong>
-                        </div>
-
-                        <div>
-                          <span>Security deposit</span>
-                          <strong>
-                            {{ unit.depositAmount | currency:'KES ':'symbol':'1.0-2' }}
-                          </strong>
-                        </div>
-
-                        <div>
-                          <span>Current status</span>
-                          <strong>{{ unit.status || 'UNKNOWN' }}</strong>
-                        </div>
-
+                        <div><span>Unit ID</span><strong>{{ unit.id }}</strong></div>
+                        <div><span>Property ID</span><strong>{{ unit.propertyId ?? '—' }}</strong></div>
+                        <div><span>Property name</span><strong>{{ unit.propertyName || '—' }}</strong></div>
+                        <div><span>Property code</span><strong>{{ unit.propertyCode || '—' }}</strong></div>
+                        <div><span>Unit number</span><strong>{{ unit.unitNumber || '—' }}</strong></div>
+                        <div><span>Unit type</span><strong>{{ unit.unitType || '—' }}</strong></div>
+                        <div><span>Floor</span><strong>{{ unit.floor || '—' }}</strong></div>
+                        <div><span>Monthly rent</span><strong>{{ unit.monthlyRent | currency:'KES ':'symbol':'1.0-2' }}</strong></div>
+                        <div><span>Security deposit</span><strong>{{ unit.depositAmount | currency:'KES ':'symbol':'1.0-2' }}</strong></div>
+                        <div><span>Current status</span><strong>{{ unit.status || 'UNKNOWN' }}</strong></div>
                         <div>
                           <span>Last modified</span>
-                          <strong>
-                            {{ unit.updatedAt
-                              ? (unit.updatedAt | date:'dd MMM yyyy, HH:mm')
-                              : '—' }}
-                          </strong>
+                          <strong>{{ unit.updatedAt ? (unit.updatedAt | date:'dd MMM yyyy, HH:mm') : '—' }}</strong>
                         </div>
-
                       </div>
-
 
                       <div class="detail-notes">
                         <span>Unit description</span>
-                        <p>
-                          {{ unit.description || 'No unit description has been provided.' }}
-                        </p>
+                        <p>{{ unit.description || 'No unit description has been provided.' }}</p>
                       </div>
-
 
                       <div class="detail-action-strip">
-
-                        <button
-                          type="button"
-                          class="btn btn-sm btn-outline-primary"
-                          (click)="runRecordAction('register-tenant', unit.id)">
-                          <i class="fa-solid fa-user-plus me-1"></i>
-                          Register a tenant
+                        <button type="button" class="btn btn-sm btn-outline-primary"
+                                (click)="runRecordAction('register-tenant', unit.id)">
+                          <i class="fa-solid fa-user-plus me-1"></i> Register tenant
                         </button>
 
-                        <button
-                          type="button"
-                          class="btn btn-sm btn-outline-primary"
-                          (click)="runRecordAction('lease', unit.id)">
-                          <i class="fa-solid fa-file-contract me-1"></i>
-                          Manage tenancy agreement
+                        <button type="button" class="btn btn-sm btn-outline-primary"
+                                (click)="runRecordAction('lease', unit.id)">
+                          <i class="fa-solid fa-file-contract me-1"></i> Manage tenancy agreement
                         </button>
 
-                        <button
-                          type="button"
-                          class="btn btn-sm btn-outline-primary"
-                          (click)="runRecordAction('maintenance', unit.id)">
-                          <i class="fa-solid fa-screwdriver-wrench me-1"></i>
-                          View maintenance
+                        <button type="button" class="btn btn-sm btn-outline-primary"
+                                (click)="runRecordAction('maintenance', unit.id)">
+                          <i class="fa-solid fa-screwdriver-wrench me-1"></i> Maintenance
                         </button>
-
                       </div>
-
                     </div>
 
                   </div>
-
                 </td>
-
               </tr>
 
             </ng-container>
 
-
-            <!-- UNIT EMPTY STATE -->
             <tr *ngIf="filteredUnits.length === 0">
-
-              <td colspan="9">
-
+              <td colspan="8">
                 <div class="directory-empty">
-
                   <i class="fa-solid fa-door-open"></i>
-
                   <h6>No rental units found</h6>
-
-                  <p>
-                    No units match your search. Try a different search
-                    or check your selected status.
-                  </p>
-
-                  <button
-                    type="button"
-                    class="btn btn-primary btn-sm"
-                    (click)="openRoute('/app/tenant/units')">
-
-                    <i class="fa-solid fa-door-open me-1"></i>
-                    Open unit management
-
+                  <p>No units match your search or selected filters.</p>
+                  <button type="button" class="btn btn-primary btn-sm"
+                          (click)="openRoute('/app/tenant/units')">
+                    <i class="fa-solid fa-door-open me-1"></i> Open unit management
                   </button>
-
                 </div>
-
               </td>
-
             </tr>
 
           </tbody>
-
         </table>
-
       </div>
-
     </section>
 
 
-
     <!-- =======================================================
-         8. TENANT DIRECTORY
+         11. TENANT DIRECTORY
     ======================================================== -->
-
-    <section
-      *ngIf="directoryType === 'tenants'"
-      class="directory-table-card"
-      aria-label="Tenant directory">
+    <section *ngIf="directoryType === 'tenants'"
+             class="directory-table-card"
+             aria-label="Tenant directory">
 
       <div class="directory-table-heading">
-
         <div class="directory-section-title">
-
           <span class="directory-section-icon">
             <i class="fa-solid fa-users"></i>
           </span>
 
           <div>
-            <h5 class="mb-1">Tenant register</h5>
-            <p class="mb-0">
-              View tenant profiles, contact information and tenancy records.
-            </p>
+            <h5>Tenant register</h5>
+            <p>Tenant profiles, contact details and tenancy-related operations.</p>
           </div>
-
         </div>
 
         <span class="directory-count">
-          <i class="fa-solid fa-list me-1"></i>
-          {{ filteredResidents.length }} tenants found
+          {{ filteredResidents.length | number }} tenants
         </span>
-
       </div>
 
-
       <div class="table-responsive">
-
         <table class="table directory-table align-middle mb-0">
 
           <thead>
             <tr>
-              <th>Tenant details</th>
-              <th>ID information</th>
+              <th>Tenant</th>
+              <th>Identification</th>
               <th>Phone number</th>
               <th>Email address</th>
               <th>Account status</th>
@@ -1247,468 +1101,268 @@
             </tr>
           </thead>
 
-
           <tbody>
 
-            <ng-container
-              *ngFor="let resident of paginatedResidents; trackBy: trackById">
+            <ng-container *ngFor="let resident of paginatedResidents; trackBy: trackById">
 
-
-              <!-- TENANT MAIN ROW -->
               <tr>
-
                 <td>
-
                   <div class="record-primary tenant-record-primary">
-
                     <span class="record-avatar tenant-avatar">
+                      <img *ngIf="resident.imageUrl && !tenantImageErrors[resident.id]"
+                           [src]="getTenantImageUrl(resident.imageUrl)"
+                           [alt]="resident.fullName || 'Tenant'"
+                           class="tenant-list-image"
+                           loading="lazy"
+                           (error)="onTenantImageError(resident.id)">
 
-                      <img
-                        *ngIf="resident.imageUrl && !tenantImageErrors[resident.id]"
-                        [src]="getTenantImageUrl(resident.imageUrl)"
-                        [alt]="'Photograph of ' + (resident.fullName || 'tenant')"
-                        class="tenant-list-image"
-                        loading="lazy"
-                        (error)="onTenantImageError(resident.id)">
-
-                      <i
-                        *ngIf="!resident.imageUrl || tenantImageErrors[resident.id]"
-                        class="fa-solid fa-user">
-                      </i>
-
+                      <i *ngIf="!resident.imageUrl || tenantImageErrors[resident.id]"
+                         class="fa-solid fa-user"></i>
                     </span>
 
                     <span>
                       <strong>{{ resident.fullName || 'Unnamed tenant' }}</strong>
                       <small>Tenant ID: {{ resident.id }}</small>
                     </span>
-
                   </div>
-
                 </td>
 
-
                 <td>
-                  <strong>
-                    {{ resident.identificationType || 'Not specified' }}
-                  </strong>
-
+                  <strong>{{ resident.identificationType || 'Not specified' }}</strong>
                   <small class="d-block text-muted">
                     {{ resident.identificationNumber || 'Number not provided' }}
                   </small>
                 </td>
 
-
                 <td>{{ resident.phoneNumber || 'Not provided' }}</td>
-
                 <td>{{ resident.email || 'Not provided' }}</td>
 
-
                 <td>
-                  <span class="status-badge"
-                        [ngClass]="statusClass(resident.status)">
+                  <span class="status-badge" [ngClass]="statusClass(resident.status)">
                     {{ resident.status || 'UNKNOWN' }}
                   </span>
                 </td>
 
-
                 <td class="text-end">
-
                   <div class="directory-row-actions">
 
-                    <button
-                      type="button"
-                      class="btn btn-sm btn-outline-primary view-record-btn"
-                      (click)="toggleDetails(resident.id)">
-
-                      <i
-                        class="fa-solid me-1"
-                        [ngClass]="isExpanded(resident.id)
-                          ? 'fa-chevron-up'
-                          : 'fa-eye'">
-                      </i>
-
-                      {{ isExpanded(resident.id) ? 'Hide details' : 'View profile' }}
-
+                    <button type="button"
+                            class="btn btn-sm btn-outline-primary view-record-btn"
+                            (click)="toggleDetails(resident.id)">
+                      <i class="fa-solid"
+                         [ngClass]="isExpanded(resident.id) ? 'fa-chevron-up' : 'fa-eye'"></i>
+                      {{ isExpanded(resident.id) ? 'Hide' : 'Profile' }}
                     </button>
 
-
                     <details class="record-action-menu">
-
-                      <summary aria-label="More tenant actions"
-                               title="More actions">
+                      <summary aria-label="More tenant actions">
                         <i class="fa-solid fa-ellipsis-vertical"></i>
                       </summary>
 
                       <div class="record-action-popover" role="menu">
-
                         <button type="button" role="menuitem"
                                 (click)="runRecordAction('view', resident.id)">
-                          <i class="fa-regular fa-eye"></i>
-                          View tenant profile
+                          <i class="fa-regular fa-eye"></i> View tenant profile
                         </button>
 
                         <button type="button" role="menuitem"
                                 (click)="runRecordAction('edit', resident.id)">
-                          <i class="fa-solid fa-pen"></i>
-                          Edit tenant information
+                          <i class="fa-solid fa-pen"></i> Edit tenant
                         </button>
 
                         <button type="button" role="menuitem"
                                 (click)="runRecordAction('reminder', resident.id)">
-                          <i class="fa-solid fa-bell"></i>
-                          Send rent reminder
+                          <i class="fa-solid fa-bell"></i> Send rent reminder
                         </button>
 
                         <button type="button" role="menuitem"
                                 (click)="runRecordAction('payments', resident.id)">
-                          <i class="fa-solid fa-receipt"></i>
-                          View rent payments
+                          <i class="fa-solid fa-receipt"></i> View rent payments
                         </button>
 
                         <button type="button" role="menuitem"
                                 (click)="runRecordAction('lease', resident.id)">
-                          <i class="fa-solid fa-file-contract"></i>
-                          Tenancy agreement and documents
+                          <i class="fa-solid fa-file-contract"></i> Tenancy documents
                         </button>
-
                       </div>
-
                     </details>
-
                   </div>
-
                 </td>
-
               </tr>
 
-
-              <!-- EXPANDED TENANT DETAILS -->
               <tr *ngIf="isExpanded(resident.id)" class="detail-row">
-
                 <td colspan="6">
-
                   <div class="record-detail-panel tenant-detail-panel">
 
-
-                    <!-- TENANT PROFILE HERO -->
                     <div class="tenant-detail-hero">
-
                       <div class="tenant-detail-image-wrapper">
+                        <img *ngIf="resident.imageUrl && !tenantImageErrors[resident.id]"
+                             [src]="getTenantImageUrl(resident.imageUrl)"
+                             [alt]="resident.fullName || 'Tenant'"
+                             class="tenant-detail-image"
+                             loading="lazy"
+                             (error)="onTenantImageError(resident.id)">
 
-                        <img
-                          *ngIf="resident.imageUrl && !tenantImageErrors[resident.id]"
-                          [src]="getTenantImageUrl(resident.imageUrl)"
-                          [alt]="'Photograph of ' + (resident.fullName || 'tenant')"
-                          class="tenant-detail-image"
-                          loading="lazy"
-                          (error)="onTenantImageError(resident.id)">
-
-                        <div
-                          *ngIf="!resident.imageUrl || tenantImageErrors[resident.id]"
-                          class="tenant-detail-image-placeholder">
-
+                        <div *ngIf="!resident.imageUrl || tenantImageErrors[resident.id]"
+                             class="tenant-detail-image-placeholder">
                           <i class="fa-solid fa-user"></i>
-
-                          <strong>
-                            {{ tenantImageErrors[resident.id]
-                              ? 'Tenant photograph unavailable'
-                              : 'No tenant photograph uploaded' }}
-                          </strong>
-
-                          <small>
-                            Add a photograph when registering or editing this tenant.
-                          </small>
-
+                          <strong>No tenant photograph available</strong>
+                          <small>Add a photograph when registering or editing this tenant.</small>
                         </div>
-
                       </div>
 
-
                       <div class="tenant-detail-image-caption">
-
                         <div>
-                          <span class="tenant-image-eyebrow">
-                            TENANT PROFILE
-                          </span>
-
+                          <span class="tenant-image-eyebrow">TENANT PROFILE</span>
                           <h5>{{ resident.fullName || 'Unnamed tenant' }}</h5>
-
                           <p>
                             <i class="fa-solid fa-phone me-1"></i>
                             {{ resident.phoneNumber || 'Phone number not provided' }}
                           </p>
                         </div>
-
-                        <span class="tenant-image-code">
-                          TENANT #{{ resident.id }}
-                        </span>
-
+                        <span class="tenant-image-code">TENANT #{{ resident.id }}</span>
                       </div>
-
                     </div>
 
-
-                    <!-- TENANT INFORMATION -->
                     <div class="tenant-information-section">
-
-                      <h6>
-                        <i class="fa-solid fa-user-circle me-2"></i>
-                        Personal and contact information
-                      </h6>
-
+                      <h6><i class="fa-solid fa-user-circle me-2"></i>Personal and contact information</h6>
 
                       <div class="detail-grid">
-
-                        <div>
-                          <span>Tenant ID</span>
-                          <strong>{{ resident.id }}</strong>
-                        </div>
-
-                        <div>
-                          <span>Full name</span>
-                          <strong>{{ resident.fullName || '—' }}</strong>
-                        </div>
-
-                        <div>
-                          <span>Identification type</span>
-                          <strong>{{ resident.identificationType || '—' }}</strong>
-                        </div>
-
-                        <div>
-                          <span>Identification number</span>
-                          <strong>{{ resident.identificationNumber || '—' }}</strong>
-                        </div>
-
-                        <div>
-                          <span>Phone number</span>
-                          <strong>{{ resident.phoneNumber || '—' }}</strong>
-                        </div>
-
-                        <div>
-                          <span>Email address</span>
-                          <strong>{{ resident.email || '—' }}</strong>
-                        </div>
-
-                        <div>
-                          <span>Residential address</span>
-                          <strong>{{ resident.address || '—' }}</strong>
-                        </div>
-
-                        <div>
-                          <span>Emergency contact name</span>
-                          <strong>{{ resident.emergencyContactName || '—' }}</strong>
-                        </div>
-
-                        <div>
-                          <span>Emergency contact phone</span>
-                          <strong>{{ resident.emergencyContactPhone || '—' }}</strong>
-                        </div>
-
+                        <div><span>Tenant ID</span><strong>{{ resident.id }}</strong></div>
+                        <div><span>Full name</span><strong>{{ resident.fullName || '—' }}</strong></div>
+                        <div><span>Identification type</span><strong>{{ resident.identificationType || '—' }}</strong></div>
+                        <div><span>Identification number</span><strong>{{ resident.identificationNumber || '—' }}</strong></div>
+                        <div><span>Phone number</span><strong>{{ resident.phoneNumber || '—' }}</strong></div>
+                        <div><span>Email address</span><strong>{{ resident.email || '—' }}</strong></div>
+                        <div><span>Residential address</span><strong>{{ resident.address || '—' }}</strong></div>
+                        <div><span>Emergency contact</span><strong>{{ resident.emergencyContactName || '—' }}</strong></div>
+                        <div><span>Emergency contact phone</span><strong>{{ resident.emergencyContactPhone || '—' }}</strong></div>
                         <div>
                           <span>Date registered</span>
-                          <strong>
-                            {{ resident.createdAt
-                              ? (resident.createdAt | date:'dd MMM yyyy, HH:mm')
-                              : '—' }}
-                          </strong>
+                          <strong>{{ resident.createdAt ? (resident.createdAt | date:'dd MMM yyyy, HH:mm') : '—' }}</strong>
                         </div>
-
                         <div>
                           <span>Last modified</span>
-                          <strong>
-                            {{ resident.updatedAt
-                              ? (resident.updatedAt | date:'dd MMM yyyy, HH:mm')
-                              : '—' }}
-                          </strong>
+                          <strong>{{ resident.updatedAt ? (resident.updatedAt | date:'dd MMM yyyy, HH:mm') : '—' }}</strong>
                         </div>
-
+                        <div><span>Account status</span><strong>{{ resident.status || 'UNKNOWN' }}</strong></div>
                       </div>
 
-
-                      <!-- TENANT NOTES -->
                       <div class="detail-notes">
                         <span>Additional notes</span>
-                        <p>
-                          {{ resident.notes || 'No additional notes have been provided.' }}
-                        </p>
+                        <p>{{ resident.notes || 'No additional notes have been provided.' }}</p>
                       </div>
 
-
-                      <!-- TENANT ACTIONS -->
                       <div class="detail-action-strip">
-
-                        <button
-                          type="button"
-                          class="btn btn-sm btn-outline-primary"
-                          (click)="runRecordAction('reminder', resident.id)">
-                          <i class="fa-solid fa-bell me-1"></i>
-                          Send rent reminder
+                        <button type="button" class="btn btn-sm btn-outline-primary"
+                                (click)="runRecordAction('edit', resident.id)">
+                          <i class="fa-solid fa-pen me-1"></i> Edit tenant
                         </button>
 
-                        <button
-                          type="button"
-                          class="btn btn-sm btn-outline-primary"
-                          (click)="runRecordAction('payments', resident.id)">
-                          <i class="fa-solid fa-receipt me-1"></i>
-                          View rent payments
+                        <button type="button" class="btn btn-sm btn-outline-primary"
+                                (click)="runRecordAction('reminder', resident.id)">
+                          <i class="fa-solid fa-bell me-1"></i> Send reminder
                         </button>
 
-                        <button
-                          type="button"
-                          class="btn btn-sm btn-outline-primary"
-                          (click)="runRecordAction('lease', resident.id)">
-                          <i class="fa-solid fa-file-contract me-1"></i>
-                          View tenancy documents
+                        <button type="button" class="btn btn-sm btn-outline-primary"
+                                (click)="runRecordAction('payments', resident.id)">
+                          <i class="fa-solid fa-receipt me-1"></i> View payments
                         </button>
 
+                        <button type="button" class="btn btn-sm btn-outline-primary"
+                                (click)="runRecordAction('lease', resident.id)">
+                          <i class="fa-solid fa-file-contract me-1"></i> Tenancy documents
+                        </button>
                       </div>
-
                     </div>
 
                   </div>
-
                 </td>
-
               </tr>
 
             </ng-container>
 
-
-            <!-- TENANT EMPTY STATE -->
             <tr *ngIf="filteredResidents.length === 0">
-
               <td colspan="6">
-
                 <div class="directory-empty">
-
                   <i class="fa-solid fa-users"></i>
-
                   <h6>No tenants found</h6>
-
-                  <p>
-                    No tenant records match your search. Try another search
-                    or check the selected status.
-                  </p>
-
-                  <button
-                    type="button"
-                    class="btn btn-primary btn-sm"
-                    (click)="openRoute('/app/tenant/register')">
-
-                    <i class="fa-solid fa-user-plus me-1"></i>
-                    Register a tenant
-
+                  <p>No tenant records match your search or selected filters.</p>
+                  <button type="button" class="btn btn-primary btn-sm"
+                          (click)="openRoute('/app/tenant/register')">
+                    <i class="fa-solid fa-user-plus me-1"></i> Register a tenant
                   </button>
-
                 </div>
-
               </td>
-
             </tr>
 
           </tbody>
-
         </table>
-
       </div>
-
     </section>
 
 
-
     <!-- =======================================================
-         9. PAGINATION
+         12. PAGINATION
     ======================================================== -->
-
-    <section
-      class="directory-pagination"
-      *ngIf="visibleRecords > 0"
-      aria-label="Directory pagination">
+    <section class="directory-pagination"
+             *ngIf="visibleRecords > 0"
+             aria-label="Directory pagination">
 
       <div class="pagination-info">
-
         <span>Showing</span>
-
         <strong>{{ pageStart }}–{{ pageEnd }}</strong>
-
-        <span class="pagination-info-label">of</span>
-
+        <span>of</span>
         <strong>{{ visibleRecords }}</strong>
-
-        <span class="pagination-info-label">records</span>
-
+        <span>records</span>
       </div>
-
 
       <div class="pagination-controls">
 
         <label for="pageSize">Rows per page</label>
 
-        <select
-          id="pageSize"
-          class="form-select pagination-size"
-          [ngModel]="pageSize"
-          (ngModelChange)="onPageSizeChanged($event)">
-
-          <option *ngFor="let size of pageSizeOptions"
-                  [ngValue]="size">
+        <select id="pageSize"
+                class="form-select pagination-size"
+                [ngModel]="pageSize"
+                (ngModelChange)="onPageSizeChanged($event)">
+          <option *ngFor="let size of pageSizeOptions" [ngValue]="size">
             {{ size }}
           </option>
-
         </select>
 
-
-        <button
-          type="button"
-          class="pagination-btn"
-          aria-label="Previous page"
-          title="Previous page"
-          [disabled]="page <= 1"
-          (click)="goToPage(page - 1)">
-
+        <button type="button"
+                class="pagination-btn"
+                aria-label="Previous page"
+                [disabled]="page <= 1"
+                (click)="goToPage(page - 1)">
           <i class="fa-solid fa-chevron-left"></i>
-
         </button>
 
-
-        <button
-          type="button"
-          class="pagination-btn"
-          *ngFor="let number of pageNumbers"
-          [class.active]="number === page"
-          [attr.aria-current]="number === page ? 'page' : null"
-          (click)="goToPage(number)">
-
+        <button type="button"
+                class="pagination-btn"
+                *ngFor="let number of pageNumbers"
+                [class.active]="number === page"
+                [attr.aria-current]="number === page ? 'page' : null"
+                (click)="goToPage(number)">
           {{ number }}
-
         </button>
 
-
-        <button
-          type="button"
-          class="pagination-btn"
-          aria-label="Next page"
-          title="Next page"
-          [disabled]="page >= totalPages"
-          (click)="goToPage(page + 1)">
-
+        <button type="button"
+                class="pagination-btn"
+                aria-label="Next page"
+                [disabled]="page >= totalPages"
+                (click)="goToPage(page + 1)">
           <i class="fa-solid fa-chevron-right"></i>
-
         </button>
 
       </div>
-
     </section>
 
 
-
     <!-- =======================================================
-         10. DIRECTORY FOOTER
+         13. DIRECTORY FOOTER
     ======================================================== -->
-
-    <footer class="directory-footer mt-3">
-
+    <footer class="directory-footer">
       <span>
         Showing {{ visibleRecords }} of {{ totalRecords }} registered records
       </span>
@@ -1717,7 +1371,6 @@
         <i class="fa-solid fa-shield-halved me-1"></i>
         Secure rental management workspace
       </span>
-
     </footer>
 
   </ng-container>

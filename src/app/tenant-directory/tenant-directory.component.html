@@ -1,59 +1,4 @@
-<div class="tenant-directory container-fluid py-3 py-lg-4">
-
-  <!-- =========================================================
-       1. PREMIUM WORKSPACE HEADER
-  ========================================================== -->
-  <header class="directory-header">
-
-    <div class="directory-heading">
-      <div class="directory-breadcrumb">
-        <span>PROPERTY FINANCE</span>
-        <i class="fa-solid fa-chevron-right"></i>
-        <span>RENTAL MANAGEMENT</span>
-        <i class="fa-solid fa-chevron-right"></i>
-        <strong>{{ pageTitle }}</strong>
-      </div>
-
-      <div class="directory-title-row">
-        <span class="directory-title-icon">
-          <i class="fa-solid"
-             [ngClass]="directoryType === 'properties'
-               ? 'fa-building'
-               : directoryType === 'units'
-                 ? 'fa-door-open'
-                 : 'fa-users'">
-          </i>
-        </span>
-
-        <div>
-          <h2 class="directory-title mb-1">{{ pageTitle }}</h2>
-          <p class="directory-subtitle mb-0">{{ pageDescription }}</p>
-        </div>
-      </div>
-    </div>
-
-    <div class="directory-header-actions">
-
-      <button type="button"
-              class="btn directory-refresh-btn"
-              (click)="refresh()"
-              [disabled]="loading"
-              title="Refresh directory">
-        <i class="fa-solid fa-rotate"
-           [class.fa-spin]="loading"></i>
-        <span>Refresh</span>
-      </button>
-
-      <button type="button"
-              class="btn directory-primary-btn"
-              (click)="openRoute(registrationRoute)">
-        <i class="fa-solid fa-plus"></i>
-        <span>{{ registrationLabel }}</span>
-      </button>
-
-    </div>
-  </header>
-
+<div class="tenant-directory container-fluid py-2 py-lg-4">
 
   <!-- =========================================================
        2. WORKSPACE NAVIGATION
@@ -114,6 +59,27 @@
       <i class="fa-solid fa-screwdriver-wrench"></i>
       <span>Maintenance</span>
     </a>
+
+        <div class="directory-header-actions">
+
+      <button type="button"
+              class="btn directory-refresh-btn"
+              (click)="refresh()"
+              [disabled]="loading"
+              title="Refresh directory">
+        <i class="fa-solid fa-rotate"
+           [class.fa-spin]="loading"></i>
+        <span>Refresh</span>
+      </button>
+
+      <button type="button"
+              class="btn directory-primary-btn"
+              (click)="openRoute(registrationRoute)">
+        <i class="fa-solid fa-plus"></i>
+        <span>{{ registrationLabel }}</span>
+      </button>
+
+    </div>
 
   </nav>
 

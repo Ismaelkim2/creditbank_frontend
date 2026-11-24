@@ -573,23 +573,60 @@
   }
 }
 
+
 /* =========================================================
-   13. MAIN CONTENT
+   MAIN CONTENT — RESPONSIVE SIDEBAR ALIGNMENT
    ========================================================= */
 
 .main-content {
-  min-height: 100vh;
+  box-sizing: border-box;
+
+  width: auto;
   min-width: 0;
+  min-height: 100vh;
 
-  margin-left: var(--sidebar-width);
+  /* Default desktop spacing */
+  margin-left: var(--sidebar-collapsed-width);
 
-  transition: margin-left var(--sidebar-transition);
+  transition:
+    margin-left var(--sidebar-transition),
+    width var(--sidebar-transition);
 }
 
 .body-content {
+  box-sizing: border-box;
+
+  width: 100%;
   min-width: 0;
   min-height: 100vh;
+
+  padding: 0;
 }
+
+/* Desktop: follow the actual sidebar state */
+@media (min-width: 992px) {
+
+  /* Collapsed sidebar: 84px */
+  .sidebar.sidebar-collapsed ~ .main-content {
+    margin-left: var(--sidebar-collapsed-width);
+  }
+
+  /* Expanded sidebar: 286px */
+  .sidebar:not(.sidebar-collapsed) ~ .main-content {
+    margin-left: var(--sidebar-width);
+  }
+}
+
+/* Tablet and mobile: content uses full available width */
+@media (max-width: 991.98px) {
+
+  .main-content,
+  .sidebar ~ .main-content {
+    width: 100%;
+    margin-left: 0 !important;
+  }
+}
+
 
 /* =========================================================
    14. MOBILE OVERLAY

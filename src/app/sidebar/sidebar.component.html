@@ -762,22 +762,14 @@
 
 </aside>
 
+<!-- MOBILE OVERLAY -->
 <div
   class="sidebar-overlay"
   *ngIf="isMobileSidebarActive"
   (click)="closeSidebar()">
 </div>
 
-<main class="main-content">
-  <div class="body-content">
-    <router-outlet></router-outlet>
-  </div>
-
-
-<!-- ============================================================
-     MAIN APPLICATION CONTENT
-=============================================================== -->
-
+<!-- MAIN APPLICATION CONTENT -->
 <main class="main-content">
 
   <div class="body-content">

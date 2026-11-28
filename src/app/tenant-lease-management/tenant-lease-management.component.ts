@@ -48,6 +48,8 @@ export class TenantLeaseManagementComponent implements OnInit, OnDestroy {
   searchTerm = '';
   statusFilter: 'ALL' | TenantLeaseStatus = 'ALL';
 
+  showLeaseForm = false;
+
   readonly statusOptions: TenantLeaseStatus[] = [
     'DRAFT',
     'ACTIVE',

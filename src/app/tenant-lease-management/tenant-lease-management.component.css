@@ -102,8 +102,8 @@
 
 .lease-refresh-btn:hover:not(:disabled) {
   color: var(--lease-navy);
-  background: #ffffff;
-  border-color: #ffffff;
+   background: #2f47b6;
+  border-color: #3b77bb;
   transform: translateY(-1px);
 }
 

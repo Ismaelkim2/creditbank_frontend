@@ -1,811 +1,849 @@
 
 /* ================================================================
-   CREDICORE — PREMIUM LEASE MANAGEMENT
-   Enterprise Property Operations Interface
-   Responsive | Accessible | Bootstrap Compatible
+   CREDICORE — PREMIUM LEASE MANAGEMENT WORKSPACE
+   Built specifically for the supplied Angular HTML template.
+   Bootstrap 5 compatible | Font Awesome compatible
    ================================================================ */
 
 :host {
-  --lease-navy: #142c4c;
-  --lease-navy-deep: #0d1d34;
-  --lease-blue: #2869a8;
-  --lease-blue-dark: #1c548d;
-  --lease-blue-soft: #edf5ff;
-  --lease-text: #263b53;
-  --lease-muted: #77879b;
-  --lease-border: #e2e9f1;
-  --lease-green: #21845b;
-  --lease-amber: #b47a22;
-  --lease-purple: #7561b3;
-  --lease-red: #bd4e4e;
-
   display: block;
   width: 100%;
-  min-width: 0;
-  color: var(--lease-text);
-  font-family: Inter, "Segoe UI", Roboto, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
+
+  --lease-navy: #142b4a;
+  --lease-navy-dark: #0e2039;
+  --lease-blue: #2563eb;
+  --lease-blue-dark: #1d4ed8;
+  --lease-blue-soft: #eff6ff;
+
+  --lease-text: #243449;
+  --lease-muted: #718096;
+  --lease-border: #e5eaf1;
+  --lease-surface: #ffffff;
+  --lease-background: #f4f7fb;
+
+  --lease-green: #16845b;
+  --lease-green-soft: #eaf8f1;
+  --lease-amber: #b7791f;
+  --lease-amber-soft: #fff7e8;
+  --lease-red: #c24141;
+  --lease-red-soft: #fff0f0;
+  --lease-purple: #7254b8;
+  --lease-purple-soft: #f3efff;
+
+  --lease-radius: 15px;
+  --lease-shadow: 0 4px 18px rgba(24, 43, 71, .055);
+  --lease-shadow-hover: 0 10px 26px rgba(24, 43, 71, .10);
 }
 
-.lease-page,
-.lease-page * {
+* {
   box-sizing: border-box;
 }
 
 .lease-page {
   width: 100%;
   min-width: 0;
-  padding: 23px 24px 30px;
-  background:
-    radial-gradient(ellipse at 4% 0%, rgba(51, 111, 177, .055), transparent 30%),
-    linear-gradient(180deg, #f5f8fc 0%, #f2f5fa 100%);
+  padding: 22px 24px 18px;
+  color: var(--lease-text);
+  background: var(--lease-background);
+  font-family: inherit;
+  overflow-x: clip;
+}
+
+.lease-page button,
+.lease-page input,
+.lease-page select,
+.lease-page textarea {
+  font-family: inherit;
 }
 
 /* ================================================================
    01. PAGE HEADER
    ================================================================ */
 
-.lease-page-header {
+.lease-header {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 25px;
-  margin-bottom: 24px;
-  padding: 4px 1px 8px;
+  gap: 24px;
+  margin-bottom: 25px;
+  padding: 5px 1px 19px;
+  border-bottom: 1px solid #e1e8f0;
 }
 
-.lease-header-main {
+.lease-header-copy {
   min-width: 0;
 }
 
-.lease-eyebrow {
+.lease-breadcrumb {
   display: flex;
   align-items: center;
   flex-wrap: wrap;
   gap: 9px;
-  margin-bottom: 11px;
-  color: #8392a5;
-  font-size: 9px;
-  font-weight: 850;
-  letter-spacing: 1.25px;
+  margin-bottom: 10px;
+  color: #8492a6;
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 1.05px;
 }
 
-.eyebrow-icon {
+.breadcrumb-icon {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 27px;
-  height: 27px;
-  border: 1px solid #dce7f4;
-  border-radius: 8px;
-  background: linear-gradient(145deg, #f5f9ff, #e6effa);
-  color: #3474b2;
-  box-shadow: 0 2px 5px rgba(30, 73, 119, .05);
+  width: 25px;
+  height: 25px;
+  border-radius: 7px;
+  color: var(--lease-blue);
+  background: #e9f1ff;
+  font-size: 12px;
 }
 
-.eyebrow-divider {
-  color: #bdc7d3;
+.lease-breadcrumb > i {
+  color: #b1bdcc;
+  font-size: 9px;
 }
 
-.lease-title {
+.lease-breadcrumb > span:last-child {
+  color: var(--lease-blue);
+}
+
+.lease-header h2 {
   margin: 0;
-  color: var(--lease-navy-deep);
-  font-size: clamp(24px, 2vw, 30px);
-  font-weight: 850;
-  letter-spacing: -1px;
+  color: var(--lease-navy-dark);
+  font-size: clamp(23px, 2.1vw, 29px);
+  font-weight: 800;
+  letter-spacing: -.75px;
   line-height: 1.2;
 }
 
-.lease-subtitle {
+.lease-header-copy > p {
   max-width: 690px;
   margin: 8px 0 0;
-  color: #75859a;
-  font-size: 12px;
-  line-height: 1.7;
+  color: var(--lease-muted);
+  font-size: 13px;
+  line-height: 1.65;
 }
 
 .lease-header-actions {
   display: flex;
   align-items: center;
   justify-content: flex-end;
+  flex-wrap: wrap;
+  gap: 13px;
   flex-shrink: 0;
-  gap: 10px;
+}
+
+.lease-security-label {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  color: #64758b;
+  font-size: 11px;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.lease-security-label i {
+  color: var(--lease-green);
+  font-size: 13px;
 }
 
 .lease-refresh-btn {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  gap: 9px;
-  min-height: 41px;
-  padding: 0 16px;
-  border: 1px solid #d8e3ef;
-  border-radius: 9px;
-  background: linear-gradient(180deg, #fff, #f8fafd);
-  color: #35536f;
-  font-size: 11px;
-  font-weight: 750;
-  box-shadow: 0 3px 9px rgba(25, 54, 88, .045);
+  gap: 8px;
+  min-height: 39px;
+  padding: 0 15px;
+  border: 1px solid #d9e4f2;
+  border-radius: 8px;
+  color: var(--lease-navy);
+  background: #fff;
+  font-size: 12px;
+  font-weight: 700;
   transition: .2s ease;
 }
 
 .lease-refresh-btn:hover:not(:disabled) {
-  border-color: #a9c5e3;
-  background: #edf5ff;
-  color: #225e99;
+  border-color: #9bb8e8;
+  color: var(--lease-blue);
+  background: #f6f9ff;
   transform: translateY(-1px);
-  box-shadow: 0 5px 12px rgba(35, 91, 148, .09);
 }
 
 .lease-refresh-btn:disabled {
-  opacity: .6;
+  opacity: .65;
   cursor: not-allowed;
 }
 
 /* ================================================================
-   02. NOTIFICATIONS
+   02. ALERTS AND NOTIFICATIONS
    ================================================================ */
 
 .lease-alert {
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   gap: 11px;
-  margin-bottom: 17px;
+  margin: 0 0 16px;
   padding: 12px 15px;
   border: 1px solid transparent;
   border-radius: 9px;
-  font-size: 11px;
-  font-weight: 650;
-  box-shadow: 0 2px 7px rgba(30, 50, 75, .025);
+  font-size: 12px;
+  font-weight: 600;
+  line-height: 1.55;
+}
+
+.lease-alert > i {
+  margin-top: 2px;
+  font-size: 15px;
 }
 
 .lease-alert > span {
   flex: 1;
   min-width: 0;
-  line-height: 1.5;
+  overflow-wrap: anywhere;
 }
 
-.lease-alert-danger {
-  border-color: #f0d1d1;
-  background: linear-gradient(110deg, #fff6f6, #fffafa);
-  color: #a83d3d;
-}
-
-.lease-alert-success {
-  border-color: #cce9d8;
-  background: linear-gradient(110deg, #f0faf4, #f8fcf9);
-  color: #27774f;
-}
-
-.alert-dismiss {
+.lease-alert button {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 28px;
-  height: 28px;
-  flex-shrink: 0;
+  width: 25px;
+  height: 25px;
+  margin: -4px -5px 0 0;
   border: 0;
-  border-radius: 7px;
-  background: transparent;
+  border-radius: 6px;
   color: inherit;
-  transition: .18s ease;
+  background: transparent;
+  cursor: pointer;
 }
 
-.alert-dismiss:hover {
-  background: rgba(0, 0, 0, .055);
+.lease-alert button:hover {
+  background: rgba(0, 0, 0, .06);
+}
+
+.lease-alert-error {
+  color: #a52f36;
+  background: var(--lease-red-soft);
+  border-color: #f5d1d3;
+}
+
+.lease-alert-success {
+  color: #14734f;
+  background: var(--lease-green-soft);
+  border-color: #cbead9;
+}
+
+.lease-form-alert {
+  display: flex;
+  align-items: flex-start;
+  gap: 9px;
+  margin: 0 0 18px;
+  padding: 11px 13px;
+  border: 1px solid #f2d7a5;
+  border-radius: 8px;
+  color: #966315;
+  background: #fff8e9;
+  font-size: 12px;
+  font-weight: 600;
+  line-height: 1.5;
+}
+
+.lease-form-alert i {
+  margin-top: 2px;
 }
 
 /* ================================================================
-   03. LEASE OVERVIEW — PREMIUM FINANCIAL CARDS
+   03. PORTFOLIO OVERVIEW
    ================================================================ */
+
+.lease-overview-section {
+  margin-bottom: 25px;
+}
+
+.section-intro {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 15px;
+  margin-bottom: 13px;
+}
+
+.section-kicker {
+  display: block;
+  margin-bottom: 5px;
+  color: var(--lease-blue);
+  font-size: 9px;
+  font-weight: 800;
+  letter-spacing: 1.15px;
+}
+
+.section-intro h3 {
+  margin: 0;
+  color: var(--lease-navy);
+  font-size: 17px;
+  font-weight: 800;
+  letter-spacing: -.3px;
+}
+
+.section-intro p {
+  margin: 5px 0 0;
+  color: var(--lease-muted);
+  font-size: 11px;
+  line-height: 1.5;
+}
+
+.overview-live {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 7px 10px;
+  border: 1px solid #dcebe4;
+  border-radius: 20px;
+  color: #42765f;
+  background: #f3faf6;
+  font-size: 10px;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.overview-live > span {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: #20a36c;
+  box-shadow: 0 0 0 3px rgba(32, 163, 108, .12);
+}
 
 .lease-overview {
   display: grid;
   grid-template-columns: repeat(4, minmax(0, 1fr));
-  gap: 15px;
-  margin-bottom: 24px;
+  gap: 13px;
 }
 
-.lease-stat-card {
-  --card-accent: #3979b8;
-  --card-icon-bg: #eaf3ff;
-  --card-icon-color: #3474b3;
-
+.lease-metric-card {
   position: relative;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
   min-width: 0;
-  min-height: 139px;
+  padding: 17px 17px 13px;
+  border: 1px solid var(--lease-border);
+  border-radius: 12px;
+  background: #fff;
+  box-shadow: var(--lease-shadow);
+  transition: transform .2s ease, box-shadow .2s ease;
   overflow: hidden;
-  padding: 17px 18px 14px;
-  border: 1px solid #e1e9f2;
-  border-radius: 13px;
-  background:
-    radial-gradient(circle at 100% 0%, rgba(57, 121, 184, .075), transparent 43%),
-    linear-gradient(145deg, #ffffff 0%, #fbfdff 100%);
-  box-shadow:
-    0 3px 9px rgba(23, 48, 78, .035),
-    0 10px 25px rgba(23, 48, 78, .025);
-  transition: transform .22s ease, box-shadow .22s ease, border-color .22s ease;
 }
 
-.lease-stat-card::before {
+.lease-metric-card::before {
   position: absolute;
   top: 0;
   left: 0;
   width: 100%;
   height: 3px;
-  background: linear-gradient(90deg, var(--card-accent), rgba(255, 255, 255, .2));
+  background: #8ca6cc;
   content: "";
 }
 
-.lease-stat-card::after {
-  position: absolute;
-  top: -38px;
-  right: -38px;
-  width: 105px;
-  height: 105px;
-  border: 1px solid rgba(70, 120, 175, .07);
-  border-radius: 50%;
-  content: "";
-  pointer-events: none;
+.metric-total::before {
+  background: #3975d7;
 }
 
-.lease-stat-card:hover {
-  border-color: #cbd9e9;
+.metric-active::before {
+  background: #159b6b;
+}
+
+.metric-draft::before {
+  background: #d79b35;
+}
+
+.metric-revenue::before {
+  background: #8264c5;
+}
+
+.lease-metric-card:hover {
   transform: translateY(-3px);
-  box-shadow:
-    0 7px 17px rgba(23, 48, 78, .055),
-    0 14px 30px rgba(23, 48, 78, .045);
+  box-shadow: var(--lease-shadow-hover);
 }
 
-.lease-stat-top {
-  position: relative;
-  z-index: 1;
+.metric-top {
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: 10px;
+  min-width: 0;
 }
 
-.lease-stat-label {
-  color: #73849a;
-  font-size: 10.5px;
-  font-weight: 750;
-  letter-spacing: .12px;
+.metric-top > div {
+  min-width: 0;
 }
 
-.lease-stat-icon {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 40px;
-  height: 40px;
-  flex: 0 0 auto;
-  border: 1px solid rgba(62, 111, 167, .09);
-  border-radius: 11px;
-  background: var(--card-icon-bg);
-  color: var(--card-icon-color);
-  font-size: 16px;
-  box-shadow: inset 0 1px 0 rgba(255, 255, 255, .75);
-}
-
-.lease-stat-value {
-  position: relative;
-  z-index: 1;
-  margin: 11px 0 9px;
-  color: #142f50;
-  font-size: clamp(27px, 2.25vw, 33px);
-  font-weight: 850;
-  letter-spacing: -1.1px;
-  line-height: 1.1;
-  font-variant-numeric: tabular-nums;
-}
-
-.lease-stat-money {
-  font-size: clamp(20px, 1.75vw, 26px);
-  letter-spacing: -.7px;
-  overflow-wrap: anywhere;
-}
-
-.lease-stat-bottom {
-  position: relative;
-  z-index: 1;
-  display: flex;
-  align-items: center;
-  gap: 7px;
-  min-height: 21px;
-  padding-top: 9px;
-  border-top: 1px solid rgba(220, 229, 239, .85);
-  color: #8290a1;
-  font-size: 9px;
-  font-weight: 600;
+.metric-label {
+  display: block;
+  margin-bottom: 9px;
+  color: #718096;
+  font-size: 11px;
+  font-weight: 700;
   line-height: 1.4;
 }
 
-.stat-indicator {
-  width: 7px;
-  height: 7px;
-  flex: 0 0 auto;
-  border-radius: 50%;
-  background: var(--card-accent);
-  box-shadow: 0 0 0 3px rgba(50, 110, 170, .09);
+.metric-top h3 {
+  margin: 0;
+  color: var(--lease-navy-dark);
+  font-size: 29px;
+  font-weight: 800;
+  line-height: 1.1;
+  letter-spacing: -.8px;
+  overflow-wrap: anywhere;
 }
 
-.icon-blue {
-  --card-accent: #3478ba;
-  --card-icon-bg: #eaf3ff;
-  --card-icon-color: #3478ba;
+.metric-top h3.metric-currency {
+  font-size: clamp(17px, 1.65vw, 23px);
+  letter-spacing: -.55px;
+  white-space: nowrap;
 }
 
-.icon-green {
-  --card-accent: #23936a;
-  --card-icon-bg: #e9f7ef;
-  --card-icon-color: #21845b;
+.metric-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 43px;
+  height: 43px;
+  flex: 0 0 43px;
+  border-radius: 12px;
+  color: #3975d7;
+  background: #edf4ff;
+  font-size: 17px;
 }
 
-.icon-amber {
-  --card-accent: #d09a3c;
-  --card-icon-bg: #fff5e5;
-  --card-icon-color: #b47a22;
+.metric-active .metric-icon {
+  color: var(--lease-green);
+  background: var(--lease-green-soft);
 }
 
-.icon-purple {
-  --card-accent: #8370c3;
-  --card-icon-bg: #f1edfc;
-  --card-icon-color: #7561b3;
+.metric-draft .metric-icon {
+  color: var(--lease-amber);
+  background: var(--lease-amber-soft);
 }
 
-.lease-stat-card:has(.icon-green) {
-  --card-accent: #23936a;
-  --card-icon-bg: #e9f7ef;
-  --card-icon-color: #21845b;
+.metric-revenue .metric-icon {
+  color: var(--lease-purple);
+  background: var(--lease-purple-soft);
 }
 
-.lease-stat-card:has(.icon-amber) {
-  --card-accent: #d09a3c;
-  --card-icon-bg: #fff5e5;
-  --card-icon-color: #b47a22;
+.metric-bottom {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  margin-top: 15px;
+  padding-top: 10px;
+  border-top: 1px solid #edf0f5;
 }
 
-.lease-stat-card:has(.icon-purple) {
-  --card-accent: #8370c3;
-  --card-icon-bg: #f1edfc;
-  --card-icon-color: #7561b3;
+.metric-caption {
+  color: #8a96a7;
+  font-size: 10px;
+  line-height: 1.4;
 }
 
-.indicator-blue {
-  background: #3478ba;
-}
-
-.indicator-green {
-  background: #23936a;
-  box-shadow: 0 0 0 3px rgba(35, 147, 106, .10);
-}
-
-.indicator-amber {
-  background: #d09a3c;
-  box-shadow: 0 0 0 3px rgba(208, 154, 60, .10);
-}
-
-.indicator-purple {
-  background: #8370c3;
-  box-shadow: 0 0 0 3px rgba(131, 112, 195, .10);
+.metric-index {
+  color: #b3bfce;
+  font-size: 10px;
+  font-weight: 800;
 }
 
 /* ================================================================
-   04. MAIN PANELS
+   04. COMMON PANELS
    ================================================================ */
 
 .lease-panel {
-  position: relative;
   min-width: 0;
-  margin-bottom: 22px;
+  margin-bottom: 23px;
+  border: 1px solid var(--lease-border);
+  border-radius: var(--lease-radius);
+  background: var(--lease-surface);
+  box-shadow: var(--lease-shadow);
   overflow: hidden;
-  border: 1px solid #e0e8f1;
-  border-radius: 13px;
-  background: #fff;
-  box-shadow:
-    0 3px 10px rgba(22, 45, 73, .03),
-    0 12px 30px rgba(22, 45, 73, .025);
 }
 
-.lease-panel-header {
+.panel-header {
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: 18px;
-  min-height: 77px;
-  padding: 17px 21px;
-  border-bottom: 1px solid #e9eef4;
-  background:
-    linear-gradient(105deg, #ffffff 0%, #fbfdff 75%, #f6f9fd 100%);
+  padding: 19px 21px;
+  border-bottom: 1px solid #e9edf3;
+  background: linear-gradient(105deg, #fff 0%, #f9fbff 100%);
 }
 
-.lease-panel-heading {
+.panel-heading {
   display: flex;
   align-items: center;
   gap: 13px;
   min-width: 0;
 }
 
-.panel-heading-icon {
-  display: inline-flex;
+.panel-icon {
+  display: flex;
   align-items: center;
   justify-content: center;
   width: 43px;
   height: 43px;
-  flex: 0 0 auto;
-  border: 1px solid #dce8f5;
+  flex: 0 0 43px;
   border-radius: 11px;
-  background: linear-gradient(145deg, #f2f7ff, #e7f0fb);
-  color: #3475b5;
   font-size: 17px;
-  box-shadow: inset 0 1px 0 #fff;
 }
 
-.register-icon {
-  border-color: #dce4ef;
-  background: linear-gradient(145deg, #f2f5fa, #e7edf5);
-  color: #314e70;
+.panel-icon-blue {
+  color: #2864ce;
+  background: #eaf2ff;
 }
 
-.panel-heading-text {
-  min-width: 0;
+.panel-icon-navy {
+  color: #fff;
+  background: var(--lease-navy);
 }
 
-.panel-heading-text h4 {
+.panel-eyebrow {
+  display: block;
+  margin-bottom: 4px;
+  color: var(--lease-blue);
+  font-size: 9px;
+  font-weight: 800;
+  letter-spacing: .9px;
+}
+
+.panel-heading h3 {
   margin: 0;
-  color: #1d3858;
-  font-size: 15px;
-  font-weight: 850;
-  letter-spacing: -.35px;
+  color: var(--lease-navy-dark);
+  font-size: 17px;
+  font-weight: 800;
+  letter-spacing: -.3px;
 }
 
-.panel-heading-text p {
+.panel-heading p {
   margin: 5px 0 0;
-  color: #8290a2;
-  font-size: 10.5px;
-  line-height: 1.55;
+  color: var(--lease-muted);
+  font-size: 11px;
+  line-height: 1.5;
 }
 
-.required-note {
-  flex-shrink: 0;
-  color: #8793a3;
+.required-indicator {
+  color: #8995a5;
   font-size: 10px;
-  font-weight: 650;
+  font-weight: 600;
+  white-space: nowrap;
 }
 
-.required-note span {
-  color: #d64e4e;
-  font-weight: 900;
-}
-
-/* ================================================================
-   05. FORM ALERTS AND LOADING
-   ================================================================ */
-
-.lease-inline-error {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  margin: 15px 21px 0;
-  padding: 11px 13px;
-  border: 1px solid #f0d3d3;
-  border-radius: 8px;
-  background: #fff6f6;
-  color: #a43d3d;
-  font-size: 11px;
-  font-weight: 650;
-}
-
-.lease-loading {
-  display: flex;
-  align-items: center;
-  justify-content: flex-start;
-  gap: 10px;
-  padding: 16px 21px;
-  color: #63778e;
-  font-size: 11px;
-  font-weight: 650;
-}
-
-.lease-loading .spinner-border {
-  width: 17px;
-  height: 17px;
-  color: #3679b9;
+.required-indicator span,
+.lease-label > span:first-child {
+  color: #d84b52;
 }
 
 /* ================================================================
-   06. FORM BODY AND SECTION HEADINGS
+   05. FORM CONTENT
    ================================================================ */
 
-.lease-form-body {
-  padding: 2px 21px 0;
+.lease-form-content {
+  padding: 5px 22px 0;
 }
 
-.lease-form-section {
-  padding: 22px 0 23px;
-  border-bottom: 1px solid #e9eef4;
+.form-section {
+  padding: 21px 0 23px;
+  border-bottom: 1px solid #edf0f5;
 }
 
-.lease-terms-section {
+.form-section-last {
   border-bottom: 0;
 }
 
-.form-section-heading {
+.form-section-header {
   display: flex;
   align-items: flex-start;
   gap: 12px;
-  margin-bottom: 18px;
+  margin-bottom: 19px;
 }
 
-.section-number {
-  display: inline-flex;
+.form-section-number {
+  display: flex;
   align-items: center;
   justify-content: center;
   width: 30px;
   height: 30px;
-  flex: 0 0 auto;
-  border: 1px solid #d6e5f5;
-  border-radius: 9px;
-  background: linear-gradient(145deg, #f2f7ff, #e8f1fc);
-  color: #2f6fae;
-  font-size: 10px;
-  font-weight: 850;
-  box-shadow: 0 2px 5px rgba(42, 94, 150, .05);
-}
-
-.form-section-heading h5 {
-  margin: 1px 0 5px;
-  color: #2b435e;
-  font-size: 12.5px;
-  font-weight: 850;
-  letter-spacing: -.1px;
-}
-
-.form-section-heading p {
-  margin: 0;
-  color: #8996a6;
-  font-size: 10px;
-  line-height: 1.55;
-}
-
-/* ================================================================
-   07. FORM LABELS AND INPUTS
-   ================================================================ */
-
-.lease-page .form-label {
-  display: flex;
-  align-items: center;
-  gap: 4px;
-  margin-bottom: 7px;
-  color: #43566e;
-  font-size: 10.5px;
+  flex: 0 0 30px;
+  border: 1px solid #dce8fb;
+  border-radius: 8px;
+  color: var(--lease-blue);
+  background: #f0f5ff;
+  font-size: 11px;
   font-weight: 800;
-  letter-spacing: .05px;
 }
 
-.lease-page .form-label span {
-  color: #d64e4e;
+.form-section-header h4 {
+  margin: 1px 0 4px;
+  color: #243b59;
+  font-size: 13px;
+  font-weight: 800;
 }
 
-.lease-input-wrap {
+.form-section-header p {
+  margin: 0;
+  color: #8793a3;
+  font-size: 10.5px;
+  line-height: 1.5;
+}
+
+.lease-label {
+  display: block;
+  margin-bottom: 7px;
+  color: #35465d;
+  font-size: 11px;
+  font-weight: 750;
+}
+
+.lease-label > span:first-child {
+  margin-left: 2px;
+}
+
+.optional-label {
+  display: inline-block;
+  margin-left: 7px;
+  padding: 3px 6px;
+  border-radius: 4px;
+  color: #7b8798 !important;
+  background: #f0f3f7;
+  font-size: 8px;
+  font-weight: 800;
+  letter-spacing: .45px;
+  vertical-align: 1px;
+}
+
+.lease-field {
   position: relative;
   min-width: 0;
 }
 
-.input-leading-icon {
+.lease-field > i {
   position: absolute;
   z-index: 2;
   top: 50%;
-  left: 12px;
-  color: #8295aa;
-  font-size: 11px;
+  left: 13px;
+  color: #8b9bb0;
+  font-size: 13px;
   pointer-events: none;
   transform: translateY(-50%);
 }
 
-.lease-form-control {
-  display: block;
-  width: 100%;
+.lease-field .lease-control {
+  padding-left: 37px;
+}
+
+.lease-control,
+.lease-register-toolbar .form-control,
+.lease-register-toolbar .form-select {
   min-width: 0;
   min-height: 42px;
-  padding: 9px 12px;
-  border: 1px solid #d9e3ed;
+  border: 1px solid #dce3ed;
   border-radius: 8px;
+  color: #26384e;
   background-color: #fff;
-  color: #344a63;
-  font-family: inherit;
-  font-size: 11px;
-  font-weight: 550;
-  line-height: 1.45;
-  box-shadow: 0 1px 2px rgba(20, 45, 75, .025);
-  transition:
-    border-color .18s ease,
-    box-shadow .18s ease,
-    background-color .18s ease;
+  font-size: 12px;
+  box-shadow: none;
+  transition: border-color .18s ease, box-shadow .18s ease;
 }
 
-.lease-input-wrap .lease-form-control {
-  padding-left: 35px;
+.lease-control::placeholder,
+.lease-register-toolbar .form-control::placeholder {
+  color: #a0abba;
+  opacity: 1;
 }
 
-.lease-form-control:hover:not(:disabled):not(:focus) {
-  border-color: #bdcddd;
+.lease-control:focus,
+.lease-register-toolbar .form-control:focus,
+.lease-register-toolbar .form-select:focus {
+  border-color: #7da5eb;
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, .10);
+  outline: none;
 }
 
-.lease-form-control:focus {
-  border-color: #6b9ed1;
-  outline: 0;
-  background-color: #fff;
-  box-shadow: 0 0 0 3px rgba(46, 112, 177, .11);
-}
-
-.lease-form-control::placeholder {
-  color: #a0acba;
-  font-weight: 400;
-}
-
-.lease-form-control:disabled {
-  border-color: #e4e9ef;
-  background: #f4f6f9;
-  color: #9ba6b3;
+.lease-control:disabled,
+.lease-control:disabled:focus {
+  color: #929eac;
+  background-color: #f3f5f8;
   cursor: not-allowed;
 }
 
-.lease-form-control.is-invalid {
-  border-color: #d85b5b;
-  background-color: #fffafa;
-  box-shadow: 0 0 0 2px rgba(216, 91, 91, .055);
+select.lease-control {
+  padding-right: 32px;
+  cursor: pointer;
+}
+
+input.lease-control {
+  padding-right: 12px;
+}
+
+.lease-control.is-invalid,
+.lease-control.ng-invalid.ng-touched {
+  border-color: #dc646a;
+}
+
+.lease-control.is-invalid:focus,
+.lease-control.ng-invalid.ng-touched:focus {
+  box-shadow: 0 0 0 3px rgba(220, 70, 80, .09);
 }
 
 .lease-page .invalid-feedback {
   margin-top: 5px;
-  color: #c04444;
-  font-size: 9.5px;
+  color: #c24141;
+  font-size: 10px;
   font-weight: 600;
 }
 
-.field-hint {
+.lease-page .lease-control.is-invalid ~ .invalid-feedback {
   display: block;
-  margin-top: 6px;
-  color: #8a98a8;
-  font-size: 9px;
-  line-height: 1.55;
 }
 
-.field-hint i {
-  margin-right: 4px;
-  color: #7896b5;
+.field-help {
+  display: flex;
+  align-items: flex-start;
+  gap: 5px;
+  margin-top: 7px;
+  color: #8995a5;
+  font-size: 10px;
+  line-height: 1.5;
+}
+
+.field-help i {
+  margin-top: 2px;
+  color: #8da4c5;
+  font-size: 10px;
 }
 
 .field-error {
   margin-top: 5px;
-  color: #c04444;
-  font-size: 9.5px;
+  color: #c24141;
+  font-size: 10px;
+  font-weight: 600;
+}
+
+/* Financial inputs */
+
+.lease-money-field {
+  min-width: 0;
+}
+
+.lease-money-field .input-group-text {
+  display: flex;
+  align-items: center;
+  padding: 0 11px;
+  border: 1px solid #dce3ed;
+  border-right: 0;
+  border-radius: 8px 0 0 8px;
+  color: #61748c;
+  background: #f4f7fb;
+  font-size: 10px;
+  font-weight: 800;
+}
+
+.lease-money-field .lease-control {
+  border-radius: 0 8px 8px 0;
+}
+
+.lease-money-field .lease-control:focus {
+  position: relative;
+  z-index: 3;
+}
+
+/* Terms textarea */
+
+.lease-terms-input {
+  min-height: 105px;
+  padding: 12px 13px;
+  line-height: 1.6;
+  resize: vertical;
+}
+
+.terms-meta {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  margin-top: 8px;
+  color: #8a96a6;
+  font-size: 10px;
+}
+
+.terms-meta small {
+  display: flex;
+  align-items: flex-start;
+  gap: 5px;
+  line-height: 1.5;
+}
+
+.terms-meta small i {
+  margin-top: 2px;
+  color: #91a4bf;
+}
+
+.terms-meta > span {
+  flex-shrink: 0;
   font-weight: 700;
 }
 
 /* ================================================================
-   08. MONEY INPUT GROUPS
-   ================================================================ */
-
-.lease-input-group {
-  min-width: 0;
-}
-
-.lease-input-group .input-group-text {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  min-width: 48px;
-  border: 1px solid #d9e3ed;
-  border-right: 0;
-  border-radius: 8px 0 0 8px;
-  background: linear-gradient(180deg, #f5f8fc, #edf2f8);
-  color: #657990;
-  font-size: 10px;
-  font-weight: 850;
-}
-
-.lease-input-group .lease-form-control {
-  min-width: 0;
-  border-radius: 0 8px 8px 0;
-}
-
-/* ================================================================
-   09. TERMS TEXTAREA
-   ================================================================ */
-
-.terms-input {
-  min-height: 112px;
-  padding: 12px 13px;
-  resize: vertical;
-  line-height: 1.65;
-}
-
-.terms-input:focus {
-  border-color: #6b9ed1;
-}
-
-.terms-footer {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 12px;
-  margin-top: 7px;
-}
-
-.terms-footer .field-hint {
-  margin: 0;
-}
-
-.character-count {
-  flex: 0 0 auto;
-  color: #8492a3;
-  font-size: 9px;
-  font-weight: 750;
-  font-variant-numeric: tabular-nums;
-}
-
-/* ================================================================
-   10. FORM FOOTER
+   06. FORM FOOTER AND ACTIONS
    ================================================================ */
 
 .lease-form-footer {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 18px;
-  padding: 15px 21px;
-  border-top: 1px solid #e5ebf2;
-  background:
-    linear-gradient(110deg, #f8fafd 0%, #f3f7fb 100%);
+  flex-wrap: wrap;
+  gap: 15px;
+  padding: 16px 22px;
+  border-top: 1px solid #e9edf3;
+  background: #f8faff;
 }
 
-.form-security-note {
+.form-assurance {
   display: flex;
   align-items: center;
   gap: 10px;
   min-width: 0;
 }
 
-.security-icon {
-  display: inline-flex;
+.assurance-icon {
+  display: flex;
   align-items: center;
   justify-content: center;
-  width: 36px;
-  height: 36px;
-  flex: 0 0 auto;
-  border: 1px solid #d7ebdf;
-  border-radius: 10px;
-  background: linear-gradient(145deg, #eff9f3, #e4f3ea);
-  color: #32815b;
+  width: 34px;
+  height: 34px;
+  flex: 0 0 34px;
+  border-radius: 9px;
+  color: var(--lease-green);
+  background: #e8f6ef;
   font-size: 14px;
 }
 
-.form-security-note strong,
-.form-security-note small {
-  display: block;
+.form-assurance > div {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  min-width: 0;
 }
 
-.form-security-note strong {
-  color: #435970;
+.form-assurance strong {
+  color: #34465e;
   font-size: 10px;
-  font-weight: 850;
+  font-weight: 800;
 }
 
-.form-security-note small {
-  max-width: 390px;
-  margin-top: 4px;
-  color: #8795a5;
-  font-size: 9px;
+.form-assurance small {
+  color: #8491a2;
+  font-size: 10px;
   line-height: 1.5;
 }
 
-.lease-form-actions {
+.form-actions {
   display: flex;
   align-items: center;
   justify-content: flex-end;
@@ -813,8 +851,8 @@
   gap: 9px;
 }
 
-.lease-clear-btn,
-.lease-submit-btn {
+.lease-reset-btn,
+.lease-create-btn {
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -822,409 +860,453 @@
   min-height: 40px;
   padding: 0 15px;
   border-radius: 8px;
-  font-size: 10px;
-  font-weight: 800;
+  font-size: 11px;
+  font-weight: 750;
   transition: .2s ease;
 }
 
-.lease-clear-btn {
-  border: 1px solid #d6e0eb;
-  background: linear-gradient(180deg, #fff, #f9fbfd);
-  color: #5e7188;
+.lease-reset-btn {
+  border: 1px solid #d8e0eb;
+  color: #586b83;
+  background: #fff;
 }
 
-.lease-clear-btn:hover:not(:disabled) {
-  border-color: #b8c9db;
-  background: #edf3f9;
-  color: #314d6b;
+.lease-reset-btn:hover:not(:disabled) {
+  border-color: #b9c9df;
+  color: var(--lease-navy);
+  background: #f4f7fb;
 }
 
-.lease-submit-btn {
-  border: 1px solid #205a94;
-  background: linear-gradient(135deg, #347dbd 0%, #20588f 100%);
+.lease-create-btn {
+  border: 1px solid var(--lease-blue);
   color: #fff;
-  box-shadow: 0 4px 10px rgba(35, 91, 148, .19);
+  background: linear-gradient(135deg, #3476e5, #2258c2);
+  box-shadow: 0 3px 9px rgba(37, 99, 235, .17);
 }
 
-.lease-submit-btn:hover:not(:disabled) {
-  border-color: #174779;
-  background: linear-gradient(135deg, #286ca9 0%, #174a7d 100%);
-  color: #fff;
-  box-shadow: 0 6px 15px rgba(35, 91, 148, .25);
+.lease-create-btn:hover:not(:disabled) {
+  border-color: var(--lease-blue-dark);
+  background: linear-gradient(135deg, #2867d4, #194ba9);
+  box-shadow: 0 5px 13px rgba(37, 99, 235, .23);
   transform: translateY(-1px);
 }
 
-.lease-clear-btn:disabled,
-.lease-submit-btn:disabled {
-  opacity: .55;
+.lease-reset-btn:disabled,
+.lease-create-btn:disabled {
+  opacity: .6;
   cursor: not-allowed;
 }
 
 /* ================================================================
-   11. REGISTER HEADER
+   07. LOADING INDICATORS
    ================================================================ */
 
-.register-header {
-  min-height: 76px;
-}
-
-.record-count {
-  display: inline-flex;
+.lease-loading {
+  display: flex;
   align-items: center;
-  gap: 7px;
-  flex: 0 0 auto;
-  padding: 9px 12px;
-  border: 1px solid #dce7f2;
-  border-radius: 8px;
-  background: linear-gradient(145deg, #f5f9fe, #edf3fa);
-  color: #54718f;
-  font-size: 9px;
+  justify-content: center;
+  gap: 10px;
+  padding: 16px;
+  color: #64758b;
+  background: #f7faff;
+  font-size: 11px;
+  font-weight: 600;
 }
 
-.record-count i {
-  color: #487eaf;
+.lease-loading .spinner-border {
+  width: 16px;
+  height: 16px;
+  color: var(--lease-blue);
+  border-width: 2px;
 }
 
-.record-count strong {
-  color: #285f97;
-  font-size: 13px;
-  font-weight: 850;
-}
-
-.record-count span {
-  color: #8392a4;
-  font-weight: 700;
+.register-loading {
+  margin: 0;
+  border-top: 1px solid #edf0f5;
 }
 
 /* ================================================================
-   12. SEARCH AND FILTER TOOLBAR
+   08. REGISTER PANEL HEADER
    ================================================================ */
 
-.lease-toolbar {
-  display: flex;
-  align-items: flex-end;
-  gap: 15px;
-  padding: 15px 20px;
-  border-bottom: 1px solid #e6edf4;
-  background: linear-gradient(110deg, #fbfcfe, #f7f9fc);
+.register-panel-header {
+  padding: 17px 21px;
 }
 
-.lease-search {
+.register-count {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  padding: 8px 11px;
+  border: 1px solid #dce7f8;
+  border-radius: 8px;
+  background: #f4f8ff;
+}
+
+.count-number {
+  color: var(--lease-blue);
+  font-size: 18px;
+  font-weight: 800;
+  line-height: 1;
+}
+
+.count-label {
+  color: #72829a;
+  font-size: 10px;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+/* ================================================================
+   09. REGISTER TOOLBAR
+   ================================================================ */
+
+.lease-register-toolbar {
+  display: flex;
+  align-items: flex-end;
+  gap: 13px;
+  padding: 15px 20px;
+  border-bottom: 1px solid #e9edf3;
+  background: #fbfcfe;
+}
+
+.register-search {
   position: relative;
-  flex: 1 1 420px;
+  display: flex;
+  align-items: center;
+  flex: 1 1 380px;
   min-width: 180px;
 }
 
-.lease-search-icon {
+.register-search > i {
   position: absolute;
-  z-index: 2;
-  top: 50%;
   left: 13px;
-  color: #8798ab;
+  z-index: 2;
+  color: #91a0b4;
+  font-size: 12px;
+  pointer-events: none;
+}
+
+.register-search .form-control {
+  width: 100%;
+  padding: 0 65px 0 36px;
+}
+
+.search-hint {
+  position: absolute;
+  right: 10px;
+  padding: 3px 6px;
+  border: 1px solid #e5eaf1;
+  border-radius: 4px;
+  color: #9aa5b4;
+  background: #f8fafd;
+  font-size: 9px;
+  font-weight: 700;
+  pointer-events: none;
+}
+
+.register-filter {
+  flex: 0 1 205px;
+  min-width: 160px;
+}
+
+.register-filter > label {
+  display: block;
+  margin-bottom: 6px;
+  color: #65758a;
+  font-size: 10px;
+  font-weight: 750;
+}
+
+.filter-control {
+  position: relative;
+}
+
+.filter-control > i {
+  position: absolute;
+  top: 50%;
+  left: 11px;
+  z-index: 2;
+  color: #8b9bb0;
   font-size: 11px;
   pointer-events: none;
   transform: translateY(-50%);
 }
 
-.lease-search .form-control {
-  width: 100%;
-  min-height: 41px;
-  padding: 9px 42px 9px 36px;
-  border: 1px solid #dce5ee;
-  border-radius: 8px;
-  background: #fff;
-  color: #344a63;
-  font-size: 10.5px;
-  box-shadow: 0 1px 3px rgba(25, 50, 80, .025);
-  transition: .18s ease;
+.filter-control .form-select {
+  padding-left: 31px;
+  cursor: pointer;
 }
 
-.lease-search .form-control::placeholder {
-  color: #9ba8b6;
-}
-
-.lease-search .form-control:focus {
-  border-color: #75a5d5;
-  box-shadow: 0 0 0 3px rgba(48, 111, 174, .09);
-}
-
-.search-shortcut {
-  position: absolute;
-  top: 50%;
-  right: 11px;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 24px;
-  height: 23px;
-  border: 1px solid #e5ebf1;
-  border-radius: 5px;
-  background: #f7f9fb;
-  color: #a0acb9;
-  font-size: 9px;
-  transform: translateY(-50%);
-  pointer-events: none;
-}
-
-.lease-filter {
-  flex: 0 0 190px;
-  min-width: 0;
-}
-
-.lease-filter label {
+.register-result {
   display: flex;
   align-items: center;
-  gap: 6px;
-  margin-bottom: 6px;
-  color: #718297;
-  font-size: 9px;
+  gap: 5px;
+  min-height: 42px;
+  padding: 0 4px;
+  white-space: nowrap;
+}
+
+.result-label {
+  color: #8491a2;
+  font-size: 10px;
+}
+
+.register-result strong {
+  color: var(--lease-navy);
+  font-size: 13px;
   font-weight: 800;
 }
 
-.lease-filter label i {
-  color: #7793b0;
-}
-
-.status-filter {
-  width: 100%;
-  min-height: 41px;
-  padding: 8px 30px 8px 11px;
-  border: 1px solid #dce5ee;
-  border-radius: 8px;
-  background-color: #fff;
-  color: #435970;
-  font-size: 10px;
-  font-weight: 700;
-  box-shadow: 0 1px 3px rgba(25, 50, 80, .025);
-}
-
-.status-filter:focus {
-  border-color: #75a5d5;
-  box-shadow: 0 0 0 3px rgba(48, 111, 174, .09);
-}
-
 /* ================================================================
-   13. TABLE WRAPPER AND TABLE STRUCTURE
+   10. LEASE REGISTER TABLE
    ================================================================ */
 
-.lease-table-wrap {
+.lease-table-container {
   width: 100%;
   min-width: 0;
-  overflow-x: auto;
-  overflow-y: hidden;
   background: #fff;
-  scrollbar-width: thin;
-  scrollbar-color: #c7d4e2 #f2f5f8;
 }
 
-.lease-table-wrap::-webkit-scrollbar {
+.lease-table-container .table-responsive {
+  width: 100%;
+  max-width: 100%;
+  overflow-x: auto;
+  overscroll-behavior-x: contain;
+  scrollbar-width: thin;
+  scrollbar-color: #cbd5e1 #f4f6f9;
+}
+
+.lease-table-container .table-responsive::-webkit-scrollbar {
   height: 7px;
 }
 
-.lease-table-wrap::-webkit-scrollbar-track {
-  background: #f2f5f8;
+.lease-table-container .table-responsive::-webkit-scrollbar-track {
+  background: #f3f5f8;
 }
 
-.lease-table-wrap::-webkit-scrollbar-thumb {
+.lease-table-container .table-responsive::-webkit-scrollbar-thumb {
   border-radius: 10px;
-  background: #c7d4e2;
+  background: #c4cedb;
 }
 
 .lease-table {
   width: 100%;
-  min-width: 1060px;
-  margin: 0;
+  min-width: 1030px;
   border-collapse: separate;
   border-spacing: 0;
   table-layout: auto;
-}
-
-.lease-table thead {
-  position: relative;
-  z-index: 1;
+  margin: 0;
 }
 
 .lease-table thead th {
-  padding: 14px 13px;
-  border: 0;
-  border-bottom: 1px solid #dfe7f0;
-  background: linear-gradient(180deg, #f0f5fa 0%, #eaf0f7 100%);
-  color: #5d7087;
+  padding: 13px 13px;
+  border-bottom: 1px solid #e3e9f1;
+  color: #687a91;
+  background: #f5f8fc;
   font-size: 9px;
-  font-weight: 850;
-  letter-spacing: .65px;
+  font-weight: 800;
+  letter-spacing: .55px;
   line-height: 1.4;
   white-space: nowrap;
   vertical-align: middle;
 }
 
-.lease-table thead th:first-child {
-  padding-left: 19px;
+.lease-table thead th:first-child,
+.lease-table tbody td:first-child {
+  padding-left: 20px;
 }
 
-.lease-table thead th:last-child {
-  padding-right: 18px;
-}
-
-.lease-table tbody tr {
-  background: #fff;
-  transition: background-color .17s ease, box-shadow .17s ease;
-}
-
-.lease-table tbody tr:nth-child(even) {
-  background: #fbfcfe;
-}
-
-.lease-table tbody tr:hover {
-  background: #f1f7fd;
-  box-shadow: inset 3px 0 0 #4b8bc5;
+.lease-table thead th:last-child,
+.lease-table tbody td:last-child {
+  padding-right: 20px;
 }
 
 .lease-table tbody td {
   padding: 14px 13px;
-  border: 0;
-  border-bottom: 1px solid #edf1f5;
-  background: transparent;
-  color: #42566d;
-  font-size: 10px;
-  line-height: 1.5;
+  border-bottom: 1px solid #edf0f5;
+  color: #42536a;
+  background: #fff;
+  font-size: 11px;
   vertical-align: middle;
 }
 
-.lease-table tbody td:first-child {
-  padding-left: 19px;
+.lease-table tbody tr {
+  transition: background .16s ease;
 }
 
-.lease-table tbody td:last-child {
-  padding-right: 18px;
+.lease-table tbody tr:hover td {
+  background: #f8faff;
 }
 
 .lease-table tbody tr:last-child td {
   border-bottom: 0;
 }
 
-/* ================================================================
-   14. LEASE REFERENCE AND PROPERTY
-   ================================================================ */
-
-.lease-code {
-  display: inline-flex;
-  align-items: center;
-  max-width: 190px;
-  padding: 5px 8px;
-  overflow-wrap: anywhere;
-  border: 1px solid #dce8f5;
-  border-radius: 6px;
-  background: #f0f6fd;
-  color: #285f98;
-  font-size: 9.5px;
-  font-weight: 850;
-  letter-spacing: .15px;
+.lease-col-details {
+  min-width: 200px;
 }
 
-.lease-property-name {
+/* Lease reference */
+
+.lease-reference {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  min-width: 165px;
+}
+
+.reference-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  flex: 0 0 32px;
+  border-radius: 8px;
+  color: #3471d6;
+  background: #edf4ff;
+  font-size: 13px;
+}
+
+.lease-reference > div,
+.table-tenant > div {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 0;
+}
+
+.lease-reference strong {
+  color: #263d5b;
+  font-size: 11px;
+  font-weight: 800;
+  overflow-wrap: anywhere;
+}
+
+.lease-reference small {
+  color: #98a3b2;
+  font-size: 9px;
+}
+
+.table-property {
   display: flex;
   align-items: flex-start;
   gap: 6px;
-  max-width: 215px;
-  margin-top: 8px;
-  color: #718399;
-  font-size: 9px;
-  font-weight: 600;
-  line-height: 1.5;
-}
-
-.lease-property-name i {
-  flex: 0 0 auto;
-  margin-top: 2px;
-  color: #8aa0b8;
-  font-size: 9px;
-}
-
-.lease-property-name {
-  overflow-wrap: anywhere;
-}
-
-/* ================================================================
-   15. TENANT AND UNIT
-   ================================================================ */
-
-.tenant-name {
-  max-width: 190px;
-  color: #304962;
-  font-size: 10.5px;
-  font-weight: 800;
+  margin-top: 9px;
+  color: #718096;
+  font-size: 10px;
   line-height: 1.45;
-  overflow-wrap: anywhere;
 }
 
-.lease-unit-name {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  margin-top: 6px;
-  color: #8291a2;
-  font-size: 9px;
-  font-weight: 650;
-}
-
-.lease-unit-name i {
-  color: #8ca2b8;
-  font-size: 9px;
-}
-
-/* ================================================================
-   16. AGREEMENT DATES
-   ================================================================ */
-
-.lease-date {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  color: #415b75;
-  font-size: 9.5px;
-  font-weight: 750;
-  white-space: nowrap;
-}
-
-.lease-date i {
-  color: #7995b2;
+.table-property i {
+  margin-top: 2px;
+  color: #91a2b8;
   font-size: 10px;
 }
 
-.lease-date-secondary {
-  margin: 6px 0 0 16px;
-  color: #8997a7;
+.table-property span {
+  max-width: 180px;
+  overflow-wrap: anywhere;
+}
+
+/* Tenant and unit */
+
+.table-tenant {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  min-width: 145px;
+}
+
+.tenant-avatar {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  flex: 0 0 32px;
+  border-radius: 50%;
+  color: #4d6da2;
+  background: #edf2fa;
+  font-size: 12px;
+}
+
+.table-tenant strong {
+  color: #344861;
+  font-size: 11px;
+  font-weight: 750;
+  line-height: 1.4;
+  overflow-wrap: anywhere;
+}
+
+.table-tenant small {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  color: #8996a7;
   font-size: 9px;
-  font-weight: 600;
+}
+
+.table-tenant small i {
+  color: #8ea2bc;
+}
+
+/* Agreement period */
+
+.period-cell {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+  min-width: 112px;
+}
+
+.period-cell > div {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 9px;
+}
+
+.period-label {
+  color: #9aa5b3;
+  font-size: 8px;
+  font-weight: 800;
+  letter-spacing: .45px;
+}
+
+.period-cell strong {
+  color: #4a5b71;
+  font-size: 10px;
+  font-weight: 700;
   white-space: nowrap;
 }
 
-/* ================================================================
-   17. FINANCIAL DATA
-   ================================================================ */
+/* Financial columns */
 
-.money-cell,
-.deposit-cell {
-  display: inline-block;
-  color: #294967;
-  font-size: 10.5px;
-  font-weight: 850;
+.table-money,
+.table-deposit {
+  display: block;
+  color: #263e5c;
+  font-size: 11px;
+  font-weight: 800;
   white-space: nowrap;
-  font-variant-numeric: tabular-nums;
 }
 
-.money-period {
+.table-deposit {
+  color: #596c84;
+}
+
+.table-subtext {
   display: block;
   margin-top: 4px;
-  color: #95a1af;
-  font-size: 8.5px;
-  font-weight: 550;
+  color: #98a3b1;
+  font-size: 9px;
+  white-space: nowrap;
 }
 
 /* ================================================================
-   18. LEASE STATUS BADGES
-   Supports classes returned by statusClass()
+   11. STATUS BADGES
    ================================================================ */
 
 .lease-status {
@@ -1232,166 +1314,130 @@
   align-items: center;
   justify-content: center;
   gap: 6px;
-  min-width: 84px;
   padding: 6px 9px;
-  border: 1px solid #dce4ec;
-  border-radius: 30px;
-  background: #f2f5f8;
-  color: #687a8e;
-  font-size: 8.5px;
-  font-weight: 850;
-  letter-spacing: .2px;
-  line-height: 1.25;
+  border: 1px solid transparent;
+  border-radius: 20px;
+  font-size: 9px;
+  font-weight: 800;
+  line-height: 1;
   white-space: nowrap;
 }
 
 .status-dot {
   width: 6px;
   height: 6px;
-  flex: 0 0 auto;
+  flex: 0 0 6px;
   border-radius: 50%;
   background: currentColor;
 }
 
-/* Active */
-.lease-status.active,
 .lease-status.status-active,
-.lease-status.badge-active {
-  border-color: #c7e7d5;
-  background: linear-gradient(135deg, #eef9f2, #e6f5ec);
-  color: #247c50;
-}
-
-/* Draft */
-.lease-status.draft,
-.lease-status.status-draft,
-.lease-status.badge-draft {
-  border-color: #f0dfba;
-  background: linear-gradient(135deg, #fff9ec, #fff4df);
-  color: #a8751d;
-}
-
-/* Terminated */
-.lease-status.terminated,
-.lease-status.status-terminated,
-.lease-status.badge-terminated {
-  border-color: #f0d0d0;
-  background: linear-gradient(135deg, #fff4f4, #ffeded);
-  color: #b04444;
-}
-
-/* Expired */
-.lease-status.expired,
-.lease-status.status-expired,
-.lease-status.badge-expired {
-  border-color: #dce2e9;
-  background: linear-gradient(135deg, #f3f5f7, #eceff3);
-  color: #65758a;
-}
-
-/* Fallback classes sometimes returned by statusClass() */
+.lease-status.active,
 .lease-status.bg-success {
-  border-color: #c7e7d5;
-  background: #edf8f1 !important;
-  color: #247c50 !important;
+  border-color: #ccebdc;
+  color: #137b52;
+  background: #eaf8f1;
 }
 
+.lease-status.status-draft,
+.lease-status.draft,
 .lease-status.bg-warning {
-  border-color: #f0dfba;
-  background: #fff7e7 !important;
-  color: #a8751d !important;
+  border-color: #f1dfb8;
+  color: #a46c12;
+  background: #fff7e7;
 }
 
+.lease-status.status-terminated,
+.lease-status.terminated,
 .lease-status.bg-danger {
-  border-color: #f0d0d0;
-  background: #fff0f0 !important;
-  color: #b04444 !important;
+  border-color: #f1d1d1;
+  color: #b23d43;
+  background: #fff0f0;
 }
 
+.lease-status.status-expired,
+.lease-status.expired,
 .lease-status.bg-secondary {
-  border-color: #dce2e9;
-  background: #f1f3f6 !important;
-  color: #65758a !important;
+  border-color: #e0e5ec;
+  color: #64748b;
+  background: #f0f3f7;
 }
 
 /* ================================================================
-   19. TABLE ACTIONS
+   12. ROW ACTIONS
    ================================================================ */
 
-.action-cell {
-  min-width: 135px;
-}
-
-.lease-action-group {
+.lease-row-actions {
   display: flex;
   align-items: center;
   justify-content: flex-end;
-  gap: 6px;
-  white-space: nowrap;
+  gap: 7px;
+  min-width: 115px;
 }
 
-.lease-action-btn {
+.row-action-btn {
   display: inline-flex;
   align-items: center;
   justify-content: center;
   gap: 6px;
-  min-height: 30px;
+  min-height: 31px;
   padding: 0 9px;
   border: 1px solid transparent;
-  border-radius: 7px;
+  border-radius: 6px;
   font-size: 9px;
   font-weight: 800;
-  transition: .17s ease;
+  white-space: nowrap;
+  transition: .18s ease;
 }
 
-.lease-activate-btn {
-  border-color: #c9e7d6;
-  background: linear-gradient(135deg, #f2faf5, #e8f6ee);
-  color: #287a50;
+.action-activate {
+  border-color: #ccebdc;
+  color: #16774f;
+  background: #effaf4;
 }
 
-.lease-activate-btn:hover:not(:disabled) {
-  border-color: #9ed3b4;
-  background: #def2e6;
-  color: #17663e;
-  box-shadow: 0 3px 8px rgba(39, 128, 81, .09);
+.action-activate:hover:not(:disabled) {
+  border-color: #91d4b2;
+  color: #0e6742;
+  background: #dff5e9;
 }
 
-.lease-terminate-btn {
-  border-color: #efd0d0;
-  background: linear-gradient(135deg, #fff7f7, #fff0f0);
-  color: #ae4848;
+.action-terminate {
+  border-color: #f1d1d1;
+  color: #b23e45;
+  background: #fff3f3;
 }
 
-.lease-terminate-btn:hover:not(:disabled) {
-  border-color: #e4b1b1;
-  background: #ffe6e6;
-  color: #963737;
-  box-shadow: 0 3px 8px rgba(174, 72, 72, .08);
+.action-terminate:hover:not(:disabled) {
+  border-color: #e9a9ac;
+  color: #982d35;
+  background: #ffe5e5;
 }
 
-.lease-action-btn:disabled {
-  opacity: .5;
+.row-action-btn:disabled {
+  opacity: .55;
   cursor: not-allowed;
 }
 
-.no-lease-action {
+.lease-closed-label {
   display: inline-flex;
   align-items: center;
   gap: 5px;
-  color: #98a3b0;
-  font-size: 9px;
-  font-weight: 750;
+  color: #8995a5;
+  font-size: 10px;
+  font-weight: 700;
+  white-space: nowrap;
 }
 
-.lease-action-spinner {
-  width: 14px;
-  height: 14px;
-  color: #367bb9;
+.action-spinner {
+  width: 13px;
+  height: 13px;
+  color: var(--lease-blue);
+  border-width: 2px;
 }
 
 /* ================================================================
-   20. EMPTY STATE
+   13. EMPTY STATE
    ================================================================ */
 
 .lease-empty-state {
@@ -1399,299 +1445,389 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  min-height: 235px;
-  padding: 32px 20px;
+  min-height: 230px;
+  padding: 30px 20px;
   text-align: center;
-  background:
-    radial-gradient(circle at center, rgba(55, 112, 170, .045), transparent 52%),
-    #fff;
 }
 
-.empty-state-icon {
+.empty-icon {
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 58px;
-  height: 58px;
-  margin-bottom: 14px;
-  border: 1px solid #dce8f5;
-  border-radius: 17px;
-  background: linear-gradient(145deg, #f3f8ff, #eaf2fc);
-  color: #5d86b0;
+  width: 57px;
+  height: 57px;
+  margin-bottom: 13px;
+  border: 1px solid #e0e9f6;
+  border-radius: 16px;
+  color: #7294c4;
+  background: #f1f6fd;
   font-size: 22px;
-  box-shadow: 0 4px 12px rgba(42, 92, 145, .055);
 }
 
-.lease-empty-state h5 {
-  margin: 0;
-  color: #344e69;
+.lease-empty-state h4 {
+  margin: 0 0 7px;
+  color: var(--lease-navy);
   font-size: 14px;
-  font-weight: 850;
+  font-weight: 800;
 }
 
 .lease-empty-state p {
-  max-width: 430px;
-  margin: 8px 0 0;
-  color: #8795a5;
-  font-size: 10.5px;
+  max-width: 440px;
+  margin: 0;
+  color: #8793a3;
+  font-size: 11px;
   line-height: 1.7;
 }
 
 /* ================================================================
-   21. GENERAL BOOTSTRAP TABLE AND FORM REFINEMENTS
+   14. REGISTER FOOTER
    ================================================================ */
 
-.lease-page .table > :not(caption) > * > * {
-  box-shadow: none;
+.lease-register-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 12px;
+  padding: 12px 20px;
+  border-top: 1px solid #e9edf3;
+  background: #fafbfd;
 }
 
-.lease-page .form-select {
-  cursor: pointer;
+.register-footnote {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  color: #8793a3;
+  font-size: 10px;
+  line-height: 1.5;
 }
 
-.lease-page input,
-.lease-page select,
-.lease-page textarea,
-.lease-page button {
-  font-family: inherit;
+.register-footnote i {
+  color: #6d8bb7;
 }
 
-.lease-page button:focus-visible,
-.lease-page input:focus-visible,
-.lease-page select:focus-visible,
-.lease-page textarea:focus-visible {
-  outline: 2px solid #5790c5;
-  outline-offset: 2px;
+.terminated-summary {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  color: #8793a3;
+  font-size: 10px;
 }
 
-.lease-page .spinner-border {
-  vertical-align: middle;
+.terminated-summary strong {
+  color: #65758a;
+  font-size: 11px;
+  font-weight: 800;
+}
+
+.terminated-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: #a0aaba;
 }
 
 /* ================================================================
-   22. RESPONSIVE — LARGE LAPTOPS
+   15. PAGE FOOTER
    ================================================================ */
 
-@media (max-width: 1200px) {
-  .lease-page {
-    padding-right: 18px;
-    padding-left: 18px;
-  }
+.lease-page-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 9px;
+  padding: 4px 2px 2px;
+  color: #9aa5b3;
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: .45px;
+}
 
-  .lease-overview {
-    gap: 12px;
-  }
+.lease-page-footer span:first-child {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  letter-spacing: 0;
+  font-weight: 600;
+}
 
-  .lease-stat-card {
-    padding-right: 14px;
-    padding-left: 14px;
-  }
-
-  .lease-stat-value {
-    font-size: 28px;
-  }
-
-  .lease-stat-money {
-    font-size: 21px;
-  }
+.lease-page-footer i {
+  color: #7e9a83;
 }
 
 /* ================================================================
-   23. RESPONSIVE — TABLETS
+   16. TABLET RESPONSIVENESS
    ================================================================ */
 
-@media (max-width: 991.98px) {
+@media (max-width: 1199.98px) {
   .lease-page {
-    padding: 17px 15px 24px;
+    padding: 19px 17px;
   }
 
   .lease-overview {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
-  .lease-stat-card {
-    min-height: 132px;
+  .metric-top h3.metric-currency {
+    font-size: 21px;
   }
 
-  .lease-table {
-    min-width: 1040px;
+  .lease-register-toolbar {
+    gap: 10px;
+  }
+}
+
+@media (max-width: 991.98px) {
+  .lease-header {
+    align-items: flex-start;
+  }
+
+  .lease-header-actions {
+    flex-direction: column;
+    align-items: flex-end;
+  }
+
+  .lease-register-toolbar {
+    align-items: stretch;
+    flex-wrap: wrap;
+  }
+
+  .register-search {
+    flex: 1 1 100%;
+  }
+
+  .register-filter {
+    flex: 1 1 220px;
+  }
+
+  .register-result {
+    justify-content: flex-end;
+    flex: 0 0 auto;
+  }
+
+  .panel-header {
+    padding: 17px;
+  }
+
+  .lease-form-content {
+    padding-right: 18px;
+    padding-left: 18px;
+  }
+
+  .lease-form-footer {
+    padding-right: 18px;
+    padding-left: 18px;
   }
 }
 
 /* ================================================================
-   24. RESPONSIVE — MOBILE
+   17. MOBILE RESPONSIVENESS
    ================================================================ */
 
 @media (max-width: 767.98px) {
   .lease-page {
-    padding: 14px 11px 20px;
+    padding: 14px 12px;
   }
 
-  .lease-page-header {
-    align-items: flex-start;
+  .lease-header {
     flex-direction: column;
     gap: 14px;
-    margin-bottom: 19px;
+    margin-bottom: 20px;
+    padding-bottom: 15px;
   }
 
-  .lease-title {
+  .lease-header h2 {
     font-size: 23px;
   }
 
-  .lease-subtitle {
-    font-size: 10.5px;
+  .lease-header-copy > p {
+    font-size: 12px;
   }
 
   .lease-header-actions {
     width: 100%;
-    justify-content: flex-start;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
   }
 
-  .lease-overview {
-    gap: 9px;
+  .lease-overview-section {
+    margin-bottom: 19px;
   }
 
-  .lease-stat-card {
-    min-height: 125px;
-    padding: 13px 12px 11px;
-    border-radius: 10px;
+  .section-intro {
+    align-items: flex-start;
   }
 
-  .lease-stat-label {
+  .section-intro h3 {
+    font-size: 15px;
+  }
+
+  .overview-live {
+    padding: 6px 8px;
     font-size: 9px;
   }
 
-  .lease-stat-icon {
-    width: 33px;
-    height: 33px;
-    border-radius: 9px;
-    font-size: 13px;
+  .lease-overview {
+    gap: 10px;
   }
 
-  .lease-stat-value {
-    margin: 10px 0 8px;
+  .lease-metric-card {
+    padding: 14px 12px 11px;
+  }
+
+  .metric-label {
+    font-size: 10px;
+  }
+
+  .metric-top h3 {
     font-size: 25px;
   }
 
-  .lease-stat-money {
-    font-size: 16px;
-    letter-spacing: -.5px;
+  .metric-top h3.metric-currency {
+    font-size: clamp(15px, 4vw, 20px);
   }
 
-  .lease-stat-bottom {
-    gap: 6px;
-    font-size: 8px;
-  }
-
-  .lease-panel {
-    margin-bottom: 17px;
-    border-radius: 10px;
-  }
-
-  .lease-panel-header {
-    align-items: flex-start;
-    gap: 10px;
-    padding: 14px 13px;
-  }
-
-  .panel-heading-icon {
-    width: 37px;
-    height: 37px;
+  .metric-icon {
+    width: 35px;
+    height: 35px;
+    flex-basis: 35px;
     border-radius: 9px;
     font-size: 14px;
   }
 
-  .panel-heading-text h4 {
-    font-size: 13px;
-  }
-
-  .panel-heading-text p {
+  .metric-caption {
     font-size: 9px;
   }
 
-  .required-note {
-    max-width: 85px;
-    font-size: 8px;
-    text-align: right;
+  .panel-header {
+    align-items: flex-start;
+    padding: 15px 13px;
+  }
+
+  .panel-heading {
+    gap: 10px;
+  }
+
+  .panel-icon {
+    width: 37px;
+    height: 37px;
+    flex-basis: 37px;
+    font-size: 15px;
+  }
+
+  .panel-heading h3 {
+    font-size: 15px;
+  }
+
+  .panel-heading p {
+    font-size: 10px;
+  }
+
+  .required-indicator {
+    font-size: 9px;
     white-space: normal;
+    text-align: right;
   }
 
-  .lease-form-body {
-    padding: 0 13px;
+  .lease-form-content {
+    padding: 3px 14px 0;
   }
 
-  .lease-form-section {
+  .form-section {
     padding: 18px 0;
   }
 
-  .form-section-heading {
-    margin-bottom: 14px;
+  .form-section-header {
+    margin-bottom: 15px;
+  }
+
+  .form-section-header h4 {
+    font-size: 12px;
+  }
+
+  .form-section-header p {
+    font-size: 10px;
   }
 
   .lease-form-footer {
-    align-items: stretch;
+    align-items: flex-start;
     flex-direction: column;
-    padding: 13px;
+    padding: 14px;
   }
 
-  .lease-form-actions {
+  .form-assurance {
     width: 100%;
   }
 
-  .lease-form-actions button {
-    flex: 1 1 auto;
+  .form-actions {
+    width: 100%;
+    justify-content: flex-end;
   }
 
-  .lease-toolbar {
-    align-items: stretch;
-    flex-direction: column;
-    gap: 12px;
+  .register-panel-header {
+    align-items: center;
+  }
+
+  .register-count {
+    gap: 6px;
+    padding: 7px 8px;
+  }
+
+  .count-number {
+    font-size: 16px;
+  }
+
+  .count-label {
+    font-size: 9px;
+  }
+
+  .lease-register-toolbar {
     padding: 13px;
   }
 
-  .lease-search,
-  .lease-filter {
-    width: 100%;
-    flex: 1 1 auto;
+  .lease-register-footer {
+    padding: 12px 13px;
   }
 
-  .record-count {
-    padding: 7px 9px;
-    gap: 5px;
+  .lease-page-footer {
     font-size: 8px;
-  }
-
-  .record-count strong {
-    font-size: 11px;
-  }
-
-  .lease-table {
-    min-width: 1040px;
-  }
-
-  .lease-table thead th {
-    padding: 12px 10px;
-    font-size: 8px;
-  }
-
-  .lease-table tbody td {
-    padding: 12px 10px;
-  }
-
-  .lease-inline-error {
-    margin-right: 13px;
-    margin-left: 13px;
   }
 }
 
 /* ================================================================
-   25. RESPONSIVE — SMALL PHONES
+   18. SMALL MOBILE DEVICES
    ================================================================ */
 
-@media (max-width: 420px) {
+@media (max-width: 480px) {
   .lease-page {
-    padding-right: 9px;
-    padding-left: 9px;
+    padding: 12px 9px;
+  }
+
+  .lease-breadcrumb {
+    gap: 6px;
+    font-size: 8px;
+    letter-spacing: .7px;
+  }
+
+  .lease-header h2 {
+    font-size: 21px;
+  }
+
+  .lease-header-actions {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .lease-refresh-btn {
+    width: 100%;
+  }
+
+  .section-intro {
+    flex-direction: column;
+    gap: 9px;
   }
 
   .lease-overview {
@@ -1699,67 +1835,186 @@
     gap: 8px;
   }
 
-  .lease-stat-card {
-    min-height: 119px;
+  .lease-metric-card {
     padding: 12px 10px 10px;
   }
 
-  .lease-stat-label {
-    font-size: 8.5px;
+  .metric-top {
+    align-items: flex-start;
   }
 
-  .lease-stat-icon {
-    width: 29px;
-    height: 29px;
-    font-size: 11px;
-  }
-
-  .lease-stat-value {
+  .metric-top h3 {
     font-size: 23px;
   }
 
-  .lease-stat-money {
-    font-size: 14px;
+  .metric-top h3.metric-currency {
+    font-size: 15px;
+    white-space: normal;
   }
 
-  .lease-stat-bottom {
-    font-size: 7.5px;
+  .metric-icon {
+    width: 31px;
+    height: 31px;
+    flex-basis: 31px;
+    font-size: 12px;
   }
 
-  .lease-header-actions {
-    justify-content: flex-start;
+  .metric-bottom {
+    align-items: flex-start;
+    margin-top: 11px;
   }
 
-  .lease-refresh-btn {
-    min-height: 37px;
-    padding: 0 12px;
-    font-size: 10px;
+  .metric-caption {
+    font-size: 8px;
   }
 
-  .lease-form-actions {
+  .metric-index {
+    font-size: 8px;
+  }
+
+  .panel-header {
+    gap: 8px;
+  }
+
+  .panel-heading {
+    gap: 8px;
+  }
+
+  .panel-heading h3 {
+    font-size: 13px;
+  }
+
+  .panel-heading p {
+    font-size: 9px;
+  }
+
+  .panel-eyebrow {
+    font-size: 8px;
+  }
+
+  .panel-icon {
+    width: 33px;
+    height: 33px;
+    flex-basis: 33px;
+    font-size: 13px;
+  }
+
+  .required-indicator {
+    max-width: 82px;
+  }
+
+  .lease-form-content {
+    padding-right: 12px;
+    padding-left: 12px;
+  }
+
+  .lease-control,
+  .lease-register-toolbar .form-control,
+  .lease-register-toolbar .form-select {
+    min-height: 41px;
+    font-size: 11px;
+  }
+
+  .form-actions {
     flex-direction: column-reverse;
+    align-items: stretch;
   }
 
-  .lease-form-actions button {
+  .form-actions .btn {
     width: 100%;
+    min-height: 41px;
   }
 
-  .terms-footer {
+  .register-panel-header {
+    align-items: flex-start;
+  }
+
+  .register-count {
+    flex-direction: column;
+    align-items: center;
+    gap: 3px;
+  }
+
+  .register-filter {
+    flex: 1 1 100%;
+  }
+
+  .register-result {
+    justify-content: flex-start;
+    min-height: 25px;
+  }
+
+  .lease-register-footer {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .lease-page-footer {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .terms-meta {
     align-items: flex-start;
   }
 }
 
 /* ================================================================
-   26. REDUCED MOTION
+   19. ACCESSIBILITY AND INTERACTION
    ================================================================ */
+
+.lease-page button:focus-visible,
+.lease-page input:focus-visible,
+.lease-page select:focus-visible,
+.lease-page textarea:focus-visible {
+  outline: 3px solid rgba(37, 99, 235, .17);
+  outline-offset: 2px;
+}
+
+.lease-page button:disabled {
+  cursor: not-allowed;
+}
 
 @media (prefers-reduced-motion: reduce) {
   .lease-page *,
   .lease-page *::before,
   .lease-page *::after {
     scroll-behavior: auto !important;
+    transition-duration: .01ms !important;
     animation-duration: .01ms !important;
     animation-iteration-count: 1 !important;
-    transition-duration: .01ms !important;
+  }
+}
+
+/* ================================================================
+   20. PRINT
+   ================================================================ */
+
+@media print {
+  .lease-page {
+    padding: 0;
+    background: #fff;
+  }
+
+  .lease-header-actions,
+  .lease-form-footer,
+  .lease-register-toolbar,
+  .lease-row-actions,
+  .lease-page-footer {
+    display: none !important;
+  }
+
+  .lease-panel,
+  .lease-metric-card {
+    box-shadow: none;
+    break-inside: avoid;
+  }
+
+  .lease-table {
+    min-width: 0;
+  }
+
+  .lease-table-container .table-responsive {
+    overflow: visible;
   }
 }

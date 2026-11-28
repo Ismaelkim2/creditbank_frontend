@@ -36,20 +36,7 @@
         Secure workspace
       </div>
 
-      <button
-        type="button"
-        class="btn lease-refresh-btn"
-        (click)="refresh()"
-        [disabled]="loadingLookups">
 
-        <i
-          class="fas fa-sync-alt"
-          [class.fa-spin]="loadingLookups">
-        </i>
-
-        {{ loadingLookups ? 'Refreshing...' : 'Refresh data' }}
-
-      </button>
 
     </div>
 
@@ -113,7 +100,7 @@
       <div>
 
         <span class="section-kicker">
-          PORTFOLIO SNAPSHOT
+          Lease Management
         </span>
 
         <h3>Lease portfolio overview</h3>
@@ -131,6 +118,21 @@
         Portfolio records
 
       </span>
+
+            <button
+        type="button"
+        class="btn lease-refresh-btn"
+        (click)="refresh()"
+        [disabled]="loadingLookups">
+
+        <i
+          class="fas fa-sync-alt"
+          [class.fa-spin]="loadingLookups">
+        </i>
+
+        {{ loadingLookups ? 'Refreshing...' : 'Refresh data' }}
+
+      </button>
 
     </div>
 

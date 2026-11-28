@@ -196,7 +196,7 @@
   color: var(--lease-blue);
   font-size: 9px;
   font-weight: 800;
-  letter-spacing: 1.15px;
+ font-size: larger;
 }
 
 .section-intro h3 {
